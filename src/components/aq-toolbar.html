@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id="aq-toolbar">
+  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style>
+
+   paper-toolbar {
+      --paper-toolbar-title: {
+        text-align: left;
+        margin-left: 0px !important;
+      };
+
+      --paper-toolbar-background: #fff;
+      --paper-toolbar-color: #000;
+      opacity: var(--dark-primary-opacity);
+      border-bottom: 1px solid #e0e0e0;
+    }
+   
+  </style>
+
+  <template>
+
+      <paper-toolbar>
+        <template is="dom-if" if="[[showmenu]]">
+          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button>
+          <div class="title">AimsQuant</div>
+        </template>
+      </paper-toolbar>
+
+  </template>
+
+  <script>
+    Polymer({
+      is:'aq-toolbar',
+
+      properties: {
+        showmenu: {
+          type:Boolean,
+          value:false,
+        },
+
+        narrow:{
+          type:Boolean,
+        },
+      }, 
+
+      toggleMenu() {
+        this.fire('open-menu');
+      },
+
+    });
+  </script>>
+</dom-module>  

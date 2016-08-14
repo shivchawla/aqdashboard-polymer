@@ -1,0 +1,156 @@
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+<link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../bower_components/iron-selector/iron-selector.html'>
+<link rel='import' href='../../bower_components/paper-toolbar/paper-toolbar.html'>
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/app-router/app-router.html'>
+
+
+<link rel="import" href="./aq-home-main.html">
+<link rel="import" href="./aq-editor-main.html">
+<link rel="import" href="./aq-analyze-main.html">
+<link rel="import" href="./aq-community-main.html">
+<link rel="import" href="../layouts/aq-help-main.html">
+
+<link rel="import" href='../components/aq-sidebar.html'>
+
+<dom-module id="aq-dashboard-main">
+
+  <style>
+    :host {
+      transition: transform 0.01s  
+    }
+  
+    #mainpanel {
+      height:100%;
+    }
+  </style>
+  
+  <template>
+    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' narrow="{{narrow}}">
+
+      <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
+      
+      <div id="mainpanel "main>
+        <template is="dom-if" if="[[isHomeSelected]]"> 
+           <aq-home-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-home-main>
+        </template>
+        
+        <template is="dom-if" if="[[isEditorSelected]]"> 
+           <aq-editor-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-editor-main>
+        </template>
+
+        <template is="dom-if" if="[[isAnalyzeSelected]]"> 
+           <aq-analyze-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-analyze-main>
+        </template>
+
+        <template is="dom-if" if="[[isCommunitySelected]]">
+           <aq-community-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-community-main>
+        </template>
+
+        <template is="dom-if" if="[[isHelpSelected]]">
+           <aq-help-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-help-main>
+        </template> 
+      </div>
+    </paper-drawer-panel>
+
+  </template>
+
+  <script>
+  Polymer({
+    is:'aq-dashboard-main',
+
+    properties: {
+      narrow: {
+        type:Boolean,
+        value:false,
+      },
+
+      showSidebar:{
+        type:Boolean,
+        value:true,
+      },
+
+      view: {
+        type:String,
+        value:'home',
+      },
+
+      isHomeSelected :{
+        type:Boolean,
+        value:true,
+      },
+
+      isEditorSelected :{
+        type:Boolean,
+        value:false,
+      },
+
+      isCommunitySelected :{
+        type:Boolean,
+        value:false,
+      },
+
+      isAnalyzeSelected :{
+        type:Boolean,
+        value:false,
+      },
+
+      isHelpSelected :{
+        type:Boolean,
+        value:false,
+      },
+
+      router: Object,
+    },
+
+    listeners: {
+        'open-menu': 'openMenu',
+        'close-menu':'closeMenu',
+        'change-view-navigation':'viewChanged',
+        'change-view-action':'viewChangedOnAction',
+    },
+
+    computeShowMenu(narrow, showSidebar) {
+      return narrow || !showSidebar;
+    },
+
+    computeForceNarrow(narrow, showSidebar) {
+      return !showSidebar;
+    },
+    
+    computeShowSideBar(narrow, showSidebar){
+      return !showSidebar
+    },
+
+    viewChanged(newMenu) {
+      this.view = newMenu.detail.menu;
+      this.isHomeSelected= this.view=='home';
+      this.isEditorSelected = this.view=='editor';
+      this.isCommunitySelected = this.view=='community';
+      this.isAnalyzeSelected = this.view=='analyze';
+      this.isHelpSelected = this.view=='help';
+      this.router.go('/dashboard/'+this.view);
+      if(this.narrow){
+        this.$.drawerpanel.closeDrawer();
+      }
+    }, 
+
+    openMenu() { 
+      this.$.drawerpanel.openDrawer();
+      this.showSidebar = true;
+    },
+
+    closeMenu() {
+      this.$.drawerpanel.closeDrawer();
+
+      if (this.showSidebar && !this.narrow) {
+        this.showSidebar = false;
+      } 
+    },
+
+  });
+  </script>
+</dom-module>

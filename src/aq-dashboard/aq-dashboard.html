@@ -1,0 +1,30 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-router/app-router.html">
+<link rel="import" href="../layouts/aq-dashboard-main.html">
+
+<dom-module id="aq-dashboard">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    
+    <div id="main">
+      <app-router id="router" class="flex" mode="hash", trailingSlash="ignore">
+        <app-route path="/dashboard" element="aq-dashboard-main" bindrouter=""></app-route>
+
+        <app-route path="/dashboard/:view" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
+      </app-router>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'aq-dashboard',
+
+    });
+  </script>
+</dom-module>

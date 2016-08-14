@@ -1,0 +1,7 @@
+{
+  "name": "AQDashboard",
+  "short_name": "AQDashboard",
+  "description": "Platform to research stock markets in a systematic way",
+  "start_url": "/",
+  "display": "standalone"
+}
