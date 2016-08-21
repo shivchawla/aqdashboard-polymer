@@ -26,19 +26,34 @@
     #mainpanel {
       height:100%;
     }
+
+    .paper-header {
+      position: relative;
+    }
+
   </style>
   
   <template>
     <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' narrow="{{narrow}}">
 
       <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
-      
-      <div id="mainpanel "main>
-        <template is="dom-if" if="[[isHomeSelected]]"> 
-           <aq-home-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-home-main>
-        </template>
-        
-        <template is="dom-if" if="[[isEditorSelected]]"> 
+      <paper-scroll-header-panel id="mainpanel" main fixed keep-condensed-header>
+        <aq-toolbar class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar> 
+
+        <app-router id="dashboard-router" trailingSlash="ignore">
+          
+          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/editor/(*)" element="aq-editor-main" bindrouter=""></app-route>
+          
+          <app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
+
+        </app-router>  
+
+      </paper-scroll-header-panel>
+
+        <!--template is="dom-if" if="[[isEditorSelected]]"> 
            <aq-editor-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-editor-main>
         </template>
 
@@ -52,8 +67,8 @@
 
         <template is="dom-if" if="[[isHelpSelected]]">
            <aq-help-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-help-main>
-        </template> 
-      </div>
+        </template--> 
+      <!--/div-->
     </paper-drawer-panel>
 
   </template>
@@ -80,7 +95,7 @@
 
       isHomeSelected :{
         type:Boolean,
-        value:true,
+        value:false,
       },
 
       isEditorSelected :{
@@ -137,6 +152,14 @@
         this.$.drawerpanel.closeDrawer();
       }
     }, 
+
+    viewChangedOnAction(newAction) {
+      this.router.go('/dashboard/' + newAction.detail.action);
+      if(this.narrow){
+        this.$.drawerpanel.closeDrawer();
+      }
+    },
+
 
     openMenu() { 
       this.$.drawerpanel.openDrawer();

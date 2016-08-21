@@ -2,8 +2,10 @@
 <link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/app-router/app-router.html'>
 
 <link rel="import" href="../components/aq-toolbar.html">
+<link rel="import" href="../components/community/aq-community-home.html">
 
 
 <dom-module id="aq-community-main">
@@ -14,12 +16,9 @@
     }
   </style>
   <template>
-
-    <paper-scroll-header-panel id="panel" main fixed keep-condensed-header>
-      
-      <aq-toolbar showMenu="[[showmenu]]"></aq-toolbar> 
-
-    </paper-scroll-header-panel>
+     <app-router id="community-router" trailingSlash="ignore">
+        <app-route path="/dashboard/community" element='aq-community-home'></app-route>
+     </app-router>  
   </template>
 
   <script>

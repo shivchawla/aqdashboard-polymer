@@ -145,23 +145,23 @@
       </div>
 
       <div id='action'><span class='nav-header'"><strong>QUICK ACTIONS</strong></span>
-        <paper-icon-item action-panel='create strategy'  on-tap="onAction">Create a Strategy
+        <paper-icon-item action-panel='createstrategy'  on-tap="onAction">Create a Strategy
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
         </paper-icon-item>
           
-        <paper-icon-item action-panel='compare backtests' on-tap="onAction">Compare Backtests
+        <paper-icon-item action-panel='comparebacktests' on-tap="onAction">Compare Backtests
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
         </paper-icon-item>
 
-        <paper-icon-item action-panel='write a post' on-tap="onAction">Write a Post
+        <paper-icon-item action-panel='createpost' on-tap="onAction">Write a Post
           <iron-icon item-icon icon="communication:comment"></iron-icon>
         </paper-icon-item>
         
-        <paper-icon-item action-panel='send feedback' on-tap="onAction">Send us Feedback
+        <paper-icon-item action-panel='sendfeedback' on-tap="onAction">Send us Feedback
           <iron-icon item-icon icon="icons:feedback"></iron-icon>
         </paper-icon-item>
 
-        <paper-icon-item action-panel='lock screen' on-tap="onAction">Lock Screen
+        <paper-icon-item action-panel='lockscreen' on-tap="onAction">Lock Screen
           <iron-icon item-icon icon="vaadin-icons:lock"></iron-icon>
         </paper-icon-item>
 
@@ -184,7 +184,6 @@
 
       menuSelected: {
         type: String,
-        value:'home',
       },
 
     },
@@ -201,8 +200,8 @@
       this.fire('change-view-navigation', {menu: e.currentTarget.getAttribute('menu-panel')});
     },
 
-    onAction() {
-      this.fire('change-view-action'), {menu: e.currentTarget.getAttribute('action-panel')}
+    onAction(e) {
+      this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel')});
     },  
 
     selectPanel(newChoice){

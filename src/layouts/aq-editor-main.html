@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/app-router/app-router.html'>
 
 <link rel="import" href="../components/aq-toolbar.html">
 
@@ -14,12 +15,6 @@
     }
   </style>
   <template>
-
-    <paper-scroll-header-panel id="panel" main fixed keep-condensed-header>
-      
-      <aq-toolbar showMenu="[[showmenu]]"></aq-toolbar> 
-
-    </paper-scroll-header-panel>
   </template>
 
   <script>
@@ -41,7 +36,17 @@
           value:false,
         },
 
+        subview :{
+          type:String,
+          value:'main',
+        },
+
       },
+
+      isEqual(view1, view2) {
+        return view1==view2;
+      },
+
 
     });
   </script>
