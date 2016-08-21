@@ -2,114 +2,84 @@
 <link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
-<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css' />
-<link rel="stylesheet" type="text/css" href="../css/style.css" />
-<script type="text/javascript" src="../js/modernizr.custom.79639.js"></script>
-<noscript><link rel="stylesheet" type="text/css" href="../css/noJS.css" /></noscript>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<link rel="import" href="../../bower_components/paper-search-input/paper-search-input.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
 <link rel="stylesheet" type="text/css" href="../css/community-search.css">
 
 <dom-module id="aq-community-search">
   <style is="custom-style" </style>
+   <style is="custom-style" include="iron-flex iron-positioning"></style>
    <style>
     :host {
       display:block;
     }
-    #search-input {
-      width: 50%;
-      margin-top:4%; 
-      margin-left: 45px;
-      border-radius: 5px;
-      /*padding: 3px;*/
-      border-color: #ddd;
-      border-spacing: 4px;
-      border-width: 3px;
-      border-style: solid;
-      height: 30px;
-      font-size: 17px;
-      color: #777;
-      background-color: transparent;
+    .search-panel {
+      border-width: 4px #000;
+      margin-left: 4%;
+      width: 70%;
     }
-    #search-icon {
-      width: 35px;
-      height: 35px;
-      color: #999;
+    #search-bar .search {
+      background: #fff;
     }
-    .search-bar {
+    #search-bar {
+      color: #000;
+      --search-background-color: #fff;
+      --search-input-styles-base-color: #1e88e5;
+      --search-input-styles-base-label-color:#fff;
       margin-top: 20px;
     }
-    #search-input: focus {
-    outline:none !important;
-    }
-    #search-inputactive {
-      outline: none;
-      border: none;
-    }
-    .main {
+    #dropdown-list {
+      width: 20%;
       float: left;
+    }
+    .filters a span{
+      color: #888;
+      margin-right: 2.0em;
+    }
+    .filters a span: hover{
+          color: #222;
+    }
+    #filter-selected {
+      color: #222;
     }
   </style>
   <template>
     <div style="text-align:center;">
       <h2>Community</h2>
     </div>
-    <div class="search-bar" >
-      <!-- 
-      </paper-input>
-      <paper-checkbox checked> All</paper-checkbox>
-      <paper-checkbox > Backtests</paper-checkbox>
-       -->
-       <!-- <section class="main">
-        <div class="wrapper-demo">
-          <div id="dd" class="wrapper-dropdown-5" tabindex="1">All
-            <ul class="dropdown">
-              <li><a href="#"><iron-icon icon="icons:user" id="icon"></iron-icon>Profile</a></li>
-              <li><a href="#"><iron-icon icon="icons:setting" id="icon"></iron-icon>Settings</a></li>
-              <li><a href="#"><iron-icon icon="icons:logout" id="icon"></iron-icon>Log out</a></li>
-            </ul>
-          </div>
-        ​</div>
-      </section> -->
-       <input id="search-input" label="" placeholder="&nbsp &nbsp Search for Community" autosave="test">
-       <paper-button type="search"><iron-icon icon="icons:search" id="search-icon"></iron-icon></paper-button>
+    <div class="search-panel layout horizontal" >
+      <paper-dropdown-menu label="Select Category" id="dropdown-list">
+          <paper-listbox class="dropdown-content">
+            <paper-item>ALL</paper-item>
+            <paper-item>Croissant</paper-item>
+            <paper-item>Donut</paper-item>
+            <paper-item>Financier</paper-item>
+            <paper-item>Madeleine</paper-item>
+          </paper-listbox>
+      </paper-dropdown-menu>        
+      <paper-search-input id="search-bar" type="search" placeholder="Search for Community"></paper-search-input> 
+      <p class="filters">
+        <a href="{{all}}"><span id="filter-selected">ALL</span></a>
+        <a href="{{popular}}" ><span>Popular</span></a>
+        <a href="{{newest}}"><span>Newest</span></a>
+        <a href="{{following}}"><span>Following</span></a>
+      </p>
+
     </div>
   </template>
 
   <script>
     Polymer ({
-      is: 'aq-community-search'
+      is: 'aq-community-search',
 
     });
+    function changeClass() {
+      document.getElementById("dropdown-list").toggleClass = "dropdown-list-hover";
+    }
 
-    function DropDown(el) {
-        this.dd = el;
-        this.initEvents();
-      }
-      DropDown.prototype = {
-        initEvents : function() {
-          var obj = this;
-
-          obj.dd.on('click', function(event){
-            $(this).toggleClass('active');
-            event.stopPropagation();
-          }); 
-        }
-      }
-
-      $(function() {
-
-        var dd = new DropDown( $('#dd') );
-
-        $(document).click(function() {
-          // all dropdowns
-          $('.wrapper-dropdown-5').removeClass('active');
-        });
-
-      });
   </script>
 
 </dom-module>
