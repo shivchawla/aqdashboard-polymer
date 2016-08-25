@@ -9,9 +9,11 @@
 
 <dom-module id="aq-community-all-results">
   <style>
-    template {
+    .sections {
       width: 70%;
-      border-bottom: 1px solid #444;
+      border-bottom: 1px dotted #666;
+      margin-top: 20px;
+      padding-bottom: 10px;
     }
     .left-section {
       margin-left: 5%;
@@ -31,24 +33,60 @@
     }
     .right-section {
       font-size: 14px;
-      margin-left: 45%;
+      margin-left: 85%;
     }
     .right-section p {
       color: #666;
       margin: 0;
     }
-
+    #date {
+      color: #444;
+    }
+    #author-name {
+      color: teal;
+    }
   </style>
   <template>
-    <div class="left-section">
-      <h3>My new Topic</h3>
-      <p><span>Author Name</span>&nbsp&nbsp&nbsp<span>On Jan 14, 2016</span></p>
+    <div class="sections">
+      <div class="left-section">
+        <h3>My new Topic</h3>
+        <p><span id="author-name">Sahil Upadhyay</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
+      </div>
+      <div class="right-section">
+        <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
+        <p>Category: <span>FAQs</span></p>
+      </div>
     </div>
-    <div class="right-section">
-      <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
-      <p>Category: <span>FAQs</span></p>
-    </div>
-
+    <div class="sections">
+          <div class="left-section">
+            <h3>Blah Blah Blah</h3>
+            <p><span id="author-name">Govind</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
+          </div>
+          <div class="right-section">
+            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
+            <p>Category: <span>FAQs</span></p>
+          </div>
+        </div>
+    <div class="sections">
+          <div class="left-section">
+            <h3>Here is a my new topic</h3>
+            <p><span id="author-name">John Den</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
+          </div>
+          <div class="right-section">
+            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
+            <p>Category: <span>FAQs</span></p>
+          </div>
+        </div>
+    <div class="sections">
+          <div class="left-section">
+            <h3>Topics</h3>
+            <p><span id="author-name">Ross</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
+          </div>
+          <div class="right-section">
+            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
+            <p>Category: <span>FAQs</span></p>
+          </div>
+        </div>
   </template>
 
   <script>
