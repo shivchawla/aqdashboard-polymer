@@ -45,54 +45,36 @@
     #author-name {
       color: teal;
     }
+    a {
+      text-decoration: none;
+    }
   </style>
   <template>
     <div class="sections">
       <div class="left-section">
-        <h3>My new Topic</h3>
-        <p><span id="author-name">Sahil Upadhyay</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
+        <h3><a href$="[[topicaddress]]">[[topicheading]]</a></h3>
+        <p><a href$="[[authoraddress]]"><span id="author-name">[[authorname]]</span></a>&nbsp&nbsp&nbsp<span id="date">On [[postdate]]</span></p>
       </div>
       <div class="right-section">
-        <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
-        <p>Category: <span>FAQs</span></p>
+        <p>Reply <span id="total-replies">[[totalreplies]]</span> Views <span id="total-views">[[totalviews]]</span></p>
+        <p>Category:<span>[[postcategory]]</span></p>
       </div>
     </div>
-    <div class="sections">
-          <div class="left-section">
-            <h3>Blah Blah Blah</h3>
-            <p><span id="author-name">Govind</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
-          </div>
-          <div class="right-section">
-            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
-            <p>Category: <span>FAQs</span></p>
-          </div>
-        </div>
-    <div class="sections">
-          <div class="left-section">
-            <h3>Here is a my new topic</h3>
-            <p><span id="author-name">John Den</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
-          </div>
-          <div class="right-section">
-            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
-            <p>Category: <span>FAQs</span></p>
-          </div>
-        </div>
-    <div class="sections">
-          <div class="left-section">
-            <h3>Topics</h3>
-            <p><span id="author-name">Ross</span>&nbsp&nbsp&nbsp<span id="date">On Jan 14, 2016</span></p>
-          </div>
-          <div class="right-section">
-            <p>Reply <span id="total-replies"">18</span> Views <span id="total-views">65</span></p>
-            <p>Category: <span>FAQs</span></p>
-          </div>
-        </div>
   </template>
 
   <script>
     Polymer ({
-      is: 'aq-community-all-results'
-      
+      is: 'aq-community-all-results',
+      properties: {
+        topicaddress: String,
+        topicheading: String,
+        authorname: String,
+        authoraddress: String,
+        postdate: String,
+        totalreplies: String,
+        totalviews: String,
+        postcategory: String,
+      },
     });
 
 
