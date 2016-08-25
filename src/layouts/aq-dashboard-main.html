@@ -15,6 +15,7 @@
 <link rel="import" href="../layouts/aq-help-main.html">
 
 <link rel="import" href='../components/aq-sidebar.html'>
+<link rel="import" href='../components/aq-community-search.html'>
 
 <dom-module id="aq-dashboard-main">
 
@@ -62,7 +63,8 @@
         </template>
 
         <template is="dom-if" if="[[isCommunitySelected]]">
-           <aq-community-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-community-main>
+           <aq-community-main showMenu="[[computeShowMenu(narrow, showSidebar)]]">
+           </aq-community-main>
         </template>
 
         <template is="dom-if" if="[[isHelpSelected]]">
