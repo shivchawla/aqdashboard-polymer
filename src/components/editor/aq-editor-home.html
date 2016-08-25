@@ -1,0 +1,340 @@
+
+
+<!--We need following elements:
+
+Element Table with Title, Description, Last Modified time, with user options to
+1. Select (checkbox)
+2. Clone (make a copy)
+3. Analyze (Take to backtests)
+4. 
+
+In top, need elements (icon elements)
+1. New
+2. Delete
+3. Compare
+4. Change View (not important now)-->
+
+<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
+
+
+<link rel='import' href='./aq-editor-elementmenu.html'>
+<link rel='import' href='./aq-editor-home-menu.html'>
+
+<link rel='import' href='../../dialog/aq-delete-dialog.html'>
+<link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
+<link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
+
+
+<dom-module id="aq-editor-home">
+  <template>
+
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+  
+    <style>
+      
+      :host(.hidden) {
+        transition: none;
+        opacity: 0;
+
+      }
+
+      .header {
+      	border: 1px solid #d0d0d0;
+        padding: 0 55px;
+        line-height: 56px;
+        font-size: 15px;
+        font-weight: bold;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: white;
+      }
+
+      :host([narrow-viewport]) .header .description {
+        display: none;
+      }
+
+      :host(:not([narrow-viewport])) .header,
+      :host(:not([narrow-viewport])) .row,
+      :host(:not([narrow-viewport])) .row a {
+        @apply(--layout-horizontal);
+      }
+
+      :host([narrow-viewport]) .header,
+      :host([narrow-viewport]) .row,
+      :host([narrow-viewport]) .row a {
+        @apply(--layout-vertical);
+      }
+
+      .row {
+        border-bottom: 1px solid #e5e5e5;
+        border: 1px solid #d0d0d0;
+      }
+
+      .row a {
+        box-sizing: border-box;
+        cursor: pointer;
+        overflow: hidden;
+        width: 100%;
+        padding: 15px 0px;
+        font-weight: 400;
+        font-size: 13px;
+      }
+
+	  .row paper-checkbox {
+        box-sizing: border-box;
+        cursor: pointer;
+        --overflow: hidden;
+        --padding: 15px;
+        margin:15px;
+      }
+
+      .row.hover {
+        background: #fafafa;
+      }
+
+      :host(:not([narrow-viewport])) .row.hover .backtest {
+        padding-right: 120px;
+      }
+
+      .name {
+        min-width:250px;
+        font-weight: bold;
+      }
+
+      .description {
+      	min-width: 350px;
+      }
+
+      .backtest {
+      	--width: 350px;
+      	--min-width: 350px;
+      }
+
+      .name .narrow {
+        display: none;
+      }
+
+      :host([narrow-viewport])  .name .narrow {
+        display: inline;
+      }
+
+      .
+      .row .description {
+        color: #757575;
+      }
+
+      :host(:not([narrow-viewport])) .row .description {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      :host(:not([narrow-viewport])) .row .backtest {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #actions aq-editor-elementmenu{
+        right: 0;
+        margin-right:50px;
+      }
+
+      .toolbar {
+      	height:60px;
+      }
+
+}
+
+    </style>
+ 	 
+  		<aq-editor-home-menu></aq-editor-home-menu>
+
+	    <div class="header">
+	      <div class="name">Name <span class="narrow">/Description</span></div>
+	      <div class="description">Description</div>
+	      <div class="backtest">#Backtests</div>
+	    </div>
+	    <!--template is="dom-repeat" items="[[elements]]">
+	      <div class="row" data-index$="[[index]]"-->
+	    
+        <div class="row">
+	      	<paper-checkbox noink></paper-checkbox>
+	        <a href$="">
+	          <div class="name">Sample Strategy</div>  
+	          <div class="description">Sample strategy description to test the UI</div>
+	          <div class="backtest">5</div>
+	        </a>
+	    </div>
+	    <iron-collapse id="collapse">  
+        	<div><a href="#/dashboard" on-click='click'>My name is Shiv Chawla</a></div>	
+		</iron-collapse>
+    
+
+	    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
+	    						 message="Are you sure to delete {{numStrategiesSelected}}?"	
+	    						 cancel="Cancel"
+	    						 accept="OK">
+    	</aq-delete-dialog>
+
+    	<aq-editor-strategy-input-dialog id="strategyInputDialog">
+    	</aq-editor-strategy-input-dialog>	
+
+    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+	    
+	    <div id="actions"></div>
+
+  </template>
+
+  <script>
+  	Polymer({
+		
+		is: 'aq-editor-home',
+		
+		properties: {
+			elements: {
+				type: Array,
+				observer: '_elementsChanged'
+			},
+			
+			color: { type: String },
+			
+			narrowViewport: {
+				type: Boolean,
+				reflectToAttribute: true
+			},
+		},
+
+		listeners: {
+			'tap': '_tap',
+			'mouseover': '_mouseOver',
+			'mouseleave': '_mouseLeave',
+			'deletePressed':'openDeletionDialog',
+			'newPressed':'openNewDialog',
+			'comparePressed':'openCompareDialog',
+			'previewClicked':'openPreview',
+		},
+
+		_currentRowIndex: -1,
+		
+		_sharedActionMenu: null,
+		
+		_findAncestor: function (node, fn) {
+			while (node && fn.call(this, node)) {
+				node = node.parentNode;
+			}
+			return node;
+		},
+
+		_tap: function (e) {
+			var sourceEvent = e.detail.sourceEvent;
+			var A = this._findAncestor(e.target, function (node) {
+				return node != this && node.tagName !== 'A';
+			});
+
+			if (A && A.tagName === 'A' && A.href.indexOf(location.host) > 0) {
+				if (sourceEvent.ctrlKey || sourceEvent.metaKey) {
+				window.open(A.href);
+			} else {
+				this.fire('nav', { url: A.href });
+			}
+			
+			e.preventDefault();
+			}
+		},
+		
+		_mouseOver: function (e) {
+			var row = this._findAncestor(e.target, function (node) {
+				return node != this && !node.classList.contains('row') && node.id !== 'actions';
+			});
+			if (row && row.classList.contains('row')) {
+				if (this._currentRowIndex != row.dataset.index) {
+					this._hideActions();
+					this._showActions(row, row.dataset.index);
+				}
+			} else if (row.id !== 'actions') {
+					this._hideActions();
+			}
+		},
+		
+		_mouseLeave: function () {
+			this._hideActions();
+		},
+		
+		_showActions: function (row, index) {
+			var sharedActionMenu = this._sharedActionMenu;
+			var rowOffsetTop = row.offsetTop;
+			if (!sharedActionMenu) {
+				this._sharedActionMenu = document.createElement('aq-editor-elementmenu');
+				this._sharedActionMenu.classList.add('hidden');
+				Polymer.dom(this.$.actions).appendChild(this._sharedActionMenu);
+				sharedActionMenu = this._sharedActionMenu;
+			}
+			sharedActionMenu.iconsOnly = true;
+			sharedActionMenu.element = "aa";//this.elements[index].name;
+			sharedActionMenu.style.top = rowOffsetTop + 'px';
+			this._layoutIfNeeded(sharedActionMenu);
+			sharedActionMenu.classList.remove('hidden');
+			row.classList.add('hover');
+			this._currentRowIndex = index;
+			this._currentRow = row;
+		},
+		
+		_hideActions: function () {
+			var row = this._currentRow;
+			var sharedActionMenu = this._sharedActionMenu;
+			if (row) {
+				if (sharedActionMenu) {
+					sharedActionMenu.classList.add('hidden');
+				}
+				row.classList.remove('hover');
+				this._currentRowIndex = -1;
+				this._currentRow = null;
+			}
+		},
+
+		_elementLink: function (name) {
+			return '/elements/' + name;
+		},
+
+		_getHeaderStyle: function (color) {
+		return 'background-color: ' + color + ';';
+		},
+
+		_elementsChanged: function () {
+			this.classList.add('hidden');
+			this.async(function () {
+				this.classList.remove('hidden');
+			}, 1);
+		},
+		
+		_layoutIfNeeded: function (el) {
+			return el.offsetTop;
+		},
+
+		openDeletionDialog() {
+			this.$.dialog.open();
+		},
+
+		openNewDialog() {
+			this.$.strategyInputDialog.open();
+		},
+
+		openCompareDialog() {
+			this.$.strategyCompareDialog.open();
+		},
+
+		openPreview() {
+  			this.$.collapse.toggle();
+		},
+
+		click() {
+			this.router.go('/dashboard')
+		}
+
+		});
+  </script>
+</dom-module>
+
+ 

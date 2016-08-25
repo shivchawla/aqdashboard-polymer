@@ -1,0 +1,121 @@
+
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-textarea.html'>
+<link rel='import' href='../../../bower_components/marked-element/marked-element.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id='aq-editor-strategy-compare-dialog'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style>
+		paper-dialog {
+    		width: 1000px;
+    		height: 800px;
+    		padding-bottom: 0px;
+  		}
+
+  		#strategyNameInput {
+  			--border: 1px solid ; 
+  			--border-color: #cfd8dc;
+  			--padding-left: 5px;
+  			
+  		}
+
+  		marked-element {
+	      display: block;
+	      background-color: var(--google-grey-100);
+	      padding: 10px 30px;
+	      margin-bottom: 10px;
+	    }
+
+	    .container {
+	    	width: 50%;
+  			--height:100%;	
+  		}
+
+  		#first-container {
+  			padding-right: 10px;
+  			border-right:1px solid;
+  		}
+
+  		#second-container {
+  			padding-left: 10px;
+  		}
+
+  		#outer-container {
+  			height:95%;
+  		}
+  		
+  		.buttons {
+  			margin:0;
+  		}
+
+  		h4 {
+  			margin: 0 auto;
+  			margin-bottom:5px;
+  		}
+
+	</style>
+	
+	<template>
+	    <paper-dialog id='compareStrategyModalDialog' with-backdrop>
+ 			<div class="layout horizontal" id='outer-container'>				
+
+ 			 <div class="container layout vertical" id='first-container'>
+ 			 <h4> Sample Strategy 1</h4>	
+			 <paper-dialog-scrollable >
+ 				<marked-element markdown="```[[code1]]```">
+ 					<div class="markdown-html"></div>
+ 				</marked-element>
+ 			 </paper-dialog-scrollable>	
+ 			 </div>
+			
+		 	
+		 	<div class="layout vertical container" id='second-container'>
+			 <h4> Sample Strategy 2</h4>
+			 <paper-dialog-scrollable >			
+				<marked-element markdown="```[[code2]]```">
+ 					<div class="markdown-html"></div>
+ 				</marked-element>
+ 			 </paper-dialog-scrollable>
+ 			 </div>
+ 					
+
+ 			</div>		 	
+		</paper-dialog>
+
+	</template>
+	
+	<script>
+		Polymer ({
+			is: 'aq-editor-strategy-compare-dialog',
+
+			properties: {
+				code1: {
+					type:String,
+					value:'class x = y',
+				},
+				code2: {
+					type:String,
+					value:'class x = y',
+				},
+			},
+
+			onSubmit() {
+
+			},
+
+			open() {
+				this.$.compareStrategyModalDialog.open();
+			},
+
+
+		});
+		
+	</script>
+</dom-module>
