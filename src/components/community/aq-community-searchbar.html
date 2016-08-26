@@ -1,0 +1,110 @@
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-menu/paper-menu.html'>
+<link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../../../bower_components/paper-menu-button/paper-menu-button.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+
+
+<dom-module id='aq-community-searchbar'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+  
+	<style>
+
+		#search {
+		  height: 46px;
+		  line-height: 48px;
+		  --margin-bottom: 12px;
+		  --position:relative;
+		  --z-index:2;
+		}
+	
+		#searchbox {
+		  height: 46px;
+		  -webkit-appearance: none;
+		  line-height: 46px;
+		  border: 0;
+		  margin: 0;
+		  padding-left: 5px;
+		  border: 1px solid #e5e5e5;
+		  @apply(--paper-font-body1);
+		  width:100%;
+		  font-size: 16px;
+		  --z-index: 2;
+		}
+
+		#searcbox:focus {
+		  outline: 0;
+		  background-color: #eceff1;
+		  border-color: #cfd8dc;
+		}
+
+		paper-button {
+	      display: block;
+	      margin:0px;
+	      height:46px;
+	      --position:absolute;
+	      background: white;
+	      --color: white;
+	      border: 1px solid #e5e5e5;
+	      border-radius: 0px;
+	      width: 100px;
+	    }
+
+	    paper-menu {
+	      --display: block;
+	    }
+
+	    #button {
+	    	height:0;
+	    	margin:0;
+	    	padding:0px;
+	    }
+
+	    paper-button #content{
+	    	--display:block;
+	    	position:absolute;
+	    	top:-2px;
+	    	--left:2px;
+	    }
+
+	 	paper-button #content iron-icon {
+	    	position::absolute;
+	    	top:-2px;
+	    	left:30px;
+	    }
+		
+	    
+	</style>
+	
+	<template>
+      		<div id="search" class="layout horizontal">
+	      		<paper-menu-button id="button">
+	        		<paper-button noink class="dropdown-trigger">
+	        			<div id='content'><span>All</span>
+	        			<iron-icon icon="icons:arrow-drop-down"></iron-icon></div>  
+	        		</paper-button>
+	        		
+	        		<paper-menu class="dropdown-content">
+	        			<paper-item>All</paper-item>
+	        			<paper-item>Category 1</paper-item>
+	        			<paper-item>Category 2</paper-item>
+	        			<paper-item>Category 3</paper-item>
+	        		</paper-menu>
+	    		</paper-menu-button>
+    		
+    		
+  			<input id="searchbox" placeholder="Search your strategy" class="flex"
+         	value="{{searchValue::change}}" type="search">	
+		
+		</div>
+	</template>
+	<script >
+		Polymer({
+			is: 'aq-community-searchbar',
+		});
+	</script>
+</dom-module>
+

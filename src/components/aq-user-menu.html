@@ -1,0 +1,94 @@
+
+<link rel='import' href='../../bower_components/paper-menu-button/paper-menu-button.html'>
+<link rel='import' href='../../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../../bower_components/paper-menu/paper-menu.html'>
+<link rel='import' href='../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="./profile-img.html">
+
+<dom-module id='aq-user-menu'>
+	<style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+
+	<style>
+		paper-card {
+			width:350px;
+			--height:300px;
+			--paper-card {
+				opacity:1;
+			};
+		}
+
+		paper-card {
+			opacity: 1.0;
+		}
+
+		#profile {
+			margin:10px;
+			width:70px;
+			height:70px;
+			background:url('http://placehold.it/350x150/FFC107/000000');
+		}
+
+		
+		#userid {		
+			margin-right:10px;
+			margin-bottom:10px;
+		}
+
+		#name {
+			font-weight: bold;
+		}
+		
+		
+	</style>
+
+	<template>
+		<paper-menu-button horizontal-offset=-300 vertical-offset=50>
+            <profile-img letter="S" class="dropdown-trigger">
+            </profile-img>
+            
+            <paper-card  class="dropdown-content">
+			    <div id='' class="class-content layout horizontal">
+			  	
+	  				<div id='profile'></div>
+	  				<div class="flex"></div>
+		    		
+	    			<div id='userid' class="layout vertical end-justified">
+	    					<div id='name'>Shiv Chawla</div>
+		        			<div id='email'>shivchawla2001@gmail.com</div>
+	        		</div>	
+	        	
+		  		</div>
+		  	  			  		
+				<div class="card-actions">
+				    <div class="layout vertical">
+				    	<div>
+				    		<paper-button noink>My Account</paper-button>
+			    		</div>
+
+			    		<div>
+				    		<paper-button noink>Invite a Friend</paper-button>
+			    		</div>
+
+			    		<div>
+				    		<paper-button noink>Lock Screen</paper-button>
+				    	</div>
+
+				    	<div>
+				    		<paper-button noink>Sign Out</paper-button>
+				    	</div>
+				    </div>	
+			    </div>
+			</paper-card>       
+        </paper-menu-button>
+		
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-user-menu',
+
+		});
+	</script>
+
+</dom-module>
