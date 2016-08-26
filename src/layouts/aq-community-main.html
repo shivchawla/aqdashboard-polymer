@@ -6,6 +6,7 @@
 
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/community/aq-community-home.html">
+<link rel="import" href="../components/aq-community-topics.html">
 
 
 <dom-module id="aq-community-main">
@@ -17,8 +18,8 @@
   </style>
   <template>
      <app-router id="community-router" trailingSlash="ignore">
-        <app-route path="/dashboard/community" element='aq-community-home'></app-route>
-        <!-- <app-route path="/dashboard/community/topic" element='aq-community-topics'></app-route> -->
+        <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
+        <app-route path="/dashboard/community/topics" element='aq-community-topics' bindrouter=""></app-route>
      </app-router>  
   </template>
 

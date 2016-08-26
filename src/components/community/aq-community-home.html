@@ -6,7 +6,8 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 
-<link rel='import' href='./aq-community-searchbar.html'>
+<link rel='import' href='../aq-community-all-results.html'>
+<link rel='import' href='../aq-community-topics.html'>
 
 <style>
 
@@ -26,15 +27,17 @@
     color: black;
     /*outline: none;*/
   }
-
+  .results {
+    margin-top: 90px;
+  }
 </style>
 
 
 <dom-module id="aq-community-home">
   <template>
-    
-    <aq-community-searchbar></aq-community-searchbar>
-          
+      <div class="results">
+        <aq-community-all-results topicaddress="#/dashboard/community/topics" topicheading= "My new topics" authorname="Sahil Upadhyay" authoraddress= "sahil" postdate="jan 15, 2015" totalreplies="16" totalviews="90" postcategory="FAQs"></aq-community-all-results>
+      </div>
   </template>>
 </dom-module>  
 

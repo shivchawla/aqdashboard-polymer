@@ -50,9 +50,12 @@
     }
   </style>
   <template>
+    <app-router id="community-topics" trailingSlash="ignore">
+      <!-- <app-route path="/dashboard/community/topics" element="aq-community-topics" bindrouter=""></app-route> -->
+    </app-router>
     <div class="sections">
       <div class="left-section">
-        <h3><a href$="[[topicaddress]]">[[topicheading]]</a></h3>
+        <h3><a href$="[[topicaddress]]"><span>[[topicheading]]</span></a></h3>
         <p><a href$="[[authoraddress]]"><span id="author-name">[[authorname]]</span></a>&nbsp&nbsp&nbsp<span id="date">On [[postdate]]</span></p>
       </div>
       <div class="right-section">

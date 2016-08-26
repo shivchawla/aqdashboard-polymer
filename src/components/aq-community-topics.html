@@ -14,6 +14,8 @@
       display:block;
     }
     .authorcontentdetails {
+      padding-top: 4px;
+      padding-bottom: 4px;
       border-top  :  1px dotted #888;
       border-bottom: 1px dotted #888;
     }
@@ -21,29 +23,32 @@
       float: left;
       margin: 10px 0 0 15px ;
       color: #1e88e5;
-      font-size: 18px;
+      font-size: 20px;
     }
     #authorcontentmodified {
       font-size: 13px;
       color: #444;
-      margin: 1.3em 0 0 150px;
+
       padding-top: 3px;
+      /*margin: 1.3em 0 0 150px;*/
       /*float: left;*/
     }
-    .authorcontent img {
+    .authorcontentdetails img {
       float: left;
-      width: 50px; 
-      height: 50px;
+      border-radius: 30px;
+      width: 45px; 
+      height: 45px;
     }
     .authorcontent div {
-      margin: 0 0 0 150px;
+      margin: 0 0 0 1.5%;
     }
     .authorcontent img {
       margin: 13px 0 0 30px;
     }
     .authorcontentwrapper {
       width: 70%;
-      margin: 2% 0 0 4%;
+      margin-left: 4%;
+      margin-top: 100px;
     }
     #chart {
       width: 210px;
@@ -52,15 +57,15 @@
     }
   </style>
   <template>
-  	<div class="authorcontentwrapper">
+  	<div class="authorcontentwrapper" >
   		<div class="authorcontentdetails">
-  			<p id="authorname"><a data-route="author" href="{{baseUrl}}"> Sahil Upadhyay</a></p>
-  			<p id="authorcontentmodified">on <span>Jan 1, 2014</span>, <span>12:00AM</span></p>
+        <img src="../img/user.jpg" id="authorimage">
+        <p id="authorname"><a data-route="author" href="{{baseUrl}}"> Sahil Upadhyay</a></p>
+        <p id="authorcontentmodified">&nbsp&nbsp on <span>Jan 1, 2014</span>, <span>12:00AM</span></p>
   			<!-- <p>Follow</p> -->
   			<!-- <p>Share</p> -->
   		</div>
   		<div class="authorcontent">
-  		  <img src="../img/user.jpg" id="authorimage">
         <div>
     		  <p>ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
           
@@ -78,7 +83,6 @@
       is: 'aq-community-topics'
       
     });
-
 
   </script>
 
