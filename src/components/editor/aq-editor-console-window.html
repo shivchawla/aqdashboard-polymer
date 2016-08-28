@@ -1,0 +1,67 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id='aq-editor-console-window'>
+
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style>
+		
+		paper-icon-button {
+  			width:40px;
+  			height:40px;
+		}
+
+		 #console {
+		    --border:1px solid;
+		    z-index: 5;
+    		background-color: white;
+    		--height:50%;
+    		width:100%;
+		  }
+
+		paper-toolbar {
+		  --paper-toolbar-height:40px;
+		  --paper-toolbar-color:white;
+		}
+
+	</style>
+
+	<template>
+	    <paper-header-panel style="height:100%" id='console'>
+	    	<paper-toolbar style="height:40px">
+	        
+	        	<paper-tabs noink>
+	            	<paper-tab>Backtest</paper-tab>
+	            	<paper-tab>Logs</paper-tab>
+	          	</paper-tabs>
+
+	          	<div class="flex"></div>
+	          	<paper-icon-button noink icon="vaadin-icons:angle-down" title="Minimize" 
+	          				     on-tap="closeConsole"></paper-icon-button>
+	          	<paper-icon-button noink icon="vaadin-icons:angle-up" title="Maximize">
+			    </paper-icon-button>
+
+	        </paper-toolbar>
+	      
+	      	<div>Content goes here...</div>
+	    </paper-header-panel>
+    	
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-editor-console-window',
+
+			closeConsole() {
+				this.fire('close-console');
+			},
+
+		});
+	</script>
+
+</dom-module>

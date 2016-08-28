@@ -1,0 +1,296 @@
+<!--aq-editor-sidebar-run></aq-editor-sidebar-run-->
+
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id='aq-editor-sidebar-run'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+
+	<style>
+		
+		.inputbox {
+		  height: 10%;
+		  line-height: 48px;
+		  --margin-bottom: 12px;
+		  position: relative;
+		  z-index:2;
+		  margin-top: 5px;
+		  margin-left:4px;
+		  width:200px;
+		}
+	
+		.inputbox iron-icon {
+		  margin-left: 75px;
+		  --margin-right: 8px;
+		  position: absolute;
+		  top: 14px;
+		  --left: 0px;
+		  height:18px;
+		  width:18px;
+		}
+
+		.inputbox span {
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		input {
+		  line-height: 46px;
+		  border: 0;
+		  margin: 0;
+		  padding-left: 4px;
+		  border: 1px solid #e5e5e5;
+		  @apply(--paper-font-body1);
+		  font-size: 12px;
+		  z-index: 2;
+		}
+
+		#date-box {
+		  --height: 200%;
+		  -webkit-appearance: none;
+		  width:71.2%;	 
+		}
+
+		#capital-box {
+		  width:55%;
+		}
+
+		#plan-box {
+			width:62%;	
+		}
+
+		#rebalance-box {
+			width:45%;	
+		}
+
+		#dt-box {
+			width:52%;	
+		}
+
+		input :focus {
+		  outline: 0;
+		  background-color: #eceff1;
+		  border-color: #cfd8dc;
+		}
+
+		#basic-settings {
+			height:140px;
+			margin-top:20px;
+			margin-left:5px;
+			border: 1px solid #e5e5e5;
+		}
+
+		#advancedSettings {
+			height:35px;
+			margin-top:15px;
+			margin-left:5px;
+			border: 1px solid #e5e5e5;
+		}
+
+		#extra-settings {
+			height:80px;
+			margin-top:8px;
+			margin-left:10px;
+			border: 1px solid #e5e5e5;	
+			width:90%;
+		}
+
+		#heading {
+			margin-top: 10px;
+			margin-left: 4px;
+		}
+
+		#heading span{
+			font-weight: bold;
+		}
+
+		#advancedheading span{
+			font-weight: bold;
+		}
+
+
+		#extra-settings #heading {
+			margin-top: 5px;
+			margin-left: 4px;
+		}
+
+		#extra-settings #heading span{
+			font-size: 14px;
+			font-weight: bold;	
+		}
+
+		#advancedheading {
+			margin-top: 0px;
+			margin-left: 4px;
+		}
+
+		paper-icon-button {
+			height: 30px;
+			width: 30px;
+			padding-bottom:5px;
+		}
+
+		paper-button {
+			margin-top: 10px;
+		}
+		paper-button :active{
+			background-color: blue;
+		}
+
+	</style>
+
+	<template>
+		
+		<div id = 'run'>
+			<div id = 'basic-settings' class="layout vertical">
+				<div id='heading'><span>Basic Settings</span></div>
+
+				<div id='date-settings' class="layout horizontal">
+			
+					<div class="inputbox">	
+						<span>Start:</span> 	
+			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+		      			<input id="date-box" placeholder="Start Date"
+		             	value="{{searchValue::change}}" type="date"
+		             	on-keydown="checkForKeys" on-blur='close'>
+		        	</div>
+
+		        	<div class="inputbox">	
+						<span>End:</span> 	
+			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+		      			<input id="date-box" placeholder="Start Date"
+		             	value="{{searchValue::change}}" type="date"
+		             	on-keydown="checkForKeys" on-blur='close'>
+		        	</div>
+		    	</div>
+
+		    	<div id='capital-settings' class="layout horizontal">
+			    	<div class="inputbox">	
+						<span>Capital:</span> 	
+			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+			  			<input id="capital-box" placeholder="Seed Capital"
+			         	value="{{searchValue::change}}" type="number"
+			         	on-keydown="checkForKeys" on-blur='close'>
+			    	</div>
+
+			    	<div class="inputbox">	
+						<span>Plan:</span> 	
+			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+			  			<input id="plan-box" placeholder="Investment Plan"
+			         	value="{{searchValue::change}}" type="text"
+			         	on-keydown="checkForKeys" on-blur='close'>
+			    	</div>
+		    	</div>
+
+			</div>
+	
+			<div id = 'advancedSettings' class="layout vertical">
+				
+				<div id='advancedheading'>
+						<span>Advanced Settings</span>
+						<paper-icon-button noink icon="icons:add" on-tap='toggle'>
+						</paper-icon-button>
+				</div>
+
+				<iron-collapse id='adcollapse'>
+				
+					<div id='extra-settings' >
+						
+						<div id='heading'><span>Rebalance Settings</span></div>
+						<div class="layout horizontal">
+							<div class="inputbox">	
+								<span>Rebalance:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="rebalance-box" placeholder="Frequency"
+				             	value="{{searchValue::change}}" type="text"
+				             	on-keydown="checkForKeys" on-blur='close'>
+			        		</div>
+
+				        	<div class="inputbox">	
+								<span>Time:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="dt-box" placeholder="DateTime"
+				             	value="{{searchValue::change}}" type="time"
+				             	on-keydown="checkForKeys" on-blur='close'>
+				        	</div>
+				    	</div>
+			    	</div>
+
+					<div id='extra-settings' >
+						
+						<div id='heading'><span>Commission Settings</span></div>
+						<div class="layout horizontal">
+							<div class="inputbox">	
+								<span>Model:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="rebalance-box" placeholder="Model"
+				             	value="{{searchValue::change}}" type="text"
+				             	on-keydown="checkForKeys" on-blur='close'>
+			        		</div>
+
+				        	<div class="inputbox">	
+								<span>Value:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="dt-box" placeholder="Value"
+				             	value="{{searchValue::change}}" type="number"
+				             	on-keydown="checkForKeys" on-blur='close'>
+				        	</div>
+				    	</div>
+			    	</div>
+
+			    	<div id='extra-settings' >
+						
+						<div id='heading'><span>Slippage Settings</span></div>
+						<div class="layout horizontal">
+							<div class="inputbox">	
+								<span>Model:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="rebalance-box" placeholder="Model"
+				             	value="{{searchValue::change}}" type="text"
+				             	on-keydown="checkForKeys" on-blur='close'>
+			        		</div>
+
+				        	<div class="inputbox">	
+								<span>Value:</span> 	
+					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+				      			<input id="dt-box" placeholder="Value"
+				             	value="{{searchValue::change}}" type="number"
+				             	on-keydown="checkForKeys" on-blur='close'>
+				        	</div>
+				    	</div>
+			    	</div>
+		    	</iron-collapse>
+			</div>
+
+			<paper-button noink raised class="flex">Start Backtest</paper-button>
+		</div>	
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-editor-sidebar-run',
+
+			toggle() {
+				if (this.$.adcollapse.opened) {
+					this.$.advancedSettings.style.height='35px';
+					
+				} else {
+					this.$.advancedSettings.style.height='310px';
+				}
+					
+				this.$.adcollapse.toggle();
+			},
+
+		});
+	</script>
+
+</dom-module>

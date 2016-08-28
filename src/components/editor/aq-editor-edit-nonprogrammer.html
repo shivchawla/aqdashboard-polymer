@@ -1,0 +1,133 @@
+
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+
+
+<link rel='import' href ="./aq-editor-toolbar.html">
+<link rel='import' href ="./aq-editor-console-window.html">
+<link rel='import' href ="./aq-editor-sidebar-run.html">
+
+<dom-module id='aq-editor-edit-nonprogrammer'>
+	<style>
+		#universeCanvas {
+			height:500px;
+			width:500px;
+			margin-top:20px;
+			margin-left:50px;
+			margin-right:20px;
+			border: 1px solid #e5e5e5;
+		}	
+
+		#drawerpanel {
+		    height:99%;
+		    width:100%;
+		    top:0.5%;
+		    --left:2%;
+		    --right:10%;
+		    --bottom:2%;
+		  }
+
+		  paper-toolbar {
+      		--paper-toolbar-height:40px;
+    	  }
+
+	</style>
+
+	<template>
+		<paper-drawer-panel drawer-width='370px' responsive-width='730px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow={{!showSideBar}}>
+          
+			<!--paper-header-panel main>
+				<aq-editor-toolbar class="paper-header">
+	            </aq-editor-toolbar-->
+	            <div main>
+	            <iron-pages selected="{{selectedSideBar}}">	
+	            		<paper-card id='universeCanvas' heading='Select Universe'>
+	            			<div class='card-content'>
+
+	            			</div>
+
+	            			<div class='card-actions'>
+	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
+	            				</paper-icon-button>
+	            			</div>
+	            		</paper-card>	
+
+	            		<paper-card id='universeCanvas' heading='Select Indicators'>
+	            			<div class='card-content'>
+
+	            			</div>
+
+	            			<div class='card-actions'>
+	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
+	            				</paper-icon-button>
+	            			</div>
+	            		</paper-card>	
+
+	            		<paper-card id='universeCanvas' heading='Select Optimizer'>
+	            			<div class='card-content'>
+
+	            			</div>
+
+	            			<div class='card-actions'>
+	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
+	            				</paper-icon-button>
+	            			</div>
+	            		</paper-card>	
+	            		     	
+            	</iron-pages>
+
+	        </div> 
+
+	        <paper-header-panel drawer>
+	            <paper-toolbar>
+	          
+	                <paper-tabs selected="{{selectedSideBar}}" noink>
+		                <paper-tab>Universe</paper-tab>
+		                <paper-tab>Indicators</paper-tab>
+		                <paper-tab>Optimizer</paper-tab>
+		                <paper-tab>Run</paper-tab>
+	                </paper-tabs>
+	            </paper-toolbar>
+
+	            <iron-pages selected="{{selectedSideBar}}">
+	              <div>This is Universe!!</div>
+	              <div>This is Indicators!!</div>
+	              <div>This is Optimizer!!</div>
+	              <aq-editor-sidebar-run></aq-editor-sidebar-run>       
+	            </iron-pages>
+			
+	      	</paper-header-panel>
+      	</paper-drawer-panel>
+            		
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-editor-edit-nonprogrammer',
+
+			properties :{
+				selectedSideBar: {
+					type:Number,
+					value:0,
+				},
+				showSideBar:{
+					type:Boolean,
+					value:true,
+				}
+			},
+	
+		    toggleDrawer() {
+		        this.$.drawerpanel.togglePanel();
+		        this.showSideBar = !this.showSideBar;
+		    },
+
+		    closeDrawer() {
+		    	if(this.showSideBar) {
+		    		this.toggleDrawer();
+		    	}
+		    },
+
+		});
+	</script>
+</dom-module>

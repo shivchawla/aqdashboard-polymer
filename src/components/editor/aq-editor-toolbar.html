@@ -1,0 +1,89 @@
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id='aq-editor-toolbar'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+
+	<style>
+
+		paper-icon-button {
+    		width:35px;
+    		height:35px;
+  		}
+
+  		paper-toolbar {
+		  --paper-toolbar-height:40px;
+		  --paper-toolbar-width:100px;
+
+		}
+
+		paper-button {
+			height:35px;
+		}
+
+		#strategyName {
+			height:35px;
+		}
+
+		
+	</style>
+	
+	<template>
+		<paper-toolbar>
+			<div id='toolbar' class="flex layout horizontal">
+				<input id ='strategyName' type="text">
+	     		 
+	        	<div class="flex" style="max-width:5%"></div>
+
+		 		<paper-button raised noink>Save
+	          	</paper-button>	
+
+	          	<paper-button raised noink>New
+	          	</paper-button>	
+
+				<paper-button raised noink>Add
+	          	</paper-button>
+
+	        	<div class="flex" ></div>
+	        
+	            <paper-icon-button icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
+		        <paper-icon-button icon="vaadin-icons:split-v" title="Toggle-Down" on-tap="toggleConsole"></paper-icon-button>
+		        <paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button>
+		        
+       		</div> 
+		</paper-toolbar>
+
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-editor-toolbar',
+
+			properties: {
+				showSideBar : {
+					type:Boolean,
+				},
+			},
+
+			closeAll() {
+				this.fire('close-all');
+			},
+
+			toggleDrawer() {
+				this.fire('toggle-drawer');
+			},
+
+			toggleConsole() {
+				this.fire('toggle-console');
+			},
+		});
+	</script>
+</dom-module>
