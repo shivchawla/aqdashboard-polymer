@@ -1,0 +1,561 @@
+
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<dom-module id="aq-user-login-panel">
+  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style>
+
+    #container {
+      max-height: 600px;
+      width: 370px;
+      margin: 0 auto;
+      padding-top: 50px;
+    }
+   
+    .dialog-fields {
+      padding: 1em 2em 1em 2em;
+    }
+
+    .forgot-password {
+      padding-top: .75em;
+      font-size: x-small;
+    }
+
+    .input-fields {
+      margin-top: .1em;
+      padding-top: .1em;
+    }
+
+    paper-checkbox {
+      margin-top: 1.5em;
+    }
+
+    paper-checkbox.blue::shadow #ink[checked] {
+      color: #4285f4;
+    }
+
+    paper-checkbox.blue::shadow #checkbox.checked {
+      border-color: #4285f4;
+    }
+
+    .loginButton {
+      background-color: #4285f4;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+
+    .actionFailed {
+      color:red;
+      padding:.75em 0 0 0;
+      margin: 0;
+    }
+
+    .footer {
+      margin-top : 2em;
+    }
+
+    #tclabel {
+      padding-top:.75em;
+      padding-bottom:0.75em;
+       
+    }
+
+  </style>
+  
+  <template>
+  <div id='container' class="layout vertical center-justified">
+    <paper-card heading="{{aRsrc.headerText}}">
+   
+      <div class="dialog-fields" class="layout vertical">
+        
+        <template is="dom-if" if="{{isSignupMode(displayMode)}}">
+        
+            <paper-input id='firstNameInput' class='input-fields'
+                         label="{{aRsrc.firstNameFieldLabel}}" 
+                         value="{{firstName}}"
+                         error-message="{{aRsrc.firstNameErrorMessage}}"
+                         type="text"
+                         no-label-float
+                         required
+                         max-length=2>
+            </paper-input>
+            
+            <paper-input id='lastNameInput' class='input-fields'
+                         label="{{aRsrc.lastNameFieldLabel}}" 
+                         value="{{lastName}}"
+                         error-message="{{aRsrc.lastNameErrorMessage}}"
+                         type="text"
+                         no-label-float
+                         required
+                         max-length=4>
+            </paper-input>
+
+        </template>
+
+        <gold-email-input id = 'userEmailInput' class='input-fields' 
+                     label="{{aRsrc.userEmailFieldLabel}}" 
+                     value="{{userEmail}}"
+                     error-message="{{userEmailErrorMessage}}"
+                     no-label-float 
+                     required
+                     on-focus='onUserEmailFocus'
+                     on-focusout='onUserEmailFocusOut'
+                     invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>
+
+        </gold-email-input> 
+
+        <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">  
+          <paper-input id='passwordInput' class='input-fields'
+                       label="{{aRsrc.passwordFieldLabel}}" 
+                       value="{{password}}"
+                       error-message="{{passwordErrorMessage}}"
+                       type="password"
+                       minLength=8
+                       no-label-float
+                       required
+                       on-focusout="onPasswordFocusOut"
+                       on-focus="onPasswordFocus"
+                       invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
+          </paper-input>
+        </template>
+
+
+        <template is="dom-if" if="{{isSignupMode(displayMode)}}">
+          <paper-input id = 'confirmPasswordInput' class='input-fields'
+                   label="{{aRsrc.confirmPasswordFieldLabel}}" 
+                   value="{{confirmPassword}}"
+                   error-message="{{confirmPasswordErrorMessage}}"
+                   type="password"
+                   no-label-float
+                   required
+                   on-focus="onConfirmPasswordFocus"
+                   on-focusout="onConfirmPasswordFocusOut"
+                   invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'>
+          </paper-input>
+
+          <!--paper-checkbox noink checked="{{acceptPolicy}}">
+          </paper-checkbox-->
+          <div id='tclabel'><span>By clicking {{actionButtonLabel}}, you agree to accept <a href="">Term of Use</a> and <a href="">Privacy Policy</a></span></div>
+          
+        </template> 
+
+        <template is="dom-if" if="{{isLoginMode(displayMode)}}">
+          <div class="forgot-password">{{aRsrc.resetPasswordText}} 
+            <a href="javascript:void(0);"
+               on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
+            </a>
+          </div>
+
+          <paper-checkbox noink checked?="{{rememberMe}}"></paper-checkbox> <span>Remember Me</span>
+        </template> 
+
+          <paper-button raised
+                      class="loginButton center-justified horizontal layout"
+                      on-tap="onInvokeAction">{{actionButtonLabel}}
+          </paper-button>
+        
+                 
+      </div>
+    </paper-card>
+
+    <div class="footer center-justified horizontal layout">{{aRsrc.footerText}} 
+      <a href="javascript:void(0);"
+         on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
+      </a>
+    </div>
+
+   </div>       
+  </template>
+  <script>
+
+      var displayModes = {
+        login: 'login',
+        signup: 'signup',
+        forgotPassword: 'forgotPassword'
+      };
+
+      Polymer({
+          
+          is:'aq-user-login-panel',
+
+          properties: {
+            
+            firstName: {
+              type:String, 
+              value:''
+            },
+
+            lastName:{
+              type:String,
+              value:'',
+            },
+
+            userEmail: {
+              type:String,
+              value:'',
+            },
+
+            password: {
+              type:String,
+              value:'',
+            },
+
+            confirmPassword:{
+              type:String,
+              value:'',
+            },
+
+            firstNameInFocus: {
+              type:Boolean,
+              value:false,
+            },
+
+            lastNameInFocus: {
+              type:Boolean,
+              value:false,
+            },
+
+            userEmailInFocus: {
+              type:Boolean,
+              value:false,
+            },
+
+            passwordInFocus: {
+              type:Boolean,
+              value:false,
+            },
+
+            confirmPasswordInFocus: {
+              type: Boolean,
+              value:false,
+            },
+
+            actionButtonLabel: {
+              type:String,
+              value:"",
+            },
+
+            userEmailErrorMessage: {
+              type:String,
+              value:"",
+            },
+
+            passwordErrorMessage: {
+              type:String,
+              value:"",
+            },
+
+            confirmPasswordErrorMessage: {
+              type:String,
+              value:"",
+            },
+
+            rememberMe: {
+              type:Boolean,
+              value:false,
+            },
+
+            displayMode: {
+              type:String,
+              value:"login",
+            },
+            acceptPolicy: {
+              type:Boolean,
+              value:false,
+            },
+
+   
+          },
+    
+          /**
+           * Resource strings. If you do I18N this will make sense. If not, just run with it :~)
+           * Changing these after creation time will have no _predictable_ effect unless you call #updateMessageStrings() afterwords.
+           * If you are doing I18N you should just replace this value on this component's prototype. If you _really_ care about performance lots you might want
+           * to replace the below with an empty object initializer: "rsrc: {},"
+           *
+           * @attribute rsrc
+           * @type Object
+           */
+          rsrc: {
+            signup: {
+              headerText: "Sign up",
+              footerText: "Already have an account?",
+              footerLinkText: " Log in here ",
+              //lede: "Create your new account",
+              firstNameFieldLabel:"First Name",
+              lastNameFieldLabel:"Last Name",
+              userEmailFieldLabel: "Email",
+              userEmailErrorMessage:"Please enter a valid email",
+              passwordFieldLabel: "Password",
+              passwordErrorMessage:"Minimum 8 characters",
+              confirmPasswordFieldLabel: "Verify Password",
+              confirmPasswordErrorMessage: "Passwords do not match.",
+              actionButtonLabel: "Create Account",
+              actionButtonInProgressLabel: "Creating your account...",
+              actionButtonSuccessLabel: "Account created. Welcome!",
+            },
+            login: {
+              headerText: "Sign in",
+              footerText: "Don't have an account? ",
+              footerLinkText: " Sign up now",
+              //lede: "Login with your email address",
+              userEmailFieldLabel: "Email",
+              userEmailErrorMessage:"Please enter a valid email",
+              passwordFieldLabel: "Password",
+              passwordErrorMessage:"Minimum 8 characters",
+              actionButtonLabel: "Log in",
+              actionButtonInProgressLabel: "Authenticating...",
+              actionButtonSuccessLabel: "Welcome back.",
+              resetPasswordText: "Forgot your password?",
+              resetPasswordLinkText: "Click here.",
+            },
+            forgotPassword: {
+              headerText: "Forgot Password",
+              footerText: "Back to login? ",
+              footerLinkText: " Log in here",
+              //lede: "Request a temporary password",
+              userEmailFieldLabel: "Account Email Address",
+              actionButtonLabel: "Send Request",
+              actionButtonInProgressLabel: "Sending...",
+              actionButtonSuccessLabel: "Success! Please check your inbox.",
+            },
+          },
+          ready: function () {
+            /* Prevent sharing of child object references. */
+            //this.rsrc = App.Util.copyObjectDeep(this.rsrc);
+            this.updateMessageStrings();
+
+          },
+
+          isLoginMode: function (displayMode) {
+            var test = displayMode || this.displayMode;
+            return displayMode == displayModes.login;
+          },
+
+          isSignupMode: function (displayMode) {
+            var test = displayMode || this.displayMode;
+            return test == displayModes.signup;
+          },
+
+          isForgotPasswordMode: function (displayMode) {
+            var test = displayMode || this.displayMode;
+            return test == displayModes.forgotPassword;
+          },
+
+          onFooterLinkTap: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            switch (this.displayMode) {
+              case displayModes.login:
+                this.setDisplayMode(displayModes.signup);
+                break;
+              case displayModes.signup:
+                this.setDisplayMode(displayModes.login);
+                break;
+              case displayModes.forgotPassword:
+                this.setDisplayMode(displayModes.login);
+                break;
+              default:
+                throw new Error("Invalid display mode: " + this.displayMode)
+            }
+          },
+
+          onForgotPasswordLinkTap :function() {
+            this.setDisplayMode(displayModes.forgotPassword);
+          },
+
+          setDisplayMode: function (mode) {
+            this.displayMode = mode;
+            this.clearErrorMessages();
+            this.updateMessageStrings();  
+             
+          },
+
+          clearErrorMessages: function () {
+            this.userEmail='';
+            this.password='';
+            this.confirmPassword='';
+            this.firstName='';
+            this.lastName='';
+            this.acceptPolicy=false;
+            this.actionFailedMessage = '';
+            this.passwordErrorMessage='';
+            this.confirmPasswordErrorMessage = '';
+            this.userEmailErrorMessage = '';
+            this.userEmailInFocus = !this.userEmailInFocus;
+            this.passwordInFocus = !this.passwordInFocus;
+            this.confirmPasswordInFocus = !this.confirmPasswordInFocus;
+          },
+
+          isConfirmPasswordValid: function(confirmPassword, confirmPasswordInFocus) {
+            return confirmPasswordInFocus | this.confirmPasswordValid | confirmPassword=='';
+          },
+
+          isPasswordValid :function(password, passwordInFocus) {          
+            return passwordInFocus | password=='' | this.passwordValid;
+          },
+
+          isUserEmailValid(userEmail, userEmailInFocus) {
+            return userEmailInFocus | userEmail=='' | this.userEmailValid;       
+          },
+
+          updateMessageStrings: function () {
+            this.aRsrc = this.rsrc[this.displayMode];
+            this.actionButtonLabel = this.aRsrc.actionButtonLabel;
+            this.confirmPasswordErrorMessage = this.aRsrc.confirmPasswordErrorMessage;
+            this.userEmailErrorMessage = this.aRsrc.userEmailErrorMessage;
+            this.passwordErrorMessage = this.aRsrc.passwordErrorMessage;
+          },
+
+          updateValidity: function() {
+            //this.$$('#userEmailInput').invalid = false;
+                  
+            if (this.displayMode != displayModes.forgotPassword) {
+              //this.$$('#passwordInput').invalid = false
+            }
+                
+            if (this.displayMode == displayModes.signup) {
+              //this.$$('#firstNameInput').invalid = false;
+              //this.$$('#lastNameInput').invalid = false;
+              //this.$.('#confirmPasswordInput').invalid = false;
+            }
+          },
+
+          onUserEmailFocusOut: function () {
+            this.actionFailedMessage = '';  
+            this.userEmailValid = this.$$('#userEmailInput').validate();
+            this.userEmailInFocus = false;
+          },
+
+          onUserEmailFocus:function() {
+            this.actionFailedMessage = '';
+            this.userEmailInFocus = true;
+          },
+
+          onPasswordFocusOut: function () {
+            this.actionFailedMessage = '';
+            this.passwordValid = this.$$('#passwordInput').validate(); 
+            this.confimPassworValid = this.confirmPassword!='' ? this.checkPasswordsMatch() : true;
+            this.passwordInFocus = false;
+          },
+
+          onPasswordFocus: function() {
+            this.actionFailedMessage='';
+            this.passwordInFocus = true;
+          },
+         
+          onConfirmPasswordFocusOut: function () {
+            this.actionFailedMessage = '';
+            
+            this.confirmPasswordValid = this.checkPasswordsMatch();
+            this.confirmPasswordInFocus = false;
+          },
+
+          onConfirmPasswordFocus: function() {
+            this.actionFailedMessage='';
+            //this.confirmPasswordErrorMessage='';
+            this.confirmPasswordInFocus = true;
+          },
+
+          checkPasswordsMatch: function () {
+            if (this.displayMode === displayModes.signup) {
+              return this.password == this.confirmPassword;
+            } else {
+              return true;
+            }
+          },
+          
+          
+          checkvalidity: function (firstNameValid, lastNameValid, userEmailValid, passwordValid, confirmPasswordValid, acceptPolicy, displayMode) {
+
+            var valid = userEmailValid;
+
+            if (displayMode === displayModes.login) {
+              valid &= passwordValid;
+            }
+
+            if(displayMode == displayModes.signup) {
+              valid &= firstNameValid;
+              valid &= lastNameValid & this.lastName!='';
+              valid &= confirmPasswordValid & this.confirmPassword==this.password;
+              valid &= acceptPolicy;
+            }
+
+            return valid;
+          },
+
+          onInvokeAction: function () {
+
+            
+            if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
+                
+                this.$$('#userEmailInput').invalid = !this.userEmailValid;
+                  
+                if (this.displayMode != displayModes.forgotPassword) {
+                  this.$$('#passwordInput').invalid = !this.passwordValid;
+                }
+                
+                if (this.displayMode == displayModes.signup) {
+                   this.$$('#firstNameInput').invalid = !this.firstNameValid;
+                   this.$$('#lastNameInput').invalid = !this.lastNameValid;
+                   this.$$('#confirmPasswordInput').invalid = !this.confirmPasswordValid
+                }
+                
+              return;
+            }
+
+            switch (this.displayMode) {
+              case displayModes.login:
+                this.async(this.performLoginAction);
+                break;
+              case displayModes.signup:
+                this.async(this.performSignupAction);
+                break;
+              case displayModes.forgotPassword:
+                break;
+              default:
+                throw new Error("Invalid display mode: " + this.displaymode)
+            }
+          },
+          /*performLoginAction: function () {
+            this.publishTopic(App.topics.action.user.ATTEMPT_LOGIN, {username: this.usernameX, password: this.password, rememberMe: this.rememberMe});
+          },
+          performSignupAction: function () {
+            this.publishTopic(App.topics.action.user.ATTEMPT_SIGNUP, {username: this.usernameX, password: this.password, rememberMe: this.rememberMe});
+          },
+          performForgotPasswordAction: function () {
+            this.publishTopic(App.topics.action.user.REQUEST_PASSWORD, {username: this.usernameX});
+          },*/
+          actionSucceeded: function () {
+            this.actionButtonLabel = this.aRsrc.actionButtonSuccessLabel;
+            this.clearData();
+          },
+          actionFailed: function (errorMessage) {
+            this.actionFailedMessage = errorMessage;
+          },
+         
+          /*subscribe: function () {
+            if (PubSub) {
+              PubSub.subscribe(App.topics.auth.ACCOUNT_CREATED, (function(topic, data){ this.actionSucceeded(); }).bind(this));
+              PubSub.subscribe(App.topics.auth.LOGGED_IN, (function(topic, data){ this.actionSucceeded(); }).bind(this));
+              PubSub.subscribe(App.topics.auth.AUTHENTICATION_FAILED, (function(topic, data){ this.actionFailed(data.message); }).bind(this));
+            }
+          },
+          publishTopic: function (topic, data) {
+            this.fire(topic, data);
+            if (PubSub) {
+              PubSub.publish(topic, data);
+            }
+          }*/
+        });
+  </script>
+</dom-module>

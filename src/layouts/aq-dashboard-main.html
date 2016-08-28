@@ -18,40 +18,59 @@
 <link rel="import" href='../components/aq-community-search.html'>
 
 <dom-module id="aq-dashboard-main">
-
+  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  
   <style>
     :host {
-      transition: transform 0.01s  
+      transition: transform 0.01s;  
+      display:block;
     }
   
     #mainpanel {
       height:100%;
+      background-color: #fafafa;
     }
 
     .paper-header {
       position: relative;
     }
 
+    #content {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px;
+      padding: 8px;
+      margin-top: 65px;
+      margin-right: 20px;
+      margin-left: 20px
+    }
+
+    paper-drawer-panel {
+      height:100%;
+    }
+ 
   </style>
   
   <template>
     <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' narrow="{{narrow}}">
 
       <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
-      <paper-scroll-header-panel id="mainpanel" main fixed keep-condensed-header>
+      <paper-scroll-header-panel id="mainpanel" main fixed>
         <aq-toolbar class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar> 
 
-        <app-router id="dashboard-router" trailingSlash="ignore">
+        <div id="content">
+        <app-router id="dashboard-router" mode="hash" trailingSlash="ignore">
           
           <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
-          <app-route path="/dashboard/editor/(*)" element="aq-editor-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
           
           <app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route>
           <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
           <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
 
-        </app-router>  
-
+        </app-router> 
+        </div>
+       
       </paper-scroll-header-panel>
 
         <!--template is="dom-if" if="[[isEditorSelected]]"> 
