@@ -45,6 +45,16 @@
     .authorcontent img {
       margin: 13px 0 0 30px;
     }
+    .authorcontentwrapper h2{
+      margin: 5px;
+      font-size: 19px;
+      color: #3380BF;
+    }
+    .authorcontentwrapper h2 span{
+      font-size: 10px;
+      margin-left: 35%;
+      color: #666;
+    }
     .authorcontentwrapper {
       width: 70%;
       margin-left: 4%;
@@ -57,7 +67,8 @@
     }
   </style>
   <template>
-  	<div class="authorcontentwrapper" >
+    <div class="authorcontentwrapper" >
+      <h2>Ipsum dolor sit amet, consectetur adipisicing elit<span class="category">FAQs</span></h2>
   		<div class="authorcontentdetails">
         <img src="../img/user.jpg" id="authorimage">
         <p id="authorname"><a data-route="author" href="{{baseUrl}}"> Sahil Upadhyay</a></p>

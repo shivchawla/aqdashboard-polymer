@@ -4,11 +4,23 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../components/community/aq-community-searchbar.html">
+<link rel="import" href="../components/aq-community-topics-results.html">
+
 
 <dom-module id="aq-community-all-results">
   <style>
+    :host {
+      --paper-tabs-selection-bar-color:#ccc;
+    };
+    paper-tabs {
+      max-width: 350px;
+      font-size: 14px;
+    }
     .sections {
       width: 70%;
       border-bottom: 1px dotted #666;
@@ -50,25 +62,40 @@
     }
   </style>
   <template>
-    <app-router id="community-topics" trailingSlash="ignore">
-      <!-- <app-route path="/dashboard/community/topics" element="aq-community-topics" bindrouter=""></app-route> -->
-    </app-router>
-    <div class="sections">
-      <div class="left-section">
-        <h3><a href$="[[topicaddress]]"><span>[[topicheading]]</span></a></h3>
-        <p><a href$="[[authoraddress]]"><span id="author-name">[[authorname]]</span></a>&nbsp&nbsp&nbsp<span id="date">On [[postdate]]</span></p>
+    <aq-community-searchbar></aq-community-searchbar>
+    <paper-tabs class="flex" selected="{{selected}}" noink --paper-tabs-selection-bar-color="#ddd">
+      <paper-tab>ALL</paper-tab>
+      <paper-tab>Popular</paper-tab>
+      <paper-tab>Newest</paper-tab>
+      <paper-tab>Following</paper-tab>
+    </paper-tabs>
+    <iron-pages selected="{{selected}}" >
+      <div>
+        <aq-community-topics-results  topicaddress="#/dashboard/community/topics" topicheading= "My new topics" authorname="Sahil Upadhyay" authoraddress= "sahil" postdate="jan 15, 2015" totalreplies="16" totalviews="90" postcategory="FAQs"></aq-community-topics-results>
       </div>
-      <div class="right-section">
-        <p>Reply <span id="total-replies">[[totalreplies]]</span> Views <span id="total-views">[[totalviews]]</span></p>
-        <p>Category:<span>[[postcategory]]</span></p>
+
+      <div>
+        <aq-community-topics-results  topicaddress="#/dashboard/community/topics" topicheading= "Popular-My new topics" authorname="Sahil Upadhyay" authoraddress= "sahil" postdate="jan 15, 2015" totalreplies="16" totalviews="90" postcategory="FAQs"></aq-community-topics-results>
       </div>
-    </div>
+      
+      <div>
+        <aq-community-topics-results  topicaddress="#/dashboard/community/topics" topicheading= "Newest-My new topics" authorname="Sahil Upadhyay" authoraddress= "sahil" postdate="jan 15, 2015" totalreplies="16" totalviews="90" postcategory="FAQs"></aq-community-topics-results>
+      </div>
+      
+      <div>
+      <aq-community-topics-results  topicaddress="#/dashboard/community/topics" topicheading= "Following-My new topics" authorname="Sahil Upadhyay" authoraddress= "sahil" postdate="jan 15, 2015" totalreplies="16" totalviews="90" postcategory="FAQs"></aq-community-topics-results>
+      </div>
+    </iron-pages>
   </template>
 
   <script>
     Polymer ({
       is: 'aq-community-all-results',
       properties: {
+        selected: {
+          type: String,
+          value: 0,
+        },
         topicaddress: String,
         topicheading: String,
         authorname: String,
