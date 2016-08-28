@@ -1,0 +1,263 @@
+<link rel='import' href='../../bower_components/paper-header-panel/paper-header-panel.html'>
+<link rel='import' href='../../bower_components/paper-toolbar/paper-toolbar.html'>
+<link rel='import' href='../../bower_components/paper-menu/paper-menu.html'>
+<link rel='import' href='../../bower_components/paper-menu/paper-submenu.html'>
+<link rel='import' href='../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html'>
+<link rel='import' href='../../bower_components/paper-listbox/paper-listbox.html'>
+
+<link rel='import' href='../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../bower_components/iron-icons/communication-icons.html'>
+
+<link rel='import' href='../../bower_components/vaadin-icons/vaadin-icons.html'>
+<link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='../../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../../bower_components/paper-item/paper-icon-item.html'>
+<link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../bower_components/icon-popup/icon-popup.html'>
+<link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../bower_components/paper-tooltip/paper-tooltip.html'>
+
+
+<dom-module id='aq-sidebar-mini'>
+  <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
+  <style>
+    :host {
+      --sidebar-text: {
+        opacity: var(--dark-primary-opacity);
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+
+    .sidenav {
+      -ms-user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+
+    paper-toolbar {
+      --paper-toolbar-title: {
+        text-align: left;
+        margin-left: 0px !important;
+      };
+
+      --paper-toolbar-background: #fff;
+      --paper-toolbar-color: #000;
+      opacity: var(--dark-primary-opacity);
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    paper-menu {
+      padding-bottom: 0;
+    }
+
+     iron-icon{
+     --iron-icon-width:20px;
+     --iron-icon-height:20px;
+   }
+
+   paper-icon-item {
+    height:5px;
+   }
+
+    paper-icon-item {
+      --paper-icon-item: {
+        cursor: pointer;
+        font-size: 14px;      
+      }
+      
+      --paper-item-min-height:35px;
+      --paper-item-icon-width:35px;
+      
+
+      --paper-item-icon: {
+        color: #000;
+        opacity: var(--dark-secondary-opacity);
+      }
+
+      --paper-item-selected: {
+        color: var(--default-primary-color);
+        background-color: #e8e8e8;
+        opacity: 1;
+      }
+    }
+
+    paper-icon-item.iron-selected {
+      --paper-item-icon: {
+        color: var(--default-primary-color);
+        opacity: 1;
+      };
+    }
+
+    paper-icon-item .item-text {
+      @apply(--sidebar-text);
+    }
+    paper-icon-item.iron-selected .item-text {
+      opacity: 1;
+    }
+
+    #navigation {
+      margin-top:30px;
+    }
+
+    #action {
+      margin-top:20px;
+    }
+
+    .nav-header {
+      font-size: 12px;
+      --font-style: strong;
+      margin-left:10px;
+    }
+
+    paper-fab {
+      @apply(--shadow-none);
+      width:50px;
+    }
+
+  
+  </style>
+
+  <template>
+    <paper-header-panel class='sidenav fit'>
+      
+      <div id='navigation'>
+        <paper-menu selected="" attrForSelected="data-panel">
+          
+          <paper-icon-item id='menu-home' on-hover = "onHover" data-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, `home')}}">
+            <iron-icon item-icon icon="icons:home"></iron-icon>
+          </paper-icon-item>
+          <paper-tooltip for='menu-home'  position="right" animation-delay="0" offset="-5">
+            Home
+          </paper-tooltip>
+        
+          <paper-icon-item id='menu-editor' data-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, `editor')}}">
+            <iron-icon item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
+          </paper-icon-item>
+
+          <paper-tooltip for='menu-editor' position="right" animation-delay="0" offset="-50">
+            Editor
+          </paper-tooltip>
+        
+          <paper-icon-item id='menu-analyze' data-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">
+            <iron-icon item-icon icon="vaadin-icons:chart"></iron-icon>
+          </paper-icon-item>
+            <paper-tooltip for='menu-analyze' position="right" animation-delay="0" offset="-50">
+            Analyze
+          </paper-tooltip>
+          
+          <paper-icon-item id='menu-community' data-panel="community" on-tap="onSelected" active="{{_isEqual(menuSelected, 'community')}}">
+            <iron-icon item-icon icon="vaadin-icons:group"></iron-icon>
+          </paper-icon-item>
+          <paper-tooltip for='menu-community' position="right" animation-delay="0" offset="-50">
+            Community
+          </paper-tooltip>
+        
+          <paper-icon-item id= 'menu-help' data-panel="help" on-tap="onSelected" active="{{_isEqual(menuSelected,'help')}}">
+            <iron-icon item-icon icon="vaadin-icons:book"></iron-icon>
+          </paper-icon-item>
+
+          <paper-tooltip for='menu-help' position="right" animation-delay="0">
+            Help
+          </paper-tooltip>
+        
+        </paper-menu>
+
+
+      </div>
+
+            <div id='action'>
+              <icon-popup>
+                <iron-icon popup-icon icon="vaadin-icons:edit"></iron-icon> 
+                <div popup style="z-index:10;">
+                  <paper-icon-item popup-close>Create a Strategy
+                    <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
+                  </paper-icon-item>
+                
+                  <paper-icon-item popup-close>Compare Backtests
+                    <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
+                  </paper-icon-item>
+
+                  <paper-icon-item popup-close>Write a Post
+                    <iron-icon item-icon icon="communication:comment"></iron-icon>
+                  </paper-icon-item>
+                  
+                  <paper-icon-item popup-close>Send us Feedback
+                    <iron-icon item-icon icon="icons:feedback"></iron-icon>
+                  </paper-icon-item>
+
+                  <paper-icon-item popup-close>Lock Screen
+                    <iron-icon item-icon icon="vaadin-icons:lock"></iron-icon>
+                  </paper-icon-item>
+                </div>
+              </icon-popup>
+            </div>
+      
+    </paper-header-panel>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'aq-sidebar-mini',
+
+    properties: {
+
+      menuShown: {
+        type: Boolean,
+      },
+
+      menuSelected: {
+        type: String,
+        value:'editor',
+      },
+
+      narrow: {
+        type: Boolean,
+      },
+
+    },
+
+    listeners: {
+     // 'iron-select': 'onSelected',
+    },
+
+    deselect() {
+      console.log("what");
+      console.log(this.$$('paper-menu').selected);// = -1;
+      this.$$('paper-submenu').selected = -1;
+      //Polymer.dom (this.root).querySelectorAll('action-menu').selected = '';
+      //Polymer.dom (this.root).querySelectorAll('psm').selected = '';
+    },
+
+    _isMenuSelected(view) {
+      return this.menuSelected == view;
+    },
+
+    _isEqual(view1, view2) {
+      console.log(view1);
+      console.log(view2);
+      
+      return view1 == view2;
+    },
+
+    
+    toggleMenu() {
+      this.fire('close-menu');
+    },
+
+    onSelected(e) {
+      this.fire('change-menu', {menu: e.currentTarget.getAttribute('data-panel')});
+    },
+
+    selectPanel(newChoice){
+      if (newChoice === this.selected) {
+        return;
+      } 
+    },
+
+  });
+  </script>
+</dom-module>
