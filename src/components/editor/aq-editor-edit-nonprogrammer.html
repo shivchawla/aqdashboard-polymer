@@ -1,36 +1,35 @@
 
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../../bower_components/paper-dropdown/paper-dropdown.html">
+
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable.html">
+<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable-card.html">
 
 
 <link rel='import' href ="./aq-editor-toolbar.html">
 <link rel='import' href ="./aq-editor-console-window.html">
 <link rel='import' href ="./aq-editor-sidebar-run.html">
+<link rel='import' href ="./aq-editor-edit-sidebar-universe.html">
 
 <dom-module id='aq-editor-edit-nonprogrammer'>
 	<style>
+	
 		#universeCanvas {
-			height:500px;
-			width:500px;
+			--height:500px;
+			width:700px;
 			margin-top:20px;
 			margin-left:50px;
 			margin-right:20px;
 			border: 1px solid #e5e5e5;
 		}	
 
-		#drawerpanel {
-		    height:99%;
-		    width:100%;
-		    top:0.5%;
-		    --left:2%;
-		    --right:10%;
-		    --bottom:2%;
-		  }
-
-		  paper-toolbar {
+		paper-toolbar {
       		--paper-toolbar-height:40px;
-    	  }
+    	}
 
 	</style>
 
@@ -42,16 +41,38 @@
 	            </aq-editor-toolbar-->
 	            <div main>
 	            <iron-pages selected="{{selectedSideBar}}">	
-	            		<paper-card id='universeCanvas' heading='Select Universe'>
-	            			<div class='card-content'>
-
-	            			</div>
-
-	            			<div class='card-actions'>
-	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
-	            				</paper-icon-button>
-	            			</div>
-	            		</paper-card>	
+        		<paper-datatable-card id="datatableCard" header="Step 1: Select Universe" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}">
+					
+					<div toolbar-select>
+						<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
+					</div>
+	            	
+	            			<paper-datatable data="{{data}}" selectable multi-selection>
+						<paper-datatable-column header="Criteria" property="title" type="String" style="width:50%;"></paper-datatable-column>
+						<paper-datatable-column header="Operator" property="operator" type="String" align="left" editable tooltip="Select the operator for comparison">
+							<template>
+								<select name="operators">
+	    							<option value="equal">Equal To</option>
+								    <option value="notequal">Not Equal</option>
+								    <option value="lessthan">Less Than</option>
+								    <option value="greaterthan">Greater Than</option>
+							    </select>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Value" property="value" type="Number" align="left" editable tooltip="Value for comparing the metric">
+							<template>
+								<input type="number" value=1000000 step="100">
+							</template>
+						</paper-datatable-column>
+						<!--paper-datatable-column header="LessThan" property="less" type="Number" align="right" editable sortable tooltip="Upper bound for the metric"></paper-datatable-column>
+						<paper-datatable-column header="EqualTo" property="less" type="Number" align="right" editable sortable tooltip="Upper bound for the metric"></paper-datatable-column-->
+						<!--paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" editable sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" editable sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Calcium (%)" property="calcium" type="String" align="right" editable sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" editable sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column-->
+					</paper-datatable>
+				</paper-datatable-card>
+	            			
 
 	            		<paper-card id='universeCanvas' heading='Select Indicators'>
 	            			<div class='card-content'>
@@ -64,7 +85,7 @@
 	            			</div>
 	            		</paper-card>	
 
-	            		<paper-card id='universeCanvas' heading='Select Optimizer'>
+	            		<paper-card id='universeCanvas' heading='Step:2 Portfolio Construction'>
 	            			<div class='card-content'>
 
 	            			</div>
@@ -81,7 +102,6 @@
 
 	        <paper-header-panel drawer>
 	            <paper-toolbar>
-	          
 	                <paper-tabs selected="{{selectedSideBar}}" noink>
 		                <paper-tab>Universe</paper-tab>
 		                <paper-tab>Indicators</paper-tab>
@@ -89,9 +109,10 @@
 		                <paper-tab>Run</paper-tab>
 	                </paper-tabs>
 	            </paper-toolbar>
-
+       
 	            <iron-pages selected="{{selectedSideBar}}">
-	              <div>This is Universe!!</div>
+	              <aq-editor-edit-sidebar-universe></aq-editor-edit-sidebar-universe>
+
 	              <div>This is Indicators!!</div>
 	              <div>This is Optimizer!!</div>
 	              <aq-editor-sidebar-run></aq-editor-sidebar-run>       
@@ -114,7 +135,31 @@
 				showSideBar:{
 					type:Boolean,
 					value:true,
-				}
+				},
+				data: {
+					type:Array,
+					value:[
+				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4, sodium: 87, calcium:.14, iron: .01},
+				{id: 1, title: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01},
+				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07},
+				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
+				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
+				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}],
+				},
+			},
+				
+			toFixedOne(value){
+				return value.toFixed(1);
+			},
+			
+			toPercentage(value) {
+				return Math.round(value * 10000)/100 + '%';
 			},
 	
 		    toggleDrawer() {
@@ -129,5 +174,6 @@
 		    },
 
 		});
+
 	</script>
 </dom-module>
