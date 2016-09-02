@@ -1,0 +1,133 @@
+
+
+<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
+<link rel='import' href='../../../bower_components/marked-element/marked-element.html'>
+
+
+<link rel='import' href='./aq-editor-home-backtest-table.html'>
+
+
+<dom-module id = 'aq-editor-home-strategy-item'>
+
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+  
+	<style>
+
+		:host([narrow-viewport]) .header,
+      	:host([narrow-viewport]) .row,
+      	:host([narrow-viewport]) .row a {
+        	@apply(--layout-vertical);
+      	}
+
+      	:host(:not([narrow-viewport])) .header,
+        :host(:not([narrow-viewport])) .row,
+        :host(:not([narrow-viewport])) .row a {
+        	@apply(--layout-horizontal);
+      	}
+
+		.header {
+	      	border: 1px solid #d0d0d0;
+	        padding: 0 55px;
+	        line-height: 56px;
+	        font-size: 15px;
+	        font-weight: bold;
+	        border-bottom: 1px solid #e5e5e5;
+	        background-color: white;
+	    }
+
+	    .row {
+	        border-bottom: 1px solid #e5e5e5;
+	        border: 1px solid #d0d0d0;
+	      }
+
+	    .row :hover {
+	    	background:#E0F2F1;
+	    	--background:#A7FFEB;
+	    }
+
+        .row a {
+	        box-sizing: border-box;
+	        cursor: pointer;
+	        overflow: hidden;
+	        width: 100%;
+	        padding: 15px 0px;
+	        font-weight: 400;
+	        font-size: 13px;
+	    }
+
+     	.row paper-checkbox {
+	        box-sizing: border-box;
+	        cursor: pointer;
+	        --overflow: hidden;
+	        --padding: 15px;
+	        margin:15px;
+	    }
+
+        .row.hover {
+	        --background: #fafafa;
+	        --background:#E0F2F1;
+	    }
+   
+        .strategy-name {
+	        min-width:250px;
+	        font-weight: bold;
+	    }
+
+        .strategy-desc {
+	      	min-width: 350px;
+	    }
+
+        .strategy-bt {
+	      	--width: 350px;
+	      	--min-width: 350px;
+        }
+
+        .strategy-name .narrow {
+	        display: none;
+        }
+
+        .row .strategy-desc{
+	        color: #757575;
+	    }
+
+	    
+
+	</style>
+
+	<template>
+    		<div id='row' class="row flex layout horizontal">
+		      	<paper-checkbox noink></paper-checkbox>
+		        <a href$="">
+		          <div class="strategy-name">{{strategyName}}</div>  
+		          <div class="strategy-desc">{{strategyDesc}}</div>
+		          <div class="strategy-bt">{{numBacktest}}</div>
+		        </a>
+	        </div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-editor-home-strategy-item',
+			properties: {
+				strategyName: {
+					type:String,
+					value:'Sample Strategy',
+				},
+
+				strategyDesc: {
+					type:String,
+					value: 'Sample strategy description to test the UI',
+				},
+
+				numBacktest: {
+					type:Number,
+					value: 5,
+				},
+			},
+
+		});
+	</script>
+
+</dom-module>

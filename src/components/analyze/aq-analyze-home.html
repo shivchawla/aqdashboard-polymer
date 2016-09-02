@@ -1,0 +1,108 @@
+
+<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
+<link rel='import' href='../../../bower_components/paper-datatable/paper-datatable.html'>
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+
+<link rel='import' href='./aq-analyze-home-menu.html'>
+<link rel='import' href='./aq-analyze-home-item-horizontal.html'>
+<link rel='import' href='./aq-analyze-home-item-vertical1.html'>
+<link rel='import' href='./aq-analyze-home-item-vertical2.html'>
+
+<dom-module id='aq-analyze-home'>
+	
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+  
+	<style>
+		:host{
+			font-family: 'Roboto', sans-serif;
+		}
+		paper-card {
+			--width:98%;
+			margin-bottom: 20px;			
+		}
+
+		paper-card #content{
+			height:25%;
+		}
+
+		.metric {
+			margin-right: 10px;
+			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			width:150px;
+		}
+
+		.metric1 {
+			margin-right: 10px;
+			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			width:100px;
+			font-size:12px;
+		}
+
+		paper-card p{
+			width:200px;
+		}
+
+		paper-checbox {
+			height: 20px;
+			width:20px;
+			margin: 5px;
+		}
+
+		paper-card :hover{
+			color:green;
+			z-index:20;
+		}
+
+		#container {
+		    margin-left: 30px;
+		    margin-right: 30px;
+		    margin-top: 10px;
+		  }
+
+	</style>
+
+
+
+	<template>
+		<div id='container'>
+			<aq-analyze-home-menu strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+		</div>	
+    </template>
+
+    <script>
+    	Polymer({
+    		is: 'aq-analyze-home',
+
+    		properties: {
+    			strategyName: String,
+    		},
+    		
+			listeners :{
+				'goToEditorClicked':'goToEditor',
+			},
+
+			goToEditor() {
+				this.router.go('/dashboard/editor');
+			},
+
+    	});
+    </script>
+
+</dom-module>

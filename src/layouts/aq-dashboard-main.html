@@ -12,7 +12,7 @@
 <link rel="import" href="./aq-editor-main.html">
 <link rel="import" href="./aq-analyze-main.html">
 <link rel="import" href="./aq-community-main.html">
-<link rel="import" href="../layouts/aq-help-main.html">
+<link rel="import" href="./aq-help-main.html">
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-community-search.html'>
@@ -28,7 +28,7 @@
   
     #mainpanel {
       height:100%;
-      background-color: #fafafa;
+      --background-color: #fafafa;
     }
 
     .paper-header {
@@ -38,40 +38,39 @@
     #content {
       overflow: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 0 20px;
-      padding: 8px;
-      margin-top: 65px;
-      margin-right: 20px;
-      margin-left: 20px
     }
 
     paper-drawer-panel {
       height:100%;
+      --background-color:#E0F2F1
     }
+
  
   </style>
   
   <template>
-    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' narrow="{{narrow}}">
+    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' drawer-width='250px' narrow="{{narrow}}">
 
       <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
-      <paper-scroll-header-panel id="mainpanel" main fixed>
+      <paper-header-panel id="mainpanel" main fixed mode="seamed">
         <aq-toolbar class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar> 
 
         <div id="content" class="fit">
         <app-router id="dashboard-router" mode="hash" trailingSlash="ignore">
           
+          <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
           <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
           <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
           
           <app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route>
           <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/community/*" element="aq-community-main" bindrouter=""></app-route>
           <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
 
         </app-router> 
         </div>
        
-      </paper-scroll-header-panel>
+      </paper-header-panel>
 
         <!--template is="dom-if" if="[[isEditorSelected]]"> 
            <aq-editor-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-editor-main>

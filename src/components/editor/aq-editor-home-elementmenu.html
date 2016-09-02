@@ -4,7 +4,7 @@
 <link rel='import' href='../../../bower_components/iron-icons/social-icons.html'>
 <link rel='import' href='../../../bower_components/vaadin-icons/vaadin-icons.html'>
 
-<dom-module id="aq-editor-elementmenu">
+<dom-module id="aq-editor-home-elementmenu">
   <template>
     <style>
       :host {
@@ -85,7 +85,7 @@
 
   <script>
     Polymer ({
-      is: 'aq-editor-elementmenu',
+      is: 'aq-editor-home-elementmenu',
       
       properties: {
         element: String,
@@ -126,6 +126,10 @@
 
       goToPreview() {
         this.fire('previewClicked');
+      },
+
+      goToAnalyze() {
+        this.fire('analyzeClicked');
       },
 
     });

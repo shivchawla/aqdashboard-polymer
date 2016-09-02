@@ -1,0 +1,53 @@
+
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../aq-markdown-editor.html">
+
+
+<style is="custom-style" include="iron-flex iron-positioning"></style>
+
+<dom-module id="aq-community-createpost">
+  <template>
+    <!--div class="scroll-content"-->
+
+      <!-- TODO: don't pass all messages, users, labels into mail-thread -->
+      <!-- activate-event="" ensures entire thread isn't selectable. -->
+      <!--iron-selector id="threadlist" multi activate-event=""
+                     selected-attribute="selected"
+                     selected-items="{{selectedThreads}}"
+                     on-iron-select="_onThreadSelectChange"
+                     on-iron-deselect="_onThreadSelectChange">
+        <!--template is="dom-repeat" items="[[threads]]"-->
+
+            <div class="layout vertical flex" style="width:90%; margin-top:30px; margin-left:15px">
+              <div class="flex layout horizontal">
+                <h1 style="height:25px; background-color:white">
+                  Create a Post
+                </h1>
+              </div>
+
+              <paper-input label="Topic" style="width:100%; height:30px; margin-bottom:10px"></paper-input>
+              
+              <aq-markdown-editor placeholder="Describe in detail"></aq-markdown-editor>
+
+              <div class="layout horizontal">
+                <div class="flex"></div>
+                <paper-button raised style="max-width:5%" noink>Preview</paper-button>
+                <paper-button raised style="max-width:5%" noink>Submit</paper-button>
+              </div>   
+
+
+            </div>        
+  </template>>
+</dom-module>  
+
+<script>
+  Polymer({
+    is:'aq-community-createpost',
+  });
+</script>>

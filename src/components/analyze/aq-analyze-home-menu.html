@@ -4,7 +4,7 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 
-<dom-module id='aq-editor-home-menu'>
+<dom-module id='aq-analyze-home-menu'>
 	<style is="custom-style" include="iron-flex iron-positioning"></style>
   
 	<style>
@@ -61,7 +61,7 @@
 
 		.toolbar {
 			height: 60px;
-			width: 100%;
+			width: 98%;
 		    --border:1px solid;
 		}
 
@@ -83,7 +83,9 @@
 	<template>
 	    <div class="toolbar layout horizontal">
 	    
-	    	<div class="flex"><h3>All Strategies</h3></div>
+	    	<paper-icon-button noink style='margin:auto 0' class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToEditor">
+	  			</paper-icon-button>
+	    	<div class="flex"><h3>All Backtests for {{strategyName}}</h3></div>
 	      	<div id="search" class="flex">	    	
 	    		<paper-icon-button title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
@@ -92,12 +94,6 @@
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	      		<paper-icon-button noink class="searchButton" title="Search" icon="icons:search" on-tap="toggle">	
-	      		</paper-icon-button>
-
-	      		<paper-icon-button noink class="createNewButton" title="New" icon="icons:add" on-tap="createNew">	
-	      		</paper-icon-button>
-
 	  			<paper-icon-button noink class="deleteButton" title="Delete" icon="icons:delete" on-tap="onDelete">
 	  			</paper-icon-button>
 
@@ -110,7 +106,13 @@
 	
 	<script>
 		Polymer ({
-			is: 'aq-editor-home-menu',
+			is: 'aq-analyze-home-menu',
+
+			properties: {
+				strategyName:{
+					type:String,
+				}
+			},
 
 			toggle() {
 
@@ -129,10 +131,6 @@
 
 			onDelete() {
 				this.fire('deletePressed');
-			},
-
-			createNew() {
-				this.fire('newPressed');
 			},
 
 			onCompare() {
@@ -154,6 +152,11 @@
             	this.$$('#search').style.display = 'none';
 				this.$$('#menu-icons').style.display = 'inline';
             },
+
+            goToEditor() {
+            	this.fire('goToEditorClicked');
+            },
+
 
 		});
 		

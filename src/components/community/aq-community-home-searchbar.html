@@ -8,7 +8,7 @@
 <link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 
 
-<dom-module id='aq-community-searchbar'>
+<dom-module id='aq-community-home-searchbar'>
 	<style is="custom-style" include="iron-flex iron-positioning"></style>
   
 	<style>
@@ -27,18 +27,18 @@
 		  line-height: 46px;
 		  border: 0;
 		  margin: 0;
-		  padding-left: 110px;
+		  padding-left: 10px;
 		  border: 1px solid #e5e5e5;
 		  @apply(--paper-font-body1);
 		  width:100%;
 		  font-size: 16px;
 		  --z-index: 2;
+		  background-color: lightgrey;
 		}
 
-		#searcbox:focus {
-		  outline: 0;
-		  background-color: #eceff1;
-		  border-color: #cfd8dc;
+		#searchbox:focus{
+		  outline:none;
+		  background-color: white;
 		}
 
 		paper-button {
@@ -50,12 +50,14 @@
 	      --color: white;
 	      border: 1px solid #e5e5e5;
 	      border-radius: 0px;
-	      width: 220%;
+	      --width: 220%;
+	      width:150px;
 	    }
 
 	    paper-menu {
 	    	cursor: pointer;
 	      --display: block;
+	      width: 150px;
 	    }
 
 	    #button {
@@ -65,38 +67,34 @@
 	    }
 
 	    paper-button #content{
-	    	--display:block;
 	    	position:absolute;
 	    	top:-2px;
 	    	--left:2px;
 	    }
-	 	paper-button #content iron-icon {
-	    	position:fixed;
-	    	top: 100px;
-	    	left: 380px;
+	 	iron-icon {
+	    	position:absolute;
+	    	top: 10px;
+	    	left:100%;
 	    }
-		input:focus {
- 		   outline:none;
-		}
-		.keyboard-focus {
-			font-weight: normal;
-		}
+		
 		#category {
 			width: 50px
 		}
+
+
 	</style>
 	
 	<template>
       		<div id="search" class="layout horizontal">
-	      		<paper-menu-button id="button">
+	      		<paper-menu-button id="button" vertical-offset = 47>
 	        		<paper-button noink class="dropdown-trigger">
 	        			<div id='content'>
-	        				<span id="category">{{selectedcategory}}</span>
+	        				<span id="category">{{selectedCategory}}</span>
 	        				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
 	        			</div>  
 	        		</paper-button>
 	        		
-	        		<paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}" on-click="handleClick" keyboard-focus="false">
+	        		<paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selectedCategory}}">
 	        		 	<paper-item value="Everywhere">Everywhere</paper-item>
 	        			<paper-item value="Category 1">Category 1</paper-item>
 	        			<paper-item value="Category 2">Category 2</paper-item>
@@ -104,23 +102,18 @@
 	        		</paper-menu>
 	    		</paper-menu-button>
     		
-    		
-  			<input id="searchbox" placeholder="Search your strategy" class="flex"
-         	value="{{searchValue::change}}" type="search">	
-		
-		</div>
+
+	  			<input id="searchbox" placeholder="Search posts " class="flex"
+	         	value="{{searchValue::change}}" type="search">	
+			</div>
 	</template>
 	<script >
 		Polymer({
-			is: 'aq-community-searchbar',
-			handleClick: function (e) {
-			console.log("You clicked the item with value = " + e.target.getAttribute("value"));
-			this.selectedcategory= e.target.getAttribute("value");
-			},
+			is: 'aq-community-home-searchbar',
 			properties: {
-				selectedcategory : {
+				selectedCategory : {
 						type: String,
-						value: "Everywhere",
+						value: 'Everywhere',
 				},
 			},
 

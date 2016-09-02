@@ -1,27 +1,29 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-router/app-router.html">
 <link rel="import" href="../layouts/aq-dashboard-main.html">
+<link rel="import" href="../components/user/aq-user-login-panel.html">
 
 <dom-module id="aq-dashboard">
   <template>
     <style>
+      
       :host {
         display: block;
       }
+
     </style>
     
     <div id="main">
       <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
-        <app-route path="/" redirect="/dashboard/home"></app-route>
+      
+        <app-route path="/" redirect="/user"></app-route>
+        <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange="updateModel"></app-route>
+
         <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
 
         <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
-<<<<<<< HEAD
-=======
 
         <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
-
->>>>>>> a3dde818311b60ee597a957a4286647793073592
       </app-router>
     </div>
 

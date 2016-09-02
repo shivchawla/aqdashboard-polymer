@@ -19,12 +19,15 @@ In top, need elements (icon elements)
 <link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
 
 
-<link rel='import' href='./aq-editor-elementmenu.html'>
+<link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
+<link rel='import' href='./aq-editor-home-strategy-item.html'>
+
 
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
+<link rel='import' href='../../dialog/aq-editor-strategy-preview-dialog.html'>
 
 
 <dom-module id="aq-editor-home">
@@ -48,6 +51,7 @@ In top, need elements (icon elements)
         font-weight: bold;
         border-bottom: 1px solid #e5e5e5;
         background-color: white;
+        background-color:#e0f2f1;
       }
 
       :host([narrow-viewport]) .header .description {
@@ -136,7 +140,7 @@ In top, need elements (icon elements)
         text-overflow: ellipsis;
       }
 
-      #actions aq-editor-elementmenu{
+      #actions aq-editor-home-elementmenu{
         right: 0;
         margin-right:50px;
       }
@@ -145,46 +149,56 @@ In top, need elements (icon elements)
       	height:60px;
       }
 
+      #container {
+      	margin-left: 20px;
+      	margin-right: 20px;
+      	margin-top: 10px;
+      }
 }
 
     </style>
- 	 
-  		<aq-editor-home-menu></aq-editor-home-menu>
+ 		<div id='container'>
+	  		<aq-editor-home-menu></aq-editor-home-menu>
 
-	    <div class="header">
-	      <div class="name">Name <span class="narrow">/Description</span></div>
-	      <div class="description">Description</div>
-	      <div class="backtest">#Backtests</div>
-	    </div>
-	    <!--template is="dom-repeat" items="[[elements]]">
-	      <div class="row" data-index$="[[index]]"-->
-	    
-        <div class="row">
-	      	<paper-checkbox noink></paper-checkbox>
-	        <a href$="">
-	          <div class="name">Sample Strategy</div>  
-	          <div class="description">Sample strategy description to test the UI</div>
-	          <div class="backtest">5</div>
-	        </a>
-	    </div>
-	    <iron-collapse id="collapse">  
-        	<div><a href="#/dashboard" on-click='click'>My name is Shiv Chawla</a></div>	
-		</iron-collapse>
-    
+		    <div class="header">
+		      <div class="name">Name<span class="narrow">/Description</span></div>
+		      <div class="description">Description</div>
+		      <div class="backtest">#Backtests</div>
+		    </div>
+		    
+		    <!--template is="dom-repeat" items="[[elements]]">
+		      <div class="row" data-index$="[[index]]"-->
+		    
+	        <!--div class="row">
+		      	<paper-checkbox noink></paper-checkbox>
+		        <a href$="">
+		          <div class="name">Sample Strategy</div>  
+		          <div class="description">Sample strategy description to test the UI</div>
+		          <div class="backtest">5</div>
+		        </a>
+		    </div-->	    
+		    <aq-editor-home-strategy-item id='strategyItem1'></aq-editor-home-strategy-item>
+		    <aq-editor-home-strategy-item id='strategyItem2'></aq-editor-home-strategy-item>
+		    <aq-editor-home-strategy-item id='strategyItem3'></aq-editor-home-strategy-item>
+		    <aq-editor-home-strategy-item id='strategyItem4'></aq-editor-home-strategy-item>
+		    <aq-editor-home-strategy-item id='strategyItem5'></aq-editor-home-strategy-item>
+		    
 
-	    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-	    						 message="Are you sure to delete {{numStrategiesSelected}}?"	
-	    						 cancel="Cancel"
-	    						 accept="OK">
-    	</aq-delete-dialog>
+		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
+		    						 message="Are you sure to delete {{numStrategiesSelected}}?"	
+		    						 cancel="Cancel"
+		    						 accept="OK">
+	    	</aq-delete-dialog>
 
-    	<aq-editor-strategy-input-dialog id="strategyInputDialog">
-    	</aq-editor-strategy-input-dialog>	
+	    	<aq-editor-strategy-input-dialog id="strategyInputDialog">
+	    	</aq-editor-strategy-input-dialog>	
 
-    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
-	    
-	    <div id="actions"></div>
+	    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
 
+	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
+		    
+		    <div id="actions"></div>
+		</div>    
   </template>
 
   <script>
@@ -214,6 +228,8 @@ In top, need elements (icon elements)
 			'newPressed':'openNewDialog',
 			'comparePressed':'openCompareDialog',
 			'previewClicked':'openPreview',
+			'analyzeClicked':'goToAnalyze',
+
 		},
 
 		_currentRowIndex: -1,
@@ -266,7 +282,7 @@ In top, need elements (icon elements)
 			var sharedActionMenu = this._sharedActionMenu;
 			var rowOffsetTop = row.offsetTop;
 			if (!sharedActionMenu) {
-				this._sharedActionMenu = document.createElement('aq-editor-elementmenu');
+				this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
 				this._sharedActionMenu.classList.add('hidden');
 				Polymer.dom(this.$.actions).appendChild(this._sharedActionMenu);
 				sharedActionMenu = this._sharedActionMenu;
@@ -326,12 +342,17 @@ In top, need elements (icon elements)
 		},
 
 		openPreview() {
-  			this.$.collapse.toggle();
+  			this.$.strategyPreviewDialog.open();
 		},
 
 		click() {
 			this.router.go('/dashboard')
-		}
+		},
+
+	 	goToAnalyze() {
+        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        }
+
 
 		});
   </script>

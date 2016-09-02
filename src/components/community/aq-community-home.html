@@ -1,5 +1,6 @@
 
-<link rel='import' href='./aq-community-all-results.html'>
+<link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
+<link rel='import' href='./aq-community-home-allposts.html'>
 
 <style>
 
@@ -19,20 +20,41 @@
     color: black;
     /*outline: none;*/
   }
+
+  #container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 30px;
+  }
+
+  #fab {
+    background:teal;
+    --float:right;
+    position: fixed;
+    right: 25px;
+    bottom: 30px;
+  }
+
   
 </style>
 
 
 <dom-module id="aq-community-home">
   <template>
-      <div class="results">
-        <aq-community-all-results></aq-community-all-results>
+      <div id='container'>
+        <aq-community-home-allposts></aq-community-home-allposts>
       </div>
-  </template>>
+      <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
+  </template>
 </dom-module>  
 
 <script>
   Polymer({
     is:'aq-community-home',
+    
+    createPost() {
+      this.router.go('/dashboard/community/create');
+    },
+
   });
 </script>>

@@ -20,11 +20,11 @@
 	
 		#universeCanvas {
 			--height:500px;
-			width:700px;
+			width:650px;
 			margin-top:20px;
-			margin-left:50px;
+			margin-left:5px;
 			margin-right:20px;
-			border: 1px solid #e5e5e5;
+			--border: 1px solid #e5e5e5;
 		}	
 
 		paper-toolbar {
@@ -41,14 +41,14 @@
 	            </aq-editor-toolbar-->
 	            <div main>
 	            <iron-pages selected="{{selectedSideBar}}">	
-        		<paper-datatable-card id="datatableCard" header="Step 1: Select Universe" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}">
+        		<paper-datatable-card id="universeCanvas" header="Step 1: Select Universe" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}" align='center'>
 					
 					<div toolbar-select>
 						<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
 					</div>
 	            	
 	            			<paper-datatable data="{{data}}" selectable multi-selection>
-						<paper-datatable-column header="Criteria" property="title" type="String" style="width:50%;"></paper-datatable-column>
+						<paper-datatable-column header="Criteria" property="title" type="String" style="width:35%;"></paper-datatable-column>
 						<paper-datatable-column header="Operator" property="operator" type="String" align="left" editable tooltip="Select the operator for comparison">
 							<template>
 								<select name="operators">
@@ -61,7 +61,7 @@
 						</paper-datatable-column>
 						<paper-datatable-column header="Value" property="value" type="Number" align="left" editable tooltip="Value for comparing the metric">
 							<template>
-								<input type="number" value=1000000 step="100">
+								<input type="number" value=1000000 step="0.01" style="width:120px;">
 							</template>
 						</paper-datatable-column>
 						<!--paper-datatable-column header="LessThan" property="less" type="Number" align="right" editable sortable tooltip="Upper bound for the metric"></paper-datatable-column>
@@ -140,7 +140,7 @@
 					type:Array,
 					value:[
 				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4, sodium: 87, calcium:.14, iron: .01},
-				{id: 1, title: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01},
+				{id: 1, title: 'Ice cream sandwich zzzz', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01},
 				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07},
 				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
 				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},

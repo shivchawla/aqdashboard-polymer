@@ -47,16 +47,6 @@
     height:100%;
   }
 
-
-  drawerpanel {
-    height:89%;
-    width:97%;
-    top:10%;
-    left:2%;
-    right:10%;
-    bottom:2%;
-  }
-
   paper-icon-button {
     width:35px;
     height:35px;
@@ -83,7 +73,7 @@
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
 <template>         
-  <paper-header-panel style="height:615px"> 
+  <paper-header-panel style="height:615px" mode="seamed"> 
     <aq-editor-toolbar class="paper-header"></aq-editor-toolbar>
     
     <template is='dom-if' if='{{isProgrammer}}'>
@@ -108,7 +98,7 @@
       properties :{
         isProgrammer:{
           type:Boolean,
-          value:true,
+          value:false,
         },
       },
 
