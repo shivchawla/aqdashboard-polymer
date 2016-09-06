@@ -4,11 +4,14 @@
 <link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
 <link rel='import' href='../../../bower_components/paper-datatable/paper-datatable.html'>
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html'>
+
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
-<link rel='import' href='./aq-analyze-home-item-horizontal.html'>
-<link rel='import' href='./aq-analyze-home-item-vertical1.html'>
-<link rel='import' href='./aq-analyze-home-item-vertical2.html'>
+<link rel='import' href='./aq-analyze-home-backtest-item.html'>
+<link rel='import' href='../common/aq-backtest-comparison-item.html'>
+<link rel='import' href='../common/aq-backtest-detail-item.html'>
 
 <dom-module id='aq-analyze-home'>
 	
@@ -65,25 +68,39 @@
 		    margin-top: 10px;
 		  }
 
+	  	#dialog{
+			width:80%;
+			--height:80%;
+		}
+
+		#comparison {
+			margin:20px;
+			--height:400px;
+		}	
+
 	</style>
-
-
 
 	<template>
 		<div id='container'>
 			<aq-analyze-home-menu strategy-name="{{strategyName}}"></aq-analyze-home-menu>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
-			<aq-analyze-home-item-vertical2></aq-analyze-home-item-vertical2>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
 		</div>	
+
+		<paper-dialog id='dialog' with-backdrop>
+			<paper-dialog-scrollable id='comparison'>
+				<aq-backtest-comparison-item></aq-backtest-comparison-item>
+			</paper-dialog-scrollable>
+		</paper-dialog>
+			
     </template>
 
     <script>
@@ -95,13 +112,17 @@
     		},
     		
 			listeners :{
-				'goToEditorClicked':'goToEditor',
+				'back-clicked':'goToEditor',
+				'compare-pressed':'compareBacktests',
 			},
 
 			goToEditor() {
 				this.router.go('/dashboard/editor');
 			},
 
+			compareBacktests() {
+				this.$.dialog.toggle();
+			},
     	});
     </script>
 

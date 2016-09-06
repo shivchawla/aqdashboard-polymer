@@ -10,25 +10,7 @@
 
 <dom-module id='aq-editor-edit-sidebar-universe'>
 	<style>
-			
-		#mainmenu {
-			width: 50%;	
-			--height:100%;
-			--paper-menu-item-selected :{
-				
-			};
-
-
-		}
-
-		#submenu {
-			--border-top: 1px solid blue;
-			--border-right: 1px solid blue;
-			--border-bottom: 1px solid blue;
-		}
-
 		
-
 		paper-item {
 			font-size:15px;
 			--paper-item-min-height: 25px;
@@ -42,8 +24,9 @@
 		}
 
 		iron-pages {
-			width: 50%
-			
+			--margin-left: 10px;
+			margin-top:20px;
+			--height:50%;
 		}
 
 		a:link {
@@ -58,82 +41,118 @@
 		a :hover {
     		text-decoration: underline;
 		}
+		
+		span {
+			font-size: 18px;
+			font-weight: bold;
+			padding-top: 500px;
+		}
+
+		#container {
+			min-width:100px;
+			width:30%;
+			position:fixed;
+			margin-top: 0px;
+		}
+
+		paper-tabs {
+			height:25px;
+			 --paper-tabs-selection-bar-color:#009688;
+		}
+
+		iron-pages {
+			height:70%;
+		}
+    };
+    
+
+
 	</style>
 	<style is="custom-style" include="iron-flex iron-positioning"></style>	
 	<template>
-
-	<div style="height:530px">
-		<div style="height:65%" class="layout horizontal">
-			<paper-menu selected="{{selected}}" id='mainmenu'>
-				<a href="javascript:void(0)"> <paper-item>Item 1</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 2</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 3</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 4</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 5</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 1</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 2</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 3</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 4</paper-item></a>
-				<a href="javascript:void(0)"> <paper-item>Item 5</paper-item></a>
-			</paper-menu>
-
-			<iron-pages id='pages'  selected="{{selected}}">
-					<paper-menu id='submenu'>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 21</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 31</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 41</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 51</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 41</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 51</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 41</paper-item></a>
-						<a href="javascript:void(0)"><paper-item>Sub-Item 51</paper-item></a>
-					</paper-menu>
-					
-					<paper-menu id='submenu'>
-						<paper-item>Sub-Item 12</paper-item>
-						<paper-item>Sub-Item 22</paper-item>
-						<paper-item>Sub-Item 32</paper-item>
-						<paper-item>Sub-Item 42</paper-item>
-						<paper-item>Sub-Item 52</paper-item>
-						<paper-item>Sub-Item 41</paper-item>
-						<paper-item>Sub-Item 51</paper-item>
-						<paper-item>Sub-Item 41</paper-item>
-						<paper-item>Sub-Item 51</paper-item>
-						<paper-item>Sub-Item 41</paper-item>
-						<paper-item>Sub-Item 51</paper-item>
-						<paper-item>Sub-Item 41</paper-item>
-						<paper-item>Sub-Item 51</paper-item>
-					</paper-menu>
-					
-					<paper-menu id='submenu'>
-						<paper-item>Sub-Item 13</paper-item>
-						<paper-item>Sub-Item 23</paper-item>
-						<paper-item>Sub-Item 33</paper-item>				
-					</paper-menu>
-					
-					<paper-menu id='submenu'>
-						<paper-item>Sub-Item 14</paper-item>
-						<paper-item>Sub-Item 24</paper-item>
-						<paper-item>Sub-Item 34</paper-item>
-						<paper-item>Sub-Item 44</paper-item>
-						<paper-item>Sub-Item 54</paper-item>
-						<paper-item>Sub-Item 41</paper-item>
-						<paper-item>Sub-Item 51</paper-item>
-					</paper-menu>
-					
-					<paper-menu id='submenu'>
-						<paper-item>Sub-Item 1</paper-item>	
-					</paper-menu>
+		
+	<div class="flex" id='container'>
+		<div>
+			<h3>Select Criteria</h3>
+			<paper-tabs class="flex" noink no-slide on-tap='onTapSection1' selected="{{selected1}}">
+				<paper-tab>Item1
+				</paper-tab>
+				<paper-tab>Item2
+				</paper-tab>
+				<paper-tab>Item3
+				</paper-tab>
+				<paper-tab>Item4
+				</paper-tab>
+			</paper-tabs>
 			
+			<paper-tabs class="flex" noink no-slide on-tap='onTapSection2' selected="{{selected2}}">
+				<paper-tab>Item5
+				</paper-tab>
+				<paper-tab>Item6
+				</paper-tab>
+				<paper-tab>Item7
+				</paper-tab>
+				<paper-tab>Item8
+				</paper-tab>
+			</paper-tabs>
+
+			<iron-pages id='pages' selected="{{getselection(selected1, selected2)}}">
+					
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 15</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 16</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 17</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 18</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 19</paper-item></a>
+				</paper-menu>
+
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
+					
+				</paper-menu>
+
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
+					
+				</paper-menu>
+
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+					
+				</paper-menu>
+
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 15</paper-item></a>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 16</paper-item></a>
+					
+				</paper-menu>
+
+				<paper-menu id='submenu'>
+					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
+				</paper-menu>
 			</iron-pages>
-		</div>			
-		<div style="height:20%">
+		</div>	
+
+		<div style="position:fixed;bottom:50px;">
 			<p>Here comes the description of the element.
 			It can be short or long and depends upton the size</p> 
 			<paper-button>Add Screener</paper-button>
 		</div>	
-	 </div>
+		</div>
 	</template>
 
 	<script>
@@ -141,12 +160,38 @@
 			is: 'aq-editor-edit-sidebar-universe',
 			
 			properties: {
-				selected :{
+				selected1 :{
 					type:Number,
 					value:0,
 				},
-
+				selected2 :{
+					type:Number,
+					value:-1,
+				},
 			},
+
+			getselection(selected1, selected2) {
+				if (selected2!=-1) {
+					selected1=-1;
+					return selected2 + 3;
+				} else {
+					selected2=-1;
+					return selected1;
+				}
+			},	
+
+			onTapSection1() {
+				this.selected2=-1;
+			},
+
+			onTapSection2() {
+				this.selected1=-1;
+			},
+
+
+
+
+
 
 		});
 	</script>

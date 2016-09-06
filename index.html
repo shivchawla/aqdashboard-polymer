@@ -1,5 +1,7 @@
 <!doctype html>
 
+
+
 <html>
   <head>
     <title>AQDashboard</title>
@@ -8,8 +10,14 @@
     <link rel="manifest" href="/manifest.json">
     <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="/src/aq-dashboard/aq-dashboard.html">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   </head>
-  <body>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+  </style>
+  <body class="fullbleed layout vertical">
     <span id="browser-sync-binding"></span>
     <aq-dashboard></aq-dashboard>
   </body>

@@ -17,62 +17,100 @@
 
 <dom-module id='aq-editor-edit-nonprogrammer'>
 	<style>
-	
-		#universeCanvas {
-			--height:500px;
-			width:650px;
-			margin-top:20px;
-			margin-left:5px;
-			margin-right:20px;
-			--border: 1px solid #e5e5e5;
-		}	
 
 		paper-toolbar {
       		--paper-toolbar-height:40px;
+			--paper-toolbar-background:#B2DFDB;--#e0f2f1;
+		    --paper-toolbar-color:black;
+    	}
+
+    	#leftpanel {
+    		width:60%;
+    		margin-left:-20px;
+    	}
+
+    	#container {
+    		margin-top:0px;
+    	}
+
+    	#runCanvas {
+    		width:100%;
+    		height:100%;
+    	}
+
+    	.run-content {
+    		height:50px;
+    		margin:20px;
+    		text-align: center;
+    		width:150px;
+    		margin-left:auto;
+    		margin-right:auto;
+    	}
+
+    	.run-content span{
+    		vertical-align: center;
+    		margin-top:50px;
+    		margin-bottom:50px;
+
+    	}
+
+    	.run-content :hover {
+    		cursor: pointer;
+    		color:teal;
+    	}
+
+    	paper-tabs :hover{
+    		font-weight: bold;
+    		font-size:110%;
+    	}
+
+    	paper-tabs {
+    		--paper-tabs-selection-bar-color: teal;
+    		height:90%;
     	}
 
 	</style>
 
 	<template>
-		<paper-drawer-panel drawer-width='370px' responsive-width='730px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow={{!showSideBar}}>
-          
-			<!--paper-header-panel main>
-				<aq-editor-toolbar class="paper-header">
-	            </aq-editor-toolbar-->
-	            <div main>
-	            <iron-pages selected="{{selectedSideBar}}">	
-        		<paper-datatable-card id="universeCanvas" header="Step 1: Select Universe" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}" align='center'>
-					
-					<div toolbar-select>
-						<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
-					</div>
-	            	
+		<paper-header-panel id="headerpanel" mode="seamed">       
+         	<paper-toolbar>
+         		<paper-tabs noink selected="{{selectedSideBar}}">
+         			<paper-tab>Universe</paper-tab>
+         			<paper-tab>Indicators</paper-tab>
+         			<paper-tab>Optimizer</paper-tab>
+         			<paper-tab>Run</paper-tab>
+         		</paper-tabs>
+         	</paper-toolbar>
+
+         	<div id='container' class="layout horizontal">
+	            <div id='leftpanel'>
+		            <iron-pages selected="{{selectedSideBar}}">		    		
+			    		<paper-datatable-card id="universeCanvas" header="Step 1: Universe Selection" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}" align='left'>
+							
+							<div toolbar-select>
+								<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
+							</div>
+			            	
 	            			<paper-datatable data="{{data}}" selectable multi-selection>
-						<paper-datatable-column header="Criteria" property="title" type="String" style="width:35%;"></paper-datatable-column>
-						<paper-datatable-column header="Operator" property="operator" type="String" align="left" editable tooltip="Select the operator for comparison">
-							<template>
-								<select name="operators">
-	    							<option value="equal">Equal To</option>
-								    <option value="notequal">Not Equal</option>
-								    <option value="lessthan">Less Than</option>
-								    <option value="greaterthan">Greater Than</option>
-							    </select>
-							</template>
-						</paper-datatable-column>
-						<paper-datatable-column header="Value" property="value" type="Number" align="left" editable tooltip="Value for comparing the metric">
-							<template>
-								<input type="number" value=1000000 step="0.01" style="width:120px;">
-							</template>
-						</paper-datatable-column>
-						<!--paper-datatable-column header="LessThan" property="less" type="Number" align="right" editable sortable tooltip="Upper bound for the metric"></paper-datatable-column>
-						<paper-datatable-column header="EqualTo" property="less" type="Number" align="right" editable sortable tooltip="Upper bound for the metric"></paper-datatable-column-->
-						<!--paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" editable sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
-						<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" editable sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-						<paper-datatable-column header="Calcium (%)" property="calcium" type="String" align="right" editable sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-						<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" editable sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column-->
-					</paper-datatable>
-				</paper-datatable-card>
-	            			
+								<paper-datatable-column header="Criteria" property="title" type="String" style="width:35%;"></paper-datatable-column>
+								<paper-datatable-column header="Operator" property="operator" type="String" align="left" editable tooltip="Select the operator for comparison">
+									<template>
+										<select name="operators">
+			    							<option value="equal">Equal To</option>
+										    <option value="notequal">Not Equal</option>
+										    <option value="lessthan">Less Than</option>
+										    <option value="greaterthan">Greater Than</option>
+									    </select>
+									</template>
+								</paper-datatable-column>
+								<paper-datatable-column header="Value" property="value" type="Number" align="left" editable tooltip="Value for comparing the metric">
+									<template>
+										<input type="number" value=1000000 step="0.01" style="width:120px;">
+									</template>
+								</paper-datatable-column>
+							</paper-datatable>
+						</paper-datatable-card>
+		            			
 
 	            		<paper-card id='universeCanvas' heading='Select Indicators'>
 	            			<div class='card-content'>
@@ -94,33 +132,51 @@
 	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
 	            				</paper-icon-button>
 	            			</div>
-	            		</paper-card>	
-	            		     	
-            	</iron-pages>
+	            		</paper-card>
 
-	        </div> 
 
-	        <paper-header-panel drawer>
-	            <paper-toolbar>
-	                <paper-tabs selected="{{selectedSideBar}}" noink>
-		                <paper-tab>Universe</paper-tab>
-		                <paper-tab>Indicators</paper-tab>
-		                <paper-tab>Optimizer</paper-tab>
-		                <paper-tab>Run</paper-tab>
-	                </paper-tabs>
-	            </paper-toolbar>
-       
-	            <iron-pages selected="{{selectedSideBar}}">
-	              <aq-editor-edit-sidebar-universe></aq-editor-edit-sidebar-universe>
+	            	    <paper-card id='runCanvas' heading='Step:4 Run Analysis'>
+	            				
+	            			<div class="self-center layout vertical">
+		            			<paper-card class='run-content'>
+			            			<div>
+			            				<span>Universe</span>
+			            			</div>
+		            			</paper-card>
 
-	              <div>This is Indicators!!</div>
-	              <div>This is Optimizer!!</div>
-	              <aq-editor-sidebar-run></aq-editor-sidebar-run>       
-	            </iron-pages>
-			
-	      	</paper-header-panel>
-      	</paper-drawer-panel>
-            		
+		            			<paper-card class='run-content'>
+			            			<div>
+			            				<span>Indicators</span>
+			            			</div>
+		            			</paper-card>
+
+		            			<paper-card class='run-content'>
+			            			<div>
+			            				<span>Optimizer</span>
+			            			</div>
+		            			</paper-card>
+            				</div>
+	            			
+	            		</paper-card>
+
+
+
+		        	</iron-pages>
+	       		</div> 
+
+	     
+		        <div id='rightpanel'>
+			        <iron-pages selected="{{selectedSideBar}}">
+			          <aq-editor-edit-sidebar-universe></aq-editor-edit-sidebar-universe>
+			          <div>This is Indicators!!</div>
+			          <div>This is Optimizer!!</div>
+			          <aq-editor-sidebar-run></aq-editor-sidebar-run>       
+			        </iron-pages>
+		        </div>
+
+			</div>
+  		</paper-header-panel>
+      	    		
 	</template>
 
 	<script>
@@ -164,7 +220,7 @@
 	
 		    toggleDrawer() {
 		        this.$.drawerpanel.togglePanel();
-		        this.showSideBar = !this.showSideBar;
+		        //this.showSideBar = !this.showSideBar;
 		    },
 
 		    closeDrawer() {

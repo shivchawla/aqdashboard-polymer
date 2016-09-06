@@ -1,0 +1,236 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id='aq-analyze-compare-item-backtest'>
+
+	<style>
+		#bt-card {
+			margin:10px;
+			margin-left:10px;
+			margin-top:0px !important;
+			width: 98%	
+			--border:1px lighter teal;
+		}
+
+		#bt-card :hover {
+			color:teal;
+			z-index:20;
+			cursor: pointer;
+			size:110%;
+		}
+
+		.metric1 {
+			margin-right: 10px;
+			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			font-size:12px;
+		}
+
+		paper-checkbox {
+			height: 20px;
+			width:20px;
+			margin: 5px;
+			--paper-checkbox-checked-color:teal;
+		}
+
+	</style>
+	<template>
+		<paper-card id='bt-card' class="flex" on-tap='selectCheckBox'>
+			<div class="layout horizontal flex" >		
+				<paper-checkbox id='checkbox' noink></paper-checkbox>
+
+				<div class="layout vertical metric1 flex">	
+					<span>01/01/2010-01/01/2016</span>
+					<span>Date Range</span>		
+				</div>
+
+				<div class="layout vertical metric1 flex">	
+					<span>Completed</span>
+					<span>Status</span>	
+				</div>
+
+				<div class="layout vertical metric1 flex">	
+					<span>08/07/2016</span>
+					<span>Created</span>					
+				</div>
+				
+			</div>
+		</paper-card>
+	</template>
+
+	<script>
+		Polymer ({
+			is:'aq-analyze-compare-item-backtest',
+
+			selectCheckBox(e) {
+				if(e.target.id != 'checkboxContainer') {
+					var x = e.currentTarget.children[1].children[0].checked;
+					e.currentTarget.children[1].children[0].checked = !x; 
+				}
+			},
+
+		});
+	</script>
+
+
+</dom-module>
+
+
+<dom-module id='aq-analyze-compare-item'>
+	<style>
+		
+		#st-card {
+			width:100%;
+			margin-top:10px;
+
+		}
+	
+		.metric1 {
+			margin-right: 10px;
+			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			font-size:12px;
+		}
+
+	 	#st-card .content :hover{
+			color:teal;
+			z-index:20;
+			cursor:pointer;
+		}
+
+	</style>
+
+	<template>
+		
+		<paper-card id='st-card'>
+			<div class="content layout horizontal flex">		
+				<a href$="" on-click='toggle' class="layout horizontal flex"> 
+				
+					<div class="layout vertical metric1 flex">	
+						<span>Sample Strategy</span>
+						<!--span>Name</span-->
+					</div>
+
+					<div class="layout vertical metric1 flex">	
+						<span>This is the description of Sample strategy</span>
+						<!--span>Description</span-->
+						
+					</div>
+
+					<div class="layout vertical metric1 flex">	
+						<span>5</span>
+						<!--span>#backtests</span-->					
+					</div>
+				</a>
+			</div>
+		
+
+		  	<iron-collapse id='collapse'>
+		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
+		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
+		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
+		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
+
+			</iron-collapse>	
+		</paper-card>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-analyze-compare-item',
+
+			toggle() {
+				this.$.collapse.toggle();
+			},
+		});
+		
+	</script>
+</dom-module>
+
+
+
+<dom-module id='aq-analyze-compare'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	
+	<style>
+		#header-card {
+			width:100%;
+		}
+
+		#header-card .content {
+			margin:10px;
+		}
+
+		#container {
+			margin-left:10px;
+		}
+
+	</style>
+
+	<template>
+
+		<div class="layout horizontal" style="height:60px; width:98%"> 
+		    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
+				<div class="flex self-center">Compare Backtests</div>	
+				<paper-icon-button noink class="compareButton self-center" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				</paper-icon-button>
+		</div>	
+
+		<div id ='container' class="layout vertical">
+			
+			<div style="margin-bottom:10px;" class="flex">List of Strategies/Backtests</div>
+
+			<paper-card id='header-card'>
+				<div class="content layout horizontal flex">		
+					
+					<div class="layout vertical metric1 flex">			
+						<span>Strategy Name</span>
+					</div>
+
+					<div class="layout vertical metric1 flex">				
+						<span>Description</span>	
+					</div>
+
+					<!--div class="layout vertical metric1 flex">	
+						<span>Last Updated</span>					
+					</div-->
+
+					<div class="layout vertical metric1 flex">	
+						<span>#Backtests</span>					
+					</div>
+				</div>
+			</paper-card>
+
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item></aq-analyze-compare-item>
+		</div>
+	</template>
+
+	<script>
+		Polymer ({
+			is:'aq-analyze-compare',
+			
+			properties : {
+				
+			},
+
+			onCompare() {
+				this.router.go('/dashboard/analyze/compare/x');
+			},
+
+		});
+	</script>
+</dom-module>

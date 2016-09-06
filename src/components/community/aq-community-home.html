@@ -1,24 +1,24 @@
 
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
-<link rel='import' href='./aq-community-home-allposts.html'>
+<link rel="import" href="./aq-community-home-searchbar.html">
+<link rel="import" href="./aq-community-home-post-item.html">
+
 
 <style>
 
+  :host {
+    --paper-tabs-selection-bar-color:#009688;
+  };
+
   .insidetoolbar {
-    /*background-color: white;*/
-    
-    /*opacity: 0;*/
     outline-color: blue;
     border:solid;
   }
 
   input {
-    /*border: none;
-    background: transparent;*/
     font: inherit;
     font-size: 16px;
     color: black;
-    /*outline: none;*/
   }
 
   #container {
@@ -35,6 +35,16 @@
     bottom: 30px;
   }
 
+  paper-tabs {
+    max-width: 350px;
+    font-size: 14px;
+    margin-top:20px;
+    border-bottom:1px solid #e5e5e5; --#80CBC4;--#009688;
+  }
+
+  #allposts {
+    margin-top: 50px;
+  }
   
 </style>
 
@@ -42,8 +52,69 @@
 <dom-module id="aq-community-home">
   <template>
       <div id='container'>
-        <aq-community-home-allposts></aq-community-home-allposts>
+        <aq-community-home-searchbar></aq-community-home-searchbar>
+        <paper-tabs class="flex" selected="{{selected}}" noink>
+          <paper-tab>All</paper-tab>
+          <paper-tab>Popular</paper-tab>
+          <paper-tab>Newest</paper-tab>
+          <paper-tab>Following</paper-tab>
+          <paper-tab>Personal</paper-tab>
+        </paper-tabs>
+
+        <div id='allposts'>
+          <iron-pages selected="{{selected}}">
+            <div>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Ahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Hil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            </div> 
+
+            <div>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="l Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>      
+            </div> 
+
+            <div>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="padhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="adhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="dhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            </div> 
+
+            <div>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            </div> 
+
+            <div>
+              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            </div> 
+            
+          </iron-pages>
+        </div>
       </div>
+      
       <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
   </template>
 </dom-module>  
@@ -51,6 +122,13 @@
 <script>
   Polymer({
     is:'aq-community-home',
+
+    properties: {
+      selected: {
+        type: String,
+        value: 0,
+      },
+    },
     
     createPost() {
       this.router.go('/dashboard/community/create');

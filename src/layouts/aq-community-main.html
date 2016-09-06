@@ -6,20 +6,19 @@
 
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/community/aq-community-home.html">
-<link rel="import" href="../components/aq-community-topics.html">
+<link rel="import" href="../components/community/aq-community-postdetail.html">
+<link rel="import" href="../components/community/aq-community-createpost.html">
 
 
 <dom-module id="aq-community-main">
   <style is="custom-style" include="iron-flex iron-positioning"></style>
    <style>
-    #panel {
-      height:100%;
-    }
   </style>
   <template>
      <app-router id="community-router" trailingSlash="ignore">
         <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
-        <app-route path="/dashboard/community/topics" element='aq-community-topics' bindrouter=""></app-route>
+        <app-route path="/dashboard/community/topics" element='aq-community-postdetail' bindrouter=""></app-route>
+        <app-route path="/dashboard/community/create" element='aq-community-createpost' bindrouter=""></app-route>
      </app-router>  
   </template>
 

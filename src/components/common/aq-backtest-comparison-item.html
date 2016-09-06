@@ -1,0 +1,250 @@
+		
+
+<link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
+
+<dom-module id='aq-backtest-comparison-item'>	
+	<style>	
+		chart-line {
+			width: 50%;
+			height:30%;
+		}
+
+		chart-bar {
+			width: 50%;
+			height:30%;
+		}
+
+		aq-analyze-home-metric-item {
+			height:50px;
+		}
+
+		.head span {
+			--font-weight: bold;
+			--margin-top: 20px;
+			font-size: 18px;
+		}
+
+		.head {
+			background-color: teal;
+			text-align: center;
+			height: 30px;
+		}
+
+		span {
+			text-align: center;
+			margin-top:15px;
+		}
+
+	</style>
+
+	<template>
+		
+		
+		<div id='comparison-return' class="layout horizontal flex">
+			<chart-line class="flex" data="[[lineData]]"></chart-line>
+			<chart-bar class="flex" data="[[barData]]"></chart-bar>
+		</div>
+
+		<div id='comparison-risk' class = "layout horizontal flex">
+			
+			<paper-card> 
+				<div class="head"><span>Risk Metrics</span></div>
+				<div class="layout vertical self-center">
+					<span>Total Return</span>
+					<span>Avg. Return</span>
+					<span>Avg. Volatility</span>
+					<span>Sharpe Ratio</span>
+					<span>Information Ratio</span>
+					<span>Sortino Ratio</span>
+					<span>Avg. Drawdown</span>
+					<span>Max. Drawdown</span>
+					<span>Calmar Ratio</span>
+					<span>Beta</span>
+					<span>Stability</span>
+					<span>Avg. Concentration</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex"> 
+				<div class="head flex"><span>Strategy 1</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex">
+				<div class="head flex"><span>Strategy 2</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex">
+				<div class="head flex"><span>Strategy 3</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex">
+				<div class="head flex"><span>Strategy 3</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex">
+				<div class="head flex"><span>Strategy 3</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+
+			<paper-card class="flex">
+				<div class="head flex"><span>Strategy 3</span></div>
+				<div class="layout vertical flex">
+					<span>14.3%</span>
+					<span>3.4%</span>
+					<span>5.6%</span>
+					<span>0.82</span>
+					<span>0.5</span>
+					<span>1.6</span>
+					<span>4.5%</span>
+					<span>5.6%</span>
+					<span>2.4</span>
+					<span>0.98</span>
+					<span>0.88</span>
+					<span>0.52</span>
+				</div>	
+			</paper-card>
+			
+		</div>	
+			
+	</template>
+	<script>
+		Polymer ({
+			is:'aq-backtest-comparison-item',
+			
+			properties:{
+				lineData: {
+					type:Object,
+					value: {
+					  labels: ["January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July"],
+					  datasets: [
+					    {
+					      label: "Strategy",
+					      backgroundColor: "white",
+					      borderColor: "red",// "rgba(220,220,220,1)",
+					      borderWidth: 1,
+					      lineTension:0,
+					      pointRadius:1,
+					      //pointBackgroundColor: "rgba(220,220,220,1)",
+					      //pointBorderColor: "#fff",
+					      //pointHoverBackgroundColor: "#fff",
+					      //pointHoverBorderColor: "rgba(220,220,220,1)",
+					      data: [65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40]
+					    },{
+					      label: "Benchmark",
+					      //backgroundColor: "white",
+					      borderColor: "teal",// "rgba(220,220,220,1)",
+					      borderWidth: 1,
+					      lineTension:0,
+					      pointRadius:1,
+					      //pointBackgroundColor: "rgba(220,220,220,1)",
+					      //pointBorderColor: "#fff",
+					      //pointHoverBackgroundColor: "#fff",
+					      //pointHoverBorderColor: "rgba(220,220,220,1)",
+					      data: [6, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40]
+					    }]
+					}, 
+				},
+				barData: {
+					type:Object,
+					value: {
+					  labels: ["January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July"],
+					  datasets: [
+					    {
+					      label: "Strategy",
+					      backgroundColor: "red",
+					      borderColor: "red",// "rgba(220,220,220,1)",
+					      borderWidth: 1,
+					      lineTension:0,
+					      //pointBackgroundColor: "rgba(220,220,220,1)",
+					      //pointBorderColor: "#fff",
+					      //pointHoverBackgroundColor: "#fff",
+					      //pointHoverBorderColor: "rgba(220,220,220,1)",
+					      data: [-65, -59, 80, 81, 56, 55, -40,65, 59, -80, 81, 56, 55, 40,-65, 59, 80, 81, -56, 55, 40,-65, 59, 80, 81, 56, -55, 40,65, -59, 80, 81, 56, 55, 40,65, -59, 80, 81, -56, 55, 40]
+					    },{
+					      label: "Benchmark",
+					      backgroundColor: "teal",
+					      borderColor: "teal",// "rgba(220,220,220,1)",
+					      borderWidth: 1,
+					      lineTension:0,
+					      //pointBackgroundColor: "rgba(220,220,220,1)",
+					      //pointBorderColor: "#fff",
+					      //pointHoverBackgroundColor: "#fff",
+					      //pointHoverBorderColor: "rgba(220,220,220,1)",
+					      data: [-65, -59, 80, 81, 56, 55, -40,65, 59, -80, 81, 56, 55, 40,-65, 59, 80, 81, -56, 55, 40,-65, 59, 80, 81, 56, -55, 40,65, -59, 80, 81, 56, 55, 40,65, -59, 80, 81, -56, 55, 40]
+					    }]
+					}, 
+				},	
+			},
+		});
+	</script>
+</dom-module>

@@ -1,19 +1,4 @@
 
-
-<!--We need following elements:
-
-Element Table with Title, Description, Last Modified time, with user options to
-1. Select (checkbox)
-2. Clone (make a copy)
-3. Analyze (Take to backtests)
-4. 
-
-In top, need elements (icon elements)
-1. New
-2. Delete
-3. Compare
-4. Change View (not important now)-->
-
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
@@ -58,47 +43,12 @@ In top, need elements (icon elements)
         display: none;
       }
 
-      :host(:not([narrow-viewport])) .header,
-      :host(:not([narrow-viewport])) .row,
-      :host(:not([narrow-viewport])) .row a {
+      :host(:not([narrow-viewport])) .header{
         @apply(--layout-horizontal);
       }
 
-      :host([narrow-viewport]) .header,
-      :host([narrow-viewport]) .row,
-      :host([narrow-viewport]) .row a {
+      :host([narrow-viewport]) .header {
         @apply(--layout-vertical);
-      }
-
-      .row {
-        border-bottom: 1px solid #e5e5e5;
-        border: 1px solid #d0d0d0;
-      }
-
-      .row a {
-        box-sizing: border-box;
-        cursor: pointer;
-        overflow: hidden;
-        width: 100%;
-        padding: 15px 0px;
-        font-weight: 400;
-        font-size: 13px;
-      }
-
-	  .row paper-checkbox {
-        box-sizing: border-box;
-        cursor: pointer;
-        --overflow: hidden;
-        --padding: 15px;
-        margin:15px;
-      }
-
-      .row.hover {
-        background: #fafafa;
-      }
-
-      :host(:not([narrow-viewport])) .row.hover .backtest {
-        padding-right: 120px;
       }
 
       .name {
@@ -121,23 +71,6 @@ In top, need elements (icon elements)
 
       :host([narrow-viewport])  .name .narrow {
         display: inline;
-      }
-
-      .
-      .row .description {
-        color: #757575;
-      }
-
-      :host(:not([narrow-viewport])) .row .description {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      :host(:not([narrow-viewport])) .row .backtest {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
 
       #actions aq-editor-home-elementmenu{
@@ -229,7 +162,9 @@ In top, need elements (icon elements)
 			'comparePressed':'openCompareDialog',
 			'previewClicked':'openPreview',
 			'analyzeClicked':'goToAnalyze',
-
+			'shareClicked':'goToShare',
+			'cloneClicked':'goToClone',
+			'editorClicked':'goToEditor',
 		},
 
 		_currentRowIndex: -1,
@@ -351,10 +286,21 @@ In top, need elements (icon elements)
 
 	 	goToAnalyze() {
         	this.router.go('/dashboard/analyze?strategyName=OLMAR')
-        }
+        },
 
+        goToClone() {
+        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        },
 
-		});
+        goToShare() {
+        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        },
+
+        goToEditor() {
+        	this.router.go('/dashboard/editor/e');
+        },
+
+	});
   </script>
 </dom-module>
 

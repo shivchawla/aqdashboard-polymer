@@ -38,6 +38,7 @@
     #content {
       overflow: auto;
       -webkit-overflow-scrolling: touch;
+      --height:100%;
     }
 
     paper-drawer-panel {
@@ -49,7 +50,7 @@
   </style>
   
   <template>
-    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='800px' drawer-width='250px' narrow="{{narrow}}">
+    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='1100px' drawer-width='250px' narrow="{{narrow}}">
 
       <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
       <paper-header-panel id="mainpanel" main fixed mode="seamed">
@@ -63,9 +64,22 @@
           <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
           
           <app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter=""></app-route>
+
+          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route>
+
           <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
           <app-route path="/dashboard/community/*" element="aq-community-main" bindrouter=""></app-route>
+
+          <app-route path="/dashboard/createpost" redirect="/dashboard/community/create"></app-route>
+
+          <app-route path="/dashboard/comparebacktests" redirect="/dashboard/analyze/compare"></app-route>
+
+          <app-route path="/dashboard/createstrategy" redirect="/dashboard/editor?create=1"></app-route>
+
           <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
+
+
 
         </app-router> 
         </div>
@@ -181,7 +195,7 @@
     },
 
 
-    openMenu() { 
+    openMenu(e) { 
       this.$.drawerpanel.openDrawer();
       this.showSidebar = true;
     },

@@ -1,0 +1,69 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./aq-analyze-item-comparison.html'>
+<dom-module id='aq-analyze-compare-results'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	
+	<style>
+		chart-line {
+			width: 50%;
+			height:30%;
+		}
+
+		chart-bar {
+			width: 50%;
+			height:30%;
+		}
+
+		#comparison {
+			margin:20px;
+			--height:400px;
+		}
+
+		aq-analyze-home-metric-item {
+			height:50px;
+		}
+
+		.head span {
+			--font-weight: bold;
+			--margin-top: 20px;
+			font-size: 18px;
+		}
+
+		.head {
+			background-color: teal;
+			text-align: center;
+			height: 30px;
+		}
+
+		span {
+			text-align: center;
+			margin-top:15px;
+		}
+
+		#container {
+			margin:10px;
+		}
+
+	</style>
+
+	<template>
+
+		<div class="layout horizontal" style="height:60px;"> 
+	    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
+			<div class="flex self-center">Compare Backtests for Strategies</div>	
+		</div>	
+
+		<div id='container'>
+			<aq-analyze-item-comparison></aq-analyze-item-comparison>
+		</div>
+		
+	</template>
+
+
+	<script>
+		Polymer ({
+			is:'aq-analyze-compare-results',
+		});
+	</script>
+</dom-module>

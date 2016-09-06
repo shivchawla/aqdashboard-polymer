@@ -37,15 +37,6 @@
       -moz-user-select: none;
     }
 
-  #first{
-    width:50%;
-    height:100%;
-  }
-
-  #first{
-    width:50%;
-    height:100%;
-  }
 
   paper-icon-button {
     width:35px;
@@ -60,7 +51,7 @@
     left:0px;
     --border:1px solid;
     left:2%;
-    min-width: 5%;
+    --min-width: 5%;
     background-color: white;
   }
 
@@ -73,15 +64,15 @@
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
 <template>         
-  <paper-header-panel style="height:615px" mode="seamed"> 
-    <aq-editor-toolbar class="paper-header"></aq-editor-toolbar>
+  <paper-header-panel class="fit" mode="seamed"> 
+    <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header"></aq-editor-toolbar>
     
     <template is='dom-if' if='{{isProgrammer}}'>
       <aq-editor-edit-programmer  id='editorPanel'></aq-editor-edit-programmer> 
     </template>
      
     <template is='dom-if' if='{{!isProgrammer}}'>
-      <aq-editor-edit-nonprogrammer id='editorPanel'></aq-editor-edit-nonprogrammer> 
+      <aq-editor-edit-nonprogrammer  id='editorPanel'></aq-editor-edit-nonprogrammer> 
     </template>
          
     <iron-collapse id='collapse'>
@@ -107,7 +98,13 @@
         'toggle-drawer':'toggleDrawer',
         'toggle-console':'toggleConsole',
         'close-console':'closeConsole',
-         'selected-items-changed':'rowSelected',
+        'selected-items-changed':'rowSelected',
+        'toggle-design':'designChanged',
+        'back-clicked':'goToHome',
+        'analyze-clicked':'goToAnalyze',
+        'open-drawer':'openDrawer',
+        'close-drawer':'closeDrawer',
+
       },
 
       toggleConsole() {
@@ -133,6 +130,26 @@
 
       toggleDrawer() {
         this.$$('#editorPanel').toggleDrawer();
+      },
+
+      openDrawer() {
+        this.$$('#editorPanel').openDrawer();
+      },
+
+      closeDrawer() {
+        this.$$('#editorPanel').closeDrawer();
+      },
+
+      designChanged() {
+        this.isProgrammer = !this.isProgrammer;
+      },
+
+      goToHome() {
+        this.router.go('/dashboard/editor');
+      },
+
+      goToAnalyze() {
+        this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
       },
 
     });

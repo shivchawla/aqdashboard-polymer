@@ -42,17 +42,10 @@
 	        border: 1px solid #d0d0d0;
 	      }
 
-	    .row :hover {
-	    	background:#E0F2F1;
-	    	--background:#A7FFEB;
-	    }
-
-        .row a {
+        .row {
 	        box-sizing: border-box;
-	        cursor: pointer;
 	        overflow: hidden;
 	        width: 100%;
-	        padding: 15px 0px;
 	        font-weight: 400;
 	        font-size: 13px;
 	    }
@@ -60,14 +53,11 @@
      	.row paper-checkbox {
 	        box-sizing: border-box;
 	        cursor: pointer;
-	        --overflow: hidden;
-	        --padding: 15px;
 	        margin:15px;
 	    }
 
         .row.hover {
-	        --background: #fafafa;
-	        --background:#E0F2F1;
+	        background:#E0F2F1;
 	    }
    
         .strategy-name {
@@ -75,13 +65,18 @@
 	        font-weight: bold;
 	    }
 
+	    .strategy-name span{
+	    	text-decoration: underline;
+	    	cursor: pointer;
+	    }
+
         .strategy-desc {
 	      	min-width: 350px;
 	    }
 
         .strategy-bt {
-	      	--width: 350px;
-	      	--min-width: 350px;
+	      	cursor: pointer;
+	    	text-decoration: underline;
         }
 
         .strategy-name .narrow {
@@ -91,19 +86,16 @@
         .row .strategy-desc{
 	        color: #757575;
 	    }
-
-	    
-
+ 
 	</style>
 
 	<template>
-    		<div id='row' class="row flex layout horizontal">
+    		<div class="row flex layout horizontal">
 		      	<paper-checkbox noink></paper-checkbox>
-		        <a href$="">
-		          <div class="strategy-name">{{strategyName}}</div>  
-		          <div class="strategy-desc">{{strategyDesc}}</div>
-		          <div class="strategy-bt">{{numBacktest}}</div>
-		        </a>
+		        <div class="layout horizontal">
+		          <div class="strategy-name self-center"><span on-click = 'goToEditor'>{{strategyName}}</span></div>  
+		          <div class="strategy-desc self-center">{{strategyDesc}}</div>
+		          <div on-click='goToAnalyze' class="strategy-bt self-center">{{numBacktest}}</div>   
 	        </div>
 	</template>
 
@@ -125,6 +117,15 @@
 					type:Number,
 					value: 5,
 				},
+			},
+
+			goToEditor() {
+				this.fire('editorClicked');
+			},
+
+			goToAnalyze(e) {
+				this.fire('analyzeClicked');
+				e.stopPropagation();
 			},
 
 		});

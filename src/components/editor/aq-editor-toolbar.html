@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
 
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input-container.html">
@@ -17,11 +19,24 @@
 		paper-icon-button {
     		width:35px;
     		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
   		}
+
+  		paper-icon-button {
+	  		--paper-icon-button-hover: {
+	  			outline:1px solid;
+	  		};
+	  	}
 
   		paper-toolbar {
 		  --paper-toolbar-height:40px;
 		  --paper-toolbar-width:100px;
+		  --paper-toolbar-background:#B2DFDB;--#e0f2f1;
+		  --paper-toolbar-color:teal;
+
+		  --background-color:#e0f2f1;
 
 		}
 
@@ -34,24 +49,52 @@
 			margin-top: 3px;
 		}
 
+		.separator{
+			border-left:teal solid 1px;
+			opacity:.8;
+			height:25px;
+			margin-right: 10px;
+
+		}
+
+		input {
+			max-width:150px;
+			min-width: 50px;
+			--width:20%;
+		}
+
+
 		
 	</style>
 	
 	<template>
 		<paper-toolbar>
 			<div id='toolbar' class="flex layout horizontal">
-				<input id ='strategyName' type="text">
+				<paper-icon-button id='back-icon' class="flex" icon="icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
+				<input class="flex" id ='strategyName' type="text">
 	     		 
 	        	<div class="flex" style="max-width:5%"></div>
 
-		 		<paper-icon-button icon="icons:save"></paper-icon-button>	
-		 		<paper-icon-button icon="icons:add"></paper-icon-button>	
+		 		
+	        	<paper-icon-button class="flex" icon="icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button>
 
-	        	<div class="flex" ></div>
-	        
-	            <paper-icon-button icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
-		        <paper-icon-button icon="vaadin-icons:split-v" title="Toggle-Down" on-tap="toggleConsole"></paper-icon-button>
-		        <paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button>
+	        	<span class="self-center separator"></span>
+		 		<paper-icon-button class="flex" icon="icons:save" title="Save"></paper-icon-button>	
+		 		<paper-icon-button class="flex" icon="icons:add" title="New"></paper-icon-button>	
+		 		<paper-icon-button class="flex" icon="icons:content-copy" title="Clone"></paper-icon-button>
+		 		
+		 		<span class="self-center separator"></span>
+		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
+		 		<paper-icon-button class="flex self-center" icon="av:play-arrow" title="Run Backtest" style="border:1px solid;padding:0px;height:23px;width:23px"></paper-icon-button>
+
+
+	        	<template is='dom-if' if="{{isProgrammer}}">
+	        		<div class="flex"></div>
+		            <paper-icon-button class="flex" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
+
+		            
+			        <!--paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button-->
+		        </template>
 		        
        		</div> 
 		</paper-toolbar>
@@ -66,10 +109,22 @@
 				showSideBar : {
 					type:Boolean,
 				},
+
+				isProgrammer: {
+					type:Boolean,
+				}, 
 			},
 
 			closeAll() {
 				this.fire('close-all');
+			},
+
+			openDrawer() {
+				this.fire('open-drawer');
+			},
+
+			closeDrawer() {
+				this.fire('close-drawer');
 			},
 
 			toggleDrawer() {
@@ -79,6 +134,19 @@
 			toggleConsole() {
 				this.fire('toggle-console');
 			},
+
+			toggleDesign(){
+				this.fire('toggle-design');
+			},
+
+			goBack() {
+				this.fire('back-clicked');
+			},
+
+			goToAnalyze() {
+				this.fire('analyze-clicked');
+			}
+
 		});
 	</script>
 </dom-module>

@@ -7,6 +7,7 @@
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/editor/aq-editor-home.html">
 <link rel="import" href="../components/editor/aq-editor-edit.html">
+<link rel="import" href="../components/editor/aq-editor-home-backtest-table.html">
 
 
 <dom-module id="aq-editor-main">
@@ -17,9 +18,10 @@
     }
   </style>
   <template>
-     <app-router id="editorrouter" mode="hash" trailingSlash="ignore">
+     <app-router mode="hash" trailingSlash="ignore">
         <app-route path="/dashboard/editor" element='aq-editor-home' bindrouter=""></app-route>
-        <app-route path="/dashboard/editor/*" element='aq-editor-edit' bindrouter="">
+        <app-route path="/dashboard/editor/e" element='aq-editor-edit' bindrouter=""></app-route>
+        <app-route path="/dashboard/editor/a" element='aq-editor-home-backtest-table' bindrouter="">
         </app-route>
      </app-router>
   </template>
