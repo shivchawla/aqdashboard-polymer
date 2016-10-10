@@ -67,5 +67,15 @@
     "vaadin-icons": "^1.0.2",
     "web-component-tester": "^4.0.0",
     "vaadin-grid": "^1.1.1"
+  },
+  "resolutions": {
+    "paper-dialog": "master",
+    "paper-styles": "~1.0.12",
+    "polymer": "master",
+    "paper-item": "~1.0.5",
+    "paper-checkbox": "^1.4.0",
+    "paper-button": "master",
+    "font-roboto": "master",
+    "paper-ripple": "master"
   }
 }
