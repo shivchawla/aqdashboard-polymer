@@ -1,0 +1,66 @@
+<dom-module id='aq-dropdown'>
+	<style>
+		paper-button {
+			border: var(--dropdown-border, 1px solid grey);
+			width: var(--dropdown-width,130px);
+			--min-width:100px;
+			text-transform: none;
+			font-weight: var(--dropdown-font-weight, normal);
+			font-size: var(--dropdown-font-size,12px);
+			height: var(--dropdown-height, 30px);
+		}
+
+		paper-item {
+			--paper-item-selected-weight:normal;
+			font-size: var(--dropdown-paper-menu-font-size, 12px);
+			text-decoration: none;
+		}
+	</style>
+
+	<template>
+		<paper-menu-button vertical-offset = 47 horizontal-offset=20>
+    		<paper-button noink class="button flex dropdown-trigger self-center">
+				<span class="flex" id="category">{{selectedCategory.value}}</span>
+				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
+    		</paper-button>
+        	
+			<paper-menu class="dropdown-content flex" attr-for-selected='label' selected="{{selectedCategory}}">
+
+				<template is='dom-repeat' items='{{options}}'>
+					<paper-item label='{{item}}'>{{item.value}}</paper-item>
+				</template>
+			</paper-menu>
+		</paper-menu-button>
+	</template>
+
+	<script>
+
+		Polymer ({
+			is:'aq-dropdown',
+			properties :{
+				selectedCategory: {
+					type:Object,
+					observer: 'selectedIndexChanged',
+				},
+				options:{
+					type:Array,
+					observer:'optionsAdded',
+				},
+
+				defaultIndex :{
+					type:Number,
+					value:0,
+				},
+			},
+
+			optionsAdded() {
+				this.selectedCategory = this.options[this.defaultIndex];
+			},
+
+			selectedIndexChanged() {
+				this.fire('dropdown-changed', {'index':this.selectedCategory.index});
+			},
+
+		});
+	</script>
+</dom-module>

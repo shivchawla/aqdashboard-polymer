@@ -1,0 +1,262 @@
+<link rel='import' href='../common/aq-dropdown.html'>
+<link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
+<link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
+
+
+<dom-module id='aq-nonprogrammer-indicator-item'>
+	<style>
+		input {
+			margin:10px;
+			--height:20px;
+			width:80px;
+		}
+
+		paper-icon-button {
+			--margin-right:10px;
+			margin-left:10px;
+			padding:0px;
+			height:16px;
+			width:16px;
+		}
+
+		#secondInput {
+			display: none;
+			margin-left:30px;
+			margin-right:10px;
+		}
+
+		span {
+			font-size: 15px;
+		}	
+
+		aq-dropdown {
+			margin: 5px;
+		}
+
+		#indicator-type {
+			--dropdown-width:200px;
+		}
+
+		#analytic-type {
+			--dropdown-width:150px;
+			margin-left:20px;
+		}
+
+		#horizon-type {
+			--dropdown-width:100px;
+		}
+
+		#indicator {
+			--border:1px solid teal;
+			width:100%;
+			margin-bottom: 10px;
+		}
+
+		paper-card {
+			--width:100%;
+		}
+		
+
+	</style>
+
+	<template>
+
+	<div id='indicator' class="layout horizontal">	
+	<paper-card >
+		<div class="layout horizontal">
+			<p>{{indicator}} of {{analytic}} over {{horizon}} is {{operator}}</p>
+			<paper-icon-button icon="editor:mode-edit" on-tap='toggle'></paper-icon-button>
+		</div>
+		<iron-collapse id='collapse'>
+			<div id= 'indicator'>
+				<aq-dropdown class="self-center" id='indicator-type' options="[[indicatorOptions]]"></aq-dropdown>
+				<span class="self-center"> of</span>
+				<aq-dropdown class="self-center" id='analytic-type' options="[[analyticOptions]]"></aq-dropdown>
+					
+				<div style="margin-left:20px;" class="layout horizontal">
+				    <span class="self-center" > over</span>
+				    <aq-dropdown class="self-center"  id='horizon-type' options="[[horizonOptions]]"></aq-dropdown>
+					<span class="self-center" >is</span>
+					<aq-dropdown class="self-center"  id='operator-type' options="[[operatorOptions]]"></aq-dropdown>
+					
+					<input class="self-center" >
+				    <div class="gap"></div>
+				    <input class="self-center"  id='secondInput'>
+				</div>
+			</div>
+		</iron-collapse>
+		  
+	</paper-card>
+		<paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>	  
+		</div>
+	</template>
+
+	<script>	
+
+		var operatorOptions_i = [{value:'== (Equal To)', index:0},
+				{value: ' < (Less Than)', index:1},
+				{value: ' > (Greater Than)', index:2},
+				 {value:' >< (In Between)', index:3}]; 
+
+		var analyticOptions_i = [{value:'Price',index:1},{value:'Daily Return %',index:2},{value:'Volume',index:3},{value:'% Change In Volume',index:4}];
+
+		var indicatorOptions_i = [{value:'Simple Moving Average',index:1},{value:'Exponential Moving Average',index:2},{value:'Standard Deviation',index:3},{value:'Z-Index',index:4}];
+
+		var horizonOptions_i = [{value:'1 Week',index:1}, {value:'1 Month',index:2}, {value:'3 Months',index:3}, {value:'6 Months',index:4}, {value:'1 Year',index:5}];
+
+		Polymer ({
+			is: 'aq-nonprogrammer-indicator-item',
+
+			properties:{
+				opertor:{
+					type:String,
+				},
+				
+				analytic:{
+					type:String,
+				},
+				
+				indicator:{
+					type:String,
+				},
+
+				horizon:{
+					type: String
+				},
+			},
+
+			listeners: {
+				'dropdown-changed':'onDropdownChange',
+			},
+
+			ready() {
+				this.operatorOptions = operatorOptions_i;
+				this.analyticOptions = analyticOptions_i;
+				this.indicatorOptions = indicatorOptions_i;
+				this.horizonOptions = horizonOptions_i;
+				this.operator = this.operatorOptions[0].value;
+				this.analytic = this.analyticOptions[0].value;
+				this.indicator = this.indicatorOptions[0].value;
+				this.horizon = this.horizonOptions[0].value;
+			},
+
+			onDropdownChange(e) {
+				index = e.detail.index;
+				id = e.target.id;
+
+				if(id =='operator-type') {		
+					this.operator = this.operatorOptions[index].value;
+					if(index == 4) {
+						this.$.secondInput.style.display='inline';
+					} else {
+						this.$.secondInput.style.display='none';
+					}
+				} else if(id='indicator-type') {
+					this.indicator = this.indicatorOptions[index].value;
+				} else if(id='analytic-type') {
+					this.analytic = this.analyticOptions[index].value;
+				} else if(id='horizon-type') {
+					this.horizon = this.horizonOptions[index].value;
+				}
+			},
+			
+			onDelete(e){
+				this.$.indicator.remove();
+			},
+
+			toggle(){
+				this.$.collapse.toggle();
+			}
+			
+		});
+	</script>
+</dom-module>
+
+
+<dom-module id='aq-editor-edit-nonprogrammer-indicator'>
+	
+	<style>
+		paper-card {
+			margin:10px;
+			margin-left:25px;
+			width:95%;
+		}
+
+		span {
+			font-size: 13px;
+			margin-left: 10px;
+		}
+		
+		paper-button {
+			color:blue;
+		}
+
+		#container {
+			--border: 1px solid grey;
+			width:100%;
+		}
+
+	</style>
+
+	<template>	
+		<h2>Add Indicators</h2>
+		<p>Adding more rules to further filter the stock universe</p>
+
+		<div id='container'>	
+			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
+			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
+			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
+			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
+		</div>
+	</template>
+
+	<script>
+
+		Polymer({
+			is:'aq-editor-edit-nonprogrammer-indicator',
+
+			properties: {
+				optimizationType :{
+					type:Number,
+					value:-1,
+				},
+
+				weightScheme:{
+					type: Number,
+					//value: 0,
+				},
+			},
+
+			listeners :{
+				'dropdown-changed':'onDropdownChange',
+			},
+
+			addConstraints() {
+				console.log('i am here');
+				var x = document.createElement('aq-nonprogrammer-indicator-item');
+				console.log(x);
+				//console.log(this.$.constraintcontainer);
+				Polymer.dom(this.$.container).appendChild(x);
+			},
+
+			onDropdownChange(e) {
+				if(e.target.id =='optType-dd') {
+					this.optimizationType = e.detail.index;
+				} else if (e.target.id =='weightscheme-dd') {
+					this.weightScheme = e.detail.index;
+				}
+			},
+
+			isReverseVolatility(weightScheme) {
+				//console.log(weightScheme);
+				return weightScheme == 4;
+			},
+
+			isNormalizedMomentum(weightScheme) {
+				return weightScheme == 5;
+			},
+
+		});
+	</script>
+
+</dom-module>
