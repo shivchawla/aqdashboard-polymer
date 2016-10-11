@@ -4,56 +4,57 @@
 <link rel="import" href="./aq-community-home-post-item.html">
 
 
-<style>
+  <style>
 
-  :host {
-    --paper-tabs-selection-bar-color:#009688;
-  };
+    .insidetoolbar {
+      outline-color: blue;
+      border:solid;
+    }
 
-  .insidetoolbar {
-    outline-color: blue;
-    border:solid;
-  }
+    input {
+      font: inherit;
+      font-size: 16px;
+      color: black;
+    }
 
-  input {
-    font: inherit;
-    font-size: 16px;
-    color: black;
-  }
+    #container {
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-top: 30px;
+    }
 
-  #container {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 30px;
-  }
+    #fab {
+      background:teal;
+      --float:right;
+      position: fixed;
+      right: 25px;
+      bottom: 30px;
+    }
 
-  #fab {
-    background:teal;
-    --float:right;
-    position: fixed;
-    right: 25px;
-    bottom: 30px;
-  }
+    paper-tabs {
+      --paper-tabs-selection-bar-color:teal;
+    }
 
-  paper-tabs {
-    max-width: 350px;
-    font-size: 14px;
-    margin-top:20px;
-    border-bottom:1px solid #e5e5e5; --#80CBC4;--#009688;
-  }
+    .community-tabs {
+      max-width: 350px;
+      font-size: 14px;
+      margin-top:20px;
+      border-bottom:1px solid #e5e5e5;
+    }
+    
+    #allposts {
+      margin-top: 50px;
+    }
+    
+  </style>
 
-  #allposts {
-    margin-top: 50px;
-  }
-  
-</style>
 
 
 <dom-module id="aq-community-home">
   <template>
       <div id='container'>
         <aq-community-home-searchbar></aq-community-home-searchbar>
-        <paper-tabs class="flex" selected="{{selected}}" noink>
+        <paper-tabs class="community-tabs" class="flex" selected="{{selected}}" noink>
           <paper-tab>All</paper-tab>
           <paper-tab>Popular</paper-tab>
           <paper-tab>Newest</paper-tab>

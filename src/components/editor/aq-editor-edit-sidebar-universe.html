@@ -1,11 +1,12 @@
-<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable.html">
 
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-
 
 
 <dom-module id='aq-editor-edit-sidebar-universe'>
@@ -18,9 +19,9 @@
 		}
 
 		paper-item {
-			--paper-item-selected: { 
-				--border-right:none !important
-			};
+			cursor: pointer;
+			text-decoration: none;
+			outline:none;
 		}
 
 		iron-pages {
@@ -29,17 +30,9 @@
 			--height:50%;
 		}
 
-		a:link {
-    		text-decoration: none;
-    		
-		}
-
-		a :visited {
-    		text-decoration: blink;
-		}
-
 		a :hover {
     		text-decoration: underline;
+    		font-weight: bold;
 		}
 		
 		span {
@@ -48,24 +41,23 @@
 			padding-top: 500px;
 		}
 
-		#container {
-			min-width:100px;
-			width:30%;
-			position:fixed;
-			margin-top: 0px;
-		}
 
 		paper-tabs {
 			height:25px;
 			 --paper-tabs-selection-bar-color:#009688;
+			 width:100%;
 		}
+
+		paper-tabs :hover {
+			font-weight:bolder;
+		}
+
 
 		iron-pages {
 			height:70%;
 		}
     };
     
-
 
 	</style>
 	<style is="custom-style" include="iron-flex iron-positioning"></style>	
@@ -98,60 +90,64 @@
 
 			<iron-pages id='pages' selected="{{getselection(selected1, selected2)}}">
 					
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 15</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 16</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 17</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 18</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 19</paper-item></a>
-				</paper-menu>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 14</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 15</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 16</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 17</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 18</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 19</paper-item></a>
+				</paper-listbox>
 
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 14</paper-item></a>
 					
-				</paper-menu>
+				</paper-listbox>
 
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
 					
-				</paper-menu>
+				</paper-listbox>
 
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					
-				</paper-menu>
+				</paper-listbox>
 
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 12</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 13</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 14</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 15</paper-item></a>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 16</paper-item></a>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 14</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 15</paper-item></a>
+					<a href$=""><paper-item>Sub-Item 16</paper-item></a>
 					
-				</paper-menu>
+				</paper-listbox>
 
-				<paper-menu id='submenu'>
-					<a href="javascript:void(0)"><paper-item>Sub-Item 11</paper-item></a>
-				</paper-menu>
+				<paper-listbox id='submenu'>
+					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
+				</paper-listbox>
 			</iron-pages>
+
 		</div>	
 
-		<div style="position:fixed;bottom:50px;">
+		<div id='bottom-panel' style="position:fixed;bottom:50px;">
 			<p>Here comes the description of the element.
 			It can be short or long and depends upton the size</p> 
-			<paper-button>Add Screener</paper-button>
+			<paper-button noink raised on-tap='addScreener'>Add Screener
+				<iron-icon icon="icons:add"></iron-icon>
+			</paper-button>
 		</div>	
+
 		</div>
 	</template>
 
@@ -188,6 +184,9 @@
 				this.selected1=-1;
 			},
 
+			addScreener() {
+				this.fire('screener-pressed');
+			},
 
 
 

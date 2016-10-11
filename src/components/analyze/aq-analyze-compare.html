@@ -127,7 +127,7 @@
 			</div>
 		
 
-		  	<iron-collapse id='collapse'>
+		  	<iron-collapse id='collapse' opened ={{opened}}>
 		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
 		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
 		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
@@ -140,6 +140,13 @@
 	<script>
 		Polymer({
 			is:'aq-analyze-compare-item',
+
+			properties:{
+				opened :{
+					type:Boolean,
+					value:false,
+				},
+			},
 
 			toggle() {
 				this.$.collapse.toggle();
@@ -203,7 +210,7 @@
 				</div>
 			</paper-card>
 
-			<aq-analyze-compare-item></aq-analyze-compare-item>
+			<aq-analyze-compare-item opened=true></aq-analyze-compare-item>
 			<aq-analyze-compare-item></aq-analyze-compare-item>
 			<aq-analyze-compare-item></aq-analyze-compare-item>
 			<aq-analyze-compare-item></aq-analyze-compare-item>
