@@ -1,0 +1,183 @@
+<link rel='import' href='../common/aq-dropdown.html'>
+
+<dom-module id='aq-nonprogrammer-screener-item'>
+	<style>
+		input {
+			margin:10px;
+			--height:20px;
+			width:80px;
+		}
+
+		paper-icon-button {
+			--margin-right:10px;
+			margin-left:10px;
+			padding:0px;
+			height:16px;
+			width:16px;
+		}
+
+
+		#secondInput {
+			display: none;
+			margin-left:30px;
+			margin-right:10px;
+		}
+
+		span {
+			font-size: 12px;
+		}	
+
+		#screenerName {
+			font-size: 13px;
+			margin-left: 10px;
+			width:160px;
+		}
+
+		.gap {
+			margin:10px;
+		}	
+
+		#screener {
+			margin-left:10px;
+		}
+
+		aq-dropdown {
+			width:160px;
+		}
+
+	</style>
+
+	<template>
+		<div id= 'screener' class="layout horizontal">
+			<span id='screenerName' class="self-center">Screener Name</span>
+			<div class="gap"></div>
+			<aq-dropdown options="[[operatorOptions]]"></aq-dropdown>
+		   	<div class="gap"></div>
+		    <input>
+		    
+		    <input id='secondInput'>	   
+		    <paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>
+
+		</div>		
+	</template>
+
+	<script>	
+
+		var operatorOptions_u = [{value:'== (Equal To)', index:0},
+				{value:'!= (Not Equal To)', index:1},
+				{value: ' < (Less Than)', index:2},
+				{value: ' > (Greater Than)', index:3},
+				 {value:' >< (In Between)', index:4}, 
+				 {value:' (Contains)', index:5}];
+
+		Polymer ({
+			is: 'aq-nonprogrammer-screener-item',
+
+			listeners: {
+				'dropdown-changed':'onDropdownChange',	
+			},
+
+			ready() {
+				this.operatorOptions = operatorOptions_u;
+			},
+
+			onDropdownChange(e) {
+				console.log(e);
+				if(e.detail.index==4) {
+					this.$.secondInput.style.display='inline';
+				} else {
+					this.$.secondInput.style.display='none';
+				}
+			},
+
+			onDelete(e){
+				e.currentTarget.parentElement.remove();
+			}
+			
+		});
+	</script>
+</dom-module>
+
+
+<dom-module id='aq-editor-edit-nonprogrammer-screener'>
+	
+	<style>
+		paper-card {
+			margin:10px;
+			margin-left:25px;
+			width:95%;
+		}
+
+		span {
+			font-size: 13px;
+			margin-left: 10px;
+		}
+
+		#exch-dd{
+			--dropdown-width:120px;
+		}
+
+		#country-dd {
+			--dropdown-width:50px;
+		}
+
+		#sector-dd {
+			--dropdown-width:200px;
+		}
+
+		.basic {
+			--width:20%;
+			margin-right:20px;
+			margin-left:10px;
+		}
+
+
+	</style>
+
+	<template>	
+		<!--paper-card heading=""-->
+		<h2>Universe Selection</h2>
+			<div id='container'>			
+				<div class="layout horizontal">
+					<div class='basic'>
+						<span>Exchange:</span>
+						<aq-dropdown id='exch-dd' options="[[exchangeOptions]]"></aq-dropdown>
+					</div>
+
+					<div class='basic'>
+						<span>Country: </span>
+						<aq-dropdown id='country-dd' options="[[exchangeOptions]]"></aq-dropdown>
+					</div>
+
+					<div class='basic'>
+						<span>Sector: </span>
+						<aq-dropdown id='sector-dd' options="[[exchangeOptions]]"></aq-dropdown>
+					</div>
+				</div>
+			</div>
+		<!--/paper-card-->
+	</template>
+
+	<script>
+
+		var exchangeOptions = [{value:'All Exchanges',index:0},{value:'NSE',index:1},{value:'BSE',index:1}];
+		Polymer({
+			is:'aq-editor-edit-nonprogrammer-screener',
+
+			listeners :{
+				'delete-clicked':'onDelete',
+				'screener-pressed':'onAddScreener',
+			},
+
+			ready() {
+				this.exchangeOptions = exchangeOptions;
+			},
+
+			addScreener() {
+				var x = document.createElement('aq-nonprogrammer-screener-item');
+				Polymer.dom(this.$.container).appendChild(x);
+			},
+		});
+	</script>
+
+</dom-module>

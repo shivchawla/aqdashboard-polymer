@@ -1,0 +1,313 @@
+<link rel='import' href='../common/aq-dropdown.html'>
+<link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
+<link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
+
+
+<dom-module id='aq-nonprogrammer-constraint-item'>
+	<style>
+		input {
+			margin:10px;
+			--height:20px;
+			width:80px;
+		}
+
+		paper-icon-button {
+			--margin-right:10px;
+			margin-left:10px;
+			padding:0px;
+			height:16px;
+			width:16px;
+		}
+
+		#secondInput {
+			display: none;
+			margin-left:30px;
+			margin-right:10px;
+		}
+
+		span {
+			font-size: 12px;
+		}	
+
+		#screenerName {
+			font-size: 13px;
+			margin-left: 10px;
+			width:160px;
+		}
+
+		.gap {
+			margin:10px;
+		}	
+
+		#screener {
+			margin-left:10px;
+		}
+
+		aq-dropdown {
+			width:135px;
+		}
+
+	</style>
+
+	<template>
+		<div id= 'constraint' class="layout horizontal">
+			<aq-dropdown id='constraint-type' options="[[constraintOptions]]"></aq-dropdown>
+			<div class="gap"></div>
+			<aq-dropdown id='operator-type' options="[[operatorOptions]]"></aq-dropdown>
+			
+			<div class="gap"></div>
+		    <input>
+		    
+		    <input id='secondInput'>	   
+		    <paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>
+
+		</div>
+		
+	</template>
+
+	<script>	
+
+		var operatorOptions_o = [{value:'== (Equal To)', index:1},
+				{value: ' < (Less Than)', index:2},
+				{value: ' > (Greater Than)', index:3},
+				 {value:' >< (In Between)', index:4}]; 
+				
+		var constraintOptions_o = [{value:'Turnover',index:1},{value:'Position Limit',index:2},{value:'Leverage',index:3}];		 
+
+		Polymer ({
+			is: 'aq-nonprogrammer-constraint-item',
+
+			listeners: {
+				'dropdown-changed':'onDropdownChange',
+			},
+
+			ready() {
+				this.operatorOptions = operatorOptions_o;
+				this.constraintOptions = constraintOptions_o;
+			},
+
+			onDropdownChange(e) {
+				if(e.target.id =='operator-type' && e.detail.index == 4) {
+					this.$.secondInput.style.display='inline';
+				} else {
+					this.$.secondInput.style.display='none';
+				} 
+			},
+			
+			onDelete(e){
+				e.currentTarget.parentElement.remove();
+			}
+			
+		});
+	</script>
+</dom-module>
+
+
+<dom-module id='aq-editor-edit-nonprogrammer-optimizer'>
+	
+	<style>
+		paper-card {
+			margin:10px;
+			margin-left:25px;
+			width:95%;
+		}
+
+		span {
+			font-size: 13px;
+			margin-left: 10px;
+		}
+
+		.basic {
+			width:30%;
+			margin-right:20px;
+			margin-left:10px;
+		}
+
+		aq-dropdown {
+			--dropdown-width:250px;
+			
+		}
+
+		#weightscheme-dd {
+			--dropdown-width:250px;
+		}
+
+		paper-button {
+			color:blue;
+		}
+
+		#container {
+			--border: 1px solid grey;
+		}
+
+	</style>
+
+	<template>	
+		<!--paper-card heading="Portfolio Optimization"-->
+			<h2>Portfolio Optimization</h2>
+
+			<div id='container'>			
+				<span>Pick the optimizer</span>
+				<aq-dropdown id ='optType-dd' options="[[optimizerOptions]]"></aq-dropdown>
+
+				<iron-pages selected="{{optimizationType}}">
+
+					<div>
+						<span>Selected a weighting scheme</span>
+						<!--aq-dropdown id='weightscheme-dd' options="[[weightedPortOptions]]"></aq-dropdown>
+						<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
+							<span>Days:</span>
+							<input>	
+						</template-->
+						<paper-radio-group attr-for-selected="index" selected="{{weightScheme}}">
+							
+							<template is='dom-repeat' items='{{weightedPortOptions}}'>
+								<paper-radio-button index={{item.index}} name="{{item.value}}">{{item.value}}</paper-radio-button>
+							</template>
+
+							<!--paper-radio-button index=0 name="uniform">
+								Uniform Weighting
+							</paper-radio-button>
+							<paper-radio-button index=1 name="mcap">Market Capitalization
+							</paper-radio-button>
+							<paper-radio-button index=2 name="crmcap">Cube Root Market Capitalization
+							</paper-radio-button>
+							<paper-radio-button index=3 name="1year">Reverse Volatility
+							</paper-radio-button-->
+						</paper-radio-group>
+
+						<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
+							<div>
+								<span>Select the horizon of historical standard deviation</span>
+									<paper-radio-group>
+										<paper-radio-button toggles name="1month">1 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="3months">3 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="6months">6 months
+										</paper-radio-button>
+										<paper-radio-button  toggles name="1year">1 year
+										</paper-radio-button>
+										<paper-radio-button  toggles name="2year">2 year
+									</paper-radio-button>
+								</paper-radio-group>
+							</div>	
+						</template>
+
+
+						<template is='dom-if' if='{{isNormalizedMomentum(weightScheme)}}'>
+							<div>
+								<span>Select the horizon for momentum</span>
+									<paper-radio-group>
+										<paper-radio-button toggles name="1month">1 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="3months">3 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="6months">6 months
+										</paper-radio-button>
+										<paper-radio-button  toggles name="1year">1 year
+										</paper-radio-button>
+										<paper-radio-button  toggles name="2year">2 year
+									</paper-radio-button>
+								</paper-radio-group>
+							</div>	
+						</template>
+
+					</div>
+
+					<div class="layout vertical">
+						<span>Select the horizon of historical standard deviation</span>
+						<paper-radio-group selected name="1month">
+							<paper-radio-button toggles name="1month">1 Month
+							</paper-radio-button>
+							<paper-radio-button  toggles name="3months">3 Month
+							</paper-radio-button>
+							<paper-radio-button  toggles name="6months">6 months
+							</paper-radio-button>
+							<paper-radio-button  toggles name="1year">1 year
+							</paper-radio-button>
+							<paper-radio-button  toggles name="2year">2 year
+							</paper-radio-button>
+						</paper-radio-group>	
+
+						<div class="layout horizontal">
+							<span>Want to add constaints?</span>
+							<paper-button on-tap='addConstraints'><iron-icon icon="icons:add"></iron-icon>
+								Add Constraints
+							</paper-button>
+						</div>
+
+						<div id='constraintcontainer'>
+							<aq
+						</div>
+
+
+					</div>
+
+				</iron-pages>
+
+
+			</div>
+		<!--/paper-card-->
+	</template>
+
+	<script>
+
+		var optimizerOptions = [{value:'Weighted Portfolio',index:0},{value:'Minimize Absolute Deviation',index:1}];//,{value:'Mean Variance Optimization',index:2}];
+
+		var weightedPortOptions = [{value:'Uniform Weighting',index:1},{value:'Market Capitalization',index:2},{value:'Cube Root Market Capitalization',index:3},{value:'Reverse Volatility',index:4},{value:'Normalized Momentum',index:5}];
+
+		Polymer({
+			is:'aq-editor-edit-nonprogrammer-optimizer',
+
+			properties: {
+				optimizationType :{
+					type:Number,
+					value:-1,
+				},
+
+				weightScheme:{
+					type: Number,
+					//value: 0,
+				},
+
+			},
+
+			listeners :{
+				'dropdown-changed':'onDropdownChange',
+			},
+
+			ready() {
+				this.optimizerOptions = optimizerOptions;
+				this.weightedPortOptions = weightedPortOptions;
+			},
+
+			addConstraints() {
+				console.log('i am here');
+				var x = document.createElement('aq-nonprogrammer-constraint-item');
+				console.log(x);
+				console.log(this.$.constraintcontainer);
+				Polymer.dom(this.$.constraintcontainer).appendChild(x);
+			},
+
+			onDropdownChange(e) {
+				if(e.target.id =='optType-dd') {
+					this.optimizationType = e.detail.index;
+				} else if (e.target.id =='weightscheme-dd') {
+					this.weightScheme = e.detail.index;
+				}
+			},
+
+			isReverseVolatility(weightScheme) {
+				//console.log(weightScheme);
+				return weightScheme == 4;
+			},
+
+			isNormalizedMomentum(weightScheme) {
+				return weightScheme == 5;
+			},
+
+		});
+	</script>
+
+</dom-module>

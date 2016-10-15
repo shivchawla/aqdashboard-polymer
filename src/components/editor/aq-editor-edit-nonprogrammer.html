@@ -14,23 +14,31 @@
 <link rel='import' href ="./aq-editor-console-window.html">
 <link rel='import' href ="./aq-editor-sidebar-run.html">
 <link rel='import' href ="./aq-editor-edit-sidebar-universe.html">
+<link rel='import' href="./aq-editor-edit-nonprogrammer-screener.html">
+<link rel='import' href="./aq-editor-edit-nonprogrammer-optimizer.html">
+<link rel='import' href="./aq-editor-edit-nonprogrammer-indicator.html">
 
 <dom-module id='aq-editor-edit-nonprogrammer'>
 	<style>
 
 		paper-toolbar {
-      		--paper-toolbar-height:40px;
+      		--paper-toolbar-height:50px;
 			--paper-toolbar-background:#B2DFDB;--#e0f2f1;
 		    --paper-toolbar-color:black;
     	}
 
     	#leftpanel {
-    		width:60%;
-    		margin-left:-20px;
+    		width:50%;
+    		margin-left:10px;
+    		border-right: 1px solid #d3d3d3;
+    		height:100%;
+    		height:;
     	}
 
     	#container {
     		margin-top:0px;
+    		margin-right: 0px;
+    		margin-left:0px;
     	}
 
     	#runCanvas {
@@ -66,74 +74,36 @@
 
     	paper-tabs {
     		--paper-tabs-selection-bar-color: teal;
-    		height:90%;
+    		height:25px;
     	}
 
 	</style>
 
 	<template>
-		<paper-header-panel id="headerpanel" mode="seamed">       
-         	<paper-toolbar>
-         		<paper-tabs noink selected="{{selectedSideBar}}">
-         			<paper-tab>Universe</paper-tab>
-         			<paper-tab>Indicators</paper-tab>
-         			<paper-tab>Optimizer</paper-tab>
-         			<paper-tab>Run</paper-tab>
-         		</paper-tabs>
-         	</paper-toolbar>
+		<paper-drawer-panel drawer-width='370px' responsive-width='730px' class="headerpanel" id="drawerpanel" right-drawer force-narrow="{{computeForceNarrow(showSideBar, selectedSideBar)}}"">
+         	
+         	<paper-header-panel id='container' main mode="seamed">
+	         	<paper-toolbar>
+	         		<paper-tabs noink selected="{{selectedSideBar}}">
+	         			<paper-tab>Universe</paper-tab>
+	         			<paper-tab>Indicators</paper-tab>
+	         			<paper-tab>Optimizer</paper-tab>
+	         			<paper-tab>Run</paper-tab>
+	         		</paper-tabs>
+	         		<div class="flex"></div>
+	         		<template is='dom-if' if="{{isSelectedBarUniverse(selectedSideBar)}}">
+	         			<paper-button paper-drawer-toggle>Add Screener</paper-button>
+	         		</template>
+	         	</paper-toolbar>
 
-         	<div id='container' class="layout horizontal">
-	            <div id='leftpanel'>
-		            <iron-pages selected="{{selectedSideBar}}">		    		
-			    		<paper-datatable-card id="universeCanvas" header="Step 1: Universe Selection" page-size="100" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}" align='left'>
-							
-							<div toolbar-select>
-								<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
-							</div>
-			            	
-	            			<paper-datatable data="{{data}}" selectable multi-selection>
-								<paper-datatable-column header="Criteria" property="title" type="String" style="width:35%;"></paper-datatable-column>
-								<paper-datatable-column header="Operator" property="operator" type="String" align="left" editable tooltip="Select the operator for comparison">
-									<template>
-										<select name="operators">
-			    							<option value="equal">Equal To</option>
-										    <option value="notequal">Not Equal</option>
-										    <option value="lessthan">Less Than</option>
-										    <option value="greaterthan">Greater Than</option>
-									    </select>
-									</template>
-								</paper-datatable-column>
-								<paper-datatable-column header="Value" property="value" type="Number" align="left" editable tooltip="Value for comparing the metric">
-									<template>
-										<input type="number" value=1000000 step="0.01" style="width:120px;">
-									</template>
-								</paper-datatable-column>
-							</paper-datatable>
-						</paper-datatable-card>
-		            			
+	            <!--paper-header-panel id='leftpanel' mode="seamed"-->
+		            <iron-pages selected="{{selectedSideBar}}">	
 
-	            		<paper-card id='universeCanvas' heading='Select Indicators'>
-	            			<div class='card-content'>
+		            	<aq-editor-edit-nonprogrammer-screener id='screenerCanvas'></aq-editor-edit-nonprogrammer-screener>	    				
 
-	            			</div>
+		            	<aq-editor-edit-nonprogrammer-indicator id='indicatorCanvas'></aq-editor-edit-nonprogrammer-indicator>	    				
 
-	            			<div class='card-actions'>
-	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
-	            				</paper-icon-button>
-	            			</div>
-	            		</paper-card>	
-
-	            		<paper-card id='universeCanvas' heading='Step:2 Portfolio Construction'>
-	            			<div class='card-content'>
-
-	            			</div>
-
-	            			<div class='card-actions'>
-	            				<paper-icon-button icon='add' title='Add Indicator' style="float:right ; float:bottom">
-	            				</paper-icon-button>
-	            			</div>
-	            		</paper-card>
-
+	            		<aq-editor-edit-nonprogrammer-optimizer id='optimizerCanvas'></aq-editor-edit-nonprogrammer-optimizer>	    				
 
 	            	    <paper-card id='runCanvas' heading='Step:4 Run Analysis'>
 	            				
@@ -159,23 +129,22 @@
 	            			
 	            		</paper-card>
 
-
-
 		        	</iron-pages>
-	       		</div> 
-
+	        	</paper-header-panel>
 	     
-		        <div id='rightpanel'>
+		        <template is='dom-if' if="{{isSelectedBarUniverse(selectedSideBar)}}">
+		        <paper-header-panel drawer mode="seamed" id='rightpanel'>
+		        	<paper-toolbar></paper-toolbar>
 			        <iron-pages selected="{{selectedSideBar}}">
 			          <aq-editor-edit-sidebar-universe></aq-editor-edit-sidebar-universe>
-			          <div>This is Indicators!!</div>
+			          <!--div></div>
 			          <div>This is Optimizer!!</div>
-			          <aq-editor-sidebar-run></aq-editor-sidebar-run>       
+			          <aq-editor-sidebar-run></aq-editor-sidebar-run-->       
 			        </iron-pages>
-		        </div>
+		        </paper-header-panel>
+		        </template>
 
-			</div>
-  		</paper-header-panel>
+  		</paper-drawer-panel>
       	    		
 	</template>
 
@@ -192,6 +161,7 @@
 					type:Boolean,
 					value:true,
 				},
+
 				data: {
 					type:Array,
 					value:[
@@ -209,6 +179,10 @@
 				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}],
 				},
 			},
+
+			listeners: {
+				'screener-pressed':'onAddScreener',
+			},	
 				
 			toFixedOne(value){
 				return value.toFixed(1);
@@ -227,6 +201,19 @@
 		    	if(this.showSideBar) {
 		    		this.toggleDrawer();
 		    	}
+		    },
+
+		    onAddScreener() {
+		    	this.$.screenerCanvas.addScreener();
+		    },
+
+		    isSelectedBarUniverse(selectedSideBar) {
+		    	console.log(selectedSideBar);
+		    	return selectedSideBar==0;
+		    },
+
+		    computeForceNarrow(showSideBar, selectedSideBar) {
+		    	return !showSideBar || selectedSideBar!=0;
 		    },
 
 		});
