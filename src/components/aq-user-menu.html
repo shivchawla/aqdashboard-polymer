@@ -41,7 +41,7 @@
 
     <template>
         <paper-menu-button horizontal-offset=-300 vertical-offset=50>
-            <profile-img letter="S" class="dropdown-trigger"></profile-img>
+            <profile-img letter={{letter}} class="dropdown-trigger"></profile-img>
 
             <paper-card class="dropdown-content">
                 <div id='' class="class-content layout horizontal">
@@ -50,8 +50,8 @@
                     <div class="flex"></div>
 
                     <div id='userid' class="layout vertical end-justified">
-                        <div id='name'>Shiv Chawla</div>
-                        <div id='email'>shivchawla2001@gmail.com</div>
+                        <div id='name'>{{firstName}} {{lastName}}</div>
+                        <div id='email'>{{email}}</div>
                     </div>
 
                 </div>
@@ -77,15 +77,29 @@
                 </div>
             </paper-card>
         </paper-menu-button>
-				<iron-localstorage>
-				</iron-localstorage>
+
     </template>
 
     <script>
         Polymer({
 					is: 'aq-user-menu',
-					ready: function() {
-					  	debugger;
+          properties: {
+            firstName: {
+              type: String,
+              value: ''
+            },
+            lastName: {
+              type: String,
+              value: ''
+            }
+          },
+          ready: function() {
+					  	var x = localStorage.getItem('my-app-storage');
+              var user = JSON.parse(x).user;
+              this.firstName = user.firstName;
+              this.lastName = user.lastName;
+              this.email = user.email;
+              this.letter = this.firstName[0];
 					},
 				});
     </script>
