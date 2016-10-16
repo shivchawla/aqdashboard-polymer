@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-
+<link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <dom-module id="aq-user-login-panel">
     <style is="custom-style" include="iron-flex iron-positioning"></style>
     <style>
@@ -83,21 +83,31 @@
 
                     <template is="dom-if" if="{{isSignupMode(displayMode)}}">
 
-                        <paper-input id='firstNameInput' class='input-fields'
-                          label="{{aRsrc.firstNameFieldLabel}}" value="{{firstName}}"
-                          error-message="{{aRsrc.firstNameErrorMessage}}" type="text"
-                          on-focusout='onUserFirstNameFocusOut'
-                          no-label-float required max-length=2 invalid='{{!isfirstNameValid(firstName)}}'>
-                        </paper-input>
+                        <paper-input
+                            id='firstNameInput'
+                            class='input-fields'
+                            label="{{aRsrc.firstNameFieldLabel}}"
+                            value="{{firstName}}"
+                            error-message="{{aRsrc.firstNameErrorMessage}}"
+                            type="text"
+                            on-focusout='onUserFirstNameFocusOut'
+                            no-label-float
+                            required
+                            max-length=2
+                            invalid='{{!isfirstNameValid(firstName)}}'></paper-input>
 
                         <paper-input
-                          id='lastNameInput'
-                          class='input-fields'
-                          label="{{aRsrc.lastNameFieldLabel}}" value="{{lastName}}"
-                          error-message="{{aRsrc.lastNameErrorMessage}}" type="text"
-                          on-focusout='onUserLastNameFocusOut'
-                          no-label-float required max-length=4 invalid='{{!islastNameValid(lastName)}}'>
-                        </paper-input>
+                            id='lastNameInput'
+                            class='input-fields'
+                            label="{{aRsrc.lastNameFieldLabel}}"
+                            value="{{lastName}}"
+                            error-message="{{aRsrc.lastNameErrorMessage}}"
+                            type="text"
+                            on-focusout='onUserLastNameFocusOut'
+                            no-label-float
+                            required
+                            max-length=4
+                            invalid='{{!islastNameValid(lastName)}}'></paper-input>
 
                     </template>
 
@@ -155,7 +165,7 @@
                             </span>
                         </div>
                     </template>
-                    <iron-ajax url="http://localhost:3002/api/v2/user" body="{{signupBody}}" method='POST' id='signup' handle-as="json" on-response="handleSignup" headers='{"Content-Type": "application/json"}' debounce-duration="300"></iron-ajax>
+                    <iron-ajax url="http://localhost:3002/api/v2/user" body="{{signupBody}}" method='POST' id='signup' handle-as="json" on-response="handleSignup" last-response="{{ajaxResponse}}" headers='{"Content-Type": "application/json"}' debounce-duration="300"></iron-ajax>
                     <template is="dom-if" if="{{isLoginMode(displayMode)}}">
                         <div class="forgot-password">{{aRsrc.resetPasswordText}}
                             <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
@@ -166,6 +176,7 @@
                         <span>Remember Me</span>
                     </template>
                     <iron-ajax url="http://localhost:3002/api/v2/user/login" body="{{loginBody}}" method='POST' id='login' handle-as="json" on-response="handleResponse" headers='{"Content-Type": "application/json"}' debounce-duration="300"></iron-ajax>
+
                     <paper-button raised class="loginButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
                     </paper-button>
 
@@ -178,8 +189,12 @@
             </div>
 
         </div>
-
+        <iron-localstorage
+          name="my-app-storage"
+          value="{{aimsquant}}"
+          on-iron-localstorage-load-empty="initializeDefaultValue"></iron-localstorage>
     </template>
+
     <script>
 
         var displayModes = {
@@ -346,6 +361,11 @@
                 this.updateMessageStrings();
 
             },
+            initializeDefaultValue: function () {
+                this.aimsquant = {
+                    user: 'suudhir'
+                }
+            },
             computeLoginBody: function(email, password) {
                 return {email: email, password: password}
             },
@@ -446,9 +466,13 @@
                 }
 
                 if (this.displayMode != displayModes.signup) {
-                    this.$$('#firstNameInput').invalid = false;
-                    this.$$('#lastNameInput').invalid = false;
-                    this.$$('#confirmPasswordInput').invalid = false;
+                    if (this.$$('#firstNameInput'))
+                        this.$$('#firstNameInput').invalid = false;
+                    if (this.$$('#lastNameInput'))
+                        this.$$('#lastNameInput').invalid = false;
+                    if (this.$$('#confirmPasswordInput')) {
+                        this.$$('#confirmPasswordInput').invalid = false;
+                    }
                 }
             },
             onUserLastNameFocusOut: function() {
@@ -522,6 +546,10 @@
             },
             handleResponse: function(data) {
                 this.router.go('/dashboard');
+                this.aimsquant = {
+                    user: ''
+                };
+                this.set('aimsquant.user', data.detail.response);
             },
             handleSignup: function(data) {
                 this.setDisplayMode(displayModes.login);
