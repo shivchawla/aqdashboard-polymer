@@ -10,17 +10,17 @@ p<link rel="import" href="../../bower_components/marked-element/marked-element.h
 <dom-module id="aq-markdown-editor">
 
   <style is="custom-style" include="iron-flex iron-positioning"></style>
-  
+
   <style>
     :host {
       display: block;
       background-color: none;
       height:100%;
     }
-    
+
   </style>
 
-  <template> 
+  <template>
     <div id="editor" class="flex" style="background:white; margin-top:30px; margin-bottom:30px;">
 
       <div class="flex layout horizontal" style="border:1px solid;">
@@ -32,7 +32,7 @@ p<link rel="import" href="../../bower_components/marked-element/marked-element.h
 
         <div class="flex" style="max-width:5%"></div>
 
-        
+
         <!--div class="layout horizontal"-->
           <paper-icon-button icon="editor:format-quote" title="Blockquote"></paper-icon-button>
           <paper-icon-button icon="icons:code" title="Code Sample"></paper-icon-button>
@@ -50,19 +50,25 @@ p<link rel="import" href="../../bower_components/marked-element/marked-element.h
           <paper-button title="Attach" style="color:black; padding:0; margin:5px; max-width:5%;" noink raised>
           <iron-icon style="color:black" icon="editor:attach-file" prefix></iron-icon>Attach
         </paper-button>
-        
+
       </div>
-    
-      <iron-autogrow-textarea placeholder="Share your thoughts" style="height:200px; width:100%; padding-left:0">
+
+      <iron-autogrow-textarea
+        value='{{threadData}}'  placeholder="Share your thoughts" style="height:200px; width:100%; padding-left:0">
       </iron-autogrow-textarea>
 
     </div>
-               
+
   </template>
-  
+
   <script>
     Polymer({
       is: 'aq-markdown-editor',
+      properties: {
+        threadData: {
+          type: String
+        }
+      }
 
     });
   </script>
