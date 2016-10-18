@@ -16,9 +16,6 @@
 		#search {
 		  height: 46px;
 		  line-height: 48px;
-		  --margin-bottom: 12px;
-		  --position:relative;
-		  --z-index:2;
 		}
 	
 		#searchbox {
@@ -30,10 +27,7 @@
 		  padding-left: 10px;
 		  border: 1px solid #e5e5e5;
 		  @apply(--paper-font-body1);
-		  width:100%;
 		  font-size: 16px;
-		  --z-index: 2;
-		  background-color: lightgrey;
 		}
 
 		#searchbox:focus{
@@ -45,19 +39,15 @@
 	      display: block;
 	      margin:0px;
 	      height:46px;
-	      --position:absolute;
 	      background: white;
-	      --color: white;
 	      border: 1px solid #e5e5e5;
 	      border-radius: 0px;
-	      --width: 220%;
 	      width:150px;
 	    }
 
 	    paper-menu {
 	    	cursor: pointer;
-	      --display: block;
-	      width: 150px;
+	     	width: 150px;
 	    }
 
 	    #button {
@@ -69,7 +59,6 @@
 	    paper-button #content{
 	    	position:absolute;
 	    	top:-2px;
-	    	--left:2px;
 	    }
 	 	iron-icon {
 	    	position:absolute;
