@@ -67,14 +67,27 @@
 
 		#menu-icons {
 			position:relative;
-			--margin:0;
-			--padding:0;
-			--margin-right:0;
-			--width:30%;
-			--right:0;
 			float:right;
-			--left:100px;
 			margin: auto 0;
+		}
+
+		paper-icon-button {
+			outline:1px solid;
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		--color:#188364; 
+		}
+
+		paper-icon-button:active {
+			padding: 10px;
+		}
+
+		#backButton {
+			margin:auto 0;
+			outline: none !important;
 		}
 
 		
@@ -83,15 +96,15 @@
 	<template>
 	    <div class="toolbar layout horizontal">
 	    
-	    	<paper-icon-button noink style='margin:auto 0' class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToEditor">
+	    	<paper-icon-button noink id="backButton" title="Go Back" icon="icons:arrow-back" on-tap="goToEditor">
 	  			</paper-icon-button>
 	    	<div class="flex"><h3>All Backtests for {{strategyName}}</h3></div>
-	      	<div id="search" class="flex">	    	
-	    		<paper-icon-button title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
+	      	<!--div id="search" class="flex">	    	
+	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
              	value="{{searchValue::change}}" type="search"
              	on-keydown="checkForKeys" on-blur='close'>
-        	</div>
+        	</div-->
 
 	      	<div id='menu-icons' class="layout horizontal">
 	  			<paper-icon-button noink class="deleteButton" title="Delete" icon="icons:delete" on-tap="onDelete">

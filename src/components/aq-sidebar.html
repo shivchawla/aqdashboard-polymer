@@ -63,13 +63,16 @@
     height:5px;
    }
 
+ 
     paper-icon-item {
       --paper-icon-item: {
         cursor: pointer;
-        font-size: 12px;
+        font-size: 13px;
         --font-weight: bolder; 
         --background-color:#1C263C;
-        color:white;  
+        color:white;
+        width:75%;  
+        margin: 0 auto;
       }
       
       --paper-item-min-height:35px;
@@ -80,7 +83,9 @@
       }
 
       --paper-item-selected: {
-        background-color: #99d3df; --#67aeca; --- ; --#99ced4; --#4ec5c1;
+        background-color: #99ced4; 
+        --width:80%;
+        --margin:0 auto;
       }
 
     }
@@ -110,7 +115,7 @@
       
 
       <div id='navigation'><span class='nav-header'><strong>RESEARCH</strong></span>
-        <paper-menu selected="{{menuSelected}}" attrForSelected="menu-panel">
+        <paper-menu fallback-selection="home" selected="{{menuSelected}}" attr-for-selected="menu-panel">
           <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, `home')}}">Home
             <iron-icon item-icon icon="icons:home"></iron-icon>
           </paper-icon-item>
@@ -174,7 +179,6 @@
 
       menuSelected: {
         type: String,
-        value:0,
       },
 
     },

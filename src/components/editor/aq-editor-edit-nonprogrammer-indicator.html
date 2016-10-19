@@ -176,10 +176,9 @@
 <dom-module id='aq-editor-edit-nonprogrammer-indicator'>
 	
 	<style>
-		paper-card {
-			margin:10px;
-			margin-left:25px;
-			width:95%;
+
+		p {
+			font-size: 13px;
 		}
 
 		span {
@@ -192,17 +191,17 @@
 		}
 
 		#container {
-			--border: 1px solid grey;
 			width:100%;
+			margin-left: 50px;
+			color: #333a56;
 		}
 
 	</style>
 
 	<template>	
-		<h2>Add Indicators</h2>
-		<p>Adding more rules to further filter the stock universe</p>
-
-		<div id='container'>	
+		<div id='container'>
+			<h2>Add Indicators</h2>
+			<p>Adding more rules to further filter the stock universe</p>	
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
