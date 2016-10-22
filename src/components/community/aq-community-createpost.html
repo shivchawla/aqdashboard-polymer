@@ -22,7 +22,7 @@
                      on-iron-deselect="_onThreadSelectChange">
         <!--template is="dom-repeat" items="[[threads]]"-->
 
-        <div class="layout vertical flex" style="width:90%; margin-top:30px; margin-left:15px">
+        <div class="layout vertical flex" style="width:90%; margin-top:30px; margin:0 auto;">
             <div class="flex layout horizontal">
                 <h1 style="height:25px; background-color:white">
                     Create a Post
@@ -40,49 +40,40 @@
             </div>
 
         </div>
-        <iron-ajax
-          url="http://localhost:3002/api/v2/thread"
-          body="{{threadData}}"
-          method='POST'
-          id='thread'
-          headers='{{header}}'
-          handle-as="json"
-          on-response="handlePostThread"
-          last-response="{{ajaxResponse}}"
-          debounce-duration="300"></iron-ajax>
+        <iron-ajax url="http://localhost:3002/api/v2/thread" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
     </template>
     <script>
         Polymer({
-          is: 'aq-community-createpost',
-          properties: {
-            threadData: {
-              type: Object
+            is: 'aq-community-createpost',
+            properties: {
+                threadData: {
+                    type: Object
+                }
+            },
+            ready: function() {
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                this.header = {
+                    "aimsquant-token": user.token,
+                    "Content-Type": "application/json"
+                }
+            },
+            postThread: function() {
+                const scope = document.getElementById('mirror');
+                const input = document.getElementById('input');
+                const thread = scope.innerHTML;
+                const topic = input.value;
+                this.threadData = {
+                    "category": 'Share your idea',
+                    "title": topic,
+                    "markdownText": thread
+                };
+                debugger;
+                this.$.thread.generateRequest();
+            },
+            handlePostThread: function() {
+                debugger;
             }
-          },
-          ready: function() {
-              var x = localStorage.getItem('my-app-storage');
-              var user = JSON.parse(x).user;
-              this.header = {
-                  "aimsquant-token": user.token,
-                  "Content-Type": "application/json"
-              }
-          },
-          postThread: function() {
-            const scope = document.getElementById('mirror');
-            const input = document.getElementById('input');
-            const thread = scope.innerHTML;
-            const topic = input.value;
-            this.threadData = {
-                "category": 'Share your idea',
-                "title": topic,
-                "markdownText": thread
-            };
-            debugger;
-            this.$.thread.generateRequest();
-          },
-          handlePostThread: function () {
-              debugger;
-          }
         });
     </script>
 </dom-module>

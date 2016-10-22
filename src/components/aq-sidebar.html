@@ -22,16 +22,18 @@
   <style>
     :host {
       --sidebar-text: {
-        opacity: var(--dark-primary-opacity);
         font-weight: 500;
         font-size: 14px;
       }
+
     }
 
     .sidenav {
       -ms-user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
+      background-color: #333a56;--#30415d; --#1C263C;-- #EFEFEF;--D9D9D9;--#E0F2F1
+      opacity: var(--dark-primary-opacity);
     }
 
     paper-toolbar {
@@ -40,14 +42,16 @@
         margin-left: 0px !important;
       };
 
-      --paper-toolbar-background: #fff;
-      --paper-toolbar-color: #000;
+    --paper-toolbar-background: #1C263C;
+
       opacity: var(--dark-primary-opacity);
-      border-bottom: 1px solid #e0e0e0;
+      --border-bottom: 1px solid #e0e0e0;
     }
 
     paper-menu {
       padding-bottom: 0;
+      background-color: #333a56;--#30415d;
+      opacity: var(--dark-primary-opacity);
     }
 
      iron-icon{
@@ -59,40 +63,31 @@
     height:5px;
    }
 
+ 
     paper-icon-item {
       --paper-icon-item: {
         cursor: pointer;
-        font-size: 14px;      
+        font-size: 13px;
+        --font-weight: bolder; 
+        --background-color:#1C263C;
+        color:white;
+        width:75%;  
+        margin: 0 auto;
       }
       
       --paper-item-min-height:35px;
       --paper-item-icon-width:35px;
       
-
       --paper-item-icon: {
-        color: #000;
-        opacity: var(--dark-secondary-opacity);
+        color: white;
       }
 
       --paper-item-selected: {
-        color: var(--default-primary-color);
-        background-color: #e8e8e8;
-        opacity: 1;
+        background-color: #99ced4; 
+        --width:80%;
+        --margin:0 auto;
       }
-    }
 
-    paper-icon-item.iron-selected {
-      --paper-item-icon: {
-        color: var(--default-primary-color);
-        opacity: 1;
-      };
-    }
-
-    paper-icon-item .item-text {
-      @apply(--sidebar-text);
-    }
-    paper-icon-item.iron-selected .item-text {
-      opacity: 1;
     }
 
     #navigation {
@@ -120,7 +115,7 @@
       
 
       <div id='navigation'><span class='nav-header'><strong>RESEARCH</strong></span>
-        <paper-menu selected="{{menuSelected}}" attrForSelected="menu-panel">
+        <paper-menu fallback-selection="home" selected="{{menuSelected}}" attr-for-selected="menu-panel">
           <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, `home')}}">Home
             <iron-icon item-icon icon="icons:home"></iron-icon>
           </paper-icon-item>
@@ -129,9 +124,9 @@
             <iron-icon item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
           </paper-icon-item>
 
-          <paper-icon-item id='menu-analyze' menu-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">Analyze
+          <!--paper-icon-item id='menu-analyze' menu-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">Analyze
             <iron-icon item-icon icon="vaadin-icons:chart"></iron-icon>
-          </paper-icon-item>
+          </paper-icon-item-->
           
           <paper-icon-item menu-panel="community" on-tap="onSelected" active="{{_isEqual(menuSelected, 'community')}}">Community
             <iron-icon item-icon icon="vaadin-icons:group"></iron-icon>
@@ -161,9 +156,9 @@
           <iron-icon item-icon icon="icons:feedback"></iron-icon>
         </paper-icon-item>
 
-        <paper-icon-item action-panel='lockscreen' on-tap="onAction">Lock Screen
+        <!--paper-icon-item action-panel='lockscreen' on-tap="onAction">Lock Screen
           <iron-icon item-icon icon="vaadin-icons:lock"></iron-icon>
-        </paper-icon-item>
+        </paper-icon-item-->
 
       </div>
             

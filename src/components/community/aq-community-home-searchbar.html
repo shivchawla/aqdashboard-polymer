@@ -16,9 +16,7 @@
 		#search {
 		  height: 46px;
 		  line-height: 48px;
-		  --margin-bottom: 12px;
-		  --position:relative;
-		  --z-index:2;
+		  width:70%;
 		}
 	
 		#searchbox {
@@ -30,10 +28,10 @@
 		  padding-left: 10px;
 		  border: 1px solid #e5e5e5;
 		  @apply(--paper-font-body1);
-		  width:100%;
 		  font-size: 16px;
-		  --z-index: 2;
-		  background-color: lightgrey;
+		  margin-left:-0px;
+		  --border-left:none !important;
+		  margin-top:1px;
 		}
 
 		#searchbox:focus{
@@ -45,19 +43,15 @@
 	      display: block;
 	      margin:0px;
 	      height:46px;
-	      --position:absolute;
 	      background: white;
-	      --color: white;
 	      border: 1px solid #e5e5e5;
 	      border-radius: 0px;
-	      --width: 220%;
 	      width:150px;
 	    }
 
 	    paper-menu {
 	    	cursor: pointer;
-	      --display: block;
-	      width: 150px;
+	     	width: 150px;
 	    }
 
 	    #button {
@@ -69,8 +63,8 @@
 	    paper-button #content{
 	    	position:absolute;
 	    	top:-2px;
-	    	--left:2px;
 	    }
+
 	 	iron-icon {
 	    	position:absolute;
 	    	top: 10px;
@@ -81,26 +75,21 @@
 			width: 50px
 		}
 
+		#category-dd {
+			--dropdown-width:170px;
+			--dropdown-border: 1px solid #e5e5e5;
+			--dropdown-height:46px;
+			--dropdown-font-size:16px;
+			--dropdown-paper-menu-font-size:16px;
+			--dropdown-background-color:#99ced4;
+		}
+
 
 	</style>
 	
 	<template>
-      		<div id="search" class="layout horizontal">
-	      		<paper-menu-button id="button" vertical-offset = 47>
-	        		<paper-button noink class="dropdown-trigger">
-	        			<div id='content'>
-	        				<span id="category">{{selectedCategory}}</span>
-	        				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
-	        			</div>  
-	        		</paper-button>
-	        		
-	        		<paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selectedCategory}}">
-	        		 	<paper-item value="Everywhere">Everywhere</paper-item>
-	        			<paper-item value="Category 1">Category 1</paper-item>
-	        			<paper-item value="Category 2">Category 2</paper-item>
-	        			<paper-item value="Category 3">Category 3</paper-item>
-	        		</paper-menu>
-	    		</paper-menu-button>
+      		<div id="search" class="flex layout horizontal">
+	    		<aq-dropdown horizontal-offset=0 vertical-offset=50 class="self-center" id='category-dd' options="[[categories]]"></aq-dropdown>
     		
 
 	  			<input id="searchbox" placeholder="Search posts " class="flex"
@@ -108,6 +97,8 @@
 			</div>
 	</template>
 	<script >
+		var categories = [{value:'Everywhere',index:0},{value:'Share your Idea',index:1},{value:'FAQ',index:2},{value:'Announcements',index:3}];
+		
 		Polymer({
 			is: 'aq-community-home-searchbar',
 			properties: {
@@ -115,6 +106,10 @@
 						type: String,
 						value: 'Everywhere',
 				},
+			},
+
+			ready() {
+				this.categories = categories;
 			},
 
 		});
