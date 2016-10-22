@@ -175,7 +175,17 @@
                         <paper-checkbox noink checked?="{{rememberMe}}"></paper-checkbox>
                         <span>Remember Me</span>
                     </template>
-                    <iron-ajax url="http://localhost:3002/api/v2/user/login" body="{{loginBody}}" method='POST' id='login' handle-as="json" on-response="handleResponse" headers='{"Content-Type": "application/json"}' debounce-duration="300"></iron-ajax>
+                    <iron-ajax
+                      url="http://localhost:3002/api/v2/user/login"
+                      body="{{loginBody}}"
+                      method='POST'
+                      id='login'
+                      handle-as="json"
+                      on-response="handleResponse"
+                      headers='{"Content-Type": "application/json"}'
+                      debounce-duration="300">
+                    </iron-ajax>
+
 
                     <paper-button raised class="loginButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
                     </paper-button>

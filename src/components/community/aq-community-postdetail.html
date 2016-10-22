@@ -13,7 +13,7 @@
 
 
 <dom-module id="aq-community-postdetail">
-  
+
    <style>
     #container {
       margin-top: 20px;
@@ -30,7 +30,7 @@
     paper-icon-button {
       padding-left: 0px;
     }
-    
+
   </style>
   <template>
     <div id='container'>
@@ -43,13 +43,13 @@
       <aq-community-postdetail-content></aq-community-postdetail-content>
       <aq-community-postdetail-content></aq-community-postdetail-content>
       <aq-community-postdetail-content></aq-community-postdetail-content>
-      
+
       <aq-community-postdetail-reply></aq-community-postdetail-reply>
-      
+
     </div>
 
   </template>
-  
+
   <script>
     Polymer ({
       is: 'aq-community-postdetail',
@@ -59,9 +59,9 @@
       },
 
       goBack() {
-        this.router.go('/dashboard/community');
+          this.router.go('/dashboard/community');
       },
-      
+
     });
 
   </script>
