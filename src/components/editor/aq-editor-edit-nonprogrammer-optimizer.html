@@ -96,7 +96,7 @@
 			
 			onDelete(e){
 				e.currentTarget.parentElement.remove();
-			}
+			},
 			
 		});
 	</script>
@@ -106,8 +106,16 @@
 <dom-module id='aq-editor-edit-nonprogrammer-optimizer'>
 	
 	<style>
+		
+		#container {
+			width:95%;
+			margin: 0 auto;
+			color:#333a56;
+		}
+
 		span {
 			font-size: 13px;
+			margin-left: 10px;
 		}
 
 		.basic {
@@ -117,7 +125,9 @@
 		}
 
 		aq-dropdown {
-			--dropdown-width:250px;		
+			--dropdown-width:250px;
+			--background-color: white;
+			
 		}
 
 		#weightscheme-dd {
@@ -128,67 +138,69 @@
 			color:blue;
 		}
 
-		#container {
-			margin-left:5%;
-			color:#333a56;
+		.prg_weights {
+			margin-top: 20px;
+			width: 30%;
+			margin-right: 30px;
+			min-width:300px;
+		}
+
+		.prg_horizon {
+			margin-top:20px;
+			--width:50%;
 		}
 
 	</style>
 
-	<template>			
-		<div id='container'>	
-			<h2>Portfolio Optimization</h2>		
+	<template>	
+		<div id='container'>			
 			<span>Pick the optimizer</span>
 			<aq-dropdown id ='optType-dd' options="[[optimizerOptions]]"></aq-dropdown>
-
+		
 			<iron-pages selected="{{optimizationType}}">
 
 				<div>
-					<span>Selected a weighting scheme</span>
-					<!--aq-dropdown id='weightscheme-dd' options="[[weightedPortOptions]]"></aq-dropdown>
+					<!--span>Selected a weighting scheme</span>
+					<aq-dropdown id='weightscheme-dd' options="[[weightedPortOptions]]"></aq-dropdown>
+					
 					<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
 						<span>Days:</span>
 						<input>	
 					</template-->
-					<paper-radio-group attr-for-selected="index" selected="{{weightScheme}}">
+					<div class="layout">
+					<paper-radio-group class="prg_weights" attr-for-selected="index" selected="{{weightScheme}}">
 						
 						<template is='dom-repeat' items='{{weightedPortOptions}}'>
 							<paper-radio-button index={{item.index}} name="{{item.value}}">{{item.value}}</paper-radio-button>
 						</template>
-
-						<!--paper-radio-button index=0 name="uniform">
-							Uniform Weighting
-						</paper-radio-button>
-						<paper-radio-button index=1 name="mcap">Market Capitalization
-						</paper-radio-button>
-						<paper-radio-button index=2 name="crmcap">Cube Root Market Capitalization
-						</paper-radio-button>
-						<paper-radio-button index=3 name="1year">Reverse Volatility
-						</paper-radio-button-->
 					</paper-radio-group>
 
 					<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
-						<div>
-							<span>Select the horizon of historical standard deviation</span>
-								<paper-radio-group>
-									<paper-radio-button toggles name="1month">1 Month
-									</paper-radio-button>
-									<paper-radio-button  toggles name="3months">3 Month
-									</paper-radio-button>
-									<paper-radio-button  toggles name="6months">6 months
-									</paper-radio-button>
-									<paper-radio-button  toggles name="1year">1 year
-									</paper-radio-button>
-									<paper-radio-button  toggles name="2year">2 year
-								</paper-radio-button>
-							</paper-radio-group>
-						</div>	
+
+							<div class="layout vertical prg_horizon">	
+								<div><span>Select the horizon of historical standard deviation
+								</span></div>
+								<div>
+									<paper-radio-group>
+										<paper-radio-button toggles name="1month">1 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="3months">3 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="6months">6 months
+										</paper-radio-button>
+										<paper-radio-button  toggles name="1year">1 year
+										</paper-radio-button>
+										<paper-radio-button  toggles name="2year">2 year
+										</paper-radio-button>
+									</paper-radio-group>
+								</div>		
+							</div>
 					</template>
 
 
 					<template is='dom-if' if='{{isNormalizedMomentum(weightScheme)}}'>
-						<div>
-							<span>Select the horizon for momentum</span>
+						<div class="layout vertical prg_horizon">
+							<div><span>Select the horizon for momentum</span></div>
 								<paper-radio-group>
 									<paper-radio-button toggles name="1month">1 Month
 									</paper-radio-button>
@@ -203,6 +215,7 @@
 							</paper-radio-group>
 						</div>	
 					</template>
+					</div>
 
 				</div>
 
@@ -228,16 +241,8 @@
 						</paper-button>
 					</div>
 
-					<div id='constraintcontainer'>
-						<aq
-					</div>
-
-
 				</div>
-
 			</iron-pages>
-
-
 		</div>
 	</template>
 
@@ -253,7 +258,7 @@
 			properties: {
 				optimizationType :{
 					type:Number,
-					value:-1,
+					value:0,
 				},
 
 				weightScheme:{

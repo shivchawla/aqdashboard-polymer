@@ -6,51 +6,89 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="../aq-markdown-editor.html">
+<link rel="import" href="../../dialog/aq-community-selectstrategybacktest-dialog.html">
+<link rel='import' href='../common/aq-dropdown.html'>
+<link rel='import' href='../analyze/aq-analyze-home-backtest-item.html'>
 
-<style is="custom-style" include="iron-flex iron-positioning"></style>
 
 <dom-module id="aq-community-createpost">
+    <style is="custom-style" include="iron-flex iron-positioning"></style>
+    
+    <style>
+      #container {
+          width:90%;
+          margin:0 auto;
+          color:#333a56;   
+      }
+   
+      input {
+        height: 32px;
+        font-size: 18px;
+        margin-bottom: 5px;
+        color:#333a56;
+        border:1px solid #e5e5e5;
+        padding-left: 10px;
+      }
+
+      input:focus {
+        outline: none;
+      }
+
+      aq-dropdown {
+        --dropdown-height: 32px;
+        --dropdown-font-size:18px;
+        margin-bottom: 5px;
+      }
+
+    </style>
+
     <template>
-        <!--div class="scroll-content"-->
+        <div id='container' class="layout vertical flex">
+            <h1>
 
-        <!-- TODO: don't pass all messages, users, labels into mail-thread -->
-        <!-- activate-event="" ensures entire thread isn't selectable. -->
-        <!--iron-selector id="threadlist" multi activate-event=""
-                     selected-attribute="selected"
-                     selected-items="{{selectedThreads}}"
-                     on-iron-select="_onThreadSelectChange"
-                     on-iron-deselect="_onThreadSelectChange">
-        <!--template is="dom-repeat" items="[[threads]]"-->
-
-        <div class="layout vertical flex" style="width:90%; margin-top:30px; margin:0 auto;">
-            <div class="flex layout horizontal">
-                <h1 style="height:25px; background-color:white">
-                    Create a Post
-                </h1>
-            </div>
-
-            <paper-input label="Topic" style="width:100%; height:30px; margin-bottom:10px"></paper-input>
+                Create a Post
+            </h1>
+       
+            <input label="Topic" placeholder="Heading of the Post">
+            <aq-dropdown class="flex" options="[[options]]"></aq-dropdown>
 
             <aq-markdown-editor placeholder="Describe in detail"></aq-markdown-editor>
 
             <div class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised style="max-width:5%" noink on-tap="Preview">Preview</paper-button>
-                <paper-button raised style="max-width:5%" noink on-tap="postThread">Submit</paper-button>
+                <paper-button raised noink on-tap='previewSelected'>Preview</paper-button>
+
+                <paper-button raised noink on-tap="postThread">Submit</paper-button>
             </div>
 
         </div>
+
+        <aq-community-selectstrategybacktest-dialog id ="dialog" heading="Select Strategy-Backtest">
+        </aq-community-selectstrategybacktest-dialog>
+
+
         <iron-ajax url="http://localhost:3002/api/v2/thread" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
     </template>
     <script>
+      var options = [{value:"Select Category",index:-1},{value:"A",inded:0},{value:"B",index:1},{value:"C",index:2}];
+
         Polymer({
             is: 'aq-community-createpost',
             properties: {
                 threadData: {
-                    type: Object
-                }
+                    type: Object,
+                },
+                options :{
+                  type:Array,
+                },
             },
+
+            listeners :{
+              'attach-pressed':'onAttach',
+            },
+
             ready: function() {
+                this.options = options;
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
                 this.header = {
@@ -70,8 +108,14 @@
                 };
                 this.$.thread.generateRequest();
             },
+            
             handlePostThread: function() {
-            }
+            },
+
+            onAttach() {
+              this.$.dialog.open();      
+            },
+
         });
     </script>
 </dom-module>

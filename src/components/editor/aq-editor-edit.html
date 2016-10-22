@@ -29,15 +29,6 @@
 
 <style>
 
-  :host {
-      display: block;
-      background-color: #E5E5E5;
-      -ms-user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-    }
-
-
   paper-icon-button {
     width:35px;
     height:35px;
@@ -92,6 +83,11 @@
           value:false,
         },
       },
+
+      attached() {
+        this.fire('close-menu');
+      },
+
 
       listeners: {
         'close-all':'closeAll',

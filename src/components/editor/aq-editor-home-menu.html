@@ -77,6 +77,22 @@
 			margin: auto 0;
 		}
 
+		.iconButton {
+			outline:1px solid #cf6766;;
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		color: white; --#188364; --#333a56; 
+    		background-color: #cf6766;
+		}
+
+		.iconButton:active {
+			padding: 10px;
+		}
+
+
 		
 	</style>
 	
@@ -85,23 +101,23 @@
 	    
 	    	<div class="flex"><h3>All Strategies</h3></div>
 	      	<div id="search" class="flex">	    	
-	    		<paper-icon-button title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
+	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
              	value="{{searchValue::change}}" type="search"
              	on-keydown="checkForKeys" on-blur='close'>
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	      		<paper-icon-button noink class="searchButton" title="Search" icon="icons:search" on-tap="toggle">	
+	      		<paper-icon-button noink class="iconButton" title="Search" icon="icons:search" on-tap="toggle">	
 	      		</paper-icon-button>
 
-	      		<paper-icon-button noink class="createNewButton" title="New" icon="icons:add" on-tap="createNew">	
+	      		<paper-icon-button noink class="iconButton" title="New" icon="icons:add" on-tap="createNew">	
 	      		</paper-icon-button>
 
-	  			<paper-icon-button noink class="deleteButton" title="Delete" icon="icons:delete" on-tap="onDelete">
+	  			<paper-icon-button noink class="iconButton" title="Delete" icon="icons:delete" on-tap="onDelete">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="compareButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				<paper-icon-button noink class="iconButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
 				</paper-icon-button>
 			</div>      	
   		</div>

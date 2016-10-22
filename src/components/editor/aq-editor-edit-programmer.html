@@ -56,8 +56,9 @@
 
     paper-toolbar {
       --paper-toolbar-height:40px;
-      --paper-toolbar-background:#B2DFDB;--#e0f2f1;
-      --paper-toolbar-color:black;--teal;
+      --paper-toolbar-background:#99d3df;
+      --paper-toolbar-color:#333a56;
+
     }
 
     paper-tabs :hover{
@@ -75,15 +76,12 @@
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
   <template>
-
-
+  
       <paper-drawer-panel drawer-width='370px' responsive-width='730px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
        <div main> 
         <juicy-ace-editor style="height:100%;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="13px" id="code-editor" wrapmode tabsize="4">
         </juicy-ace-editor>  
         </div>
-
-
 
         <paper-header-panel drawer mode="seamed">
           <paper-toolbar>

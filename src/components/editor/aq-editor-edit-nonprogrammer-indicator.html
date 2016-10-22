@@ -12,11 +12,13 @@
 		}
 
 		paper-icon-button {
-			--margin-right:10px;
+			margin-right:15px;
 			margin-left:10px;
 			padding:0px;
-			height:16px;
-			width:16px;
+			height:20px;
+			width:20px;
+			background-color: teal;
+			color: white;
 		}
 
 		#secondInput {
@@ -37,6 +39,10 @@
 			--dropdown-width:200px;
 		}
 
+		#operator-type {
+			--dropdown-width:150px;
+		}
+
 		#analytic-type {
 			--dropdown-width:150px;
 			margin-left:20px;
@@ -47,33 +53,25 @@
 		}
 
 		#indicator {
-			--border:1px solid teal;
+			border:1px solid teal;
 			width:100%;
 			margin-bottom: 10px;
+
 		}
 
-		paper-card {
-			--width:100%;
-		}
 		
 
 	</style>
 
 	<template>
 
-	<div id='indicator' class="layout horizontal">	
-	<paper-card >
-		<div class="layout horizontal">
-			<p>{{indicator}} of {{analytic}} over {{horizon}} is {{operator}}</p>
-			<paper-icon-button icon="editor:mode-edit" on-tap='toggle'></paper-icon-button>
-		</div>
-		<iron-collapse id='collapse'>
-			<div id= 'indicator'>
+	<div id='indicator' class="layout horizontal">		
+			<!--div-->
 				<aq-dropdown class="self-center" id='indicator-type' options="[[indicatorOptions]]"></aq-dropdown>
 				<span class="self-center"> of</span>
 				<aq-dropdown class="self-center" id='analytic-type' options="[[analyticOptions]]"></aq-dropdown>
 					
-				<div style="margin-left:20px;" class="layout horizontal">
+				<!--div style="margin-left:20px;" class="layout horizontal"-->
 				    <span class="self-center" > over</span>
 				    <aq-dropdown class="self-center"  id='horizon-type' options="[[horizonOptions]]"></aq-dropdown>
 					<span class="self-center" >is</span>
@@ -82,11 +80,9 @@
 					<input class="self-center" >
 				    <div class="gap"></div>
 				    <input class="self-center"  id='secondInput'>
-				</div>
-			</div>
-		</iron-collapse>
-		  
-	</paper-card>
+				<!--/div-->
+			<!--/div-->
+			<div class="flex"></div>
 		<paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>	  
 		</div>
 	</template>
@@ -176,11 +172,6 @@
 <dom-module id='aq-editor-edit-nonprogrammer-indicator'>
 	
 	<style>
-
-		p {
-			font-size: 13px;
-		}
-
 		span {
 			font-size: 13px;
 			margin-left: 10px;
@@ -191,17 +182,32 @@
 		}
 
 		#container {
-			width:100%;
-			margin-left: 50px;
-			color: #333a56;
+			width:95%;
+			margin: 0 auto;
+			color:#333a56;
 		}
+
+		paper-icon-button {
+			background-color:teal;
+			color:white;
+			margin:auto 0;
+		}
+
+		paper-icon-button:active {	
+			padding: 10px;
+		}
+
 
 	</style>
 
 	<template>	
-		<div id='container'>
-			<h2>Add Indicators</h2>
-			<p>Adding more rules to further filter the stock universe</p>	
+		<div id='container'>	
+		<div class="layout horizontal">
+			<p>Adding more rules to further filter the stock universe</p>
+			<div class="flex"></div>
+			<paper-icon-button on-tap='addConstraints' title="Add Indicator" noink icon="icons::add"></paper-icon-button> 
+		</div>	
+		
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>

@@ -15,15 +15,13 @@
   
 	<style>
 
-		:host([narrow-viewport]) .header,
-      	:host([narrow-viewport]) .row,
-      	:host([narrow-viewport]) .row a {
+		:host([narrow-viewport]) .strategy-name ,
+      	:host([narrow-viewport]) .strategy-desc {
         	@apply(--layout-vertical);
       	}
 
-      	:host(:not([narrow-viewport])) .header,
-        :host(:not([narrow-viewport])) .row,
-        :host(:not([narrow-viewport])) .row a {
+		:host([narrow-viewport]) .strategy-name ,
+      	:host([narrow-viewport]) .strategy-desc {
         	@apply(--layout-horizontal);
       	}
 
@@ -40,6 +38,8 @@
 	    .row {
 	        border-bottom: 1px solid #e5e5e5;
 	        border: 1px solid #d0d0d0;
+	        background-color: #e5f1f5;
+	        color:#02558b;--#cf6766;
 	      }
 
         .row {
@@ -48,6 +48,7 @@
 	        width: 100%;
 	        font-weight: 400;
 	        font-size: 13px;
+
 	    }
 
      	.row paper-checkbox {
@@ -57,15 +58,15 @@
 	    }
 
         .row.hover {
-	        background:#E0F2F1;
+	        background:#e5f1f5; ---#e7e8ee; --#b2b6c5; --#afb4c9; --#828bab;--#616b91; --#E0F2F1;
 	    }
    
         .strategy-name {
 	        min-width:250px;
-	        font-weight: bold;
+	        --font-weight: bold;
 	    }
 
-	    .strategy-name span{
+	    .strategy-name span:hover{
 	    	text-decoration: underline;
 	    	cursor: pointer;
 	    }
@@ -74,7 +75,7 @@
 	      	min-width: 350px;
 	    }
 
-        .strategy-bt {
+        .strategy-bt:hover {
 	      	cursor: pointer;
 	    	text-decoration: underline;
         }
@@ -84,7 +85,7 @@
         }
 
         .row .strategy-desc{
-	        color: #757575;
+	        --color: #757575;
 	    }
  
 	</style>
@@ -92,7 +93,6 @@
 	<template>
     		<div class="row flex layout horizontal">
 		      	<paper-checkbox noink></paper-checkbox>
-		        <div class="layout horizontal">
 		          <div class="strategy-name self-center"><span on-click = 'goToEditor'>{{strategyName}}</span></div>  
 		          <div class="strategy-desc self-center">{{strategyDesc}}</div>
 		          <div on-click='goToAnalyze' class="strategy-bt self-center">{{numBacktest}}</div>   

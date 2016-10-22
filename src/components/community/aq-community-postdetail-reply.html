@@ -5,15 +5,17 @@
 <dom-module id="aq-community-postdetail-reply">
 
   <template>
-    <div id="replybox" class="flex layout vertical" style="background:white; margin-top:30px; margin-bottom:30px;">
-      <aq-markdown-editor></aq-markdown-editor>
-      <div class="layout horizontal">
-        <div class="flex"></div>
-        <paper-button raised style="max-width:5%" noink>Preview</paper-button>
-        <paper-button raised style="max-width:5%" noink on-tap="postThread">Reply</paper-button>
+      <div id="replybox" class="flex layout vertical">
+
+        <aq-markdown-editor placeholder="Write a reply"></aq-markdown-editor>
+        <div class="layout horizontal">
+          <div class="flex"></div>
+          <paper-button raised noink>Preview</paper-button>
+          <paper-button raised noink on-tap="postThread">Reply</paper-button>
+        </div>
       </div>
-    </div>
-    <iron-ajax url="http://localhost:3002/api/v2/thread/{{threadid}}" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
+      
+      <iron-ajax url="http://localhost:3002/api/v2/thread/{{threadid}}" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
   </template>
 
   <script>

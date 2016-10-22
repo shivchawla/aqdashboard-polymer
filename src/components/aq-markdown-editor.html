@@ -1,87 +1,54 @@
-p<link rel="import" href="../../bower_components/marked-element/marked-element.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="./simplemde.html">
 
 <dom-module id="aq-markdown-editor">
 
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
-
   <style>
-    :host {
-      display: block;
-      background-color: none;
-      height:100%;
-    }
-
-<<<<<<< HEAD
-=======
-    paper-icon-button:active {
-      padding:10px;
-    }
-
-    paper-icon-button {
-      width:35px;
-      height:35px;  
-    }
     
->>>>>>> master
+    .CodeMirror {
+      height: var(--editor-height, 300px);
+    }
+
   </style>
 
   <template>
-    <div id="editor" class="flex" style="background:white; margin-top:30px; margin-bottom:30px;">
-
-      <div class="flex layout horizontal" style="border:1px solid;">
-        <!--div class="flex horizontal layout"-->
-          <paper-icon-button noink icon="editor:format-bold" title="Bold"></paper-icon-button>
-          <paper-icon-button noink icon="editor:format-italic" title="Italic"></paper-icon-button>
-          <paper-icon-button noink icon="editor:format-underlined" title="Underline" ></paper-icon-button>
-        <!--/div-->
-
-        <div class="flex" style="max-width:5%"></div>
-
-
-        <!--div class="layout horizontal"-->
-          <paper-icon-button noink icon="editor:format-quote" title="Blockquote"></paper-icon-button>
-          <paper-icon-button noink icon="icons:code" title="Code Sample"></paper-icon-button>
-          <paper-icon-button noink icon="icons:link" title="Hyperlink"></paper-icon-button>
-          <paper-icon-button noink icon="editor:insert-photo" title="Image"></paper-icon-button>
-        <!--/div-->
-
-        <div class="flex" style="max-width:5%"></div>
-        <!--div class="layout horizontal"-->
-        <paper-icon-button noink icon="editor:format-list-bulleted" title="Bullet List"></paper-icon-button>
-        <paper-icon-button noink icon="editor:format-list-numbered" title="Number List"></paper-icon-button>
-        <!--/div-->
-
-        <div class="flex"></div>
-          <paper-button title="Attach" style="color:black; padding:0; margin:5px; max-width:5%;" noink raised>
-          <iron-icon style="color:black" icon="editor:attach-file" prefix></iron-icon>Attach
-        </paper-button>
-
-      </div>
-
-      <iron-autogrow-textarea
-        value='{{threadData}}'  placeholder="Share your thoughts" style="height:200px; width:100%; padding-left:0">
-      </iron-autogrow-textarea>
-
-    </div>
-
+    <textarea id="MyID" name="content" class="te"></textarea>
   </template>
 
   <script>
     Polymer({
       is: 'aq-markdown-editor',
-      properties: {
-        threadData: {
-          type: String
+      
+      properties:{
+        
+        toolbar:{
+          type:Array,
+          value:["bold","italic","heading","strikethrough","|",
+                  "code", "quote", "unordered-list", "ordered-list","|",
+                 "link","table","dsd","|","preview","side-by-side", "fullscreen"],
+        },
+        
+        placeholder: {
+          type:String,
+          value:"Share your thoughts",
+        },
+      },
+      
+      ready() {
+        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeholder});
+      },
+    
+      getContent: function(){
+        return this.simplemde.value();
+      },
+      
+      setContent: function(content){
+        if (this.simplemde){
+          this.simplemde.value(content);
         }
-      }
-
+      },
     });
   </script>
+
 </dom-module>
+

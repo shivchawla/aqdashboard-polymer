@@ -1,0 +1,37 @@
+<link rel="import" href="../../../bower_components/marked-element/marked-element.html">
+<link rel="import" href="../../../bower_components/prism-element/prism-highlighter.html">
+<dom-module id="aq-help-marked-item">
+
+	<style>
+		
+		marked-element {
+			margin-bottom: 10px;
+			background-color: none;
+		}
+
+		.markdown-html pre {
+			background-color: #e0e0e0;
+		}
+
+	</style>
+
+    <template>  
+    	<prism-highlighter></prism-highlighter>
+		<marked-element markdown="[[helpText]]">
+		    <div class="markdown-html"></div>
+			<!--script type="text/markdown">[[helpText]]```hkfhdshfshskfsfshk```</script-->
+		</marked-element>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-help-marked-item',
+			properties:{
+				helpText :{
+					type:String,
+				},
+			},
+		});
+	</script>
+
+</dom-module>

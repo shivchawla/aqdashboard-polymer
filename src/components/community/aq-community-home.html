@@ -159,8 +159,8 @@
                     value: 0
                 },
                 items: {
-                    type: Object
-                }
+                    type: Object,
+                },
             },
             ready: function() {
                 var x = localStorage.getItem('my-app-storage');
@@ -186,7 +186,7 @@
             },
             createPost() {
                 this.router.go('/dashboard/community/create');
-            }
+            },
         });
     </script>
 </dom-module>

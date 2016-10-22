@@ -4,6 +4,7 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="../components/aq-toolbar.html">
+<link rel="import" href="../components/help/aq-help-home.html">
 
 
 <dom-module id="aq-help-main">
@@ -14,6 +15,9 @@
     }
   </style>
   <template>
+      <app-router mode="hash" trailingSlash="ignore">
+          <app-route path="/dashboard/help" element='aq-help-home' bindrouter=""></app-route>
+      </app-router>
   </template>
 
   <script>

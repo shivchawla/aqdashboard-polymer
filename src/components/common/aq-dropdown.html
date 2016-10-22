@@ -1,15 +1,14 @@
 <dom-module id='aq-dropdown'>
 	<style>
-		paper-button {
-			border: var(--dropdown-border, 1px solid grey);
-			width: var(--dropdown-width,10px);
-			min-width:10px;
-			text-transform: none;
+		paper-button {	
+			border-radius: 0px;	
+			border: var(--dropdown-border, 1px solid #e5e5e5);
+			width: var(--dropdown-width,100%);	
+ 			text-transform: none;
 			font-weight: var(--dropdown-font-weight, normal);
 			font-size: var(--dropdown-font-size,12px);
 			height: var(--dropdown-height, 30px);
 			background-color: var(--dropdown-background-color, white);
-			margin:0px;
 		}
 
 		paper-item {
@@ -17,18 +16,31 @@
 			font-size: var(--dropdown-paper-menu-font-size, 12px);
 			text-decoration: none;
 			background-color: var(--dropdown-background-color, white);
+			width: var(--dropdown-width,100%);
 		}
 
-		paper-menu-button {
-			--paper-menu-button-dropdown:{
-				width: var(--dropdown-width,10px);
+		paper-menu-button {	
+			width: var(--dropdown-width,100%);
+			--paper-menu-button-content: {
+				width: var(--dropdown-width, 100%);
 				--background-color: var(--dropdown-background-color, white);
+				min-width: var(--dropdown-min-width, 100px);
 			}
 		}
 
-		paper-menu-button {
-			padding: 0px;
-		}
+		paper-menu-button {	
+			--paper-menu-button-dropdown: {
+				--width: var(--dropdown-width, 100%);
+				--background-color: var(--dropdown-background-color, white);
+				min-width: var(--dropdown-min-width, 100px);
+				position: relative;
+			}
+		
+		paper-listbox {
+			--paper-listbox-background-color:var(--dropdown-background-color, white);	
+			}
+		
+
 
 	</style>
 
@@ -39,12 +51,12 @@
 				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
     		</paper-button>
         	
-			<paper-menu class="dropdown-content flex" attr-for-selected='label' selected="{{selectedCategory}}">
+			<paper-listbox class="dropdown-content flex" attr-for-selected='label' selected="{{selectedCategory}}">
 
 				<template is='dom-repeat' items='{{options}}'>
 					<paper-item label='{{item}}'>{{item.value}}</paper-item>
 				</template>
-			</paper-menu>
+			</paper-listbox>
 		</paper-menu-button>
 	</template>
 
@@ -66,7 +78,6 @@
 					type:Number,
 					value:0,
 				},
-
 				verticalOffset: {
 					type: Number,
 					value: 40,
@@ -76,7 +87,6 @@
 					type:Number,
 					value:0,
 				},
-
 			},
 
 			optionsAdded() {
