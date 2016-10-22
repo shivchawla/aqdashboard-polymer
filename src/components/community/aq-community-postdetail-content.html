@@ -46,12 +46,10 @@
             <span id="date">{{item.updatedAt}}</span>
           </div>
       </div>
-
-      <marked-element>
+      <marked-element markdown="{{item.markdownText}}">
         <div class="markdown-html"></div>
-           <script type="text/markdown">{{item.mardownText}}
-          </script>
       </marked-element>
+
     </div>
   </template>
 

@@ -4,24 +4,38 @@
 
 <dom-module id="aq-community-postdetail-reply">
 
-  <template> 
+  <template>
     <div id="replybox" class="flex layout vertical" style="background:white; margin-top:30px; margin-bottom:30px;">
-
       <aq-markdown-editor></aq-markdown-editor>
-
       <div class="layout horizontal">
         <div class="flex"></div>
         <paper-button raised style="max-width:5%" noink>Preview</paper-button>
-        <paper-button raised style="max-width:5%" noink>Reply</paper-button>
+        <paper-button raised style="max-width:5%" noink on-tap="postThread">Reply</paper-button>
       </div>
-
     </div>
-        
+    <iron-ajax url="http://localhost:3002/api/v2/thread/{{threadid}}" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
   </template>
-  
+
   <script>
     Polymer({
       is: 'aq-community-postdetail-reply',
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          }
+      },
+      postThread: function() {
+          const scope = document.getElementById('mirror');
+          const thread = scope.innerHTML;
+          this.threadData = {
+              "markdownText": thread
+          };
+          // this.router.go('/dashboard/community/topics/');
+          this.$.thread.generateRequest();
+      }
     });
   </script>
 </dom-module>

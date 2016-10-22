@@ -1,7 +1,7 @@
 
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
@@ -81,7 +81,7 @@
 
 	<template>
 		<paper-drawer-panel drawer-width='370px' responsive-width='730px' class="headerpanel" id="drawerpanel" right-drawer force-narrow="{{computeForceNarrow(showSideBar, selectedSideBar)}}"">
-         	
+
          	<paper-header-panel id='container' main mode="seamed">
 	         	<paper-toolbar>
 	         		<paper-tabs noink selected="{{selectedSideBar}}">
@@ -97,16 +97,16 @@
 	         	</paper-toolbar>
 
 	            <!--paper-header-panel id='leftpanel' mode="seamed"-->
-		            <iron-pages selected="{{selectedSideBar}}">	
+		            <iron-pages selected="{{selectedSideBar}}">
 
-		            	<aq-editor-edit-nonprogrammer-screener id='screenerCanvas'></aq-editor-edit-nonprogrammer-screener>	    				
+		            	<aq-editor-edit-nonprogrammer-screener id='screenerCanvas'></aq-editor-edit-nonprogrammer-screener>
 
-		            	<aq-editor-edit-nonprogrammer-indicator id='indicatorCanvas'></aq-editor-edit-nonprogrammer-indicator>	    				
+		            	<aq-editor-edit-nonprogrammer-indicator id='indicatorCanvas'></aq-editor-edit-nonprogrammer-indicator>
 
-	            		<aq-editor-edit-nonprogrammer-optimizer id='optimizerCanvas'></aq-editor-edit-nonprogrammer-optimizer>	    				
+	            		<aq-editor-edit-nonprogrammer-optimizer id='optimizerCanvas'></aq-editor-edit-nonprogrammer-optimizer>
 
 	            	    <paper-card id='runCanvas' heading='Step:4 Run Analysis'>
-	            				
+
 	            			<div class="self-center layout vertical">
 		            			<paper-card class='run-content'>
 			            			<div>
@@ -126,12 +126,12 @@
 			            			</div>
 		            			</paper-card>
             				</div>
-	            			
+
 	            		</paper-card>
 
 		        	</iron-pages>
 	        	</paper-header-panel>
-	     
+
 		        <template is='dom-if' if="{{isSelectedBarUniverse(selectedSideBar)}}">
 		        <paper-header-panel drawer mode="seamed" id='rightpanel'>
 		        	<paper-toolbar></paper-toolbar>
@@ -139,13 +139,13 @@
 			          <aq-editor-edit-sidebar-universe></aq-editor-edit-sidebar-universe>
 			          <!--div></div>
 			          <div>This is Optimizer!!</div>
-			          <aq-editor-sidebar-run></aq-editor-sidebar-run-->       
+			          <aq-editor-sidebar-run></aq-editor-sidebar-run-->
 			        </iron-pages>
 		        </paper-header-panel>
 		        </template>
 
   		</paper-drawer-panel>
-      	    		
+
 	</template>
 
 	<script>
@@ -182,16 +182,16 @@
 
 			listeners: {
 				'screener-pressed':'onAddScreener',
-			},	
-				
+			},
+
 			toFixedOne(value){
 				return value.toFixed(1);
 			},
-			
+
 			toPercentage(value) {
 				return Math.round(value * 10000)/100 + '%';
 			},
-	
+
 		    toggleDrawer() {
 		        this.$.drawerpanel.togglePanel();
 		        //this.showSideBar = !this.showSideBar;

@@ -38,12 +38,15 @@
         <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
         <div class="flex"><h3>Back to community</h3></div>
       </div>
-      <aq-community-postdetail-header title='{{threadDetails.title}}' category='{{threadDetails.category}}'></aq-community-postdetail-header>
+      <aq-community-postdetail-header
+        title='{{threadDetails.title}}'
+        category='{{threadDetails.category}}'
+        item='{{threadDetails}}'>
+      </aq-community-postdetail-header>
       <template is="dom-repeat" items="{{threadDetails.replies}}">
-        <div> {{item.markdownText}} </div>
         <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
       </template>
-      <aq-community-postdetail-reply></aq-community-postdetail-reply>
+      <aq-community-postdetail-reply threadid={{threadDetails._id}}></aq-community-postdetail-reply>
       <iron-ajax
         auto
         url="http://localhost:3002/api/v2/thread/{{threadid}}"
