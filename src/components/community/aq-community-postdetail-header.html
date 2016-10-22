@@ -23,7 +23,7 @@
     }
 
     #category {
-     font-size: 15px; 
+     font-size: 15px;
      margin-top:5px;
     }
 
@@ -62,11 +62,11 @@
 
     <div id='post-header'>
       <div id='heading'>
-        <span>Next Challenge: There is no better way</span>  
+        <span>{{category}}</span>
       </div>
 
       <div class="layout horizontal">
-        <span id='category' class="self-top">Share your Idea</span>
+        <span id='category' class="self-top">{{title}}</span>
         <div class="flex"></div>
         <paper-icon-button title="Follow" icon="vaadin-icons:megafone"></paper-icon-button>
         <paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button>
@@ -80,17 +80,16 @@
   <script>
     Polymer ({
       is: 'aq-community-postdetail-header',
-      
+
       properties :{
+        title: String,
+        category: String,
         author: String,
         createdAt: String,
-        postText:String,
-
-      },
-      
+        postText:String
+      }
     });
 
   </script>
 
 </dom-module>
-

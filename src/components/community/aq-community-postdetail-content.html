@@ -14,7 +14,7 @@
     :host {
       display:block;
     }
-    
+
     #author {
       --margin-top:40px;
       --margin-bottom: 15px;
@@ -37,40 +37,51 @@
   </style>
   <template>
     <div id='post-content'>
-      <div id='author' class="layout horizontal">   
-        <profile-img id='img' letter="SC" class="self-end"></profile-img>  
-         <div id='author-desc' class="layout vertical self-end">   
-            <a href$="[[authoraddress]]">
-              <span id="author-name">[[author]]Shiv Chawla</span>
+      <div id='author' class="layout horizontal">
+        <profile-img id='img' letter="SC" class="self-end"></profile-img>
+         <div id='author-desc' class="layout vertical self-end">
+            <a href$="{{authoraddress}}">
+              <span id="author-name">{{item.user.firstName}}</span>
             </a>
-            <span id="date">[[createdAt]]On Jan 1, 2014, 12:00AM</span>
+            <span id="date">{{item.updatedAt}}</span>
           </div>
       </div>
-           
+
       <marked-element>
         <div class="markdown-html"></div>
-           <script type="text/markdown">[[portText]]
-           ```ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum```
+           <script type="text/markdown">{{item.mardownText}}
           </script>
       </marked-element>
-
     </div>
   </template>
 
   <script>
     Polymer ({
       is: 'aq-community-postdetail-content',
-      
       properties :{
+        url: String,
+        item: Object,
+        threadId: 'threadId',
         author: String,
         createdAt: String,
         postText: String,
-
       },
-      
+      ready: function() {
+          debugger;
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+          this.email = user.email;
+          this.letter = this.firstName[0];
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          };
+          this.url = 'http://localhost:3002/api/v2/thread/' + this.threadId;
+      },
     });
 
   </script>
 
 </dom-module>
-

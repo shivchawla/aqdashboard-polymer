@@ -36,16 +36,24 @@
     <div id='container'>
       <div class="goBackButton layout horizontal">
         <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
-        <div class="flex"><h3>Go Back to Community</h3></div>
+        <div class="flex"><h3>Back to community</h3></div>
       </div>
-
-      <aq-community-postdetail-header></aq-community-postdetail-header>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-
+      <aq-community-postdetail-header title='{{threadDetails.title}}' category='{{threadDetails.category}}'></aq-community-postdetail-header>
+      <template is="dom-repeat" items="{{threadDetails.replies}}">
+        <div> {{item.markdownText}} </div>
+        <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
+      </template>
       <aq-community-postdetail-reply></aq-community-postdetail-reply>
-
+      <iron-ajax
+        auto
+        url="http://localhost:3002/api/v2/thread/{{threadid}}"
+        method='GET'
+        id='thread'
+        handle-as="json"
+        on-response="onAllThreads"
+        headers='{{header}}'
+        debounce-duration="300">
+      </iron-ajax>
     </div>
 
   </template>
@@ -53,11 +61,29 @@
   <script>
     Polymer ({
       is: 'aq-community-postdetail',
-
+      properties: {
+        threadid: {
+          type: String
+        }
+      },
       listeners :{
         'goBackClicked':'goBack',
       },
-
+      onAllThreads(data) {
+          this.threadDetails = data.detail.response;
+      },
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+          this.email = user.email;
+          this.letter = this.firstName[0];
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          };
+      },
       goBack() {
           this.router.go('/dashboard/community');
       },

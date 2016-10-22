@@ -24,7 +24,7 @@
     #bottom-section {
       --height:20px;
     }
-    
+
     #date {
       color: #444;
     }
@@ -58,7 +58,7 @@
 
   </style>
   <template>
-  	<div class="post-container layout horizontal"> 
+  	<div class="post-container layout horizontal">
       <profile-img letter="[[getAuthorInitial(authorName)]]"></profile-img>
       <div class="self-end">
 	        <div><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
@@ -68,15 +68,13 @@
           <span id="date">&nbsp&nbsp&nbspOn [[postDate]]</span>
       </div>
 
-      <div class="flex"></div> 
+      <div class="flex"></div>
       <div id='right-section' class="self-end">
-        <span id="total-replies">Replies:&nbsp[[totalReplies]]</span> 
+        <span id="total-replies">Replies:&nbsp[[totalReplies]]</span>
         <span id="total-views">View:&nbsp[[totalViews]]</span>
         <span>Category:&nbsp[[postCategory]]</span>
       </div>
-          
-        
-    </div>     
+    </div>
   </template>
 
   <script>
@@ -100,5 +98,3 @@
   </script>
 
 </dom-module>
-
-

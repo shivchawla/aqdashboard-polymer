@@ -15,11 +15,11 @@
    <style>
   </style>
   <template>
-     <app-router id="community-router" trailingSlash="ignore">
+     <app-router id="communityrouter" trailingSlash="ignore">
         <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
-        <app-route path="/dashboard/community/topics" element='aq-community-postdetail' bindrouter=""></app-route>
+        <app-route path="/dashboard/community/topics/:threadid" element='aq-community-postdetail' bindrouter=""></app-route>
         <app-route path="/dashboard/community/create" element='aq-community-createpost' bindrouter=""></app-route>
-     </app-router>  
+     </app-router>
   </template>
 
   <script>
@@ -29,7 +29,7 @@
       properties : {
         hasViews: {
           type: Boolean,
-          value: true,  
+          value: true,
         },
 
         narrow:{
@@ -41,6 +41,9 @@
           value:false,
         },
 
+      },
+      ready: function() {
+        debugger;
       },
 
     });
