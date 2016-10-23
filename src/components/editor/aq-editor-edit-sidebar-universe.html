@@ -105,7 +105,7 @@
 
 			<iron-pages id='pages' selected="{{getselection(selected1, selected2)}}">
 					
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' selected-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -117,7 +117,7 @@
 					<a href$=""><paper-item>Sub-Item 19</paper-item></a>
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -125,20 +125,20 @@
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -148,7 +148,7 @@
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 				</paper-listbox>
 			</iron-pages>
@@ -178,6 +178,10 @@
 					type:Number,
 					value:-1,
 				},
+
+				selectedItem :{
+					type:Object,
+				},
 			},
 
 			getselection(selected1, selected2) {
@@ -198,12 +202,16 @@
 				this.selected1=-1;
 			},
 
-			addScreener() {
-				this.fire('screener-pressed');
+			addScreener(e) {
+				console.log(this.selectedItem);
+				this.selectedItem = this.$.submenu.selectedValues[0];
+				console.log(e);
+				//this.fire('screener-pressed',{screener: e.currentTarget.getAttribute('menu-panel')});
 			},
 
-
-
+			onSelectItem() {
+				//this.selectedItem = this.$
+			},
 
 
 		});

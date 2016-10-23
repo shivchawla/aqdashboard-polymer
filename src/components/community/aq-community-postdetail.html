@@ -32,22 +32,11 @@
     }
 
   </style>
+
+  
   <template>
-    <div id='container'>
-      <div class="goBackButton layout horizontal">
-        <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
-        <div class="flex"><h3>Back to community</h3></div>
-      </div>
-      <aq-community-postdetail-header
-        title='{{threadDetails.title}}'
-        category='{{threadDetails.category}}'
-        item='{{threadDetails}}'>
-      </aq-community-postdetail-header>
-      <template is="dom-repeat" items="{{threadDetails.replies}}">
-        <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
-      </template>
-      <aq-community-postdetail-reply threadid={{threadDetails._id}}></aq-community-postdetail-reply>
-      <iron-ajax
+    
+    <iron-ajax
         auto
         url="http://localhost:3002/api/v2/thread/{{threadid}}"
         method='GET'
@@ -56,8 +45,30 @@
         on-response="onAllThreads"
         headers='{{header}}'
         debounce-duration="300">
-      </iron-ajax>
+  </iron-ajax>
+
+  <template is="dom-if" if="{{threadDetails}}">
+    <div id='container'>
+      
+      <div class="goBackButton layout horizontal">
+        <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
+        <div class="flex"><h3>Back to community</h3></div>
+      </div>
+      
+      <aq-community-postdetail-header
+        post-header='{{threadDetails}}'>
+      </aq-community-postdetail-header>
+      
+      <div id="replyContainer">
+        <template is="dom-repeat" items="{{threadDetails.replies}}">
+          <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
+        </template>
+      </div>
+      
+
+      <aq-community-postdetail-reply id="replyEditor" threadid={{threadDetails._id}}></aq-community-postdetail-reply>
     </div>
+  </template>
 
   </template>
 
@@ -69,12 +80,16 @@
           type: String
         }
       },
+
       listeners :{
         'goBackClicked':'goBack',
+        'reply-added':'addReply',
       },
+
       onAllThreads(data) {
           this.threadDetails = data.detail.response;
       },
+
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
@@ -90,6 +105,22 @@
       goBack() {
           this.router.go('/dashboard/community');
       },
+
+      addReply(e) {
+        
+        var reply = e.detail.reply;
+        var replyElement = document.createElement('aq-community-postdetail-content');
+        
+        var x = localStorage.getItem('my-app-storage');
+        var user = JSON.parse(x).user;
+
+        reply.user = {"firstName":user.firstName, "lastName":user.lastName};
+        
+        replyElement.item = reply;
+
+        Polymer.dom(this.$.replyContainer).appendChild(replyElement);
+        this.$.replyEditor.clearEditor();
+      }
 
     });
 

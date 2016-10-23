@@ -38,10 +38,10 @@
   <template>
     <div id='post-content'>
       <div id='author' class="layout horizontal">
-        <profile-img id='img' letter="SC" class="self-end"></profile-img>
+        <profile-img id='img' letter="[[getinitials(item)]]" class="self-end"></profile-img>
          <div id='author-desc' class="layout vertical self-end">
             <a href$="{{authoraddress}}">
-              <span id="author-name">{{item.user.firstName}}</span>
+              <span id="author-name">{{item.user.firstName}} {{item.user.lastName}}</span>
             </a>
             <span id="date">{{item.updatedAt}}</span>
           </div>
@@ -65,7 +65,6 @@
         postText: String,
       },
       ready: function() {
-          debugger;
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
           this.firstName = user.firstName;
@@ -78,6 +77,11 @@
           };
           this.url = 'http://localhost:3002/api/v2/thread/' + this.threadId;
       },
+
+      getinitials(item) {
+        return item.user.firstName[0] + item.user.lastName[0];
+      },
+
     });
 
   </script>

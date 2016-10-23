@@ -7,7 +7,7 @@
   <template>
       <div id="replybox" class="flex layout vertical">
 
-        <aq-markdown-editor placeholder="Write a reply"></aq-markdown-editor>
+        <aq-markdown-editor id="editor" placeholder="Write a reply"></aq-markdown-editor>
         <div class="layout horizontal">
           <div class="flex"></div>
           <paper-button raised noink>Preview</paper-button>
@@ -30,14 +30,27 @@
           }
       },
       postThread: function() {
-          const scope = document.getElementById('mirror');
-          const thread = scope.innerHTML;
-          this.threadData = {
-              "markdownText": thread
-          };
-          // this.router.go('/dashboard/community/topics/');
-          this.$.thread.generateRequest();
-      }
+          const markdownText = this.$.editor.getContent();
+          
+          if (markdownText.length>0) {
+            this.threadData = {
+                "markdownText": markdownText
+            };
+            this.$.thread.generateRequest();
+          }
+      },
+
+      handlePostThread: function(e) {
+        var replies = e.detail.response.replies;
+        if (replies.length > 0) {
+          this.fire('reply-added',{reply:replies[replies.length - 1]});  
+        }      
+      },
+
+      clearEditor() {
+        this.$.editor.setContent("");
+      },
+
     });
   </script>
 </dom-module>

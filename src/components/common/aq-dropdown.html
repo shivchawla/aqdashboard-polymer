@@ -1,47 +1,44 @@
 <dom-module id='aq-dropdown'>
 	<style>
+		paper-menu-button {
+			width: 100%;
+			
+			padding: 0px;
+		}
+
 		paper-button {	
-			border-radius: 0px;	
+			margin:0px;
+			border-radius: 5px;	
 			border: var(--dropdown-border, 1px solid #e5e5e5);
 			width: var(--dropdown-width,100%);	
  			text-transform: none;
 			font-weight: var(--dropdown-font-weight, normal);
-			font-size: var(--dropdown-font-size,12px);
+			font-size: var(--dropdown-font-size,13px);
 			height: var(--dropdown-height, 30px);
 			background-color: var(--dropdown-background-color, white);
+			height: var(--dropdown-height, 36px); 
 		}
 
 		paper-item {
-			--paper-item-selected-weight:normal;
-			font-size: var(--dropdown-paper-menu-font-size, 12px);
+			font-size: var(--dropdown-paper-menu-font-size, 13px);
 			text-decoration: none;
 			background-color: var(--dropdown-background-color, white);
-			width: var(--dropdown-width,100%);
-		}
-
-		paper-menu-button {	
-			width: var(--dropdown-width,100%);
-			--paper-menu-button-content: {
-				width: var(--dropdown-width, 100%);
-				--background-color: var(--dropdown-background-color, white);
-				min-width: var(--dropdown-min-width, 100px);
-			}
 		}
 
 		paper-menu-button {	
 			--paper-menu-button-dropdown: {
-				--width: var(--dropdown-width, 100%);
-				--background-color: var(--dropdown-background-color, white);
-				min-width: var(--dropdown-min-width, 100px);
-				position: relative;
+				width: var(--dropdown-width, 100%);
 			}
+		}
 		
 		paper-listbox {
-			--paper-listbox-background-color:var(--dropdown-background-color, white);	
-			}
+			--paper-listbox-background-color:var(--dropdown-background-color, white);
+			border-radius: 5px;
+			--width: 100%;
+		}
+
 		
-
-
+		
 	</style>
 
 	<template>
@@ -51,7 +48,7 @@
 				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
     		</paper-button>
         	
-			<paper-listbox class="dropdown-content flex" attr-for-selected='label' selected="{{selectedCategory}}">
+			<paper-listbox class="dropdown-content" attr-for-selected='label' selected="{{selectedCategory}}">
 
 				<template is='dom-repeat' items='{{options}}'>
 					<paper-item label='{{item}}'>{{item.value}}</paper-item>
@@ -96,6 +93,10 @@
 			selectedIndexChanged() {
 				this.fire('dropdown-changed', {'index':this.selectedCategory.index});
 			},
+
+			getSelectedValue() {
+				return this.selectedCategory.value;
+			}
 
 		});
 	</script>

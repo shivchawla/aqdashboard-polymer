@@ -7,7 +7,7 @@
 			margin:10px;
 			--height:20px;
 			width:120px;
-			font-size: 13px;
+			font-size: 12px;
 		}
 
 		paper-icon-button {
@@ -44,11 +44,12 @@
 
 		aq-dropdown {
 			--dropdown-width:150px;
-			margin-right: 10px;
+			--button-width:150px;
+			margin:10px;
 		}
 
 		#screener {
-			background-color: var(--screener-background-color, white);
+			--background-color: var(--screener-background-color, white);
 		}
 
 	</style>
@@ -147,7 +148,7 @@
 		}
 
 		aq-dropdown {
-			margin-right: 30px;
+			margin: 10px;
 			--dropdown-background-color:#99ced4;
 		}
 
@@ -156,12 +157,18 @@
 			margin-bottom: 20px;
 		}
 
+		#header {
+			--margin-top:50px;
+			font-size: 14px;
+		}
+
 
 	</style>
 
 	<template>
 		
-		<div id="container" class="content">				
+		<div id="container" class="content">
+			<p id="header">Select screeners to filter the stock universe. For ex: Select all stock with <b><i> market capitilization</i></b> greater than 100 million</p>				
 			<div class="layout horizontal basic">
 				<!--div class='basic1 flex'-->
 					<span class="self-center">Exchange:</span>
@@ -204,7 +211,7 @@
 
 			addScreener() {
 				var x = document.createElement('aq-nonprogrammer-screener-item');
-				Polymer.dom(this.$.int_container).appendChild(x);
+				Polymer.dom(this.$.container).appendChild(x);
 			},
 		});
 	</script>

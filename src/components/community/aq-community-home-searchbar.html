@@ -76,6 +76,7 @@
 		}
 
 		#category-dd {
+			--button-width:170px;
 			--dropdown-width:170px;
 			--dropdown-border: 1px solid #e5e5e5;
 			--dropdown-height:46px;
@@ -89,7 +90,7 @@
 	
 	<template>
       		<div id="search" class="flex layout horizontal">
-	    		<aq-dropdown horizontal-offset=13 vertical-offset=56 class="self-center" id='category-dd' options="[[categories]]"></aq-dropdown>
+	    		<aq-dropdown vertical-offset=56 class="self-center" id='category-dd' options="[[categories]]"></aq-dropdown>
     		
 
 	  			<input id="searchbox" placeholder="Search posts " class="flex"

@@ -28,15 +28,15 @@
 		}
 
 		span {
-			font-size: 15px;
+			font-size: 14px;
 		}	
 
 		aq-dropdown {
-			margin: 5px;
+			margin: 10px;
 		}
 
 		#indicator-type {
-			--dropdown-width:200px;
+			--dropdown-width:220px;
 		}
 
 		#operator-type {
@@ -44,7 +44,7 @@
 		}
 
 		#analytic-type {
-			--dropdown-width:150px;
+			--dropdown-width:170px;
 			margin-left:20px;
 		}
 
@@ -197,13 +197,16 @@
 			padding: 10px;
 		}
 
+		#header {
+			font-size: 14px;
+		}
 
 	</style>
 
 	<template>	
 		<div id='container'>	
 		<div class="layout horizontal">
-			<p>Adding more rules to further filter the stock universe</p>
+			<p id="header">Adding indicators to further filter the stock universe. For ex: Select stocks with <b><i> simple moving average of price</i></b> over last 1 month greater than 10.</p>
 			<div class="flex"></div>
 			<paper-icon-button on-tap='addConstraints' title="Add Indicator" noink icon="icons::add"></paper-icon-button> 
 		</div>	

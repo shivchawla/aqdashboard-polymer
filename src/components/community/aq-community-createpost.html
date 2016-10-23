@@ -35,24 +35,23 @@
       }
 
       aq-dropdown {
-        --dropdown-height: 32px;
-        --dropdown-font-size:18px;
-        margin-bottom: 5px;
+        --dropdown-width:170px;
+        --dropdown-height:36px;
+
       }
 
     </style>
 
     <template>
         <div id='container' class="layout vertical flex">
-            <h1>
-
-                Create a Post
-            </h1>
+            <h1>Create a Post</h1>
        
-            <input label="Topic" placeholder="Heading of the Post">
-            <aq-dropdown class="flex" options="[[options]]"></aq-dropdown>
-
-            <aq-markdown-editor placeholder="Describe in detail"></aq-markdown-editor>
+            <div class="layout horizontal">
+                <aq-dropdown id="category_dd" options="[[categories]]"></aq-dropdown>
+                <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
+            </div>
+                
+            <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
 
             <div class="layout horizontal">
                 <div class="flex"></div>
@@ -70,7 +69,7 @@
         <iron-ajax url="http://localhost:3002/api/v2/thread" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
     </template>
     <script>
-      var options = [{value:"Select Category",index:-1},{value:"A",inded:0},{value:"B",index:1},{value:"C",index:2}];
+      var categories = [{value:"Share your idea",inded:0},{value:"Ask a Question",index:1},{value:"Announcements",index:2}];
 
         Polymer({
             is: 'aq-community-createpost',
@@ -78,8 +77,11 @@
                 threadData: {
                     type: Object,
                 },
-                options :{
+                categories :{
                   type:Array,
+                },
+                header:{
+                  type:Object,
                 },
             },
 
@@ -88,30 +90,39 @@
             },
 
             ready: function() {
-                this.options = options;
+                this.categories = categories;
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
+
+                console.log(user.token);
+                
                 this.header = {
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"
                 }
+
+                
             },
             postThread: function() {
-                const scope = document.getElementById('mirror');
-                const input = document.getElementById('input');
-                const thread = scope.innerHTML;
-                const topic = input.value;
+                //const scope = document.getElementById('mirror');
+                //const input = document.getElementById('input');
+                const markdownText = this.$.editor.getContent();
+                const category = this.$.category_dd.getSelectedValue();
+                const title = this.$.topicInput.value;
                 this.threadData = {
-                    "category": 'Share your idea',
-                    "title": topic,
-                    "markdownText": thread
+                    "category": category,
+                    "title": title,
+                    "markdownText": markdownText
                 };
                 this.$.thread.generateRequest();
             },
             
-            handlePostThread: function() {
+            handlePostThread: function(data) {
+              //var data = JSON.parse(e);
+              var threadId = data.detail.response._id;   
+              this.router.go("/dashboard/community/topics/"+threadId);
             },
-
+         
             onAttach() {
               this.$.dialog.open();      
             },

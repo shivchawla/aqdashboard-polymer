@@ -62,17 +62,17 @@
 
     <div id='post-header'>
       <div id='heading'>
-        <span>{{title}}</span>
+        <span>[[postHeader.title]]</span>
       </div>
 
       <div class="layout horizontal">
-        <span id='category' class="self-top">{{category}}</span>
+        <span id='category' class="self-top">[[postHeader.category]]</span>
         <div class="flex"></div>
         <paper-icon-button title="Follow" icon="vaadin-icons:megafone"></paper-icon-button>
         <paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button>
       </div>
 
-      <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
+      <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>
 
     </div>
   </template>
@@ -82,13 +82,9 @@
       is: 'aq-community-postdetail-header',
 
       properties :{
-        item: Object,
-        title: String,
-        category: String,
-        author: String,
-        createdAt: String,
-        postText:String
+        postHeader: Object,
       },
+
       ready: function() {
           
       },
