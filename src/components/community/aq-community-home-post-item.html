@@ -15,6 +15,7 @@
       border-bottom: 1px solid #e5e5e5;--#80CBC4;--#666;
       margin-top: 10px;
       padding-bottom: 5px;
+      margin-bottom: 30px;
     }
 
     #top-section {
@@ -37,8 +38,7 @@
     }
 
     #right-section {
-      --position: absolute;
-      --margin-left:0px;
+      --min-width: 300px;
     }
 
     a {
@@ -56,23 +56,37 @@
       --width:20px;
     }
 
+    #total-replies {
+      min-width: 70px;
+      margin-right: 10px;
+    }
+
+    #total-views {
+      min-width: 50px;
+      margin-right: 10px;
+    }
+
+    #category {
+      min-width: 150px;
+    }
+
   </style>
   <template>
   	<div class="post-container layout horizontal">
-      <profile-img letter="[[getAuthorInitial(authorName)]]"></profile-img>
-      <div class="self-end">
+      <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
+      <div>
 	        <div><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
           <a href$="[[authoraddress]]">
-            <span id="author-name">[[authorName]]</span>
+            <span id="author-name">[[authorFirstname]] [[authorLastname]]</span>
           </a>
-          <span id="date">&nbsp&nbsp&nbspOn [[postDate]]</span>
+          <span id="date">   On [[postDate]]</span>
       </div>
 
       <div class="flex"></div>
-      <div id='right-section' class="self-end">
-        <span id="total-replies">Replies:&nbsp[[totalReplies]]</span>
-        <span id="total-views">View:&nbsp[[totalViews]]</span>
-        <span>Category:&nbsp[[postCategory]]</span>
+      <div id='right-section' class="layout horizontal self-end">
+        <div id="total-replies"><span>Replies: [[totalReplies]]</span></div>
+        <div id="total-views"><span>Views: [[totalViews]]</span></div>
+        <div id='category'><span>Category: [[postCategory]]</span></div>
       </div>
     </div>
   </template>
@@ -83,7 +97,8 @@
       properties: {
         topicAddress: String,
         topicHeading: String,
-        authorName: String,
+        authorFirstname: String,
+        authorLastname: String,
         authorAddress: String,
         postDate: String,
         totalReplies: String,
@@ -91,8 +106,8 @@
         postCategory: String,
       },
 
-      getAuthorInitial(authorName) {
-        return authorName.charAt(0);
+      getInitials(firstName, lastName) {
+        return firstName.charAt(0) + lastName.charAt(0);
       }
     });
   </script>

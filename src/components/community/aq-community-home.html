@@ -16,10 +16,12 @@
     }
 
     #container {
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-top: 30px;
-    }
+        margin:0 auto;
+        margin-top: 50px;
+        color: #333a56;
+        width: 90%;
+
+      }
 
     #fab {
         background: teal;
@@ -44,6 +46,7 @@
         margin-top: 50px;
     }
 
+
 </style>
 
 <dom-module id="aq-community-home">
@@ -65,7 +68,8 @@
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
-                            author-name="{{item.user.firstName}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
                             author-address="{{item.user.email}}"
                             post-date="{{item.createdAt}}"
                             total-replies={{item.replies.length}}
@@ -80,7 +84,8 @@
                             <aq-community-home-post-item
                               topic-address="#/dashboard/community/topics/{{item._id}}"
                               topic-heading="{{item.title}}"
-                              author-name="{{item.user.firstName}}"
+                              author-firstname="{{item.user.firstName}}"
+                              author-lastname="{{item.user.lastName}}"
                               author-address="{{item.user.email}}"
                               post-date="{{item.createdAt}}"
                               total-replies={{item.replies.length}}
@@ -95,8 +100,8 @@
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
-                            author-name="{{item.user.firstName}}"
-                            author-address="{{item.user.email}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
                             post-date="{{item.createdAt}}"
                             total-replies={{item.replies.length}}
                             total-views="{{item.views}}"
@@ -110,8 +115,8 @@
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
-                            author-name="{{item.user.firstName}}"
-                            author-address="{{item.user.email}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
                             post-date="{{item.createdAt}}"
                             total-replies={{item.replies.length}}
                             total-views="{{item.views}}"
@@ -125,8 +130,8 @@
                             <aq-community-home-post-item
                               topic-address="#/dashboard/community/topics/{{item._id}}"
                               topic-heading="{{item.title}}"
-                              author-name="{{item.user.firstName}}"
-                              author-address="{{item.user.email}}"
+                              author-firstname="{{item.user.firstName}}"
+                              author-lastname="{{item.user.lastName}}"
                               post-date="{{item.createdAt}}"
                               total-replies={{item.replies.length}}
                               total-views="{{item.views}}"
