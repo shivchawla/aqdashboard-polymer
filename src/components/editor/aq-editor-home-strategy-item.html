@@ -93,9 +93,9 @@
 	<template>
     		<div class="row flex layout horizontal">
 		      	<paper-checkbox noink></paper-checkbox>
-		          <div class="strategy-name self-center"><span on-click = 'goToEditor'>{{strategyName}}</span></div>  
-		          <div class="strategy-desc self-center">{{strategyDesc}}</div>
-		          <div on-click='goToAnalyze' class="strategy-bt self-center">{{numBacktest}}</div>   
+		          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
+		          <div class="strategy-desc self-center">[[strategyDesc]]</div>
+		          <div on-click='goToAnalyze' class="strategy-bt self-center">[[numBacktest]]</div>   
 	        </div>
 	</template>
 
@@ -117,10 +117,12 @@
 					type:Number,
 					value: 5,
 				},
+
+				strategyId :String,
 			},
 
 			goToEditor() {
-				this.fire('editorClicked');
+				this.fire('editorClicked', {id:this.strategyId});
 			},
 
 			goToAnalyze(e) {

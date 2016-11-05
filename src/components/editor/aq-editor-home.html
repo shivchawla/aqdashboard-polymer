@@ -2,7 +2,9 @@
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
@@ -16,9 +18,7 @@
 
 
 <dom-module id="aq-editor-home">
-  <template>
-
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+ 	<style is="custom-style" include="iron-flex iron-positioning"></style>
   
     <style>
       
@@ -91,14 +91,27 @@
 }
 
     </style>
+
+	<template>
  		<div id='container'>
 	  		<aq-editor-home-menu></aq-editor-home-menu>
 
-		    <div class="header">
+		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
 		      <div class="name">Name<span class="narrow">/Description</span></div>
 		      <div class="description">Description</div>
 		      <div class="backtest">#Backtests</div>
 		    </div>
+
+		    <iron-ajax
+		    	  auto	
+                  url="http://localhost:3002/api/v2/strategy"
+                  method='GET'
+                  id='strategies'
+                  handle-as="json"
+                  on-response="onAllStrategies"
+                  headers='{{header}}'
+                  debounce-duration="300">
+            </iron-ajax>
 		    
 		    <!--template is="dom-repeat" items="[[elements]]">
 		      <div class="row" data-index$="[[index]]"-->
@@ -110,12 +123,22 @@
 		          <div class="description">Sample strategy description to test the UI</div>
 		          <div class="backtest">5</div>
 		        </a>
-		    </div-->	    
-		    <aq-editor-home-strategy-item id='strategyItem1'></aq-editor-home-strategy-item>
+		    </div-->
+		    
+	    	<template is="dom-repeat" items="[[strategies]]">
+	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
+	    									num-backtest = "[[item.backtests.length]]"
+	    									strategy-desc = "[[item.description]]"
+											strategy-id = "[[item._id]]"
+	    									>
+				</aq-editor-home-strategy-item>	
+	    	</template>
+		   
+		    <!--aq-editor-home-strategy-item id='strategyItem1'></aq-editor-home-strategy-item>
 		    <aq-editor-home-strategy-item id='strategyItem2'></aq-editor-home-strategy-item>
 		    <aq-editor-home-strategy-item id='strategyItem3'></aq-editor-home-strategy-item>
 		    <aq-editor-home-strategy-item id='strategyItem4'></aq-editor-home-strategy-item>
-		    <aq-editor-home-strategy-item id='strategyItem5'></aq-editor-home-strategy-item>
+		    <aq-editor-home-strategy-item id='strategyItem5'></aq-editor-home-strategy-item-->
 		    
 
 		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
@@ -132,7 +155,20 @@
 	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
 		    
 		    <div id="actions"></div>
-		</div>    
+		</div> 
+
+		<iron-ajax 
+			url="http://localhost:3002/api/v2/strategy" 
+			body="[[strategyData]]" 
+			method='POST' 
+			id='postStrategy' 
+			headers='{{header}}' 
+			handle-as="json" 
+			on-response="onStrategyCreation" 
+			last-response="{{ajaxResponse}}" 
+			debounce-duration="300">
+		</iron-ajax>
+
   </template>
 
   <script>
@@ -154,6 +190,19 @@
 			},
 		},
 
+		ready: function() {
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                this.header = {
+                    "aimsquant-token": user.token,
+                    "Content-Type": "application/json"
+            };
+        },
+
+        onAllStrategies(data) {
+        	this.strategies = data.detail.response;	
+        },
+
 		listeners: {
 			'tap': '_tap',
 			'mouseover': '_mouseOver',
@@ -166,6 +215,7 @@
 			'shareClicked':'goToShare',
 			'cloneClicked':'goToClone',
 			'editorClicked':'goToEditor',
+			'create-action':'createStrategy',
 		},
 
 		_currentRowIndex: -1,
@@ -200,11 +250,11 @@
 			var row = this._findAncestor(e.target, function (node) {
 				return node != this && !node.classList.contains('row') && node.id !== 'actions';
 			});
+
 			if (row && row.classList.contains('row')) {
-				if (this._currentRowIndex != row.dataset.index) {
 					this._hideActions();
-					this._showActions(row, row.dataset.index);
-				}
+					this._showActions(row);
+				
 			} else if (row.id !== 'actions') {
 					this._hideActions();
 			}
@@ -214,7 +264,7 @@
 			this._hideActions();
 		},
 		
-		_showActions: function (row, index) {
+		_showActions: function (row) {
 			var sharedActionMenu = this._sharedActionMenu;
 			var rowOffsetTop = row.offsetTop;
 			if (!sharedActionMenu) {
@@ -229,7 +279,7 @@
 			this._layoutIfNeeded(sharedActionMenu);
 			sharedActionMenu.classList.remove('hidden');
 			row.classList.add('hover');
-			this._currentRowIndex = index;
+			//this._currentRowIndex = index;
 			this._currentRow = row;
 		},
 		
@@ -241,7 +291,7 @@
 					sharedActionMenu.classList.add('hidden');
 				}
 				row.classList.remove('hover');
-				this._currentRowIndex = -1;
+				//this._currentRowIndex = -1;
 				this._currentRow = null;
 			}
 		},
@@ -297,8 +347,33 @@
         	this.router.go('/dashboard/analyze?strategyName=OLMAR')
         },
 
-        goToEditor() {
-        	this.router.go('/dashboard/editor/e');
+        goToEditor(e) {
+        	this.router.go('/dashboard/editor/'+e.detail.id);
+        },
+
+        createStrategy(e) {
+        	console.log("here");
+        	this.strategyData = {
+        		"name":e.detail.name,
+        		"description":e.detail.description,
+        		"language":"python",
+        		"type": "string",
+		  		"code": "string",
+		  		"settings": {
+			 	   	"start": "2016-11-05T16:23:08.577Z",
+			   		"end": "2016-11-05T16:23:08.577Z",
+			    	"capital": 0,
+			    	"plan": "string"
+			  	}
+			};
+			
+        	
+        	this.$.postStrategy.generateRequest();
+        },
+
+        onStrategyCreation(data) {
+        	var strategyId = data.detail.response._id
+        	this.router.go('/dashboard/editor/'+ strategyId)
         },
 
 	});
