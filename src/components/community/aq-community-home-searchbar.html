@@ -75,7 +75,7 @@
 			width: 50px
 		}
 
-		#category-dd {
+		#category_dd {
 			--button-width:170px;
 			--dropdown-width:170px;
 			--dropdown-border: 1px solid #e5e5e5;
@@ -90,11 +90,11 @@
 	
 	<template>
       		<div id="search" class="flex layout horizontal">
-	    		<aq-dropdown vertical-offset=56 class="self-center" id='category-dd' options="[[categories]]"></aq-dropdown>
+	    		<aq-dropdown vertical-offset=56 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown>
     		
 
-	  			<input id="searchbox" placeholder="Search posts " class="flex"
-	         	value="{{searchValue::change}}" type="search">	
+	  			<input id="searchbox" placeholder="Search posts" class="flex"
+	         	value="{{searchValue::input}}" type="search" on-keydown="onSearch">	
 			</div>
 	</template>
 	<script >
@@ -102,15 +102,27 @@
 		
 		Polymer({
 			is: 'aq-community-home-searchbar',
+
 			properties: {
 				selectedCategory : {
 						type: String,
 						value: 'Everywhere',
 				},
+
+				searchValue: {
+					type: String,
+					value:"",
+				},
 			},
 
 			ready() {
 				this.categories = categories;
+			},
+
+			onSearch(e) {
+				if (e.keyCode == 13) {
+                    this.fire('search-action', {text: this.searchValue, category: this.$.category_dd.getSelectedValue()});
+                }
 			},
 
 		});

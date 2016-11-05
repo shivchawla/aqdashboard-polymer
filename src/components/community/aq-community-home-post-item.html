@@ -75,11 +75,11 @@
   	<div class="post-container layout horizontal">
       <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
       <div>
-	        <div><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
+	        <div on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
           <a href$="[[authoraddress]]">
             <span id="author-name">[[authorFirstname]] [[authorLastname]]</span>
           </a>
-          <span id="date">   On [[postDate]]</span>
+          <span id="date">   on [[postDate]]</span>
       </div>
 
       <div class="flex"></div>
@@ -89,6 +89,16 @@
         <div id='category'><span>Category: [[postCategory]]</span></div>
       </div>
     </div>
+
+    <iron-ajax
+      url="http://localhost:3002/api/v2/thread/[[itemId]]/view"
+      method="POST"
+      id='views'
+      handle-as="json"
+      headers='{{header}}'
+      debounce-duration="300">
+    </iron-ajax>
+
   </template>
 
   <script>
@@ -104,11 +114,30 @@
         totalReplies: String,
         totalViews: String,
         postCategory: String,
+        itemId:String,
+      },
+
+      listeners:{
+        'follow-action':'onFollow',
+      },
+
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          };
       },
 
       getInitials(firstName, lastName) {
         return firstName.charAt(0) + lastName.charAt(0);
-      }
+      },
+
+      onView() {
+        this.$.views.generateRequest();
+      },
+
     });
   </script>
 

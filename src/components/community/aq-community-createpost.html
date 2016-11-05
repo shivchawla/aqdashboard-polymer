@@ -69,7 +69,7 @@
         <iron-ajax url="http://localhost:3002/api/v2/thread" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
     </template>
     <script>
-      var categories = [{value:"Share your idea",inded:0},{value:"Ask a Question",index:1},{value:"Announcements",index:2}];
+      var categories = [{value:"Share your idea",inded:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}];
 
         Polymer({
             is: 'aq-community-createpost',
@@ -94,15 +94,12 @@
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
 
-                console.log(user.token);
-                
                 this.header = {
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"
                 }
-
-                
             },
+
             postThread: function() {
                 const markdownText = this.$.editor.getContent();
                 const category = this.$.category_dd.getSelectedValue();

@@ -62,16 +62,17 @@
             </paper-tabs>
 
             <div id='allposts'>
-                <iron-pages selected="{{selected}}">
+                <!--iron-pages selected="{{selected}}"-->
                     <div>
                       <template is="dom-repeat" items="{{items}}" initial-count=10>
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
+                            item-id = "{{item._id}}"
                             topic-heading="{{item.title}}"
                             author-firstname="{{item.user.firstName}}"
                             author-lastname="{{item.user.lastName}}"
                             author-address="{{item.user.email}}"
-                            post-date="{{item.createdAt}}"
+                            post-date="{{format(item.createdAt)}}"
                             total-replies={{item.replies.length}}
                             total-views="{{item.views}}"
                             post-category="{{item.category}}">
@@ -79,7 +80,7 @@
                       </template>
                     </div>
 
-                    <div>
+                    <!--div>
                         <template is="dom-repeat" items="{{items}}" initial-count=10>
                             <aq-community-home-post-item
                               topic-address="#/dashboard/community/topics/{{item._id}}"
@@ -139,22 +140,30 @@
                             </aq-community-home-post-item>
                         </template>
                     </div>
-                </iron-pages>
+                </iron-pages-->
                 <iron-ajax
                   url="http://localhost:3002/api/v2/thread"
                   method='GET'
                   id='threads'
+                  params='[[params]]'
                   handle-as="json"
                   on-response="onAllThreads"
                   headers='{{header}}'
                   debounce-duration="300">
                 </iron-ajax>
+
             </div>
         </div>
 
         <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
     </template>
     <script>
+
+        var options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
+
         Polymer({
             is: 'aq-community-home',
 
@@ -163,10 +172,30 @@
                     type: String,
                     value: 0
                 },
+
                 items: {
                     type: Object,
                 },
+
+                searchText:{
+                    type: String,
+                    value:"",
+                },
+
+                searchCategory:{
+                  type:String,
+                  value:"",
+                },
+
+                params : Object,
+
             },
+
+            listeners :{
+              'search-action':'onSearch',
+              'view-action':'onView',
+            },
+
             ready: function() {
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
@@ -178,19 +207,60 @@
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"
                 };
+
+                this.orderby = "views";
             },
-            onActivateTab(event, object) {
-                this.getAllPosts(this.selected);
+
+
+            isPersonalSelected() {
+                return this.selected == 4;
             },
-            getAllPosts(item) {
+
+            onActivateTab() {
+                if (this.selected == 2) {
+                  this.orderby = 'createdAt';
+                } else {
+                  this.orderby = 'views';
+                }
+
+                this.processparams();
+
+                this.getAllPosts();
+            },
+
+            getAllPosts() {
                 this.$.threads.generateRequest();
             },
+
             onAllThreads(data) {
-                this.items = data.detail.response;
+                this.items = data.detail.response.threads;
+                console.log(this.items);
             },
+
             createPost() {
                 this.router.go('/dashboard/community/create');
             },
+
+            onSearch(e) {
+              this.searchText = e.detail.text;
+              this.searchCategory = e.detail.category;
+              this.processparams()
+              this.$.threads.generateRequest();        
+            },
+
+  
+            processparams() {
+              this.params = {"skip":"0", "limit":"10", "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+            },
+
+            format(date) {
+              return new Date(date).toLocaleTimeString("en-us", options);
+            },
+
+            onView(e) {
+              
+            },
+
         });
     </script>
 </dom-module>

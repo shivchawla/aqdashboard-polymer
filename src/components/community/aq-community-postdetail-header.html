@@ -68,13 +68,23 @@
       <div class="layout horizontal">
         <span id='category' class="self-top">[[postHeader.category]]</span>
         <div class="flex"></div>
-        <paper-icon-button title="Follow" icon="vaadin-icons:megafone"></paper-icon-button>
+        <paper-icon-button title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
         <paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button>
       </div>
 
       <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>
 
     </div>
+
+    <iron-ajax
+      url="http://localhost:3002/api/v2/thread/[[postHeader._id]]/follow"
+      method="POST"
+      id='follows'
+      handle-as="json"
+      headers='{{header}}'
+      debounce-duration="300">
+    </iron-ajax>
+
   </template>
 
   <script>
@@ -86,8 +96,19 @@
       },
 
       ready: function() {
-          
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          };
       },
+
+      onFollow() {
+        console.log("Came here on follow");
+        this.$.follows.generateRequest();
+      },
+
     });
 
   </script>
