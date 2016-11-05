@@ -60,7 +60,9 @@
           </aq-community-postdetail-header>
           
           <div id="replyContainer">
-            <template is="dom-repeat" items="{{threadDetails.replies}}">
+            <template is="dom-repeat" 
+                      items="{{threadDetails.replies}}"
+                      initial-count=5>
               <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
             </template>
           </div>

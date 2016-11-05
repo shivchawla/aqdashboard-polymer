@@ -64,7 +64,7 @@
             <div id='allposts'>
                 <iron-pages selected="{{selected}}">
                     <div>
-                      <template is="dom-repeat" items="{{items}}">
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
@@ -80,7 +80,7 @@
                     </div>
 
                     <div>
-                        <template is="dom-repeat" items="{{items}}">
+                        <template is="dom-repeat" items="{{items}}" initial-count=10>
                             <aq-community-home-post-item
                               topic-address="#/dashboard/community/topics/{{item._id}}"
                               topic-heading="{{item.title}}"
@@ -96,7 +96,7 @@
                     </div>
 
                     <div>
-                      <template is="dom-repeat" items="{{items}}">
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
@@ -111,7 +111,7 @@
                     </div>
 
                     <div>
-                      <template is="dom-repeat" items="{{items}}">
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
                           <aq-community-home-post-item
                             topic-address="#/dashboard/community/topics/{{item._id}}"
                             topic-heading="{{item.title}}"
@@ -126,7 +126,7 @@
                     </div>
 
                     <div>
-                        <template is="dom-repeat" items="{{items}}">
+                        <template is="dom-repeat" items="{{items}}" initial-count=10>
                             <aq-community-home-post-item
                               topic-address="#/dashboard/community/topics/{{item._id}}"
                               topic-heading="{{item.title}}"
