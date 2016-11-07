@@ -32,7 +32,7 @@
 
       a, iron-icon {
         font-size: 12px;
-        color: #666;
+        color: #333a56;
         outline: none;
       }
 
@@ -48,7 +48,7 @@
 
       a:hover,
       a:hover iron-icon {
-        color: black;
+        color: #23283c;
       }
 
       iron-icon {
@@ -66,16 +66,16 @@
       </a>
 
       <a tabindex="0" role="button" on-tap="goToAnalyze">
-        <iron-icon icon="vaadin-icons:chart" title="Analyze"></iron-icon>
+        <iron-icon icon="vaadin-icons:chart" title="Analyze Runs"></iron-icon>
         <!--span hidden$="[[iconsOnly]]">Analyze</span--> 
       </a>
 
-      <a tabindex="0" role="button" on-click="cloneStrategy" aria-label="Clone Strategy">
+      <a tabindex="0" role="button" aria-label="Clone Strategy" on-tap='onClone'>
         <iron-icon icon="icons:content-copy" title="Clone Strategy"></iron-icon>
         <!--span hidden$="[[iconsOnly]]">Clone</span-->
       </a>
 
-      <a tabindex="0" role="button" on-click="shareStrategy" aria-label="Share Strategy">
+      <a tabindex="0" role="button" on-tap="onShare" aria-label="Share Strategy">
         <iron-icon icon="vaadin-icons:share-square" title="Share Strategy"></iron-icon>
         <!--span hidden$="[[iconsOnly]]">Share</span-->
       </a>
@@ -88,40 +88,14 @@
       is: 'aq-editor-home-elementmenu',
       
       properties: {
-        element: String,
-        
-        _element: Object,
-        
+        strategyId:String,
+
         iconsOnly: {
           type: Boolean,
           value: false,
           reflectToAttribute: true
         }
         
-      },
-      
-      githubLink: function (source) {
-        return 'https://github.com/' + source;
-      },
-
-      cartAdd: function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        this.$.cartItemIcon.toggle();
-      },
-      
-      navToDocs: function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        this.fire('nav', { url: '/elements/' + this.element + '?view=docs' });
-      },
-
-      navToDemo: function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (e.currentTarget.hasAttribute('disabled'))
-          return false;
-        this.fire('nav', { url: '/elements/' + this.element + '?active=' + this._element.active + '&view=demo:' + this._element.demo.path });
       },
 
       goToPreview() {
@@ -130,6 +104,14 @@
 
       goToAnalyze() {
         this.fire('analyzeClicked');
+      },
+
+      onClone() {
+        this.fire('cloneClicked');
+      },
+
+      onShare() {
+        this.fire('shareClicked');
       },
 
     });

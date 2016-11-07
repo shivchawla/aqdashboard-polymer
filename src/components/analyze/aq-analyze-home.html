@@ -40,8 +40,10 @@
 		}
 
 		#container {
-		    margin-left: 30px;
-		    margin-right: 30px;
+			width:95%;
+			margin:0 auto;
+		    --margin-left: 30px;
+		    --margin-right: 30px;
 		    margin-top: 10px;
 		    color: #333a56; 
 		  }
@@ -59,18 +61,34 @@
 	</style>
 
 	<template>
+		<iron-ajax
+		  	auto	
+          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
+     	 	method='GET'
+          	id='getStrategyQuery'
+          	handle-as="json"
+          	on-response="onStrategy"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+		<iron-ajax
+		  	auto	
+          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onAllBacktests"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+		
 		<div id='container'>
 			<aq-analyze-home-menu strategy-name="{{strategyName}}"></aq-analyze-home-menu>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+
+			<template is='dom-repeat' items="{{backtests}}">
+				<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
+			</template>
+
 		</div>	
 
 		<paper-dialog id='dialog' with-backdrop>
@@ -87,12 +105,43 @@
 
     		properties: {
     			strategyName: String,
-    		},
+    			strategyId: String,
+    			backtests: {
+    				type:Object,
+    				value:[
+			            {first: 'Bob', last: 'Smith'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},
+			            {first: 'Sally', last: 'Johnson'},],
+    			},
+    		}, 
     		
 			listeners :{
-				'back-clicked':'goToEditor',
-				'compare-pressed':'compareBacktests',
+				'backClicked':'goToEditor',
+				'compareClicked':'compareBacktests',
 			},
+
+			ready: function() {
+	          	var x = localStorage.getItem('my-app-storage');
+        	  	var user = JSON.parse(x).user;
+	          	this.header = {
+        	      	"aimsquant-token": user.token,
+	              	"Content-Type": "application/json"
+	          	};
+
+
+	      	},
+
+	      	attached() {
+	      		console.log("Attached in Analyze");
+	      		console.log(this.backtests);
+	      		//console.log(this.strategyId);
+	      		//console.log(this.strategyName);
+	      	},
 
 			goToEditor() {
 				this.router.go('/dashboard/editor');
@@ -101,6 +150,14 @@
 			compareBacktests() {
 				this.$.dialog.toggle();
 			},
+
+			onAllBacktests(data) {
+				//this.backtests = data.detail.response;
+			},
+
+			onStrategy(data) {
+				this.strategyName = data.detail.response.name;
+			}
     	});
     </script>
 

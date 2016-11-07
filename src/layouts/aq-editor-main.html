@@ -8,6 +8,7 @@
 <link rel="import" href="../components/editor/aq-editor-home.html">
 <link rel="import" href="../components/editor/aq-editor-edit.html">
 <link rel="import" href="../components/editor/aq-editor-home-backtest-table.html">
+<link rel='import' href='../dialog/aq-editor-strategy-preview-dialog.html'>
 
 
 <dom-module id="aq-editor-main">
@@ -20,10 +21,35 @@
   <template>
      <app-router mode="hash" trailingSlash="ignore">
         <app-route path="/dashboard/editor" element='aq-editor-home' bindrouter=""></app-route>
-        <app-route path="/dashboard/editor/e" element='aq-editor-edit' bindrouter=""></app-route>
+        <app-route path="/dashboard/editor/:strategyId" element='aq-editor-edit' bindrouter=""></app-route>
         <app-route path="/dashboard/editor/a" element='aq-editor-home-backtest-table' bindrouter="">
         </app-route>
      </app-router>
+
+     <aq-editor-strategy-input-dialog id="strategyCreateDialog" 
+                                     header="Create Strategy">
+      </aq-editor-strategy-input-dialog>  
+
+      
+      <aq-editor-strategy-input-dialog id="strategyCloneDialog" 
+                                       header="Clone this Strategy"
+                                       strategy-name="[[strategyData.name]]"
+                                       strategy-desc="[[strategyData.desc]]">
+      </aq-editor-strategy-input-dialog>  
+
+
+      <iron-ajax 
+        url="http://localhost:3002/api/v2/strategy" 
+        body="[[strategyData]]" 
+        method='POST' 
+        id='postStrategy' 
+        headers='{{header}}' 
+        handle-as="json" 
+        on-response="onStrategyCreation" 
+        last-response="{{ajaxResponse}}" 
+        debounce-duration="300">
+      </iron-ajax>
+
   </template>
 
   <script>
@@ -50,12 +76,78 @@
           value:'main',
         },
 
+        strategyData:Object,
+
       },
+
+      listeners :{
+        'create-action':'createStrategy',
+        'newClicked':'openNewDialog',
+        'cloneClicked':'openCloneDialog',
+      },
+
+      ready: function() {
+            var x = localStorage.getItem('my-app-storage');
+            var user = JSON.parse(x).user;
+            this.header = {
+                "aimsquant-token": user.token,
+                "Content-Type": "application/json"
+          };
+      },
+
 
       isEqual(view1, view2) {
         return view1==view2;
       },
 
+      createStrategy(e) {  
+        //Update names after permission to create
+        this.strategyData["name"] = e.detail.name;
+        this.strategyData["description"] = e.detail.description;
+
+        this.$.postStrategy.generateRequest();
+      },
+
+      onStrategyCreation(data) {
+          
+          console.log(data);
+          var strategyId = data.detail.response._id
+          this.router.go('/dashboard/editor/'+ strategyId)
+      },
+
+      openNewDialog() {    
+        this.strategyData = {
+            "name":"",
+            "description":"",
+            "language":"python",
+            "type": "",
+            "code": "",
+        };
+
+        //Open dialog for permission
+        this.$.strategyCreateDialog.open();
+      },
+
+      openCloneDialog(e) {
+        
+        strategy  = e.detail.strategy;
+        var newName = "";
+        var originalName = strategy.name;
+
+        if (originalName.search("Clone of") > -1) {
+            return;
+        } else {
+          newName = "Clone of "+ originalName;
+        }
+
+        this.strategyData = {"name":newName, 
+                          "desc" : strategy.description,
+                          "code" : strategy.code,
+                          "language":strategy.language,
+                          "type":strategy.type};
+
+        this.$.strategyCloneDialog.open();
+      },
 
     });
   </script>

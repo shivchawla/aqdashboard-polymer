@@ -18,6 +18,8 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+
 
 <link rel='import' href ="./aq-editor-toolbar.html">
 <link rel='import' href ="./aq-editor-console-window.html">
@@ -54,23 +56,48 @@
 
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
-<template>         
-  <paper-header-panel class="fit" mode="seamed"> 
-    <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header"></aq-editor-toolbar>
-    
-    <template is='dom-if' if='{{isProgrammer}}'>
-      <aq-editor-edit-programmer  id='editorPanel'></aq-editor-edit-programmer> 
-    </template>
-     
-    <template is='dom-if' if='{{!isProgrammer}}'>
-      <aq-editor-edit-nonprogrammer id='editorPanel'></aq-editor-edit-nonprogrammer> 
-    </template>
-         
-    <iron-collapse id='collapse'>
-      <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
-    </iron-collapse>
-  </paper-header-panel>
-             
+<template>
+    <iron-ajax
+          auto  
+          url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
+          method='GET'
+          id='getStrategyQuery'
+          handle-as="json"
+          on-response="onGetStrategy"
+          headers='{{header}}'
+          debounce-duration="300">
+    </iron-ajax>  
+
+    <template is='dom-if' if="{{strategy}}">         
+        <paper-header-panel class="fit" mode="seamed"> 
+          <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]"></aq-editor-toolbar>
+          
+          <template is='dom-if' if='{{isProgrammer}}'>
+            <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
+          </template>
+           
+          <template is='dom-if' if='{{!isProgrammer}}'>
+            <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
+          </template>
+               
+          <iron-collapse id='collapse'>
+            <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
+          </iron-collapse>
+        </paper-header-panel>
+                      
+      </template>
+
+      <iron-ajax 
+        url="http://localhost:3002/api/v2/strategy/[[strategyId]]" 
+        body="{{putStrategyData}}" 
+        method='PUT' 
+        id='saveStrategyQuery' 
+        headers='{{header}}' 
+        handle-as="json" 
+        on-response="onStrategySaved" 
+        last-response="{{ajaxResponse}}" 
+        debounce-duration="300">
+    </iron-ajax>
   </template>
 
   <script>
@@ -80,14 +107,15 @@
       properties :{
         isProgrammer:{
           type:Boolean,
-          value:false,
+          value:true,
         },
+
+        strategyId: String,
       },
 
       attached() {
         this.fire('close-menu');
       },
-
 
       listeners: {
         'close-all':'closeAll',
@@ -100,7 +128,16 @@
         'analyze-clicked':'goToAnalyze',
         'open-drawer':'openDrawer',
         'close-drawer':'closeDrawer',
+        'save-action':'saveStrategy',
+      },
 
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"
+          };
       },
 
       toggleConsole() {
@@ -146,6 +183,26 @@
 
       goToAnalyze() {
         this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
+      },
+
+      onGetStrategy(data) {
+        this.strategy = data.detail.response;
+      },
+
+      onStrategySaved(data) {
+        
+      },
+
+      saveStrategy(e) {
+        this.putStrategyData = {
+            "name":e.detail.name,
+            "description": this.strategy.description,
+            "language":this.strategy.language,
+            "type": this.strategy.type,
+            "code": this.$$('#codeEditorPanel').getCodeContent(),
+        };
+      
+        this.$.saveStrategyQuery.generateRequest();
       },
 
     });

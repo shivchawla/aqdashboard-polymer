@@ -46,6 +46,9 @@
 		#strategyName {
 			height:24px;
 			margin-top: 3px;
+			font-size: 12px;
+			padding-left: 3px;
+			font-weight: bolder;
 		}
 
 		.separator{
@@ -57,9 +60,10 @@
 		}
 
 		input {
-			max-width:150px;
+			max-width:250px;
 			min-width: 50px;
 			--width:20%;
+			--font-size: 15px;
 		}
 
 		.toolbarIcon:active {
@@ -77,8 +81,6 @@
 			 padding:3px;
 		}
 
-
-
 		
 	</style>
 	
@@ -86,21 +88,20 @@
 		<paper-toolbar>
 			<div id='toolbar' class="flex layout horizontal">
 				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
-				<input class="flex" id ='strategyName' type="text">
+				<input class="flex" id ='strategyName' value="[[strategyName]]" type="text">
 	     		 
 	        	<div class="flex" style="max-width:5%"></div>
 
-		 		
 	        	<paper-icon-button noink class="flex toolbarIcon" icon="icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button>
 
 	        	<span class="self-center separator"></span>
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:save" title="Save"></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:add" title="New"></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:content-copy" title="Clone"></paper-icon-button>
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:save" title="Save" on-tap='onSave'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:add" title="New" on-tap='onCreate'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
 		 		
 		 		<span class="self-center separator"></span>
 		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
-		 		<paper-icon-button noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" style="border:1px solid;padding:0px;height:23px;width:23px"></paper-icon-button>
+		 		<paper-icon-button noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" style="border:1px solid;padding:0px;height:23px;width:23px" on-tap='onRun'></paper-icon-button>
 
 
 	        	<template is='dom-if' if="{{isProgrammer}}">
@@ -128,6 +129,9 @@
 				isProgrammer: {
 					type:Boolean,
 				}, 
+
+				strategyName:String,
+				strategyDesc:String,
 			},
 
 			closeAll() {
@@ -160,7 +164,21 @@
 
 			goToAnalyze() {
 				this.fire('analyze-clicked');
-			}
+			},
+
+			onSave() {
+				this.strategyName = this.$.strategyName.value;
+				this.fire('save-action',{name:this.strategyName});
+			},
+
+			onCreate() {
+				this.fire('newClicked');
+			},
+
+			onClone() {
+				
+				this.fire('cloneClicked', {name:this.strategyName, description:this.strategyDesc});	
+			},
 
 		});
 	</script>

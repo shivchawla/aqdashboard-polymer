@@ -77,11 +77,23 @@
                 threadData: {
                     type: Object,
                 },
+
                 categories :{
                   type:Array,
                 },
+
                 header:{
                   type:Object,
+                },
+
+                share: {
+                  type:String,
+                  value:"",
+                },
+
+                id:{
+                  type:String,
+                  value:"",
                 },
             },
 
@@ -98,6 +110,12 @@
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"
                 }
+            },
+
+            attached() {
+              //Write the sharing your startegy code and 
+              console.log(this.id);
+              console.log(this.share);  
             },
 
             postThread: function() {

@@ -17,8 +17,13 @@
   <template>
      <app-router id="communityrouter" trailingSlash="ignore">
         <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
+        
         <app-route path="/dashboard/community/topics/:threadid" element='aq-community-postdetail' bindrouter=""></app-route>
+
         <app-route path="/dashboard/community/create" element='aq-community-createpost' bindrouter=""></app-route>
+
+        <app-route path="/dashboard/community/create/:id" element='aq-community-createpost' bindrouter=""></app-route>
+     
      </app-router>
   </template>
 

@@ -52,18 +52,25 @@
 	    }
 
      	.row paper-checkbox {
-	        box-sizing: border-box;
+	        box-sizing: border-box; 
 	        cursor: pointer;
 	        margin:15px;
-	    }
+        }
 
+        paper-checkbox {
+	        --paper-checkbox-checked-color: #333a56; --#99ced4;
+        }
+
+	    
         .row.hover {
 	        background:#e5f1f5; ---#e7e8ee; --#b2b6c5; --#afb4c9; --#828bab;--#616b91; --#E0F2F1;
 	    }
    
         .strategy-name {
-	        min-width:250px;
+	        width:300px;
 	        --font-weight: bold;
+	        --max-width: 250px;
+	        margin-right: 30px;
 	    }
 
 	    .strategy-name span:hover{
@@ -72,7 +79,9 @@
 	    }
 
         .strategy-desc {
-	      	min-width: 350px;
+	      	width: 350px;
+	      	margin-right:30px;
+
 	    }
 
         .strategy-bt:hover {
@@ -87,21 +96,24 @@
         .row .strategy-desc{
 	        --color: #757575;
 	    }
+
+	    
  
 	</style>
 
 	<template>
-    		<div class="row flex layout horizontal">
-		      	<paper-checkbox noink></paper-checkbox>
-		          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
-		          <div class="strategy-desc self-center">[[strategyDesc]]</div>
-		          <div on-click='goToAnalyze' class="strategy-bt self-center">[[numBacktest]]</div>   
-	        </div>
+		<div class="row flex layout horizontal" id="{{strategyId}}">
+	      	<paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
+	          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
+	          <div class="strategy-desc self-center">[[strategyDesc]]</div>
+	          <div on-click='goToAnalyze' class="strategy-bt self-center">[[numBacktest]]</div>
+        </div>
 	</template>
 
 	<script>
 		Polymer({
 			is:'aq-editor-home-strategy-item',
+			
 			properties: {
 				strategyName: {
 					type:String,
@@ -121,6 +133,75 @@
 				strategyId :String,
 			},
 
+			listeners :{
+				'cloneClicked':'onClone',
+			},
+/*
+			listeners :{
+				'mouseover': '_mouseOver',
+				'mouseleave': '_mouseLeave',
+
+			},
+
+			_actionMenu: null,
+
+			_mouseOver: function (e) {
+				var row = this._findAncestor(e.target, function (node) {
+					return node != this && !node.classList.contains('row') && node.id !== 'actions';
+				});
+
+				if (row && row.classList.contains('row')) {
+						this._hideActions();
+						this._showActions(row);
+					
+				} else if (row.id !== 'actions') {
+						this._hideActions();
+				}
+			},
+		
+			_mouseLeave: function () {
+				this._hideActions();
+			},
+
+			_showActions: function (row) {
+				console.log("Woow");
+				var actionMenu = this._actionMenu;
+				var rowOffsetTop = row.offsetTop;
+				if (!actionMenu) {
+					this._actionMenu = document.createElement('aq-editor-home-elementmenu');
+					this._actionMenu.classList.add('hidden');
+					Polymer.dom(this.$.actions).appendChild(this._actionMenu);
+					actionMenu = this._actionMenu;
+				}
+				actionMenu.iconsOnly = true;
+				actionMenu.style.top = rowOffsetTop + 'px';
+				//this._layoutIfNeeded(actionMenu);
+				actionMenu.classList.remove('hidden');
+				row.classList.add('hover');
+				//this._currentRowIndex = index;
+				this._currentRow = row;
+			},
+		
+			_hideActions: function () {
+				var row = this._currentRow;
+				var actionMenu = this._actionMenu;
+				if (row) {
+					if (actionMenu) {
+						actionMenu.classList.add('hidden');
+					}
+					//row.classList.remove('hover');
+					//this._currentRowIndex = -1;
+					this._currentRow = null;
+				}
+			},
+
+			_findAncestor: function (node, fn) {
+				while (node && fn.call(this, node)) {
+					node = node.parentNode;
+				}
+				return node;
+			},*/
+
 			goToEditor() {
 				this.fire('editorClicked', {id:this.strategyId});
 			},
@@ -129,6 +210,18 @@
 				this.fire('analyzeClicked');
 				e.stopPropagation();
 			},
+
+			onCheck() {
+				this.fire('check-action',{id:this.strategyId, checked:this.$.checkbox.checked})
+			},
+
+			isCheckBoxActive() {
+				return this.$.checkbox.checked;
+			},
+
+			onClone(e) {
+				this.firec
+			}
 
 		});
 	</script>

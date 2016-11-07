@@ -1,4 +1,8 @@
 <link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
+<link rel='import' href='../../../bower_components/paper-toggle-button/paper-toggle-button.html'>
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
+<link rel='import' href='../../../bower_components/webcomponentsjs/webcomponents-lite.js'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 
 <dom-module id='aq-backtest-detail-item'>
 
@@ -44,23 +48,44 @@
 		.chart {
 			width:95%;
 		}
+		.tooltip:{
+			margin-top: -10px;
+
+		}
 
 	</style>
 
 	<template>
-		<div class="layout horizontal flex">
-			<paper-card class="flex detail layout vertical">
+		<div class="layout">
+			<paper-card class="flex detail layout vertical" style="width: 98%; text-align: -webkit-center;">
 				<div id='detail-header' class="layout horizontal">
 					<span class="self-center">Return Profile</span>
 					<div class="flex"></div>	
-					<paper-icon-button icon='icons:add'></paper-icon-button>
+					<div style="display:flex; justify-content: center;margin-bottom: 20px">
+					<div style="margin-right: 7px">Line Graph</div>
+					<div>
+						<paper-toggle-button  on-change="toggleShow" checked>Bar Graph</paper-toggle-button>
+					</div>
+				</div>
 				</div>
 				
-				<chart-line class="flex chart" data="[[lineData]]"></chart-line>
-				<chart-bar class="flex chart" data="[[barData]]"></chart-bar>
-			</paper-card>
+				<!-- <p>An example of
+			    <code>&lt;nvd3-multi-bar&gt;</code>:</p>
 
-			<paper-card class="detail">
+			  <nvd3-multi-bar class="bar" auto-resize show-legend></nvd3-multi-bar> -->
+				<template is="dom-if" if="{{!hide}}">
+					<chart-line style="width: 85%" class="flex chart" data="[[lineData]]"></chart-line>
+
+			      
+			    </template>
+			    <template is="dom-if" if="{{hide}}">
+					<chart-bar style="width: 85%" class="flex chart" data="[[barData]]"></chart-bar>
+
+			      
+			    </template>
+
+
+
 				<div id='detail-header' class="layout horizontal flex">
 					<span class="self-center">Risk Metrics</span>
 					<div class="flex"></div>	
@@ -68,41 +93,107 @@
 				</div>
 
 				<div class="layout horizontal flex mdcontainer">
+					<div class="layout horizontal flex mdcontainer"> 
 					<aq-metric-item class="flex" metric-name='Total Return' 
-					metric-value='44.7%' metric-desc="Total returns of the strategy"></aq-metric-item>
+					metric-value='44.7%'>
+					</aq-metric-item>
+						<paper-tooltip offset="0" position="top" class="tooltip">Total returns of the strategy</paper-tooltip>
+
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Avg. Return' 
-					metric-value='10.7%'></aq-metric-item>
+					metric-value='10.7%'>
+						
+					</aq-metric-item>
+						<paper-tooltip offset="0"  class="tooltip" position="top">Average Return</paper-tooltip>
+
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Volatility' 
-					metric-value='14.7%'></aq-metric-item>
-				</div>
+					metric-value='14.7%'>
+						
+					</aq-metric-item>
+						<paper-tooltip offset="0"  class="tooltip" position="top">Volatility</paper-tooltip>
 
-				<div class="layout horizontal flex mdcontainer">
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+					
 					<aq-metric-item class="flex" metric-name='Sharpe Ratio' 
-					metric-value='1.9'></aq-metric-item>
+					metric-value='1.9'>
+						
+					</aq-metric-item>
+						<paper-tooltip offset="0"  class="tooltip" position="top">Sharpe Ratio</paper-tooltip>
+
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+					
 					<aq-metric-item class="flex" metric-name='Information Ratio' 
-					metric-value='0.98'></aq-metric-item>
+					metric-value='0.98'>
+						
+					</aq-metric-item>
+						<paper-tooltip  offset="0" class="tooltip" position="top">Information Ratio</paper-tooltip>
+
+					</div>
+					<div class="layout horizontal flex mdcontainer">
 					<aq-metric-item class="flex" metric-name='Sortino Ratio' 
-					metric-value='2.5'></aq-metric-item>
+					metric-value='2.5'>
+						
+					</aq-metric-item>
+						<paper-tooltip  offset="0" class="tooltip" position="top">Sortino Ratio</paper-tooltip>
+
+					</div>
 				</div>
 
+
 				<div class="layout horizontal flex mdcontainer">
+					<div class="layout horizontal flex mdcontainer">
 					<aq-metric-item class="flex" metric-name='Avg. Drawdown' 
 					metric-value='4.7%'></aq-metric-item>
+						<paper-tooltip offset="0" class="tooltip" position="top">Average Drawdown</paper-tooltip>
+					
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+					
 					<aq-metric-item class="flex" metric-name='Max. Drawdown'
 					metric-value='6.8%'></aq-metric-item>
+						<paper-tooltip offset="0" class="tooltip" position="top">Maximum Drawdown</paper-tooltip>
+					 
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Calmar Ratio' 
 					metric-value='4.3'></aq-metric-item>
-				</div>
+						<paper-tooltip offset="0" class="tooltip" position="top">Calmar Ratio</paper-tooltip>
 
-				<div class="layout horizontal flex mdcontainer">
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Beta' 
 					metric-value='0.98'></aq-metric-item>
+						<paper-tooltip offset="0" class="tooltip" position="top">Beta</paper-tooltip>
+					
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Stability' 
 					metric-value='0.88'></aq-metric-item>
+						<paper-tooltip offset="0" class="tooltip" position="top">Stability</paper-tooltip>
+					
+					</div>
+					<div class="layout horizontal flex mdcontainer">
+
 					<aq-metric-item class="flex" metric-name='Avg. Concentration' 
 					metric-value='0.43'></aq-metric-item>
-				</div>						
+						<paper-tooltip offset="0" class="tooltip" position="top">Average Concentration</paper-tooltip>
+					
+					</div>
+				</div>
+					
 			</paper-card>
+
+			
 		</div>
 			
 	</template>
@@ -111,6 +202,10 @@
 			is:'aq-backtest-detail-item',
 			
 			properties:{
+				hide: {
+					type: Boolean,
+					value: true,
+				},
 				lineData: {
 					type:Object,
 					value: {
@@ -149,10 +244,173 @@
 					      data: [-65, -59, 80, 81, 56, 55, -40,65, 59, -80, 81, 56, 55, 40,-65, 59, 80, 81, -56, 55, 40,-65, 59, 80, 81, 56, -55, 40,65, -59, 80, 81, 56, 55, 40,65, -59, 80, 81, -56, 55, 40]
 					    }]
 					}, 
-				},	
-			},
-		});
-	</script>
+				},
+
+				
+					},
+					ready: function(){
+						var parent = this.$;
+						// console.log(parent);
+
+					 // parent.toggle.addEventListener('change', function () {
+					 // 	alert('da');
+					 //    if (this.checked) {
+					 //      // do something if when checked
+					 //      alert('checked');
+
+					 //    } else {
+					 //      alert('unchecked');
+
+					 //      // do something if not checked
+					 //    }
+					 //  }); 
+					},
+					toggleShow: function(){
+						this.hide = !this.hide;
+					}
+				});
+			</script>
+			<script>
+			var k;
+			setTimeout(function(){
+		    var el = document.querySelector('.bar');
+		    console.log('dsaasd');
+		    console.log(el);
+
+		    el.data = [{
+		      "key": "Stream0",
+		      "values": [{
+		        "x": "January",
+		        "y": 45.17657645842991837
+		      }, {
+		        "x": "February",
+		        "y": 67.17056295930152043
+		      }, {
+		        "x": "March",
+		        "y": 68.1673443365488047
+		      }, {
+		        "x": "April",
+		        "y": 46.11723298445616456
+		      }, {
+		        "x": "May",
+		        "y": 24.536952569541941
+		      }, {
+		        "x": "June",
+		        "y": 43.3388194660534718
+		      }, {
+		        "x": "July",
+		        "y": 54.36333876908320444
+		      }, {
+		        "x": "August",
+		        "y": 64.3611814096880023
+		      }, {
+		        "x": "September",
+		        "y": 23.1338671870032077
+		      }, {
+		        "x": "October",
+		        "y": 34.17393665276883485
+		      }, {
+		        "x": "November",
+		        "y": 23.10082735638070002
+		      }, {
+		        "x": "December",
+		        "y": 45.11922403030059807
+		      }]
+		    }, {
+		      "key": "Stream1",
+		      "values": [{
+		        "x": "January",
+		        "y": 1.2743446048854001
+		      }, {
+		        "x": "February",
+		        "y": 0.22290307978708743
+		      }, {
+		        "x": "March",
+		        "y": 0.11314237776897834
+		      }, {
+		        "x": "April",
+		        "y": 0.13269772172547029
+		      }, {
+		        "x": "May",
+		        "y": 0.18174409477004588
+		      }, {
+		        "x": "June",
+		        "y": 1.6019917736992826
+		      }, {
+		        "x": "July",
+		        "y": 1.2818868982445681
+		      }, {
+		        "x": "August",
+		        "y": 1.3534659925389787
+		      }, {
+		        "x": "September",
+		        "y": 0.26568487075373903
+		      }, {
+		        "x": "October",
+		        "y": 0.19123676498431127
+		      }, {
+		        "x": "November",
+		        "y": 0.19111333606020012
+		      }, {
+		        "x": "December",
+		        "y": 0.16994137621985175
+		      }]
+		    }, {
+		      "key": "Stream2",
+		      "values": [{
+		        "x": "January",
+		        "y": 4.56961163175497
+		      }, {
+		        "x": "February",
+		        "y": 0.6716892057759072
+		      }, {
+		        "x": "March",
+		        "y": 0.1281580516020834
+		      }, {
+		        "x": "April",
+		        "y": 0.1961314488771337
+		      }, {
+		        "x": "May",
+		        "y": 0.1849392189636947
+		      }, {
+		        "x": "June",
+		        "y": 0.15946723060339954
+		      }, {
+		        "x": "July",
+		        "y": 0.10531361531095998
+		      }, {
+		        "x": "August",
+		        "y": 0.11177708057017365
+		      }, {
+		        "x": "September",
+		        "y": 0.17739074343946024
+		      }, {
+		        "x": "October",
+		        "y": 0.1669708436171928
+		      }, {
+		        "x": "November",
+		        "y": 0.4557125675037702
+		      }, {
+		        "x": "December",
+		        "y": 1.1755390253517568
+		      }]
+		    }];
+    console.log(el);
+},2000);
+  </script>
+	<!-- <script>
+		var toggle = document.querySelector("paper-toggle-button");
+			toggle.addEventListener('change', function () {
+			  if (this.checked) {
+			  	alert('fsd');
+			    // do something if when checked
+			  } else {
+			  	alert('fsd');
+
+			    // do something if not checked
+			  }
+			}); 
+	</script> -->
 </dom-module>
 
 
@@ -197,6 +455,7 @@
 					type:String,
 				},
 			},	
+
 		});
 	</script>
 </dom-module>

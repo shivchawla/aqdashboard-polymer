@@ -143,11 +143,11 @@
 			},
 
 			onDelete() {
-				this.fire('delete-pressed');
+				this.fire('deleteClicked');
 			},
 
 			onCompare() {
-				this.fire('compare-pressed');
+				this.fire('compareClicked');
 			},
 
 			checkForKeys: function (e) {
@@ -167,7 +167,7 @@
             },
 
             goToEditor() {
-            	this.fire('back-clicked');
+            	this.fire('backClicked');
             },
 
 

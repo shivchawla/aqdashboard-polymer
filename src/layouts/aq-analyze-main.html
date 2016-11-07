@@ -17,7 +17,11 @@
   </style>
   <template>
     <app-router mode="hash" trailingSlash="ignore">
-        <app-route path="/dashboard/analyze" element='aq-analyze-home' bindrouter=""></app-route>
+        <app-route path="/dashboard/analyze/:strategyId" element='aq-analyze-home' bindrouter=""></app-route>
+
+
+        <!--app-route path="/dashboard/analyze/*" element='aq-analyze-home' bindrouter=""></app-route-->
+
         <app-route path="/dashboard/analyze/compare" element='aq-analyze-compare' bindrouter=""></app-route>
         <app-route path="/dashboard/analyze/compare/x" element='aq-analyze-compare-results' bindrouter=""></app-route>
     </app-router>
