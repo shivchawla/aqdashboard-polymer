@@ -1,5 +1,9 @@
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+
+<link rel="import" href="../../bower_components/paper-icon-button/
+paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-user-menu.html">
@@ -33,12 +37,34 @@
   <template>
 
       <paper-toolbar>
-        <template is="dom-if" if="[[showmenu]]">
-          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button>
+        <template is="dom-if" if="{{showmenu}}">
+          <template is ='dom-if' if="{{computeShowMenu(hasHeader, currentTab)}}">
+          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
           <div class="title">AimsQuant</div>
         </template>
+
         <div class="flex"></div>
-        <aq-user-menu></aq-user-menu>
+        <paper-tabs id='papertabs' selected="{{currentTab}}" no-bar noink>
+          <paper-tab on-tap='onHome'>HOME</paper-tab>
+          <paper-tab on-tap='onResearch'>RESEARCH</paper-tab>
+          <paper-tab on-tap='onInvestments'>INVESTMENTS</paper-tab>
+          <!--paper-tab>LOGIN</paper-tab>
+          <paper-tab>SIGNUP</paper-tab-->
+          <paper-tab on-tap='onAbout'>ABOUT US</paper-tab>
+        </paper-tabs>
+        
+        <template is='dom-if' if="{{!hasHeader}}">
+        <paper-tabs>
+            <paper-tab on-tap='onLogin'>LOGIN</paper-tab>
+            <paper-tab on-tap='onSignup'>SIGNUP</paper-tab>
+        
+        </paper-tabs>
+       </template>
+        
+        <template is='dom-if' if="{{hasHeader}}">
+            <aq-user-menu></aq-user-menu> 
+        </template>
+
       </paper-toolbar>
 
   </template>
@@ -50,16 +76,68 @@
       properties: {
         showmenu: {
           type:Boolean,
-          value:false,
+          value:true,
         },
 
         narrow:{
           type:Boolean,
         },
+
+        currentTab: {
+          type:Number,
+          //value:0,
+        },
+
+        hasHeader: {
+          type:Boolean,
+          value:false,
+        },
       }, 
+
+      attached() {
+
+          var x = localStorage.getItem('my-app-storage');
+          if (x) {
+            var user = JSON.parse(x).user;
+            this.header = {
+                "aimsquant-token": user.token,
+                "Content-Type": "application/json"};         
+          } 
+
+          this.hasHeader = (this.header) ? true : false;           
+      },
 
       toggleMenu() {
         this.fire('open-menu');
+      },
+
+      onLogin() {
+        this.fire('loginClicked')
+      },
+
+      onSignup() {
+        this.fire('signupClicked')
+      },
+
+      computeShowMenu(hasHeader, currentTab) {
+        return hasHeader && currentTab == 1;
+      },
+
+      onResearch() {
+        this.fire('tabChanged',{tab:1});
+      },
+
+      onHome() {    
+        this.fire('tabChanged',{tab:0});
+        //this.fire('tabChanged',{tab:-1});
+      },
+
+      onAbout(e) {    
+        this.fire('tabChanged',{tab:3});
+      },
+
+      onInvestments(e) {    
+        this.fire('tabChanged',{tab:2});
       },
 
     });

@@ -1,0 +1,40 @@
+<link rel="import" href='./aq-toolbar.html'>
+
+<dom-module id="aq-homepage">
+	<template>
+		 <aq-toolbar current-tab=0 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-homepage',
+
+			listeners:{
+				'tabChanged':'changeTab',
+			},
+			
+			changeTab(e) {
+			    tab = e.detail.tab;
+			    if (tab == this.currentTab) {
+		    	    return
+		      	}
+
+    		  	switch(tab) {
+		        	case 0: 
+		          		this.router.go('/home');
+			          	break;
+			        case 1: 
+			          	this.router.go('/dashboard');
+			          	break;
+			        case 2: 
+			          	this.router.go('/investments');
+			          	break;
+			        case 3: 
+			          	this.router.go('/about');
+			          	break;
+		      	}
+
+		    },
+		})
+	</script>
+</dom-module>

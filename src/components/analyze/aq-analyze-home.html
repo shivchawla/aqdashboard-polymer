@@ -132,13 +132,11 @@
         	      	"aimsquant-token": user.token,
 	              	"Content-Type": "application/json"
 	          	};
-
-
 	      	},
 
 	      	attached() {
-	      		console.log("Attached in Analyze");
-	      		console.log(this.backtests);
+	      		//console.log("Attached in Analyze");
+	      		//console.log(this.backtests);
 	      		//console.log(this.strategyId);
 	      		//console.log(this.strategyName);
 	      	},
@@ -152,7 +150,7 @@
 			},
 
 			onAllBacktests(data) {
-				//this.backtests = data.detail.response;
+				this.backtests = data.detail.response;
 			},
 
 			onStrategy(data) {

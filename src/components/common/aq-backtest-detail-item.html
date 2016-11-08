@@ -1,12 +1,25 @@
 <link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
 <link rel='import' href='../../../bower_components/paper-toggle-button/paper-toggle-button.html'>
 <link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
 <link rel='import' href='../../../bower_components/webcomponentsjs/webcomponents-lite.js'>
 <link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
+<link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
+<link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
+
+<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
 
 <dom-module id='aq-backtest-detail-item'>
 
 	<style> 
+		#chart-line {
+			width:100%%;
+			--height:70%;
+		}
+		chart-bar {
+			width: 5%;
+			height:5%;
+		}
 		.detail {
 			margin:10px;
 			--margin-bottom:0px !important;
@@ -34,13 +47,13 @@
 			margin-right:10px;
 			--margin-top:5px;
 			margin-bottom:8px;
-			height:100px;
+			height:62px;
 		}
 
 	
 		#detail-header {
-			margin-bottom: 20px;
 			margin-top:10px;
+			margin-bottom: 5px;
 			margin-left:10px;
 			font-weight: bold;
 		}
@@ -52,148 +65,93 @@
 			margin-top: -10px;
 
 		}
+		.width_tab{
+			width: 144px;
+		}
+		.wrap    { 
+		  -webkit-flex-wrap: wrap;
+		  flex-wrap: wrap;
+		}  
+
+		.paper_body{
+			width: 98%;
+		    text-align: -webkit-center;
+		    color:#333a56;
+
+		}
+		.flex_container{
+			display: flex;
+		}
+		.toggle_tab{
+			display:flex; 
+			justify-content: center;
+			margin-bottom: 20px;
+		}
+		.toggle_name{
+			margin-right: 7px;
+		}
+
+		paper-tabs {
+			--paper-tabs-selection-bar-color:teal;
+
+			--paper-tabs:{
+				height:100%;
+				margin-bottom:10px;
+			};
+		}
 
 	</style>
 
 	<template>
 		<div class="layout">
-			<paper-card class="flex detail layout vertical" style="width: 98%; text-align: -webkit-center;">
+
+			<paper-card class="flex detail layout vertical paper_body">
 				<div id='detail-header' class="layout horizontal">
 					<span class="self-center">Return Profile</span>
 					<div class="flex"></div>	
-					<div style="display:flex; justify-content: center;margin-bottom: 20px">
-					<div style="margin-right: 7px">Line Graph</div>
+					<div class="toggle_tab">
 					<div>
-						<paper-toggle-button  on-change="toggleShow" checked>Bar Graph</paper-toggle-button>
+						<paper-tabs noink selected={{graphType}}>
+							<paper-tab>Line Graph</paper-tab>
+							<paper-tab>Bar Graph</paper-tab>
+						</paper-tabs>
 					</div>
 				</div>
 				</div>
 				
-				<!-- <p>An example of
-			    <code>&lt;nvd3-multi-bar&gt;</code>:</p>
-
-			  <nvd3-multi-bar class="bar" auto-resize show-legend></nvd3-multi-bar> -->
-				<template is="dom-if" if="{{!hide}}">
-					<chart-line style="width: 85%" class="flex chart" data="[[lineData]]"></chart-line>
-
+				<iron-pages selected={{graphType}}>
+				<nvd3-line 
+		  			id="chart-line" 
+		  			class="bar1" 
+		  			height=300
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data=[[lineData]]>
+		  		</nvd3-line>
+			        
+		  		<nvd3-multi-bar id="chart-1" height="300" class="bar" auto-resize show-legend></nvd3-multi-bar>
+	
+		  		</iron-pages>
 			      
-			    </template>
-			    <template is="dom-if" if="{{hide}}">
-					<chart-bar style="width: 85%" class="flex chart" data="[[barData]]"></chart-bar>
-
-			      
-			    </template>
-
-
 
 				<div id='detail-header' class="layout horizontal flex">
 					<span class="self-center">Risk Metrics</span>
 					<div class="flex"></div>	
-					<paper-icon-button icon='icons:add'></paper-icon-button>
 				</div>
 
-				<div class="layout horizontal flex mdcontainer">
-					<div class="layout horizontal flex mdcontainer"> 
-					<aq-metric-item class="flex" metric-name='Total Return' 
-					metric-value='44.7%'>
-					</aq-metric-item>
-						<paper-tooltip offset="0" position="top" class="tooltip">Total returns of the strategy</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Avg. Return' 
-					metric-value='10.7%'>
-						
-					</aq-metric-item>
-						<paper-tooltip offset="0"  class="tooltip" position="top">Average Return</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Volatility' 
-					metric-value='14.7%'>
-						
-					</aq-metric-item>
-						<paper-tooltip offset="0"  class="tooltip" position="top">Volatility</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-					
-					<aq-metric-item class="flex" metric-name='Sharpe Ratio' 
-					metric-value='1.9'>
-						
-					</aq-metric-item>
-						<paper-tooltip offset="0"  class="tooltip" position="top">Sharpe Ratio</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-					
-					<aq-metric-item class="flex" metric-name='Information Ratio' 
-					metric-value='0.98'>
-						
-					</aq-metric-item>
-						<paper-tooltip  offset="0" class="tooltip" position="top">Information Ratio</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-					<aq-metric-item class="flex" metric-name='Sortino Ratio' 
-					metric-value='2.5'>
-						
-					</aq-metric-item>
-						<paper-tooltip  offset="0" class="tooltip" position="top">Sortino Ratio</paper-tooltip>
-
-					</div>
+				<div class="wrap flex_container">
+					<template is="dom-repeat" items="{{employees1}}">
+						<div class="layout horizontal flex mdcontainer"> 
+							<aq-metric-item class="flex width_tab" metric-name={{item.metricName}} 
+								metric-value={{item.metricValue}}
+								metric-desc={{item.metricDescription}}>
+							</aq-metric-item>
+						</div>
+					</template>			
 				</div>
-
-
-				<div class="layout horizontal flex mdcontainer">
-					<div class="layout horizontal flex mdcontainer">
-					<aq-metric-item class="flex" metric-name='Avg. Drawdown' 
-					metric-value='4.7%'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Average Drawdown</paper-tooltip>
-					
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-					
-					<aq-metric-item class="flex" metric-name='Max. Drawdown'
-					metric-value='6.8%'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Maximum Drawdown</paper-tooltip>
-					 
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Calmar Ratio' 
-					metric-value='4.3'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Calmar Ratio</paper-tooltip>
-
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Beta' 
-					metric-value='0.98'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Beta</paper-tooltip>
-					
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Stability' 
-					metric-value='0.88'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Stability</paper-tooltip>
-					
-					</div>
-					<div class="layout horizontal flex mdcontainer">
-
-					<aq-metric-item class="flex" metric-name='Avg. Concentration' 
-					metric-value='0.43'></aq-metric-item>
-						<paper-tooltip offset="0" class="tooltip" position="top">Average Concentration</paper-tooltip>
-					
-					</div>
-				</div>
-					
-			</paper-card>
-
-			
+			</paper-card>	
 		</div>
 			
 	</template>
@@ -206,76 +164,99 @@
 					type: Boolean,
 					value: true,
 				},
+
+				graphType: {
+					type:Number,
+					value:0,
+				},
+
 				lineData: {
 					type:Object,
-					value: {
-					  labels: ["January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July"],
-					  datasets: [
-					    {
-					      label: "Strategy",
-					      //backgroundColor: "red",
-					      borderColor: "red",// "rgba(220,220,220,1)",
-					      borderWidth: 1,
-					      lineTension:0,
-					      pointRadius:1,
-					      //pointBackgroundColor: "rgba(220,220,220,1)",
-					      //pointBorderColor: "#fff",
-					      //pointHoverBackgroundColor: "#fff",
-					      //pointHoverBorderColor: "rgba(220,220,220,1)",
-					      data: [65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56, 55, 40]
+					value: [{
+					  "key":"Hello",
+					  "color": "#ff7f0e",
+					  "values": [{
+					      "x": 0,
+					      "y": 0
+					    }, {
+					      "x": 1,
+					      "y": 0.09983341664682815
+					    }, {
+					      "x": 2,
+					      "y": 0.19866933079506122
+					    }, {
+					      "x": 3,
+					      "y": 0.29552020666133955
+					    }, {
+					      "x": 4,
+					      "y": 0.3894183423086505
+					    }, {
+					      "x": 5,
+					      "y": 0.479425538604203
 					    }]
-					}, 
+					}], 
 				},
 				barData: {
 					type:Object,
 					value: {
-					  labels: ["January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July","January", "February", "March", "April", "May", "June", "July"],
-					  datasets: [
-					    {
-					      label: "Strategy",
-					      //backgroundColor: "red",
-					      borderColor: "red",// "rgba(220,220,220,1)",
-					      borderWidth: 1,
-					      lineTension:0,
-					      //pointBackgroundColor: "rgba(220,220,220,1)",
-					      //pointBorderColor: "#fff",
-					      //pointHoverBackgroundColor: "#fff",
-					      //pointHoverBorderColor: "rgba(220,220,220,1)",
-					      data: [-65, -59, 80, 81, 56, 55, -40,65, 59, -80, 81, 56, 55, 40,-65, 59, 80, 81, -56, 55, 40,-65, 59, 80, 81, 56, -55, 40,65, -59, 80, 81, 56, 55, 40,65, -59, 80, 81, -56, 55, 40]
+					  "color": "#ff7f0e",
+					  "values": [{
+					      "x": 0,
+					      "y": 0
+					    }, {
+					      "x": 1,
+					      "y": 0.09983341664682815
+					    }, {
+					      "x": 2,
+					      "y": 0.19866933079506122
+					    }, {
+					      "x": 3,
+					      "y": 0.29552020666133955
+					    }, {
+					      "x": 4,
+					      "y": 0.3894183423086505
+					    }, {
+					      "x": 5,
+					      "y": 0.479425538604203
 					    }]
 					}, 
 				},
-
-				
+			},
+					
+			ready: function(){
+				this.employees1 = [
+				            {"metricName":"Total Return", "metricValue":"44.8%", "metricDescription":"Total Return"},
+							{"metricName":"Average Return", "metricValue":"10.7%", "metricDescription":"Average Return"},
+							{"metricName":"Volatility", "metricValue":"14.7%", "metricDescription":"Volatility"},
+							{"metricName":"Sharpe Ratio", "metricValue":"1.9", "metricDescription":"Sharpe Ratio"},
+							{"metricName":"Information Ratio", "metricValue":"0.98", "metricDescription":"Information Ratio"},
+							{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
+							{"metricName":"Avg. Drawdown", "metricValue":"4.7%", "metricDescription":"Avg. Drawdown"},
+							{"metricName":"Max Drawdown", "metricValue":"6.8%", "metricDescription":"Max Drawdown"},
+							{"metricName":"Calmar Ratio", "metricValue":"4.3", "metricDescription":"Calmar Ratio"},
+							{"metricName":"Beta", "metricValue":"0.98", "metricDescription":"Beta"},
+							{"metricName":"Stability", "metricValue":"0.88", "metricDescription":"Stability"},
+							{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
+				            
+				        ];
 					},
-					ready: function(){
-						var parent = this.$;
-						// console.log(parent);
-
-					 // parent.toggle.addEventListener('change', function () {
-					 // 	alert('da');
-					 //    if (this.checked) {
-					 //      // do something if when checked
-					 //      alert('checked');
-
-					 //    } else {
-					 //      alert('unchecked');
-
-					 //      // do something if not checked
-					 //    }
-					 //  }); 
-					},
-					toggleShow: function(){
-						this.hide = !this.hide;
-					}
-				});
+			toggleShow: function(){
+					this.hide = !this.hide;
+			},
+			toggleShow1: function(){
+					this.hide = !this.hide;
+			}
+		});
 			</script>
-			<script>
+			<!--script>
+			var count = 0;
+			var count1 = 1;
 			var k;
 			setTimeout(function(){
 		    var el = document.querySelector('.bar');
 		    console.log('dsaasd');
 		    console.log(el);
+		    var el1 = document.querySelector('.bar1');
 
 		    el.data = [{
 		      "key": "Stream0",
@@ -395,9 +376,53 @@
 		        "y": 1.1755390253517568
 		      }]
 		    }];
+
+		    el1.data = [{
+		        "values": [{
+		            "x": 0,
+		            "y": 0
+		        }, {
+		            "x": 1,
+		            "y": 3
+		        }, {
+		            "x": 2,
+		            "y": 2
+		        }, {
+		            "x": 3,
+		            "y": 5
+		        }],
+		        "key": "Line 1",
+		        "color": "#ff7f0e"
+		    }, {
+		        "values": [{
+		            "x": 0,
+		            "y": 1
+		        }, {
+		            "x": 1,
+		            "y": 4
+		        }, {
+		            "x": 2,
+		            "y": 2
+		        }, {
+		            "x": 3,
+		            "y": 3
+		        }],
+		        "key": "Line 2",
+		        "color": "#2ca02c"
+		    }];
+
+		    el1.xAxisLabels = {
+		        "0": "Label 0",
+		        "1": "Label 1",
+		        "2": "Label 2",
+		        "3": "Label 3",
+		        "4": "Label 4"
+		    }
+
+		    
     console.log(el);
-},2000);
-  </script>
+},5000);
+  </script-->
 	<!-- <script>
 		var toggle = document.querySelector("paper-toggle-button");
 			toggle.addEventListener('change', function () {
@@ -417,28 +442,57 @@
 <dom-module id='aq-metric-item'>
 	<style>
 		span {
-			margin-top: 15px;
+			margin-top: 5px;
 			text-align: center;
 		}
 		
 		paper-card{
 			width:100%;
+			border-top: 2px solid teal;
+			color:#333a56;
 		}
 
 		#metric {
-			margin-bottom:15px;
+			margin-bottom:5px;
+			font-size: 14px;
 		}
 
-	</style>	
+		#metric-value {
+			font-size: 20px;
+			color: #333a56;
+			font-weight: bold;
+		}
+
+    	
+
+     	paper-tooltip {
+	        --paper-tooltip-background: teal; 
+	
+      	}
+
+	</style>
+
+    <style is="custom-style">
+      paper-tooltip.giant {
+        --paper-tooltip: {
+          font-size: 15px;
+        }
+      }
+    </style>
+
+	
 	<template>
-		<paper-card class="flex">
+		
+		<div class="vertical">
+
+		<paper-card class="flex" id='metric-card'on-mouseenter='onMouseEnter' on-mouseleave='onMouseLeave'>
 			<div id='cont' class="layout vertical flex">
-				<span>[[metricValue]]</span>
+				<span id='metric-value'>[[metricValue]]</span>
 				<span id='metric'>[[metricName]]</span>
 			</div>
 		</paper-card>
 
-		<paper-tooltip for='metric'>{{metricDesc}}</paper-tooltip>
+		<paper-tooltip fit-to-visible-bounds class="giant" for='metric-card' offset="0" position="top">{{metricDesc}}</paper-tooltip>
 	</template>
 
 	<script>
@@ -455,6 +509,14 @@
 					type:String,
 				},
 			},	
+
+			/*onMouseEnter() {
+				this.$.collapse.show();
+			},
+
+			onMouseLeave() {
+				this.$.collapse.hide();
+			},*/
 
 		});
 	</script>

@@ -98,6 +98,19 @@
         last-response="{{ajaxResponse}}" 
         debounce-duration="300">
     </iron-ajax>
+
+    <iron-ajax 
+        url="http://localhost:3002/api/v2/strategy/[[strategyId]]/exec" 
+        body="{{runStrategyData}}" 
+        method='POST' 
+        id='runStrategyQuery' 
+        headers='{{header}}' 
+        handle-as="json" 
+        on-response="onStrategyExecution" 
+        last-response="{{ajaxResponse}}" 
+        debounce-duration="300">
+    </iron-ajax>
+
   </template>
 
   <script>
@@ -111,6 +124,11 @@
         },
 
         strategyId: String,
+        
+        runSwitch:{
+          type: Number,
+          value:0,
+        },
       },
 
       attached() {
@@ -125,10 +143,11 @@
         'selected-items-changed':'rowSelected',
         'toggle-design':'designChanged',
         'back-clicked':'goToHome',
-        'analyze-clicked':'goToAnalyze',
+        //'analyze-clicked':'goToAnalyze',
         'open-drawer':'openDrawer',
         'close-drawer':'closeDrawer',
         'save-action':'saveStrategy',
+        'run-action':'runStrategy',
       },
 
       ready: function() {
@@ -157,20 +176,20 @@
       },
 
       closeAll() {
-        this.$$('#editorPanel').closeDrawer();
+        this.$$('#codeEditorPanel').closeDrawer();
         this.closeConsole();
       },
 
       toggleDrawer() {
-        this.$$('#editorPanel').toggleDrawer();
+        this.$$('#codeEditorPanel').toggleDrawer();
       },
 
       openDrawer() {
-        this.$$('#editorPanel').openDrawer();
+        this.$$('#codeEditorPanel').openDrawer();
       },
 
       closeDrawer() {
-        this.$$('#editorPanel').closeDrawer();
+        this.$$('#codeEditorPanel').closeDrawer();
       },
 
       designChanged() {
@@ -190,7 +209,15 @@
       },
 
       onStrategySaved(data) {
-        
+        this.strategy = data.detail.response;
+
+        if(this.runSwitch == 1) {
+          //reset the run swtch to off
+          this.runSwitch = 0;
+
+          //now run the saved strategy
+          this.$.runStrategyQuery.generateRequest();
+        }
       },
 
       saveStrategy(e) {
@@ -203,6 +230,26 @@
         };
       
         this.$.saveStrategyQuery.generateRequest();
+      },
+
+      runStrategy(e) {
+        console.log("I caught the run Event");
+        // first save the strategy
+        this.runStrategyData = {  
+                  "start": "2015-11-07T03:41:47.262Z",
+                  "end": "2016-11-07T03:41:47.262Z",
+                  "capital": 1000000,
+                  "plan": "string"};
+
+        this.runSwitch = 1;
+        this.saveStrategy(e);
+        
+      },
+
+      onStrategyExecution(data) {
+        console.log(data);
+        //This get back the created backtest object with just the settings,
+        //HAS no output
       },
 
     });

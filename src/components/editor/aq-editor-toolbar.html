@@ -101,7 +101,7 @@
 		 		
 		 		<span class="self-center separator"></span>
 		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
-		 		<paper-icon-button noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" style="border:1px solid;padding:0px;height:23px;width:23px" on-tap='onRun'></paper-icon-button>
+		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
 
 	        	<template is='dom-if' if="{{isProgrammer}}">
@@ -175,10 +175,14 @@
 				this.fire('newClicked');
 			},
 
-			onClone() {
-				
+			onClone() {	
 				this.fire('cloneClicked', {name:this.strategyName, description:this.strategyDesc});	
 			},
+
+			onRun() {
+				this.strategyName = this.$.strategyName.value;
+				this.fire('run-action',{name:this.strategyName});
+			}
 
 		});
 	</script>

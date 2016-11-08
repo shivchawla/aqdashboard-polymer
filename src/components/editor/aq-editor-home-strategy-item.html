@@ -20,8 +20,8 @@
         	@apply(--layout-vertical);
       	}
 
-		:host([narrow-viewport]) .strategy-name ,
-      	:host([narrow-viewport]) .strategy-desc {
+		:host(not([narrow-viewport])) .strategy-name ,
+      	:host(not([narrow-viewport])) .strategy-desc {
         	@apply(--layout-horizontal);
       	}
 
@@ -67,7 +67,9 @@
 	    }
    
         .strategy-name {
-	        width:300px;
+	        --width:350px;
+	        width:32%;
+	        
 	        --font-weight: bold;
 	        --max-width: 250px;
 	        margin-right: 30px;
@@ -79,7 +81,8 @@
 	    }
 
         .strategy-desc {
-	      	width: 350px;
+	      	width:32%;
+	      	--width: 350px;   	
 	      	margin-right:30px;
 
 	    }
@@ -88,6 +91,7 @@
 	      	cursor: pointer;
 	    	text-decoration: underline;
         }
+
 
         .strategy-name .narrow {
 	        display: none;
@@ -102,6 +106,8 @@
 	</style>
 
 	<template>
+		<iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query>
+
 		<div class="row flex layout horizontal" id="{{strategyId}}">
 	      	<paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
 	          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  

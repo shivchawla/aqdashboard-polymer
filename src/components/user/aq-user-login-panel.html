@@ -4,8 +4,8 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/gold-email-input/gold-email-input.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<!--link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html"-->
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <dom-module id="aq-user-login-panel">
@@ -22,7 +22,7 @@
             opacity: 2 !important;
         }
 
-        #container {
+        #containerr {
             width: 100%;
             margin: 0 auto;
             --padding-top: 50px;
@@ -38,9 +38,10 @@
         }
 
         #userEmailInput {
-            width: 346px;
-            margin-left: -20px;
-            margin-top: -30px;
+            width: 340px;
+            margin-left: -17px;
+            margin-top: -50px;
+            --width:100%;
         }
 
         .forgot-password {
@@ -65,16 +66,18 @@
             border-color: #4285f4;
         }
 
-        .loginButton {
+        .signinButton {
             background-color: #4285f4;
             margin-top: 1em;
             margin-bottom: 1em;
         }
 
         .actionFailed {
-            color: red;
+            --color: red;
             padding: 0.75em 0 0;
-            margin: 0;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            text-align:center;
         }
 
         .footer {
@@ -92,10 +95,25 @@
 
         }
 
+        paper-card {
+            --paper-card-header-color:#333a56;
+            --paper-card-header:{
+                text-align:center;
+            };
+        }
+
+        paper-card {
+            --paper-card-header-text: { font-size: 30px; }
+        }
+
+    }
+
     </style>
 
     <template>
-        <div id='container' class="layout vertical fit">
+        <div id='containerr' class="layout vertical fit">
+            
+                    
             <paper-card class="self-center" heading="{{aRsrc.headerText}}">
 
                 <div class="dialog-fields" class="layout vertical">
@@ -107,26 +125,30 @@
                             class='input-fields'
                             label="{{aRsrc.firstNameFieldLabel}}"
                             value="{{firstName}}"
-                            error-message="{{aRsrc.firstNameErrorMessage}}"
+                            error-message="{{firstNameErrorMessage}}"
                             type="text"
+                            on-focus='onUserFirstNameFocus'
                             on-focusout='onUserFirstNameFocusOut'
                             no-label-float
                             required
-                            max-length=2
-                            invalid='{{!isfirstNameValid(firstName)}}'></paper-input>
+                            max-length=15
+                            invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'>  
+                        </paper-input>
 
                         <paper-input
                             id='lastNameInput'
                             class='input-fields'
                             label="{{aRsrc.lastNameFieldLabel}}"
                             value="{{lastName}}"
-                            error-message="{{aRsrc.lastNameErrorMessage}}"
+                            error-message="{{lastNameErrorMessage}}"
                             type="text"
+                            on-focus='onUserLastNameFocus'
                             on-focusout='onUserLastNameFocusOut'
                             no-label-float
                             required
-                            max-length=4
-                            invalid='{{!islastNameValid(lastName)}}'></paper-input>
+                            max-length=15
+                            invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'>
+                        </paper-input>
 
                     </template>
 
@@ -141,7 +163,8 @@
                         required
                         on-focus='onUserEmailFocus'
                         on-focusout='onUserEmailFocusOut'
-                        invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'></gold-email-input>
+                        invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
+                    </gold-email-input>
 
                     <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">
                         <paper-input
@@ -156,7 +179,8 @@
                             required
                             on-focusout="onPasswordFocusOut"
                             on-focus="onPasswordFocus"
-                            invalid='{{!isPasswordValid(password,passwordInFocus)}}'></paper-input>
+                            invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
+                        </paper-input>
                     </template>
 
                     <template is="dom-if" if="{{isSignupMode(displayMode)}}">
@@ -175,17 +199,27 @@
 
                         <!--paper-checkbox noink checked="{{acceptPolicy}}">
           </paper-checkbox-->
-                        <div id='tclabel'>
+                        <!--div id='tclabel'>
                             <span>By clicking
                                 {{actionButtonLabel}}, you agree to accept
                                 <a href="">Term of Use</a>
                                 and
                                 <a href="">Privacy Policy</a>
                             </span>
-                        </div>
+                        </div-->
                     </template>
-                    <iron-ajax url="http://localhost:3002/api/v2/user" body="{{signupBody}}" method='POST' id='signup' handle-as="json" on-response="handleSignup" last-response="{{ajaxResponse}}" headers='{"Content-Type": "application/json"}' debounce-duration="300"></iron-ajax>
-                    <template is="dom-if" if="{{isLoginMode(displayMode)}}">
+                    <iron-ajax 
+                        url="http://localhost:3002/api/v2/user" 
+                        body="{{signupBody}}" 
+                        method='POST' 
+                        id='signup' 
+                        handle-as="json" 
+                        on-response="handleSignup"
+                        on-error="handleSignupError"
+                        last-response="{{ajaxResponse}}" 
+                        headers='{"Content-Type": "application/json"}' debounce-duration="300">  
+                        </iron-ajax>
+                    <template is="dom-if" if="{{isSigninMode(displayMode)}}">
                         <div class="forgot-password">{{aRsrc.resetPasswordText}}
                             <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
                             </a>
@@ -194,17 +228,18 @@
                     </template>
                     <iron-ajax
                       url="http://localhost:3002/api/v2/user/login"
-                      body="{{loginBody}}"
+                      body="{{signinBody}}"
                       method='POST'
                       id='login'
                       handle-as="json"
                       on-response="handleResponse"
+                      on-error="handleLoginError"
                       headers='{"Content-Type": "application/json"}'
                       debounce-duration="300">
                     </iron-ajax>
 
                    
-                    <paper-button raised class="loginButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
+                    <paper-button raised class="signinButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
                     </paper-button>
 
                 </div>
@@ -213,6 +248,9 @@
                 <a href="javascript:void(0);" on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
                 </a>
             </div>
+
+            <div class='actionFailed self-center'>[[actionFailedMessage]]</div>
+            
             </paper-card>
 
         </div>
@@ -225,7 +263,7 @@
     <script>
 
         var displayModes = {
-            login: 'login',
+            signin: 'signin',
             signup: 'signup',
             forgotPassword: 'forgotPassword'
         };
@@ -241,9 +279,19 @@
                     value: ''
                 },
 
+                firstNameValid: {
+                    type: Boolean,
+                    //value: true,
+                },
+
                 lastName: {
                     type: String,
                     value: ''
+                },
+
+                lastNameValid: {
+                    type: Boolean,
+                    //value: true,
                 },
 
                 userEmail: {
@@ -291,6 +339,17 @@
                     value: ""
                 },
 
+                firstNameErrorMessage: {
+                    type: String,
+                    value: ""
+                },
+
+                lastNameErrorMessage: {
+                    type: String,
+                    value: ""
+                },
+
+
                 userEmailErrorMessage: {
                     type: String,
                     value: ""
@@ -313,19 +372,26 @@
 
                 displayMode: {
                     type: String,
-                    value: "login"
+                    value: ""
                 },
+
                 acceptPolicy: {
                     type: Boolean,
                     value: true
                 },
-                loginBody: {
+
+                signinBody: {
                     type: Object,
-                    computed: 'computeLoginBody(userEmail, password)'
+                    computed: 'computeSigninBody(userEmail, password)'
                 },
+
                 signupBody: {
                     type: Object,
                     computed: 'computeSignupBody(firstName, lastName, userEmail, password)'
+                },
+                actionFailedMessage:{
+                    type:String,
+                    value:'',
                 }
             },
 
@@ -347,6 +413,8 @@
                     firstNameFieldLabel: "First Name",
                     lastNameFieldLabel: "Last Name",
                     userEmailFieldLabel: "Email",
+                    firstNameErrorMessage: "Please enter a valid first name",
+                    lastNameErrorMessage: "Please enter a valid last name",
                     userEmailErrorMessage: "Please enter a valid email",
                     passwordFieldLabel: "Password",
                     passwordErrorMessage: "Minimum 8 characters",
@@ -356,12 +424,14 @@
                     actionButtonInProgressLabel: "Creating your account...",
                     actionButtonSuccessLabel: "Account created. Welcome!"
                 },
-                login: {
+                signin: {
                     headerText: "Sign in",
                     footerText: "Don't have an account? ",
                     footerLinkText: " Sign up now",
-                    //lede: "Login with your email address",
+                    //lede: "Signin with your email address",
                     userEmailFieldLabel: "Email",
+                    firstNameErrorMessage: "Please enter a valid first name",
+                    lastNameErrorMessage: "Please enter a valid last name",
                     userEmailErrorMessage: "Please enter a valid email",
                     passwordFieldLabel: "Password",
                     passwordErrorMessage: "Minimum 8 characters",
@@ -373,7 +443,7 @@
                 },
                 forgotPassword: {
                     headerText: "Forgot Password",
-                    footerText: "Back to login? ",
+                    footerText: "Back to Sign in? ",
                     footerLinkText: " Log in here",
                     //lede: "Request a temporary password",
                     userEmailFieldLabel: "Account Email Address",
@@ -385,47 +455,65 @@
             ready: function() {
                 /* Prevent sharing of child object references. */
                 //this.rsrc = App.Util.copyObjectDeep(this.rsrc);
-                this.updateMessageStrings();
+                //this.updateMessageStrings();
 
             },
+
+            attached() {
+
+                console.log(this.displayMode);
+                if (this.displayMode != displayModes.signin && 
+                    this.displayMode != displayModes.signup &&
+                    this.displayMode != displayModes.forgotPassword) {
+
+                    
+                    this.displayMode = displayModes.signin;
+                } 
+
+                this.updateMessageStrings();   
+            },
+
             initializeDefaultValue: function () {
                 this.aimsquant = {
                     user: 'suudhir'
                 }
             },
-            computeLoginBody: function(email, password) {
+
+            computeSigninBody: function(email, password) {
                 return {email: email, password: password}
             },
+
             computeSignupBody: function(firstName, lastName, email, password) {
                 return {email: email, password: password, firstName: firstName, lastName: lastName}
             },
-            isLoginMode: function(displayMode) {
+
+            isSigninMode: function(displayMode) {
                 var test = displayMode || this.displayMode;
-                return displayMode == displayModes.login;
+                return displayMode == displayModes.signin;
             },
 
             isSignupMode: function(displayMode) {
                 var test = displayMode || this.displayMode;
-                return test == displayModes.signup;
+                return displayMode == displayModes.signup;
             },
 
             isForgotPasswordMode: function(displayMode) {
                 var test = displayMode || this.displayMode;
-                return test == displayModes.forgotPassword;
+                return displayMode == displayModes.forgotPassword;
             },
 
             onFooterLinkTap: function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 switch (this.displayMode) {
-                    case displayModes.login:
+                    case displayModes.signin:
                         this.setDisplayMode(displayModes.signup);
                         break;
                     case displayModes.signup:
-                        this.setDisplayMode(displayModes.login);
+                        this.setDisplayMode(displayModes.signin);
                         break;
                     case displayModes.forgotPassword:
-                        this.setDisplayMode(displayModes.login);
+                        this.setDisplayMode(displayModes.signin);
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displayMode)
@@ -454,6 +542,8 @@
                 this.passwordErrorMessage = '';
                 this.confirmPasswordErrorMessage = '';
                 this.userEmailErrorMessage = '';
+                this.firstNameErrorMessage='';
+                this.lastNameErrorMessage='';
                 this.userEmailInFocus = !this.userEmailInFocus;
                 this.passwordInFocus = !this.passwordInFocus;
                 this.confirmPasswordInFocus = !this.confirmPasswordInFocus;
@@ -462,13 +552,15 @@
             isConfirmPasswordValid: function(confirmPassword, confirmPasswordInFocus) {
                 return confirmPasswordInFocus | this.confirmPasswordValid | confirmPassword == '';
             },
-            isfirstNameValid: function(firstName) {
-                debugger;
-                return firstName;
+
+            isFirstNameValid: function(firstName, firstNameInFocus) {       
+                return firstNameInFocus | firstName=='' | this.firstNameValid;
             },
-            isLastNameValid: function(lastName) {
-                return lastName;
+
+            isLastNameValid: function(lastName, lastNameInFocus) {
+                return lastNameInFocus | lastName=='' | this.lastNameValid;
             },
+
             isPasswordValid: function(password, passwordInFocus) {
                 return passwordInFocus | password == '' | this.passwordValid;
             },
@@ -483,6 +575,9 @@
                 this.confirmPasswordErrorMessage = this.aRsrc.confirmPasswordErrorMessage;
                 this.userEmailErrorMessage = this.aRsrc.userEmailErrorMessage;
                 this.passwordErrorMessage = this.aRsrc.passwordErrorMessage;
+                this.firstNameErrorMessage = this.aRsrc.firstNameErrorMessage;
+                this.lastNameErrorMessage = this.aRsrc.lastNameErrorMessage;
+
             },
 
             updateValidity: function() {
@@ -502,14 +597,28 @@
                     }
                 }
             },
+
             onUserLastNameFocusOut: function() {
+
                 this.lastNameValid = this.$$('#lastNameInput').validate();
+                this.lastNameInFocus = false;
             },
+
+            onUserLastNameFocus: function() {
+                this.lastNameInFocus = true;
+            },            
+
             onUserFirstNameFocusOut: function() {
                 this.firstNameValid = this.$$('#firstNameInput').validate();
+                this.firstNameInFocus = false;
             },
+
+            onUserFirstNameFocus: function() {
+                this.firstNameInFocus = true;
+            },
+
             onUserEmailFocusOut: function() {
-                this.actionFailedMessage = '';
+                //this.actionFailedMessage = '';
                 this.userEmailValid = this.$$('#userEmailInput').validate();
                 this.userEmailInFocus = false;
             },
@@ -520,7 +629,7 @@
             },
 
             onPasswordFocusOut: function() {
-                this.actionFailedMessage = '';
+                //this.actionFailedMessage = '';
                 this.passwordValid = this.$$('#passwordInput').validate();
                 this.confimPassworValid = this.confirmPassword != ''
                     ? this.checkPasswordsMatch()
@@ -558,7 +667,7 @@
 
                 var valid = userEmailValid;
 
-                if (displayMode === displayModes.login) {
+                if (displayMode === displayModes.signin) {
                     valid &= passwordValid;
                 }
 
@@ -571,16 +680,28 @@
 
                 return valid;
             },
+
             handleResponse: function(data) {
-                this.router.go('/dashboard');
+            
                 this.aimsquant = {
                     user: ''
                 };
+
                 this.set('aimsquant.user', data.detail.response);
+                this.actionSucceeded();
+                this.router.go('/dashboard');
+            
             },
+
+            handleLoginError(data) {
+                this.clearErrorMessages();
+                this.actionFailed("Incorrect Username/Password");
+            },
+
             handleSignup: function(data) {
-                this.setDisplayMode(displayModes.login);
+                this.setDisplayMode(displayModes.signin);
             },
+
             onInvokeAction: function() {
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
@@ -601,7 +722,7 @@
                 }
 
                 switch (this.displayMode) {
-                    case displayModes.login:
+                    case displayModes.signin:
                         this.async(this.$.login.generateRequest());
                         break;
                     case displayModes.signup:
@@ -613,36 +734,16 @@
                         throw new Error("Invalid display mode: " + this.displaymode)
                 }
             },
-            /*performLoginAction: function () {
-            this.publishTopic(App.topics.action.user.ATTEMPT_LOGIN, {username: this.usernameX, password: this.password, rememberMe: this.rememberMe});
-          },
-          performSignupAction: function () {
-            this.publishTopic(App.topics.action.user.ATTEMPT_SIGNUP, {username: this.usernameX, password: this.password, rememberMe: this.rememberMe});
-          },
-          performForgotPasswordAction: function () {
-            this.publishTopic(App.topics.action.user.REQUEST_PASSWORD, {username: this.usernameX});
-          },*/
+            
             actionSucceeded: function() {
                 this.actionButtonLabel = this.aRsrc.actionButtonSuccessLabel;
-                this.clearData();
+                this.clearErrorMessages();
             },
+
             actionFailed: function(errorMessage) {
                 this.actionFailedMessage = errorMessage;
             },
 
-            /*subscribe: function () {
-            if (PubSub) {
-              PubSub.subscribe(App.topics.auth.ACCOUNT_CREATED, (function(topic, data){ this.actionSucceeded(); }).bind(this));
-              PubSub.subscribe(App.topics.auth.LOGGED_IN, (function(topic, data){ this.actionSucceeded(); }).bind(this));
-              PubSub.subscribe(App.topics.auth.AUTHENTICATION_FAILED, (function(topic, data){ this.actionFailed(data.message); }).bind(this));
-            }
-          },
-          publishTopic: function (topic, data) {
-            this.fire(topic, data);
-            if (PubSub) {
-              PubSub.publish(topic, data);
-            }
-          }*/
         });
     </script>
 </dom-module>
