@@ -98,14 +98,21 @@
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
-          this.header = {
+          if (user.token) {
+            this.header = {
               "aimsquant-token": user.token,
-              "Content-Type": "application/json"
-          };
+              "Content-Type": "application/json"};  
+          }
       },
 
       onFollow() {
         console.log("Came here on follow");
+
+        if(!this.header) {
+          this.router.go('/user/signin', {lastRequest:('/dashboard/community/topics/[[postHeader._id]]')});
+          return;
+        }
+        
         this.$.follows.generateRequest();
       },
 

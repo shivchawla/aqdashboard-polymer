@@ -35,7 +35,7 @@
       }
 
       aq-dropdown {
-        --dropdown-width:170px;
+        --dropdown-width:220px;
         --dropdown-height:36px;
 
       }
@@ -66,10 +66,21 @@
         </aq-community-selectstrategybacktest-dialog>
 
 
-        <iron-ajax url="http://localhost:3002/api/v2/thread" body="{{threadData}}" method='POST' id='thread' headers='{{header}}' handle-as="json" on-response="handlePostThread" last-response="{{ajaxResponse}}" debounce-duration="300"></iron-ajax>
+        <iron-ajax 
+            url="http://localhost:3002/api/v2/thread" 
+            body="{{threadData}}" 
+            method='POST' 
+            id='thread' 
+            headers='{{header}}' 
+            handle-as="json" 
+            on-response="onPostThreadResponse" 
+            on-error="onPostThreadError" 
+            last-response="{{ajaxResponse}}" 
+            debounce-duration="300">
+        </iron-ajax>
     </template>
     <script>
-      var categories = [{value:"Share your idea",inded:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}];
+      
 
         Polymer({
             is: 'aq-community-createpost',
@@ -80,6 +91,7 @@
 
                 categories :{
                   type:Array,
+                  value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
                 },
 
                 header:{
@@ -103,12 +115,13 @@
 
             ready: function() {
                 this.categories = categories;
+                
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
-
-                this.header = {
+                if (user.token) {
+                  this.header = {
                     "aimsquant-token": user.token,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json"};  
                 }
             },
 
@@ -130,12 +143,17 @@
                 this.$.thread.generateRequest();
             },
             
-            handlePostThread: function(data) {
+            onPostThreadResponse: function(data) {
               //var data = JSON.parse(e);
               var threadId = data.detail.response._id;   
               this.router.go("/dashboard/community/topics/"+threadId);
             },
-         
+
+            onPostThreadError: function(data) {
+              console.log(data);
+            },
+  
+                     
             onAttach() {
               this.$.dialog.open();      
             },

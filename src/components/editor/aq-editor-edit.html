@@ -63,7 +63,8 @@
           method='GET'
           id='getStrategyQuery'
           handle-as="json"
-          on-response="onGetStrategy"
+          on-response="onGetStrategyResponse"
+          on-error="onGetStrategyError"
           headers='{{header}}'
           debounce-duration="300">
     </iron-ajax>  
@@ -94,7 +95,8 @@
         id='saveStrategyQuery' 
         headers='{{header}}' 
         handle-as="json" 
-        on-response="onStrategySaved" 
+        on-response="onStrategySavedResponse"
+        on-error="onStrategySavedResponseError"  
         last-response="{{ajaxResponse}}" 
         debounce-duration="300">
     </iron-ajax>
@@ -106,7 +108,8 @@
         id='runStrategyQuery' 
         headers='{{header}}' 
         handle-as="json" 
-        on-response="onStrategyExecution" 
+        on-response="onStrategyExecutionResponse"
+        on-error="onStrategyExecutionError" 
         last-response="{{ajaxResponse}}" 
         debounce-duration="300">
     </iron-ajax>
@@ -153,10 +156,11 @@
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
-          this.header = {
+          if (user.token) {
+            this.header = {
               "aimsquant-token": user.token,
-              "Content-Type": "application/json"
-          };
+              "Content-Type": "application/json"};  
+          }
       },
 
       toggleConsole() {
@@ -204,12 +208,17 @@
         this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
       },
 
-      onGetStrategy(data) {
+      onGetStrategyResponse(data) {
         this.strategy = data.detail.response;
       },
 
-      onStrategySaved(data) {
-        this.strategy = data.detail.response;
+      onGetStrategyError(data) {
+        console.log(data);
+      },
+
+      onStrategySavedResponse(data) {
+        
+        //this.strategy = data.detail.response;
 
         if(this.runSwitch == 1) {
           //reset the run swtch to off
@@ -218,6 +227,10 @@
           //now run the saved strategy
           this.$.runStrategyQuery.generateRequest();
         }
+      },
+
+      onStrategySavedError(data) {
+
       },
 
       saveStrategy(e) {
@@ -233,7 +246,6 @@
       },
 
       runStrategy(e) {
-        console.log("I caught the run Event");
         // first save the strategy
         this.runStrategyData = {  
                   "start": "2015-11-07T03:41:47.262Z",
@@ -246,7 +258,13 @@
         
       },
 
-      onStrategyExecution(data) {
+      onStrategyExecutionResponse(data) {
+        console.log(data);
+        //This get back the created backtest object with just the settings,
+        //HAS no output
+      },
+
+      onStrategyExecutionError(data) {
         console.log(data);
         //This get back the created backtest object with just the settings,
         //HAS no output

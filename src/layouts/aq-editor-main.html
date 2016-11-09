@@ -38,17 +38,20 @@
       </aq-editor-strategy-input-dialog>  
 
 
-      <iron-ajax 
-        url="http://localhost:3002/api/v2/strategy" 
-        body="[[strategyData]]" 
-        method='POST' 
-        id='postStrategy' 
-        headers='{{header}}' 
-        handle-as="json" 
-        on-response="onStrategyCreation" 
-        last-response="{{ajaxResponse}}" 
-        debounce-duration="300">
-      </iron-ajax>
+      <template is='dom-if' if='{{hasToken}}'>
+          <iron-ajax 
+            url="http://localhost:3002/api/v2/strategy" 
+            body="[[strategyData]]" 
+            method='POST' 
+            id='postStrategyQuery' 
+            headers='{{header}}' 
+            handle-as="json" 
+            on-response="onStrategyCreationResponse" 
+            on-error="onStrategyCreationError" 
+            last-response="{{ajaxResponse}}" 
+            debounce-duration="300">
+          </iron-ajax>
+      </template>
 
   </template>
 
@@ -76,6 +79,8 @@
           value:'main',
         },
 
+        hasToken:Boolean,
+
         strategyData:Object,
 
       },
@@ -87,12 +92,16 @@
       },
 
       ready: function() {
-            var x = localStorage.getItem('my-app-storage');
-            var user = JSON.parse(x).user;
-            this.header = {
-                "aimsquant-token": user.token,
-                "Content-Type": "application/json"
-          };
+
+        var x = localStorage.getItem('my-app-storage');
+        var user = JSON.parse(x).user;
+        if (user.token) {
+          this.header = {
+            "aimsquant-token": user.token,
+            "Content-Type": "application/json"};  
+        }
+
+        this.hasToken = (user.token && user.token!="") ? true : false;
       },
 
 
@@ -104,31 +113,43 @@
         //Update names after permission to create
         this.strategyData["name"] = e.detail.name;
         this.strategyData["description"] = e.detail.description;
-
-        this.$.postStrategy.generateRequest();
+        this.$$('#postStrategyQuery').generateRequest();
       },
 
-      onStrategyCreation(data) {
-          
-          console.log(data);
+      onStrategyCreationResponse(data) {
+          //check for error
           var strategyId = data.detail.response._id
           this.router.go('/dashboard/editor/'+ strategyId)
       },
 
-      openNewDialog() {    
+      onStrategyCreationError(data) {
+          console.log(data);
+      },
+
+      openNewDialog() {   
+
+        if(!this.hasToken) {
+          localStorage.addItem('lastRequest','/dashboard/createstrategy');
+          this.router.go('/user/signin');
+          return;
+        } 
+
         this.strategyData = {
             "name":"",
             "description":"",
             "language":"python",
             "type": "",
-            "code": "",
-        };
+            "code": "",};
 
         //Open dialog for permission
         this.$.strategyCreateDialog.open();
       },
 
       openCloneDialog(e) {
+
+        if(!this.header) {
+          this.router.go('/user/signin');
+        }
         
         strategy  = e.detail.strategy;
         var newName = "";

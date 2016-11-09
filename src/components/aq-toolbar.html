@@ -31,6 +31,10 @@ paper-icon-button.html">
     #profile {
       right:0;
     }
+
+    paper-tabs {
+      --paper-tabs-selection-bar-color:white;
+    }
    
   </style>
 
@@ -38,30 +42,25 @@ paper-icon-button.html">
 
       <paper-toolbar>
         <template is="dom-if" if="{{showmenu}}">
-          <template is ='dom-if' if="{{computeShowMenu(hasHeader, currentTab)}}">
+          <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
           <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
           <div class="title">AimsQuant</div>
         </template>
 
         <div class="flex"></div>
-        <paper-tabs id='papertabs' selected="{{currentTab}}" no-bar noink>
+        <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
           <paper-tab on-tap='onHome'>HOME</paper-tab>
           <paper-tab on-tap='onResearch'>RESEARCH</paper-tab>
           <paper-tab on-tap='onInvestments'>INVESTMENTS</paper-tab>
-          <!--paper-tab>LOGIN</paper-tab>
-          <paper-tab>SIGNUP</paper-tab-->
           <paper-tab on-tap='onAbout'>ABOUT US</paper-tab>
+          <template is='dom-if' if="{{!hasToken}}">
+            <paper-tab on-tap='onLogin'>LOG IN</paper-tab>
+            <paper-tab on-tap='onSignup'>SIGN UP</paper-tab>
+          </template>
+
         </paper-tabs>
-        
-        <template is='dom-if' if="{{!hasHeader}}">
-        <paper-tabs>
-            <paper-tab on-tap='onLogin'>LOGIN</paper-tab>
-            <paper-tab on-tap='onSignup'>SIGNUP</paper-tab>
-        
-        </paper-tabs>
-       </template>
-        
-        <template is='dom-if' if="{{hasHeader}}">
+         
+        <template is='dom-if' if="{{hasToken}}">
             <aq-user-menu></aq-user-menu> 
         </template>
 
@@ -85,42 +84,28 @@ paper-icon-button.html">
 
         currentTab: {
           type:Number,
-          //value:0,
         },
 
-        hasHeader: {
+        hasToken: {
           type:Boolean,
           value:false,
         },
       }, 
-
-      attached() {
-
-          var x = localStorage.getItem('my-app-storage');
-          if (x) {
-            var user = JSON.parse(x).user;
-            this.header = {
-                "aimsquant-token": user.token,
-                "Content-Type": "application/json"};         
-          } 
-
-          this.hasHeader = (this.header) ? true : false;           
-      },
 
       toggleMenu() {
         this.fire('open-menu');
       },
 
       onLogin() {
-        this.fire('loginClicked')
+        this.fire('tabChanged',{tab:4});
       },
 
       onSignup() {
-        this.fire('signupClicked')
+        this.fire('tabChanged',{tab:5});
       },
 
       computeShowMenu(hasHeader, currentTab) {
-        return hasHeader && currentTab == 1;
+        return currentTab == 1;
       },
 
       onResearch() {
@@ -129,7 +114,6 @@ paper-icon-button.html">
 
       onHome() {    
         this.fire('tabChanged',{tab:0});
-        //this.fire('tabChanged',{tab:-1});
       },
 
       onAbout(e) {    

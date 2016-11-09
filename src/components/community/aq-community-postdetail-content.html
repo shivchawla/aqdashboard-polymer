@@ -68,15 +68,12 @@
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-          this.email = user.email;
-          this.letter = this.firstName[0];
-          this.header = {
+          if (user.token) {
+            this.header = {
               "aimsquant-token": user.token,
-              "Content-Type": "application/json"
-          };
-          this.url = 'http://localhost:3002/api/v2/thread/' + this.threadId;
+              "Content-Type": "application/json"};  
+          }
+          
       },
 
       getinitials(item) {

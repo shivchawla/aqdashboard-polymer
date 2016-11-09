@@ -11,7 +11,7 @@
 
   <style>
     .post-container {
-      width: 70%;
+      max-width: 800px;
       border-bottom: 1px solid #e5e5e5;--#80CBC4;--#666;
       margin-top: 10px;
       padding-bottom: 5px;
@@ -70,9 +70,10 @@
       min-width: 150px;
     }
 
+
   </style>
   <template>
-  	<div class="post-container layout horizontal">
+  	<div class="post-container layout horizontal" id='post-container'>
       <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
       <div>
 	        <div on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
@@ -83,11 +84,14 @@
       </div>
 
       <div class="flex"></div>
-      <div id='right-section' class="layout horizontal self-end">
+      <div style="width:25%" class="vertical">
+      <div id='right-section' class="layout horizontal">
         <div id="total-replies"><span>Replies: [[totalReplies]]</span></div>
-        <div id="total-views"><span>Views: [[totalViews]]</span></div>
+        <div id="total-views"><span>Views: [[totalViews]]</span></div></div>
         <div id='category'><span>Category: [[postCategory]]</span></div>
       </div>
+
+
     </div>
 
     <iron-ajax
@@ -124,10 +128,11 @@
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
-          this.header = {
+          if (user.token) {
+            this.header = {
               "aimsquant-token": user.token,
-              "Content-Type": "application/json"
-          };
+              "Content-Type": "application/json"};  
+          }
       },
 
       getInitials(firstName, lastName) {

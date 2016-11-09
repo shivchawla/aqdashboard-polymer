@@ -214,7 +214,7 @@
                         method='POST' 
                         id='signup' 
                         handle-as="json" 
-                        on-response="handleSignup"
+                        on-response="handleSignupResponse"
                         on-error="handleSignupError"
                         last-response="{{ajaxResponse}}" 
                         headers='{"Content-Type": "application/json"}' debounce-duration="300">  
@@ -232,7 +232,7 @@
                       method='POST'
                       id='login'
                       handle-as="json"
-                      on-response="handleResponse"
+                      on-response="handleLoginResponse"
                       on-error="handleLoginError"
                       headers='{"Content-Type": "application/json"}'
                       debounce-duration="300">
@@ -254,10 +254,12 @@
             </paper-card>
 
         </div>
-        <iron-localstorage
+
+         <iron-localstorage
           name="my-app-storage"
-          value="{{aimsquant}}"
-          on-iron-localstorage-load-empty="initializeDefaultValue"></iron-localstorage>
+          value="{{aimsquant}}">
+        </iron-localstorage>
+
     </template>
 
     <script>
@@ -453,15 +455,11 @@
                 }
             },
             ready: function() {
-                /* Prevent sharing of child object references. */
-                //this.rsrc = App.Util.copyObjectDeep(this.rsrc);
-                //this.updateMessageStrings();
-
+                //this.aimsquant = localStorage.getItem('my-app-storage');
             },
 
             attached() {
 
-                console.log(this.displayMode);
                 if (this.displayMode != displayModes.signin && 
                     this.displayMode != displayModes.signup &&
                     this.displayMode != displayModes.forgotPassword) {
@@ -470,13 +468,13 @@
                     this.displayMode = displayModes.signin;
                 } 
 
-                this.updateMessageStrings();   
-            },
+                this.updateMessageStrings(); 
 
-            initializeDefaultValue: function () {
-                this.aimsquant = {
-                    user: 'suudhir'
-                }
+                if (this.displayMode == displayModes.signin) {
+                    this.fire('tabChanged',{tab:4})
+                } else if (this.displayMode == displayModes.signin) {
+                    this.fire('tabChanged',{tab:5})
+                } 
             },
 
             computeSigninBody: function(email, password) {
@@ -507,10 +505,12 @@
                 e.stopPropagation();
                 switch (this.displayMode) {
                     case displayModes.signin:
-                        this.setDisplayMode(displayModes.signup);
+                        this.fire('tabChanged',{tab:5});
+                        //this.setDisplayMode(displayModes.signup);
                         break;
                     case displayModes.signup:
-                        this.setDisplayMode(displayModes.signin);
+                        this.fire('tabChanged',{tab:4});
+                        //this.setDisplayMode(displayModes.signin);
                         break;
                     case displayModes.forgotPassword:
                         this.setDisplayMode(displayModes.signin);
@@ -681,16 +681,22 @@
                 return valid;
             },
 
-            handleResponse: function(data) {
-            
+            handleLoginResponse: function(data) {
+                //console.log(data.detail.response);
+                //console.log(this.aimsquant);
                 this.aimsquant = {
                     user: ''
                 };
 
                 this.set('aimsquant.user', data.detail.response);
+                //console.log(this.aimsquant);
+                var x = localStorage.getItem('my-app-storage');
+                //console.log(x);
+                var user = JSON.parse(x).user;
+                //console.log(user);
+
                 this.actionSucceeded();
                 this.router.go('/dashboard');
-            
             },
 
             handleLoginError(data) {

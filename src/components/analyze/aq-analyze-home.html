@@ -67,7 +67,8 @@
      	 	method='GET'
           	id='getStrategyQuery'
           	handle-as="json"
-          	on-response="onStrategy"
+          	on-response="onGetStrategy"
+          	on-error="onGetStrategyError"
           	headers='{{header}}'
           	debounce-duration="300">
         </iron-ajax>
@@ -77,7 +78,8 @@
      	 	method='GET'
           	id='getBacktestsQuery'
           	handle-as="json"
-          	on-response="onAllBacktests"
+          	on-response="onGetAllBacktestsForStrategy"
+          	on-error="onGetAllBacktestsForStrategyError"
           	headers='{{header}}'
           	debounce-duration="300">
         </iron-ajax>
@@ -127,11 +129,12 @@
 
 			ready: function() {
 	          	var x = localStorage.getItem('my-app-storage');
-        	  	var user = JSON.parse(x).user;
-	          	this.header = {
-        	      	"aimsquant-token": user.token,
-	              	"Content-Type": "application/json"
-	          	};
+		        var user = JSON.parse(x).user;
+		        if (user.token) {
+		          this.header = {
+		            "aimsquant-token": user.token,
+		            "Content-Type": "application/json"};  
+		        }
 	      	},
 
 	      	attached() {
@@ -149,12 +152,20 @@
 				this.$.dialog.toggle();
 			},
 
-			onAllBacktests(data) {
+			onGetAllBacktestsForStrategy(data) {
 				this.backtests = data.detail.response;
 			},
 
-			onStrategy(data) {
+			onGetAllBacktestsForStrategyError(data) {
+				console.log(data)
+			},
+
+			onGetStrategy(data) {
 				this.strategyName = data.detail.response.name;
+			},
+
+			onGetStrategyError(data) {
+				console.log(data);
 			}
     	});
     </script>

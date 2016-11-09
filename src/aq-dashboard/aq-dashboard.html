@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-router/app-router.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
 
@@ -7,6 +9,8 @@
 <link rel="import" href='../components/aq-aboutpage.html'>
 <link rel="import" href='../components/aq-investmentpage.html'>
 
+<link rel="import" href='../components/aq-sidebar.html'>
+<link rel="import" href='../components/aq-toolbar.html'>
 
 <dom-module id="aq-dashboard">
   <template>
@@ -16,29 +20,59 @@
         display: block;
       }
 
+      #mainpanel {
+        height:100%;
+        --background-color: #fafafa;
+      }
+
+      .paper-header {
+        position: relative;
+      }
+
+    paper-drawer-panel {
+      height:100%;
+      background-color: #EFEFEF;--D9D9D9;--#E0F2F1
+
+    }
     </style>
     
     <div id="main">
-      <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
+      <iron-localstorage
+          name="my-app-storage"
+          value="{{aimsquant}}"
+          on-iron-localstorage-load-empty="initializeDefaultValue">
+      </iron-localstorage>
+
+      <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width='200px' narrow="{{narrow}}">
+          <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
       
-        <app-route path="/" redirect="/home"></app-route>
-        <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+          <paper-header-panel id="mainpanel" main fixed mode="seamed">
+            <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-        <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+          <app-router k = computeHasHeader{{hasHeader}}" id="router" class="flex" mode="hash" trailingSlash="ignore">
+          
+            <app-route path="/" redirect="/home"></app-route>
+            <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
-        <app-route path="/home" element="aq-homepage" bindrouter=""></app-route>
+            <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
-        <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
+            <app-route path="/home" element="aq-homepage" bindrouter=""></app-route>
 
-        <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
+            <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
 
-        <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
+            <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
 
-        <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter="" onurlchange=""></app-route>
+            <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
 
-        <app-route path="*" element="aq-dashboard-main" bindrouter="" onurlchange=""></app-route>
+            <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter=""></app-route>
 
-      </app-router>
+            <app-route path="*" element="aq-dashboard-main" bindrouter="" onurlchange=""></app-route>
+
+          </app-router>
+
+        </paper-header-panel>
+      </paper-drawer-panel>
+
     </div>
 
   </template>
@@ -46,8 +80,168 @@
   <script>
     Polymer({
 
-      is: 'aq-dashboard',
+        is: 'aq-dashboard',
 
+        properties: {
+          narrow: {
+            type:Boolean,
+            value:false,
+          },
+
+          showSidebar:{
+            type:Boolean,
+            value:true,
+          },
+
+          view: {
+            type:String,
+            value:'home',
+          },
+
+          isHomeSelected :{
+            type:Boolean,
+            value:false,
+          },
+
+          isEditorSelected :{
+            type:Boolean,
+            value:false,
+          },
+
+          isCommunitySelected :{
+            type:Boolean,
+            value:false,
+          },
+
+          isAnalyzeSelected :{
+            type:Boolean,
+            value:false,
+          },
+
+          isHelpSelected :{
+            type:Boolean,
+            value:false,
+          },
+
+          hasToken: {
+              type:Boolean,
+              value:false,
+          },
+
+          currentTab:{
+            type:Number,
+            value:0,
+          },
+
+          aimsquant:{
+            type: Object,
+            value: {user:''},
+          },
+
+        },
+
+        listeners: {
+            'open-menu': 'openMenu',
+            'close-menu':'closeMenu',
+            'change-view-navigation':'viewChanged',
+            'change-view-action':'viewChangedOnAction',
+            'loginClicked':'gotoSignin',
+            'signupClicked':'gotoSignup',
+            'tabChanged':'changeTab',
+        },
+
+        checkHasToken() {
+          
+          var x = localStorage.getItem('my-app-storage');
+          //console.log(x);
+          var user = JSON.parse(x).user;
+        
+          //console.log(user.token);
+          this.hasToken = (user.token) ? true : false;  
+
+          //console.log(this.hasToken);
+
+          //return true;
+        },
+
+        computeShowMenu(narrow, showSidebar) {
+          return narrow || !showSidebar;
+        },
+
+        computeForceNarrow(narrow, showSidebar) {
+          return !showSidebar;
+        },
+
+        computeShowSideBar(narrow, showSidebar){
+          return !showSidebar
+        },
+
+        viewChanged(newMenu) {
+          this.view = newMenu.detail.menu;
+          this.isHomeSelected= this.view=='home';
+          this.isEditorSelected = this.view=='editor';
+          this.isCommunitySelected = this.view=='community';
+          this.isAnalyzeSelected = this.view=='analyze';
+          this.isHelpSelected = this.view=='help';
+          this.$.router.go('/dashboard/'+this.view);
+          if(this.narrow){
+            this.$.drawerpanel.closeDrawer();
+          }
+        },
+
+        viewChangedOnAction(newAction) {
+          this.$.router.go('/dashboard/' + newAction.detail.action);
+          if(this.narrow){
+            this.$.drawerpanel.closeDrawer();
+          }
+        },
+
+        openMenu(e) {
+          this.$.drawerpanel.openDrawer();
+          this.showSidebar = true;
+        },
+
+        closeMenu() {
+          this.$.drawerpanel.closeDrawer();
+
+          if (this.showSidebar && !this.narrow) {
+            this.showSidebar = false;
+          }
+        },
+
+        initializeDefaultValue: function () {
+            //localstorage.removeItem('my-app-storage');
+            this.aimsquant = {user:''};
+        },
+
+        changeTab(e) {
+          this.checkHasToken();
+          this.showSidebar = (e.detail.tab == 1);
+          tab = e.detail.tab;
+          if (tab == this.currentTab) {
+            return
+          }
+
+          path = ['/home', 
+                  '/dashboard', 
+                  '/investments', 
+                  '/about',
+                  '/signin',
+                  '/signup'];
+
+          this.currentTab = tab;
+
+          if (this.URLcontains(path[tab])) {
+            return;
+          } else {
+            this.$$('#router').go(path[tab]);
+          }
+          
+        },
+
+        URLcontains(path) {
+          return (document.URL.match(path)) ? true : false;
+        },
 
     });
   </script>

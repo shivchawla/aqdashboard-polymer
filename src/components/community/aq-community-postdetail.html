@@ -40,9 +40,10 @@
           auto
           url="http://localhost:3002/api/v2/thread/{{threadid}}"
           method='GET'
-          id='thread'
+          id='getThreadQuery'
           handle-as="json"
-          on-response="onAllThreads"
+          on-response="onGetThreadDetailResponse"
+          on-error="onGetThreadDetailError"
           headers='{{header}}'
           debounce-duration="300">
       </iron-ajax>
@@ -88,22 +89,28 @@
         'reply-added':'addReply',
       },
 
-      onAllThreads(data) {
+      onGetThreadDetailResponse(data) {
           this.threadDetails = data.detail.response;
+      },
+
+      onGetThreadDetailError(data) {
+          console.log(data);
       },
 
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
+          if (user.token) {
+            this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};  
+          }
           this.firstName = user.firstName;
           this.lastName = user.lastName;
           this.email = user.email;
           this.letter = this.firstName[0];
-          this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"
-          };
       },
+
       goBack() {
           this.router.go('/dashboard/community');
       },
@@ -113,10 +120,10 @@
         var reply = e.detail.reply;
         var replyElement = document.createElement('aq-community-postdetail-content');
         
-        var x = localStorage.getItem('my-app-storage');
-        var user = JSON.parse(x).user;
+        //var x = localStorage.getItem('my-app-storage');
+        //var user = JSON.parse(x).user;
 
-        reply.user = {"firstName":user.firstName, "lastName":user.lastName};
+        reply.user = {"firstName":this.firstName, "lastName":this.lastName};
         
         replyElement.item = reply;
 

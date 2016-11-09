@@ -1,41 +1,16 @@
-<link rel="import" href='./aq-toolbar.html'>
 
 <dom-module id="aq-aboutpage">
 	<template>
-		  <aq-toolbar current-tab=3 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>      
+		  <!--aq-toolbar current-tab=3 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar-->      
 	</template>
 
 	<script>
 		Polymer({
 			is:'aq-aboutpage',
 
-
-			listeners:{
-				'tabChanged':'changeTab',
+			attached() {
+				this.fire('tabChanged',{tab:3});
 			},
-
-			changeTab(e) {
-			    tab = e.detail.tab;
-			    if (tab == this.currentTab) {
-		    	    return
-		      	}
-
-    		  	switch(tab) {
-		        	case 0: 
-		          		this.router.go('/home');
-			          	break;
-			        case 1: 
-			          	this.router.go('/dashboard');
-			          	break;
-			        case 2: 
-			          	this.router.go('/investments');
-			          	break;
-			        case 3: 
-			          	this.router.go('/about');
-			          	break;
-		      	}
-
-		    },
 
 		})
 	</script>
