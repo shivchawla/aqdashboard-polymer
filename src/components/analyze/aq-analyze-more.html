@@ -1,0 +1,277 @@
+		
+
+<link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+
+<dom-module id='aq-analyze-more'>	
+	<style>	
+		chart-line {
+			width: 50%;
+			height:30%;
+		}
+
+		chart-bar {
+			width: 50%;
+			height:30%;
+		}
+
+		aq-analyze-home-metric-item {
+			height:50px;
+		}
+
+		.head span {
+			--font-weight: bold;
+			--margin-top: 20px;
+			font-size: 18px;
+		}
+
+		.head {
+			background-color: teal;
+			text-align: center;
+			height: 30px;
+		}
+
+		span {
+			text-align: center;
+			margin-top:15px;
+		}
+		.paper_align{
+			position: absolute;
+		    top: 20px;
+		    right: 7px;
+		}
+		.a{
+			text-align: -webkit-center;
+			margin: 30px 0 30px 10px;
+		}
+		vaadin-grid{
+			--vaadin-grid-header-row-height : 78px;
+			--vaadin-grid-header-row-color : blue;
+			--vaadin-grid-row-cell: blue;
+		}
+		vaadin-grid{
+			background: blue;
+		}
+		#sort11 .v-table-header-cell{
+			background: blue;
+		}
+		.c{
+			background: blue;
+		}
+		.vaadin-grid-0{
+			background-color: green;
+
+		}
+	</style>
+
+	<template>
+		
+		
+		<div id='comparison-return' class="">
+			<div style="display: flex;justify-content: space-between;">
+				<h2 style="margin-left: 10px; margin-bottom: 30px">Compare Backtests Objects: </h2>
+				<paper-tabs style="margin-top: 20px" noink selected={{graphType1}}>
+					<paper-tab>Line Graph</paper-tab>
+					<paper-tab>Bar Graph</paper-tab>
+					<paper-tab>Comparision Table</paper-tab>
+				</paper-tabs>
+			</div>
+			<iron-pages class="a" selected={{graphType1}}>
+		  		<iron-page>
+
+				<nvd3-line 
+		  			id="chart-line1" 
+		  			class="bar1" 
+		  			height=460
+		  			width=900
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data=[[lineData]]>
+		  		</nvd3-line>
+		  		</iron-page>
+		  		<iron-page>
+
+				<nvd3-multi-bar 
+		  			id="chart-bar" 
+		  			class="bar" 
+		  			height=460
+		  			width=900
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data=[[barData]]>
+		  		</nvd3-multi-bar>
+		  		</iron-page>
+		  		<iron-page>
+		  		<div style="width:100%">
+		  		<vaadin-grid id="sort11" style="overflow: scroll;width: 100%">
+				  <table>
+				    <colgroup class="c">
+				      <col name="Strategy Name" sortable/>
+				      <col name="Total Return1" sortable/>
+				      <col name="Avg Return" sortable/>
+				      <col name="Avg Volatility" sortable/>
+				      <col name="Sharpe Ratio" sortable/>
+				      <col name="Information Ratio" sortable/>
+				      <col name="Sortino Ratio" sortable/>
+				      <col name="Avg Drawdown" sortable/>
+				      <col name="Max Drawdown" sortable/>
+				      <col name="Calmar Ratio" sortable/>
+				      <col name="Beta Value" sortable/>
+				      <col name="Stability" sortable/>
+				      <col name="Avg Concentration" sortable/>
+				    </colgroup>
+				  </table>
+				</vaadin-grid>
+				</div>
+				</iron-page>
+		  		</iron-pages>
+		</div>
+		
+		<div id='comparison-risk' class = "layout horizontal flex">
+			<iron-ajax auto url="../common/data.json"
+	          handle-as="json"
+	          on-response="handleResponse"
+	          debounce-duration="300"></iron-ajax>			
+		</div>	
+			
+	</template>
+	<script>
+		Polymer ({
+			is:'aq-analyze-more',
+			
+			properties:{
+				graphType1: {
+					type:Number,
+					value:2,
+				},
+				lineData: {
+					type:Object,
+					value: [{
+					  "key":"Hello1",
+					  "color": "#ff7f0e",
+					  "values": [{
+					      "x": 0,
+					      "y": 0
+					    }, {
+					      "x": 1,
+					      "y": 0.09983341664682815
+					    }, {
+					      "x": 2,
+					      "y": 0.19866933079506122
+					    }, {
+					      "x": 3,
+					      "y": 0.29552020666133955
+					    }, {
+					      "x": 4,
+					      "y": 0.3894183423086505
+					    }, {
+					      "x": 5,
+					      "y": 0.4794255
+					    }]
+					}], 
+				},
+				barData: {
+					type:Object,
+					value: [{
+					  "color": "#ff7f0e",
+					  "values": [{
+				        "x": "January",
+				        "y": 45.17657645842991837
+				      }, {
+				        "x": "February",
+				        "y": 67.17056295930152043
+				      }, {
+				        "x": "March",
+				        "y": 68.1673443365488047
+				      }, {
+				        "x": "April",
+				        "y": 46.11723298445616456
+				      }, {
+				        "x": "May",
+				        "y": 24.536952569541941
+				      }, {
+				        "x": "June",
+				        "y": 43.3388194660534718
+				      }, {
+				        "x": "July",
+				        "y": 54.36333876908320444
+				      }, {
+				        "x": "August",
+				        "y": 64.3611814096880023
+				      }, {
+				        "x": "September",
+				        "y": 23.1338671870032077
+				      }, {
+				        "x": "October",
+				        "y": 34.17393665276883485
+				      }, {
+				        "x": "November",
+				        "y": 23.10082735638070002
+				      }, {
+				        "x": "December",
+				        "y": 45.11922403030059807
+				      }]
+				    	}],
+							}, 
+			},
+			ready: function(){
+				var claims = [];
+				claims.push({
+		            'Total Return1': '14.3%',
+		            'Avg. Return': '3.4%',
+		            'Avg. Volatility': '5.6%',
+		            'Sharpe Ratio': "0.82",
+		            'Information Ratio': "0.5",
+		            'Sortino Ratio': "1.6",
+		            'Avg. Drawdown': "4.5%",
+		            'Max. Drawdown': "5.6%",
+		            'Calmar Ratio': "2.4",
+		            'Beta': "0.98",
+		            'Stability': "0.88",
+		            'Avg. Concentration': "0.52"
+		        });
+		     //    setTimeout(function(){var grid = document.querySelector('#sort');
+		     //    console.log('claims',claims);
+		     //    console.log(grid);
+		     //    grid.items = claims;
+		    	// },6000);
+			},
+			handleResponse: function(e){
+				var items1=[];
+				var grid1 = document.querySelector('#sort11');
+
+				var a = e.detail.response.result;
+				console.log(e.detail.response.result.length);
+				for(var i=0; i<e.detail.response.result.length;i++){
+					items1.push({
+			            'Strategy Name': e.detail.response.result[i].Strategy,
+
+			            'Total Return1': e.detail.response.result[i].Total_Return1,
+			            'Avg Return': e.detail.response.result[i].Avg_Return1,
+			            'Avg Volatility': e.detail.response.result[i].Avg_Volatility,
+			            'Sharpe Ratio': e.detail.response.result[i].Sharpe_Ratio,
+			            'Information Ratio': e.detail.response.result[i].Information_Ratio,
+			            'Sortino Ratio': e.detail.response.result[i].Sortino_Ratio,
+			            'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
+			            'Max Drawdown': e.detail.response.result[i].Max_Drawdown,
+			            'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
+			            'Beta Value': e.detail.response.result[i].Beta,
+			            'Stability': e.detail.response.result[i].Stability,
+			            'Avg Concentration': e.detail.response.result[i].Avg_Concentration
+
+			        });
+			        console.log('items1');
+				}
+					grid1.items = items1;
+					grid1.frozenColumns = 1;
+
+
+			}
+		});
+	</script>
+</dom-module>
