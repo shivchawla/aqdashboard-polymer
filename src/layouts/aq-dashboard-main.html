@@ -62,6 +62,7 @@
           <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
 
           <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
+          
           <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
 
           <!--app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route-->
@@ -78,6 +79,8 @@
           <app-route path="/dashboard/createpost" redirect="/dashboard/community/create"></app-route>
 
           <app-route path="/dashboard/comparebacktests" redirect="/dashboard/analyze/compare"></app-route>
+
+          <app-route path="/dashboard/comparemore" redirect="/dashboard/analyze/more"></app-route>
 
           <app-route path="/dashboard/createstrategy" redirect="/dashboard/editor?create=1"></app-route>
 
