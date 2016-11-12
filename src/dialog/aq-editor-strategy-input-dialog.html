@@ -14,12 +14,14 @@
 
 	<style>
 		paper-dialog {
-    		width: 720px;
+    		width: 520px;
     		height: 250px;
     		margin-right:0px;
     		margin-left:0px;
     		padding-right: 0px;
     		padding-left:0px;
+    		border-radius: 5px;
+    		border: 2px solid teal;
   		}
 
   		.input-fields {
@@ -30,16 +32,27 @@
   			margin-bottom:0px;
   		}
 
+  		paper-button {
+  			--paper-button:{
+  				color:teal;
+  			};
+  		}
+
+  		h2 {
+  			color:teal;
+  		} 
+		
+
 	</style>
 	
 	<template>
 	    <paper-dialog id='createStrategyModalDialog' with-backdrop>
- 			
-	    	<h2>[[header]]</h2>	 
+	    	<h2>[[header]]</h2>
+
  			<paper-input id='strategyNameInput' class='input-fields'
                          label="Strategy Name" 
                          value="{{strategyName}}"
-                         error-message="Please enter a valid strategy name"
+                         error-message="Please enter a valid strategy name. It can not be empty."
                          type="text"
                          no-label-float
                          required
@@ -47,22 +60,22 @@
                          char-counter> 
            	</paper-input>
  				
-			<paper-input id='TextInput' class='input-fields'
+			<paper-input id='strategyDesc' class='input-fields'
 		                     label="Give it a short description..." 
 		                     value="{{strategyDesc}}"
-		                     error-message="{{strategyDescErrorMessage}}"
+		                     error-message="Please enter a valid strategy description. It can not be empty."
 		                     type="text"
 		                     no-label-float
 		                     required
 		                     maxlength=60
 		                     rows=1
-		                     max-rows=2
+		                     max-rows=1
 		                     char-counter
 		                     no-wrap>
             </paper-input>
-           <div id="buttons" class="flex">
-  				<paper-button raised dialog-dismiss>Cancel</paper-button>
-    			<paper-button raised dialog-confirm on-tap='onSubmit'>Create</paper-button>
+           <div id="buttons" class="horizontal">
+  				<paper-button noink dialog-dismiss>Cancel</paper-button>
+    			<paper-button noink on-tap='onSubmit'>OK</paper-button>
   			</div>
 		 	
 		</paper-dialog>
@@ -81,7 +94,10 @@
 			},
 
 			onSubmit() {
-				this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
+				if(this.$.strategyNameInput.validate() && this.$.strategyDesc.validate()){
+					this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
+					this.$.createStrategyModalDialog.close();
+				}
 			
 			},
 

@@ -85,7 +85,7 @@
         </iron-ajax>
 		
 		<div id='container'>
-			<aq-analyze-home-menu strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+			<aq-analyze-home-menu active-buttons="[[hasCheckedBacktests(checkedCount)]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
 			<template is='dom-repeat' items="{{backtests}}">
 				<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
@@ -106,25 +106,34 @@
     		is: 'aq-analyze-home',
 
     		properties: {
+
     			strategyName: String,
+
     			strategyId: String,
+
     			backtests: {
     				type:Object,
     				value:[
-			            {first: 'Bob', last: 'Smith'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},
-			            {first: 'Sally', last: 'Johnson'},],
+			            {_id: 'Bob', last: 'Smith'},
+			            {_id: 'Sally', last: 'Johnson'}],
     			},
+
+    			checkedCount: {
+    				type: Number,
+    				value:0,
+    			},
+
+    			checkedItems: {
+					type:Object,
+					value:{},
+				},
     		}, 
     		
 			listeners :{
 				'backClicked':'goToEditor',
 				'compareClicked':'compareBacktests',
+				'backtestChecked':'checkBacktest',
+				'deleteClicked':'onDeletion',
 			},
 
 			ready: function() {
@@ -153,7 +162,7 @@
 			},
 
 			onGetAllBacktestsForStrategy(data) {
-				this.backtests = data.detail.response;
+				//this.backtests = data.detail.response;
 			},
 
 			onGetAllBacktestsForStrategyError(data) {
@@ -166,7 +175,39 @@
 
 			onGetStrategyError(data) {
 				console.log(data);
-			}
+			},
+
+			checkBacktest(e) {
+        		var checked = e.detail.checked;
+
+	        	this.checkedItems[e.detail.id] = e.detail.checked;
+
+	        	if (checked == true) {
+	        		this.checkedCount += 1;
+	        	} else {
+	        		this.checkedCount -= 1;
+	        	}
+	        },
+
+	        hasCheckedBacktests(checkedCount) {
+	        	return checkedCount > 0;
+	        },
+
+	        onDeletion(e) {
+	        	e.stopPropagation();
+	        	//Send DELETE request to backend
+	        	for (key in this.checkedItems) {
+	        		for (i in this.backtests) {		
+	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
+	        				this.splice('backtests', i, 1);
+	        				this.checkedCount -= 1;
+	        			}
+	        		}
+	    		}
+
+	    		this.checkedItems = {};	        	
+	        },
+
     	});
     </script>
 

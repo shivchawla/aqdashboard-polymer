@@ -44,12 +44,12 @@
       </iron-localstorage>
 
       <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width='200px' narrow="{{narrow}}">
-          <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
+          <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
       
           <paper-header-panel id="mainpanel" main fixed mode="seamed">
             <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-          <app-router k = computeHasHeader{{hasHeader}}" id="router" class="flex" mode="hash" trailingSlash="ignore">
+          <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
           
             <app-route path="/" redirect="/home"></app-route>
             <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
@@ -150,6 +150,19 @@
             'tabChanged':'changeTab',
         },
 
+        ready() {
+            var path = ['home','editor','community','analyze','help'];
+
+            for (i in path) {
+                var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
+                if (c && this.view != path[i]) {  
+                      this.view = path[i];
+                      console.log(this.view);
+                      break;   
+                }
+            }
+        },
+        
         checkHasToken() {
           
           var x = localStorage.getItem('my-app-storage');
@@ -178,12 +191,14 @@
 
         viewChanged(newMenu) {
           this.view = newMenu.detail.menu;
-          this.isHomeSelected= this.view=='home';
+          /*this.isHomeSelected= this.view=='home';
           this.isEditorSelected = this.view=='editor';
           this.isCommunitySelected = this.view=='community';
           this.isAnalyzeSelected = this.view=='analyze';
-          this.isHelpSelected = this.view=='help';
-          this.$.router.go('/dashboard/'+this.view);
+          this.isHelpSelected = this.view=='help';*/
+          
+          this.$.router.go('/dashboard/' + this.view);
+          
           if(this.narrow){
             this.$.drawerpanel.closeDrawer();
           }
@@ -231,11 +246,17 @@
 
           this.currentTab = tab;
 
+          if (tab == 1) {
+            this.view = "home";
+          }
+
           if (this.URLcontains(path[tab])) {
             return;
           } else {
             this.$$('#router').go(path[tab]);
           }
+
+
           
         },
 

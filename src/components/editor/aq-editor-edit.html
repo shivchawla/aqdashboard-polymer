@@ -151,6 +151,7 @@
         'close-drawer':'closeDrawer',
         'save-action':'saveStrategy',
         'run-action':'runStrategy',
+        'cloneClicked':'cloneStrategy',
       },
 
       ready: function() {
@@ -268,6 +269,11 @@
         console.log(data);
         //This get back the created backtest object with just the settings,
         //HAS no output
+      },
+
+      cloneStrategy(e) {
+          e.detail.strategy = this.strategy;
+          //let the event propagate
       },
 
     });

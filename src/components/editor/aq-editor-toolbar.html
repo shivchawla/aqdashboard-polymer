@@ -132,6 +132,7 @@
 
 				strategyName:String,
 				strategyDesc:String,
+				strategyId:String,
 			},
 
 			closeAll() {
@@ -176,7 +177,7 @@
 			},
 
 			onClone() {	
-				this.fire('cloneClicked', {name:this.strategyName, description:this.strategyDesc});	
+				this.fire('cloneClicked');	
 			},
 
 			onRun() {

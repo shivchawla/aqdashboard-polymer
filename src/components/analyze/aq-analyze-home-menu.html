@@ -90,6 +90,52 @@
 			outline: none !important;
 		}
 
+		.iconButton {
+			outline:1px solid #cf6766;;
+			width:35px;
+    		--height:25px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		color: white; --#188364; --#333a56; 
+    		background-color: #cf6766;
+		}
+
+		iron-icon {
+			--width:25px;
+    		--height:25px;
+		}
+
+		.iconButton:active {
+			padding: 10px;
+		}
+
+		.iconButton {
+			--paper-icon-button-disabled-text:#f2d9D9;
+		}
+
+		paper-icon-button {
+			--paper-icon-button-disabled:{
+				--background-color: #f2d9D9 !important;
+				color: #cacaca !important;
+			};
+		}
+
+		paper-icon-button {
+			--paper-icon-button-disabled-text:grey;
+		}
+
+		paper-button {
+			--paper-button-disabled:{
+				--background-color: #f2d9D9 !important;
+				color: #cacaca !important;
+			};
+		}
+
+		paper-button {
+			--paper-button-disabled-text:grey;
+		}
+	
 		
 	</style>
 	
@@ -98,19 +144,13 @@
 	    
 	    	<paper-icon-button noink id="backButton" title="Go Back" icon="icons:arrow-back" on-tap="goToEditor">
 	  			</paper-icon-button>
-	    	<div class="flex"><h3>All Backtests for {{strategyName}}</h3></div>
-	      	<!--div id="search" class="flex">	    	
-	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
-      			<input id="searchbox" placeholder="Search your strategy" class="flex"
-             	value="{{searchValue::change}}" type="search"
-             	on-keydown="checkForKeys" on-blur='close'>
-        	</div-->
+	    	<div class="flex"><h4>All Backtests for {{strategyName}}</h4></div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	  			<paper-icon-button noink class="deleteButton" title="Delete" icon="icons:delete" on-tap="onDelete">
+	  			<paper-icon-button noink class="iconButton" icon="icons:delete" title="Delete"  on-tap="onDelete" disabled="[[!activeButtons]]">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="compareButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				<paper-icon-button noink class="iconButton" icon="icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!activeButtons]]">
 				</paper-icon-button>
 			</div>      	
   		</div>
@@ -124,22 +164,12 @@
 			properties: {
 				strategyName:{
 					type:String,
-				}
-			},
+				},
 
-			toggle() {
-
-				var d = this.$$('#search').style.display;
-				//console.log(d);
-				if(d == 'block') {
-					this.$$('#search').style.display = 'none';
-					this.$$('#menu-icons').style.display = 'inline';
-				} else {
-					this.$$('#search').style.display = 'block';
-					this.$$('#searchbox').focus();
-					this.$$('#searchbox').value = "";
-					this.$$('#menu-icons').style.display = 'none';				
-				}			
+				activeButtons:{
+					type:Boolean,
+					value: false,
+				},
 			},
 
 			onDelete() {
@@ -150,26 +180,9 @@
 				this.fire('compareClicked');
 			},
 
-			checkForKeys: function (e) {
-                // check if 'esc' was pressed
-                if (e.keyCode === 27) {
-                    this.$$('#search').style.display = 'none';
-					this.$$('#menu-icons').style.display = 'inline';
-                }
-                else if(e.keyCode == 13) {
-                	this.doSearch();
-                }
-            },
-
-            close() {
-            	this.$$('#search').style.display = 'none';
-				this.$$('#menu-icons').style.display = 'inline';
-            },
-
             goToEditor() {
             	this.fire('backClicked');
             },
-
 
 		});
 		
