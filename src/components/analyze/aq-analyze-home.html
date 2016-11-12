@@ -40,8 +40,10 @@
 		}
 
 		#container {
-		    margin-left: 30px;
-		    margin-right: 30px;
+			width:95%;
+			margin:0 auto;
+		    --margin-left: 30px;
+		    --margin-right: 30px;
 		    margin-top: 10px;
 		    color: #333a56; 
 		  }
@@ -59,18 +61,36 @@
 	</style>
 
 	<template>
+		<iron-ajax
+		  	auto	
+          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
+     	 	method='GET'
+          	id='getStrategyQuery'
+          	handle-as="json"
+          	on-response="onGetStrategy"
+          	on-error="onGetStrategyError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+		<iron-ajax
+		  	auto	
+          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onGetAllBacktestsForStrategy"
+          	on-error="onGetAllBacktestsForStrategyError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+		
 		<div id='container'>
-			<aq-analyze-home-menu strategy-name="{{strategyName}}"></aq-analyze-home-menu>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-			<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+			<aq-analyze-home-menu active-buttons="[[hasCheckedBacktests(checkedCount)]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+
+			<template is='dom-repeat' items="{{backtests}}">
+				<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
+			</template>
+
 		</div>	
 
 		<paper-dialog id='dialog' with-backdrop>
@@ -86,13 +106,52 @@
     		is: 'aq-analyze-home',
 
     		properties: {
+
     			strategyName: String,
-    		},
+
+    			strategyId: String,
+
+    			backtests: {
+    				type:Object,
+    				value:[
+			            {_id: 'Bob', last: 'Smith'},
+			            {_id: 'Sally', last: 'Johnson'}],
+    			},
+
+    			checkedCount: {
+    				type: Number,
+    				value:0,
+    			},
+
+    			checkedItems: {
+					type:Object,
+					value:{},
+				},
+    		}, 
     		
 			listeners :{
-				'back-clicked':'goToEditor',
-				'compare-pressed':'compareBacktests',
+				'backClicked':'goToEditor',
+				'compareClicked':'compareBacktests',
+				'backtestChecked':'checkBacktest',
+				'deleteClicked':'onDeletion',
 			},
+
+			ready: function() {
+	          	var x = localStorage.getItem('my-app-storage');
+		        var user = JSON.parse(x).user;
+		        if (user.token) {
+		          this.header = {
+		            "aimsquant-token": user.token,
+		            "Content-Type": "application/json"};  
+		        }
+	      	},
+
+	      	attached() {
+	      		//console.log("Attached in Analyze");
+	      		//console.log(this.backtests);
+	      		//console.log(this.strategyId);
+	      		//console.log(this.strategyName);
+	      	},
 
 			goToEditor() {
 				this.router.go('/dashboard/editor');
@@ -101,6 +160,54 @@
 			compareBacktests() {
 				this.$.dialog.toggle();
 			},
+
+			onGetAllBacktestsForStrategy(data) {
+				//this.backtests = data.detail.response;
+			},
+
+			onGetAllBacktestsForStrategyError(data) {
+				console.log(data)
+			},
+
+			onGetStrategy(data) {
+				this.strategyName = data.detail.response.name;
+			},
+
+			onGetStrategyError(data) {
+				console.log(data);
+			},
+
+			checkBacktest(e) {
+        		var checked = e.detail.checked;
+
+	        	this.checkedItems[e.detail.id] = e.detail.checked;
+
+	        	if (checked == true) {
+	        		this.checkedCount += 1;
+	        	} else {
+	        		this.checkedCount -= 1;
+	        	}
+	        },
+
+	        hasCheckedBacktests(checkedCount) {
+	        	return checkedCount > 0;
+	        },
+
+	        onDeletion(e) {
+	        	e.stopPropagation();
+	        	//Send DELETE request to backend
+	        	for (key in this.checkedItems) {
+	        		for (i in this.backtests) {		
+	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
+	        				this.splice('backtests', i, 1);
+	        				this.checkedCount -= 1;
+	        			}
+	        		}
+	    		}
+
+	    		this.checkedItems = {};	        	
+	        },
+
     	});
     </script>
 

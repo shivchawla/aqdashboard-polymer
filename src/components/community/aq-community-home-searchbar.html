@@ -16,7 +16,7 @@
 		#search {
 		  height: 46px;
 		  line-height: 48px;
-		  width:70%;
+		  --max-width:70%;
 		}
 	
 		#searchbox {
@@ -28,10 +28,13 @@
 		  padding-left: 10px;
 		  border: 1px solid #e5e5e5;
 		  @apply(--paper-font-body1);
-		  font-size: 16px;
+		  --font-size: 16px;
+		  font-size:100%;
 		  margin-left:-0px;
 		  --border-left:none !important;
 		  margin-top:1px;
+		  max-width: 520px;
+		  min-width: 400px;
 		}
 
 		#searchbox:focus{
@@ -75,41 +78,58 @@
 			width: 50px
 		}
 
-		#category-dd {
-			--dropdown-width:170px;
+		#category_dd {
+			---button-width:170px;
+			--dropdown-width:250px;
 			--dropdown-border: 1px solid #e5e5e5;
 			--dropdown-height:46px;
-			--dropdown-font-size:16px;
+			--dropdown-font-size:15px;
 			--dropdown-paper-menu-font-size:16px;
 			--dropdown-background-color:#99ced4;
 		}
 
-
 	</style>
 	
 	<template>
-      		<div id="search" class="flex layout horizontal">
-	    		<aq-dropdown horizontal-offset=0 vertical-offset=50 class="self-center" id='category-dd' options="[[categories]]"></aq-dropdown>
+      		<div id="search" class="wrap flex layout horizontal">
+	    		<aq-dropdown vertical-offset=56 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown>
     		
 
-	  			<input id="searchbox" placeholder="Search posts " class="flex"
-	         	value="{{searchValue::change}}" type="search">	
+	  			<input id="searchbox" placeholder="Search posts" class="flex"
+	         	value="{{searchValue::input}}" type="search" on-keydown="onSearch">	
 			</div>
 	</template>
 	<script >
-		var categories = [{value:'Everywhere',index:0},{value:'Share your Idea',index:1},{value:'FAQ',index:2},{value:'Announcements',index:3}];
-		
+				
 		Polymer({
 			is: 'aq-community-home-searchbar',
+
 			properties: {
 				selectedCategory : {
 						type: String,
 						value: 'Everywhere',
 				},
+
+				searchValue: {
+					type: String,
+					value:"",
+				},
+
+				categories:{
+					type:Array,
+					value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
+
+				},
 			},
 
 			ready() {
-				this.categories = categories;
+				//this.categories = categories;
+			},
+
+			onSearch(e) {
+				if (e.keyCode == 13) {
+                    this.fire('search-action', {text: this.searchValue, category: this.$.category_dd.getSelectedValue()});
+                }
 			},
 
 		});

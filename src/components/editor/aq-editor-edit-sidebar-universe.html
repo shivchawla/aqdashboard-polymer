@@ -11,11 +11,19 @@
 
 <dom-module id='aq-editor-edit-sidebar-universe'>
 	<style>
-		
+		#container {
+			color:white;
+			width:90%;
+			margin: 0 auto;
+		}
+
+		h3 {
+			font-size:14px;
+		}
+
 		paper-item {
-			font-size:15px;
+			font-size:12px;
 			--paper-item-min-height: 25px;
-			--border-right:1px solid;
 		}
 
 		paper-item {
@@ -25,9 +33,7 @@
 		}
 
 		iron-pages {
-			--margin-left: 10px;
 			margin-top:20px;
-			--height:50%;
 		}
 
 		a :hover {
@@ -44,18 +50,27 @@
 
 		paper-tabs {
 			height:25px;
-			 --paper-tabs-selection-bar-color:#009688;
+			 --paper-tabs-selection-bar-color:white;
 			 width:100%;
+			 font-size: 13px;
 		}
 
 		paper-tabs :hover {
-			font-weight:bolder;
+			font-weight:bold;
+			font-size: 14px;
 		}
 
-
-		iron-pages {
-			height:70%;
+		paper-listbox {
+			background-color: #333a56;
+			color:white;
+			font-size: 12px;
 		}
+
+		#bottompanel {
+			margin-bottom:50px;
+			font-size: 12px;
+		}
+
     };
     
 
@@ -90,7 +105,7 @@
 
 			<iron-pages id='pages' selected="{{getselection(selected1, selected2)}}">
 					
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' selected-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -102,7 +117,7 @@
 					<a href$=""><paper-item>Sub-Item 19</paper-item></a>
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -110,20 +125,20 @@
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 12</paper-item></a>
 					<a href$=""><paper-item>Sub-Item 13</paper-item></a>
@@ -133,18 +148,17 @@
 					
 				</paper-listbox>
 
-				<paper-listbox id='submenu'>
+				<paper-listbox id='submenu' focused-item={{selectedItem}}>
 					<a href$=""><paper-item>Sub-Item 11</paper-item></a>
 				</paper-listbox>
 			</iron-pages>
 
 		</div>	
 
-		<div id='bottom-panel' style="position:fixed;bottom:50px;">
+		<div id='bottom-panel'>
 			<p>Here comes the description of the element.
 			It can be short or long and depends upton the size</p> 
 			<paper-button noink raised on-tap='addScreener'>Add Screener
-				<iron-icon icon="icons:add"></iron-icon>
 			</paper-button>
 		</div>	
 
@@ -163,6 +177,10 @@
 				selected2 :{
 					type:Number,
 					value:-1,
+				},
+
+				selectedItem :{
+					type:Object,
 				},
 			},
 
@@ -184,12 +202,16 @@
 				this.selected1=-1;
 			},
 
-			addScreener() {
-				this.fire('screener-pressed');
+			addScreener(e) {
+				console.log(this.selectedItem);
+				this.selectedItem = this.$.submenu.selectedValues[0];
+				console.log(e);
+				//this.fire('screener-pressed',{screener: e.currentTarget.getAttribute('menu-panel')});
 			},
 
-
-
+			onSelectItem() {
+				//this.selectedItem = this.$
+			},
 
 
 		});

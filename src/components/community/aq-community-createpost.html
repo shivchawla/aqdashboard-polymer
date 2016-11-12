@@ -1,4 +1,3 @@
-
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 
 <link rel="import" href="../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
@@ -7,47 +6,158 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="../aq-markdown-editor.html">
+<link rel="import" href="../../dialog/aq-community-selectstrategybacktest-dialog.html">
+<link rel='import' href='../common/aq-dropdown.html'>
+<link rel='import' href='../analyze/aq-analyze-home-backtest-item.html'>
 
-
-<style is="custom-style" include="iron-flex iron-positioning"></style>
 
 <dom-module id="aq-community-createpost">
-  <template>
-    <!--div class="scroll-content"-->
+    <style is="custom-style" include="iron-flex iron-positioning"></style>
+    
+    <style>
+      #container {
+          width:90%;
+          margin:0 auto;
+          color:#333a56;   
+      }
+   
+      input {
+        height: 32px;
+        font-size: 18px;
+        margin-bottom: 5px;
+        color:#333a56;
+        border:1px solid #e5e5e5;
+        padding-left: 10px;
+      }
 
-      <!-- TODO: don't pass all messages, users, labels into mail-thread -->
-      <!-- activate-event="" ensures entire thread isn't selectable. -->
-      <!--iron-selector id="threadlist" multi activate-event=""
-                     selected-attribute="selected"
-                     selected-items="{{selectedThreads}}"
-                     on-iron-select="_onThreadSelectChange"
-                     on-iron-deselect="_onThreadSelectChange">
-        <!--template is="dom-repeat" items="[[threads]]"-->
+      input:focus {
+        outline: none;
+      }
 
-            <div class="layout vertical flex" style="width:90%; margin-top:30px; margin:0 auto;">
-              <div class="flex layout horizontal">
-                <h1 style="height:25px; background-color:white">
-                  Create a Post
-                </h1>
-              </div>
+      aq-dropdown {
+        --dropdown-width:220px;
+        --dropdown-height:36px;
 
-              <paper-input label="Topic" style="width:100%; height:30px; margin-bottom:10px"></paper-input>
-              
-              <aq-markdown-editor placeholder="Describe in detail"></aq-markdown-editor>
+      }
 
-              <div class="layout horizontal">
+    </style>
+
+    <template>
+        <div id='container' class="layout vertical flex">
+            <h1>Create a Post</h1>
+       
+            <div class="layout horizontal">
+                <aq-dropdown id="category_dd" options="[[categories]]"></aq-dropdown>
+                <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
+            </div>
+                
+            <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
+
+            <div class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised style="max-width:5%" noink>Preview</paper-button>
-                <paper-button raised style="max-width:5%" noink>Submit</paper-button>
-              </div>   
+                <paper-button raised noink on-tap='previewSelected'>Preview</paper-button>
+
+                <paper-button raised noink on-tap="postThread">Submit</paper-button>
+            </div>
+
+        </div>
+
+        <aq-community-selectstrategybacktest-dialog id ="dialog" heading="Select Strategy-Backtest">
+        </aq-community-selectstrategybacktest-dialog>
 
 
-            </div>        
-  </template>>
-</dom-module>  
+        <iron-ajax 
+            url="http://localhost:3002/api/v2/thread" 
+            body="{{threadData}}" 
+            method='POST' 
+            id='thread' 
+            headers='{{header}}' 
+            handle-as="json" 
+            on-response="onPostThreadResponse" 
+            on-error="onPostThreadError" 
+            last-response="{{ajaxResponse}}" 
+            debounce-duration="300">
+        </iron-ajax>
+    </template>
+    <script>
+      
 
-<script>
-  Polymer({
-    is:'aq-community-createpost',
-  });
-</script>>
+        Polymer({
+            is: 'aq-community-createpost',
+            properties: {
+                threadData: {
+                    type: Object,
+                },
+
+                categories :{
+                  type:Array,
+                  value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
+                },
+
+                header:{
+                  type:Object,
+                },
+
+                share: {
+                  type:String,
+                  value:"",
+                },
+
+                id:{
+                  type:String,
+                  value:"",
+                },
+            },
+
+            listeners :{
+              'attach-pressed':'onAttach',
+            },
+
+            ready: function() {
+                this.categories = categories;
+                
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                if (user.token) {
+                  this.header = {
+                    "aimsquant-token": user.token,
+                    "Content-Type": "application/json"};  
+                }
+            },
+
+            attached() {
+              //Write the sharing your startegy code and 
+              console.log(this.id);
+              console.log(this.share);  
+            },
+
+            postThread: function() {
+                const markdownText = this.$.editor.getContent();
+                const category = this.$.category_dd.getSelectedValue();
+                const title = this.$.topicInput.value;
+                this.threadData = {
+                    "category": category,
+                    "title": title,
+                    "markdownText": markdownText
+                };
+                this.$.thread.generateRequest();
+            },
+            
+            onPostThreadResponse: function(data) {
+              //var data = JSON.parse(e);
+              var threadId = data.detail.response._id;   
+              this.router.go("/dashboard/community/topics/"+threadId);
+            },
+
+            onPostThreadError: function(data) {
+              console.log(data);
+            },
+  
+                     
+            onAttach() {
+              this.$.dialog.open();      
+            },
+
+        });
+    </script>
+</dom-module>

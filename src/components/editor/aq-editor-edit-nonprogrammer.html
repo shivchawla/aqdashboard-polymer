@@ -5,9 +5,7 @@
 
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
-
-<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable.html">
-<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable-card.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 
 <link rel='import' href ="./aq-editor-toolbar.html">
@@ -19,25 +17,25 @@
 <link rel='import' href="./aq-editor-edit-nonprogrammer-indicator.html">
 
 <dom-module id='aq-editor-edit-nonprogrammer'>
+	<style is="custom-style" include="iron-flex iron-positioning"></style>
+
 	<style>
+
+		:host {
+			color: #333a56;
+		}
 
 		paper-toolbar {
       		--paper-toolbar-height:50px;
-			--paper-toolbar-background:#B2DFDB;--#e0f2f1;
-		    --paper-toolbar-color:black;
+			--paper-toolbar-background:#99d3df;
+		    --paper-toolbar-color:#333a56;
     	}
 
-    	#leftpanel {
-    		width:50%;
-    		margin-left:10px;
-    		border-right: 1px solid #d3d3d3;
-    		height:100%;
-    		height:;
-    	}
-
+    	
     	#container {
     		margin-top:0px;
     		margin-right: 0px;
+    		width:100%;
     		margin-left:0px;
     	}
 
@@ -64,23 +62,43 @@
 
     	.run-content :hover {
     		cursor: pointer;
-    		color:teal;
     	}
 
-    	paper-tabs :hover{
+    	paper-tab:hover{
     		font-weight: bold;
     		font-size:110%;
     	}
 
     	paper-tabs {
-    		--paper-tabs-selection-bar-color: teal;
+    		--paper-tabs-selection-bar-color: #333a56;
     		height:25px;
     	}
+
+    	#rightpanel {
+    		background-color: #333a56;
+    	}
+
+    	#screenerCanvas {
+    		height:100%;
+    	}
+
+    	#optimizerCanvas {
+    		height:500px;
+    	}
+
+    	#canvas {
+    		width:95%;
+    		margin:0 auto;
+    		margin-top:20px;
+    		border:1px solid #ededed;
+    		height:95%;
+    	}
+
 
 	</style>
 
 	<template>
-		<paper-drawer-panel drawer-width='370px' responsive-width='730px' class="headerpanel" id="drawerpanel" right-drawer force-narrow="{{computeForceNarrow(showSideBar, selectedSideBar)}}"">
+		<paper-drawer-panel drawer-width='370px' responsive-width='730px' id="drawerpanel" right-drawer force-narrow="{{computeForceNarrow(showSideBar, selectedSideBar)}}"">
          	
          	<paper-header-panel id='container' main mode="seamed">
 	         	<paper-toolbar>
@@ -96,40 +114,65 @@
 	         		</template>
 	         	</paper-toolbar>
 
-	            <!--paper-header-panel id='leftpanel' mode="seamed"-->
-		            <iron-pages selected="{{selectedSideBar}}">	
+ 		        <!--div id='canvas' class="fit"-->    
+		            
+ 		        	<paper-header-panel id='canvas' mode="seamed" class="fit">
+			
+						<paper-toolbar>
+							
+							<template is="dom-if" if="{{!isSelectedBarUniverse(selectedSideBar)}}">
+								<paper-icon-button noink icon="icons:arrow-back" on-tap="goback"></paper-icon-button>
+							</template>
+							
+							<div class="flex"></div>
 
-		            	<aq-editor-edit-nonprogrammer-screener id='screenerCanvas'></aq-editor-edit-nonprogrammer-screener>	    				
+							<iron-pages selected="{{selectedSideBar}}">
+								<h3>Step 1: Universe Selection</h3>
+								<h3>Step 2: Add Indicators</h3>
+								<h3>Step 3: Choose Optimizer</h3>
+								<h3>Step 4: Run Analysis</h3>
+							</iron-pages>
 
-		            	<aq-editor-edit-nonprogrammer-indicator id='indicatorCanvas'></aq-editor-edit-nonprogrammer-indicator>	    				
+							<div class="flex"></div>
+							
+							
+							<template is="dom-if" if="{{!isSelectedBarRun(selectedSideBar)}}">
+							<paper-icon-button noink icon="icons:arrow-forward" on-tap="goforward"></paper-icon-button>
+							</template>
+						</paper-toolbar>
 
-	            		<aq-editor-edit-nonprogrammer-optimizer id='optimizerCanvas'></aq-editor-edit-nonprogrammer-optimizer>	    				
+	            		<iron-pages selected="{{selectedSideBar}}">	
+		            	
+			            	<aq-editor-edit-nonprogrammer-screener id='screenerCanvas'></aq-editor-edit-nonprogrammer-screener>	    			
 
-	            	    <paper-card id='runCanvas' heading='Step:4 Run Analysis'>
-	            				
-	            			<div class="self-center layout vertical">
-		            			<paper-card class='run-content'>
-			            			<div>
-			            				<span>Universe</span>
-			            			</div>
-		            			</paper-card>
+			            	<aq-editor-edit-nonprogrammer-indicator id='indicatorCanvas'></aq-editor-edit-nonprogrammer-indicator>	    
+		            		<aq-editor-edit-nonprogrammer-optimizer id='optimizerCanvas'></aq-editor-edit-nonprogrammer-optimizer>	    				
+		            	    <paper-card id='runCanvas' heading='Step:4 Run Analysis'>
+		            				
+		            			<div class="self-center layout vertical">
+			            			<paper-card class='run-content'>
+				            			<div>
+				            				<span>Universe</span>
+				            			</div>
+			            			</paper-card>
 
-		            			<paper-card class='run-content'>
-			            			<div>
-			            				<span>Indicators</span>
-			            			</div>
-		            			</paper-card>
+			            			<paper-card class='run-content'>
+				            			<div>
+				            				<span>Indicators</span>
+				            			</div>
+			            			</paper-card>
 
-		            			<paper-card class='run-content'>
-			            			<div>
-			            				<span>Optimizer</span>
-			            			</div>
-		            			</paper-card>
-            				</div>
-	            			
-	            		</paper-card>
-
-		        	</iron-pages>
+			            			<paper-card class='run-content'>
+				            			<div>
+				            				<span>Optimizer</span>
+				            			</div>
+			            			</paper-card>
+	            				</div>
+		            			
+		            		</paper-card>
+	            	
+		        		</iron-pages>
+		        	</paper-header-panel>	
 	        	</paper-header-panel>
 	     
 		        <template is='dom-if' if="{{isSelectedBarUniverse(selectedSideBar)}}">
@@ -161,23 +204,6 @@
 					type:Boolean,
 					value:true,
 				},
-
-				data: {
-					type:Array,
-					value:[
-				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4, sodium: 87, calcium:.14, iron: .01},
-				{id: 1, title: 'Ice cream sandwich zzzz', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01},
-				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07},
-				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
-				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
-				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}],
-				},
 			},
 
 			listeners: {
@@ -208,13 +234,30 @@
 		    },
 
 		    isSelectedBarUniverse(selectedSideBar) {
-		    	console.log(selectedSideBar);
+		    	//console.log(selectedSideBar);
 		    	return selectedSideBar==0;
+		    },
+
+		    isSelectedBarRun(selectedSideBar) {
+		    	return selectedSideBar==3;
 		    },
 
 		    computeForceNarrow(showSideBar, selectedSideBar) {
 		    	return !showSideBar || selectedSideBar!=0;
 		    },
+
+		    goback() {
+
+		    	this.selectedSideBar-=1;
+		    		console.log(this.selectedSideBar);
+		    },
+
+		    goforward() {
+		    	
+		    	this.selectedSideBar+=1;
+		    	console.log(this.selectedSideBar);
+		    },
+
 
 		});
 

@@ -15,8 +15,13 @@
 	<style>
 		paper-dialog {
     		width: 1000px;
-    		height: 800px;
+    		height: 100%;--800px;
     		padding-bottom: 0px;
+  		}
+
+  		paper-dialog-scrollable {
+  			height: 1000px;
+  			width:800px;
   		}
 
   		#strategyNameInput {
@@ -26,30 +31,12 @@
   			
   		}
 
-  		marked-element {
+  		.markdown-html {
 	      display: block;
 	      background-color: var(--google-grey-100);
 	      padding: 10px 30px;
 	      margin-bottom: 10px;
 	    }
-
-	    .container {
-	    	width: 50%;
-  			--height:100%;	
-  		}
-
-  		#first-container {
-  			padding-right: 10px;
-  			border-right:1px solid;
-  		}
-
-  		#second-container {
-  			padding-left: 10px;
-  		}
-
-  		#outer-container {
-  			height:95%;
-  		}
   		
   		.buttons {
   			margin:0;
@@ -60,41 +47,41 @@
   			margin-bottom:5px;
   		}
 
+  		del {
+			text-decoration: none;
+			color: #b30000;
+			background: #fadad7;
+		}
+		
+		ins {
+			background: #eaf2c2;
+			color: #406619;
+			text-decoration: none;
+		}
 	</style>
 	
 	<template>
-	    <paper-dialog id='compareStrategyModalDialog' with-backdrop>
+	    <paper-dialog id='dialog' with-backdrop>
 	    	<div style="margin-left:-30px;margin-top:-5px">
  				<paper-icon-button dialog-dismiss icon="icons:cancel"></paper-icon-button>
  			</div>
  			
- 			<div class="layout horizontal" id='outer-container'>				
-
- 			 <div class="container layout vertical" id='first-container'>
- 			 <h4> Sample Strategy 1</h4>	
-			 <paper-dialog-scrollable >
- 				<marked-element markdown="```[[code1]]```">
- 					<div class="markdown-html"></div>
- 				</marked-element>
+ 			 <h4> Code Diff</h4>	
+			 <paper-dialog-scrollable class="flex">
+			 	<!--div class="markdown-html"-->
+			 		<pre id="result"></pre>
+		 		<!--/div-->
+ 				<!--marked-element markdown="```[[diff]]```">
+ 					</div>
+ 				</marked-element-->
  			 </paper-dialog-scrollable>	
- 			 </div>
-			
-		 	
-		 	<div class="layout vertical container" id='second-container'>
-			 <h4> Sample Strategy 2</h4>
-			 <paper-dialog-scrollable >			
-				<marked-element markdown="```[[code2]]```">
- 					<div class="markdown-html"></div>
- 				</marked-element>
- 			 </paper-dialog-scrollable>
- 			 </div>
- 					
-
- 			</div>		 	
+ 					 	
 		</paper-dialog>
 
 	</template>
 	
+	<script src='../../../bower_components/jsdiff/diff.min.js'></script>
+
 	<script>
 		Polymer ({
 			is: 'aq-editor-strategy-compare-dialog',
@@ -102,22 +89,61 @@
 			properties: {
 				code1: {
 					type:String,
-					value:'class x = y',
+					value:'class x = y \n  \
+					sdsdsdsdsdsds \n \
+					1232323',
 				},
 				code2: {
 					type:String,
-					value:'class x = y',
+					value:'class x = y \n \
+					dsdsdsdsdsdssds \n \
+					32323232323232',
+				},
+
+				diff: {
+					type:String,
 				},
 			},
 
-			onSubmit() {
-
-			},
-
 			open() {
-				this.$.compareStrategyModalDialog.open();
+				this.$.dialog.open();
+				this.findDiff();
 			},
 
+			findDiff() {
+				diff = JsDiff.diffLines(this.code1, this.code2, 
+					{newlineIsToken: true});
+				
+				var fragment = document.createDocumentFragment();
+					
+				for (var i=0; i < diff.length; i++) {
+
+					if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+						var swap = diff[i];
+						diff[i] = diff[i + 1];
+						diff[i + 1] = swap;
+					}
+
+					var node;
+					if (diff[i].removed) {
+						node = document.createElement('del');
+						node.appendChild(document.createTextNode('- '+diff[i].value));
+					} else if (diff[i].added) {
+						node = document.createElement('ins');
+						node.appendChild(document.createTextNode('+'+diff[i].value));
+					} else {
+						node = document.createTextNode(diff[i].value);
+					}
+
+					fragment.appendChild(node);
+					//fragment.appendChild(document.createElement('br'))
+				}
+
+
+				this.$.result.textContent = '';
+				this.$.result.appendChild(fragment);
+
+			},
 
 		});
 		

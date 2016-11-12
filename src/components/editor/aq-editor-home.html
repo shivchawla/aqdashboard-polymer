@@ -3,7 +3,8 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
 
-
+<link rel='import' href='../../../bower_components/iron-media-query/iron-media-query.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
 <link rel='import' href='./aq-editor-home-strategy-item.html'>
@@ -12,13 +13,10 @@
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
-<link rel='import' href='../../dialog/aq-editor-strategy-preview-dialog.html'>
 
 
 <dom-module id="aq-editor-home">
-  <template>
-
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+ 	<style is="custom-style" include="iron-flex iron-positioning"></style>
   
     <style>
       
@@ -32,11 +30,12 @@
       	border: 1px solid #d0d0d0;
         padding: 0 55px;
         line-height: 56px;
-        font-size: 15px;
+        font-size: 18px;
         font-weight: bold;
         border-bottom: 1px solid #e5e5e5;
-        background-color: white;
-        background-color:#e0f2f1;
+        background-color:#99ced4;
+        min-width:640px;
+
       }
 
       :host([narrow-viewport]) .header .description {
@@ -47,21 +46,36 @@
         @apply(--layout-horizontal);
       }
 
-      :host([narrow-viewport]) .header {
+      :host([narrow-viewport]) .header{
+        @apply(--layout-horizontal);
+      }
+
+      :host([narrow-viewport]) .hea {
         @apply(--layout-vertical);
       }
 
+
+      :host([narrow-viewport]) .a,
+      :host([narrow-viewport]) .backtest {
+        @apply(--layout-horizontal);
+      }
+
       .name {
-        min-width:250px;
+        --min-width:220px;
+        width:36%;
         font-weight: bold;
+        margin-right: 30px;
       }
 
       .description {
-      	min-width: 350px;
+      	width:36%;
+      	--min-width: 250px;
+      	margin-right: 30px;
+      	padding-left: 0px;
       }
 
       .backtest {
-      	--width: 350px;
+      	--width: 250px;
       	--min-width: 350px;
       }
 
@@ -73,65 +87,74 @@
         display: inline;
       }
 
-      #actions aq-editor-home-elementmenu{
-        right: 0;
-        margin-right:50px;
-      }
-
       .toolbar {
       	height:60px;
       }
 
       #container {
-      	margin-left: 20px;
-      	margin-right: 20px;
+      	margin:0 auto;
       	margin-top: 10px;
+      	color: #333a56;
+      	width: 95%;
+
       }
+
+      #actions aq-editor-home-elementmenu {
+        right: 5%;
+      }
+
 }
 
     </style>
- 		<div id='container'>
-	  		<aq-editor-home-menu></aq-editor-home-menu>
 
-		    <div class="header">
+	<template>
+		<!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
+
+ 		<div id='container'>
+	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
+
+		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
 		      <div class="name">Name<span class="narrow">/Description</span></div>
 		      <div class="description">Description</div>
 		      <div class="backtest">#Backtests</div>
 		    </div>
-		    
-		    <!--template is="dom-repeat" items="[[elements]]">
-		      <div class="row" data-index$="[[index]]"-->
-		    
-	        <!--div class="row">
-		      	<paper-checkbox noink></paper-checkbox>
-		        <a href$="">
-		          <div class="name">Sample Strategy</div>  
-		          <div class="description">Sample strategy description to test the UI</div>
-		          <div class="backtest">5</div>
-		        </a>
-		    </div-->	    
-		    <aq-editor-home-strategy-item id='strategyItem1'></aq-editor-home-strategy-item>
-		    <aq-editor-home-strategy-item id='strategyItem2'></aq-editor-home-strategy-item>
-		    <aq-editor-home-strategy-item id='strategyItem3'></aq-editor-home-strategy-item>
-		    <aq-editor-home-strategy-item id='strategyItem4'></aq-editor-home-strategy-item>
-		    <aq-editor-home-strategy-item id='strategyItem5'></aq-editor-home-strategy-item>
-		    
+
+	        <iron-ajax
+		    	  auto	
+                  url="http://localhost:3002/api/v2/strategy"
+                  method='GET'
+                  id='getStrategiesQuery'
+                  handle-as="json"
+                  on-response="onGetStrategiesResponse"
+                  on-error="onGetStrategiesError"
+                  headers='{{header}}'
+                  debounce-duration="300">
+            </iron-ajax>
+        
+	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
+	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
+	    									num-backtest = "5[[item.backtests.length]]"
+	    									strategy-desc = "[[item.description]]"
+											strategy-id = "[[item._id]]"
+	    									>
+				</aq-editor-home-strategy-item>	
+	    	</template>
+	
 
 		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-		    						 message="Are you sure to delete {{numStrategiesSelected}}?"	
+		    						 message="Are you sure to delete {{checkedCount}} strategies?"	
 		    						 cancel="Cancel"
 		    						 accept="OK">
 	    	</aq-delete-dialog>
 
-	    	<aq-editor-strategy-input-dialog id="strategyInputDialog">
-	    	</aq-editor-strategy-input-dialog>	
-
+	    	
 	    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
 
 	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
 		    
 		    <div id="actions"></div>
-		</div>    
+		</div> 
+
   </template>
 
   <script>
@@ -140,31 +163,73 @@
 		is: 'aq-editor-home',
 		
 		properties: {
-			elements: {
+			strategies: {
 				type: Array,
-				observer: '_elementsChanged'
 			},
 			
 			color: { type: String },
+
+			checkedCount: {
+				type: Number,
+				value:0,
+			},
+
+			checkedItems: {
+				type:Object,
+				value:{},
+			},
 			
 			narrowViewport: {
 				type: Boolean,
 				reflectToAttribute: true
 			},
+
+			create: {
+				type:Number,
+				vaue:0,
+			},
+
 		},
 
+		attached() {
+			if (this.create == 1){
+				this.fire('newClicked');
+			}
+		},
+
+		ready: function() {
+            var x = localStorage.getItem('my-app-storage');
+	        var user = JSON.parse(x).user;
+	        if (user.token) {
+	          this.header = {
+	            "aimsquant-token": user.token,
+	            "Content-Type": "application/json"};  
+	        }
+        },
+
+        onGetStrategiesResponse(data) {
+        	//check for error
+        	this.strategies = data.detail.response;	
+        },
+
+		onGetStrategiesError(data) {
+        	//console.log(data);
+        	//check for error
+        },        
+
 		listeners: {
-			'tap': '_tap',
 			'mouseover': '_mouseOver',
 			'mouseleave': '_mouseLeave',
-			'deletePressed':'openDeletionDialog',
-			'newPressed':'openNewDialog',
-			'comparePressed':'openCompareDialog',
+			'deleteClicked':'openDeletionDialog',
+			'compareClicked':'openCompareDialog',
 			'previewClicked':'openPreview',
 			'analyzeClicked':'goToAnalyze',
 			'shareClicked':'goToShare',
 			'cloneClicked':'goToClone',
 			'editorClicked':'goToEditor',
+			//'create-action':'createStrategy',
+			'check-action':'checkStrategy',
+			'delete-action':'onDeletion',
 		},
 
 		_currentRowIndex: -1,
@@ -178,32 +243,15 @@
 			return node;
 		},
 
-		_tap: function (e) {
-			var sourceEvent = e.detail.sourceEvent;
-			var A = this._findAncestor(e.target, function (node) {
-				return node != this && node.tagName !== 'A';
-			});
-
-			if (A && A.tagName === 'A' && A.href.indexOf(location.host) > 0) {
-				if (sourceEvent.ctrlKey || sourceEvent.metaKey) {
-				window.open(A.href);
-			} else {
-				this.fire('nav', { url: A.href });
-			}
-			
-			e.preventDefault();
-			}
-		},
-		
 		_mouseOver: function (e) {
 			var row = this._findAncestor(e.target, function (node) {
 				return node != this && !node.classList.contains('row') && node.id !== 'actions';
 			});
+
 			if (row && row.classList.contains('row')) {
-				if (this._currentRowIndex != row.dataset.index) {
 					this._hideActions();
-					this._showActions(row, row.dataset.index);
-				}
+					this._showActions(row);
+				
 			} else if (row.id !== 'actions') {
 					this._hideActions();
 			}
@@ -213,7 +261,7 @@
 			this._hideActions();
 		},
 		
-		_showActions: function (row, index) {
+		_showActions: function (row) {
 			var sharedActionMenu = this._sharedActionMenu;
 			var rowOffsetTop = row.offsetTop;
 			if (!sharedActionMenu) {
@@ -223,12 +271,13 @@
 				sharedActionMenu = this._sharedActionMenu;
 			}
 			sharedActionMenu.iconsOnly = true;
+			//sharedActionMenu.strategyId = this.
 			sharedActionMenu.element = "aa";//this.elements[index].name;
 			sharedActionMenu.style.top = rowOffsetTop + 'px';
 			this._layoutIfNeeded(sharedActionMenu);
 			sharedActionMenu.classList.remove('hidden');
 			row.classList.add('hover');
-			this._currentRowIndex = index;
+			//this._currentRowIndex = index;
 			this._currentRow = row;
 		},
 		
@@ -268,10 +317,6 @@
 			this.$.dialog.open();
 		},
 
-		openNewDialog() {
-			this.$.strategyInputDialog.open();
-		},
-
 		openCompareDialog() {
 			this.$.strategyCompareDialog.open();
 		},
@@ -285,19 +330,67 @@
 		},
 
 	 	goToAnalyze() {
-        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        	strategyId = this._currentRow.id;
+        	strategyName="";
+        	for (i in this.strategies) {
+        		if(strategyId == this.strategies[i]._id) {
+        			strategyName = this.strategies[i].name;
+        			break;
+        		}
+        	}
+
+        	this.router.go('/dashboard/analyze/' + strategyId);
         },
 
-        goToClone() {
-        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        goToClone(e) {
+        	strategyId = this._currentRow.id;
+
+        	for (i in this.strategies) {
+        		if(strategyId == this.strategies[i]._id) {
+        			e.detail["strategy"] = this.strategies[i]
+        			break;
+        		}
+        	}
+        	//Let the event propagate. It's handled in editor-main.   	
         },
 
         goToShare() {
-        	this.router.go('/dashboard/analyze?strategyName=OLMAR')
+        	strategyId = this._currentRow.id;
+        	this.router.go('/dashboard/community/create/'+strategyId+"?share=strategy");
         },
 
-        goToEditor() {
-        	this.router.go('/dashboard/editor/e');
+        goToEditor(e) {
+        	this.router.go('/dashboard/editor/' + e.detail.id);
+        },
+
+        checkStrategy(e) {
+        	var checked = e.detail.checked;
+
+        	this.checkedItems[e.detail.id] = e.detail.checked;
+
+        	if (checked == true) {
+        		this.checkedCount += 1;
+        	} else {
+        		this.checkedCount -= 1;
+        	}
+        },
+
+        hasCheckedStrategies(checkedCount) {
+        	return checkedCount > 0;
+        },
+
+        onDeletion() {
+        	//Send DELETE request to backend
+        	for (key in this.checkedItems) {
+        		for (i in this.strategies) {		
+        			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
+        				this.splice('strategies', i, 1);
+        				this.checkedCount -= 1;
+        			}
+        		}
+    		}
+
+    		this.checkedItems = {};	        	
         },
 
 	});

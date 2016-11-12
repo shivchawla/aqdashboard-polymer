@@ -1,0 +1,18 @@
+<link rel="import" href='./aq-toolbar.html'>
+
+<dom-module id="aq-homepage">
+	<template>
+		 <!--aq-toolbar current-tab=0 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar-->
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-homepage',
+
+			attached() {
+				this.fire('tabChanged',{tab:0});
+			},
+
+		})
+	</script>
+</dom-module>

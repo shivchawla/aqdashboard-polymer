@@ -1,11 +1,13 @@
 <link rel='import' href='../common/aq-dropdown.html'>
+<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
 
 <dom-module id='aq-nonprogrammer-screener-item'>
 	<style>
 		input {
 			margin:10px;
 			--height:20px;
-			width:80px;
+			width:120px;
+			font-size: 12px;
 		}
 
 		paper-icon-button {
@@ -19,46 +21,53 @@
 
 		#secondInput {
 			display: none;
-			margin-left:30px;
+			margin-left:10px;
 			margin-right:10px;
 		}
 
 		span {
-			font-size: 12px;
+			--font-size: 14px;
 		}	
 
 		#screenerName {
-			font-size: 13px;
-			margin-left: 10px;
-			width:160px;
+			font-size:14px;
+			width:200px;
+			min-width: 200px;
+			margin-right: 10px;
+			text-overflow: none;
 		}
 
-		.gap {
-			margin:10px;
+		#gap {
+			max-width: 100px;
+			--margin:10px;
 		}	
 
-		#screener {
-			margin-left:10px;
+		aq-dropdown {
+			--dropdown-width:150px;
+			--button-width:150px;
+			margin:10px;
 		}
 
-		aq-dropdown {
-			width:160px;
+		#screener {
+			--background-color: var(--screener-background-color, white);
 		}
 
 	</style>
 
 	<template>
+		
 		<div id= 'screener' class="layout horizontal">
-			<span id='screenerName' class="self-center">Screener Name</span>
-			<div class="gap"></div>
-			<aq-dropdown options="[[operatorOptions]]"></aq-dropdown>
-		   	<div class="gap"></div>
+			
+			<span id='screenerName' class="self-center">[[screenerName]]</span>
+			
+			<aq-dropdown class="self-center" options="[[operatorOptions]]"></aq-dropdown>
+		   	<div id='gap' class="fflex"></div>
 		    <input>
-		    
+		    <div id='gap' class="fflex"></div>
 		    <input id='secondInput'>	   
 		    <paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>
-
-		</div>		
+		</div>	
+	
 	</template>
 
 	<script>	
@@ -73,21 +82,33 @@
 		Polymer ({
 			is: 'aq-nonprogrammer-screener-item',
 
+			properties :{
+				screenerName:{
+					type:String,
+				},
+				operator:{
+					type:String,
+				},
+			},
 			listeners: {
 				'dropdown-changed':'onDropdownChange',	
 			},
 
 			ready() {
 				this.operatorOptions = operatorOptions_u;
+				this.operator = this.operatorOptions[0];
 			},
 
 			onDropdownChange(e) {
-				console.log(e);
+				
 				if(e.detail.index==4) {
 					this.$.secondInput.style.display='inline';
 				} else {
 					this.$.secondInput.style.display='none';
 				}
+
+				this.operator = this.operatorOptions[e.detail.index];
+
 			},
 
 			onDelete(e){
@@ -102,61 +123,76 @@
 <dom-module id='aq-editor-edit-nonprogrammer-screener'>
 	
 	<style>
-		paper-card {
-			margin:10px;
-			margin-left:25px;
+			
+		#container {
 			width:95%;
+			margin: 0 auto;
+			color:#333a56;
 		}
 
 		span {
-			font-size: 13px;
-			margin-left: 10px;
+			font-size: 13px;		
 		}
 
 		#exch-dd{
-			--dropdown-width:120px;
+			---dropdown-width:120px;
 		}
 
 		#country-dd {
-			--dropdown-width:50px;
+			---dropdown-width:50px;
 		}
 
 		#sector-dd {
-			--dropdown-width:200px;
+			---dropdown-width:200px;
+			margin-right: 15px !important;
+		}
+
+		aq-dropdown {
+			margin: 10px;
+			--dropdown-background-color:#99ced4;
 		}
 
 		.basic {
-			--width:20%;
-			margin-right:20px;
-			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		#header {
+			--margin-top:50px;
+			font-size: 14px;
 		}
 
 
 	</style>
 
-	<template>	
-		<!--paper-card heading=""-->
-		<h2>Universe Selection</h2>
-			<div id='container'>			
-				<div class="layout horizontal">
-					<div class='basic'>
-						<span>Exchange:</span>
-						<aq-dropdown id='exch-dd' options="[[exchangeOptions]]"></aq-dropdown>
-					</div>
+	<template>
+		
+		<div id="container" class="content">
+			<p id="header">Select screeners to filter the stock universe. For ex: Select all stock with <b><i> market capitilization</i></b> greater than 100 million</p>				
+			<div class="layout horizontal basic">
+				<!--div class='basic1 flex'-->
+					<span class="self-center">Exchange:</span>
+					<aq-dropdown class="self-center flex" id='exch-dd' options="[[exchangeOptions]]"></aq-dropdown>
+				<!--/div-->
 
-					<div class='basic'>
-						<span>Country: </span>
-						<aq-dropdown id='country-dd' options="[[exchangeOptions]]"></aq-dropdown>
-					</div>
+				<!--div class='basic1 flex'-->
+					<span class="self-center">Country: </span>
+					<aq-dropdown class="flex self-center" id='country-dd' options="[[exchangeOptions]]"></aq-dropdown>
+				<!--/div-->
 
-					<div class='basic'>
-						<span>Sector: </span>
-						<aq-dropdown id='sector-dd' options="[[exchangeOptions]]"></aq-dropdown>
-					</div>
-				</div>
-			</div>
-		<!--/paper-card-->
-	</template>
+				<!--div class='basic1 flex'-->
+					<span class="self-center">Sector: </span>
+					<aq-dropdown class="self-center flex" id='sector-dd' options="[[exchangeOptions]]"></aq-dropdown>
+ 				<!--/div-->
+ 			</div>
+
+ 			<aq-nonprogrammer-screener-item screener-name="Shares Outstanding FY1"></aq-nonprogrammer-screener-item>
+ 			<aq-nonprogrammer-screener-item screener-name="Market Capitalization"></aq-nonprogrammer-screener-item>
+		</div>
+
+
+		<!--/paper-header-panel-->
+ 	</template>
 
 	<script>
 

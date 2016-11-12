@@ -23,7 +23,7 @@
     }
 
     #category {
-     font-size: 15px; 
+     font-size: 15px;
      margin-top:5px;
     }
 
@@ -62,35 +62,62 @@
 
     <div id='post-header'>
       <div id='heading'>
-        <span>Next Challenge: There is no better way</span>  
+        <span>[[postHeader.title]]</span>
       </div>
 
       <div class="layout horizontal">
-        <span id='category' class="self-top">Share your Idea</span>
+        <span id='category' class="self-top">[[postHeader.category]]</span>
         <div class="flex"></div>
-        <paper-icon-button title="Follow" icon="vaadin-icons:megafone"></paper-icon-button>
+        <paper-icon-button title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
         <paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button>
       </div>
 
-      <aq-community-postdetail-content id='header-content'></aq-community-postdetail-content>
+      <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>
 
     </div>
+
+    <iron-ajax
+      url="http://localhost:3002/api/v2/thread/[[postHeader._id]]/follow"
+      method="POST"
+      id='follows'
+      handle-as="json"
+      headers='{{header}}'
+      debounce-duration="300">
+    </iron-ajax>
+
   </template>
 
   <script>
     Polymer ({
       is: 'aq-community-postdetail-header',
-      
-      properties :{
-        author: String,
-        createdAt: String,
-        postText:String,
 
+      properties :{
+        postHeader: Object,
       },
-      
+
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          if (user.token) {
+            this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};  
+          }
+      },
+
+      onFollow() {
+        console.log("Came here on follow");
+
+        if(!this.header) {
+          this.router.go('/user/signin', {lastRequest:('/dashboard/community/topics/[[postHeader._id]]')});
+          return;
+        }
+        
+        this.$.follows.generateRequest();
+      },
+
     });
 
   </script>
 
 </dom-module>
-

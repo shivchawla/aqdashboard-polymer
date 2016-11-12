@@ -7,7 +7,6 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-router/app-router.html'>
 
-
 <link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
 <link rel="import" href="./aq-analyze-main.html">
@@ -15,17 +14,23 @@
 <link rel="import" href="./aq-help-main.html">
 
 <link rel="import" href='../components/aq-sidebar.html'>
-<link rel="import" href='../components/aq-community-search.html'>
+<link rel="import" href='../components/aq-toolbar.html'>
+
+<link rel="import" href='../components/aq-homepage.html'>
+<link rel="import" href='../components/aq-aboutpage.html'>
+<link rel="import" href='../components/aq-investmentpage.html'>
+
+<link rel="import" href='../components/community/aq-community-home-searchbar.html'>
 
 <dom-module id="aq-dashboard-main">
   <style is="custom-style" include="iron-flex iron-positioning"></style>
-  
+
   <style>
     :host {
-      transition: transform 0.01s;  
+      transition: transform 0.01s;
       display:block;
     }
-  
+
     #mainpanel {
       height:100%;
       --background-color: #fafafa;
@@ -44,32 +49,31 @@
     paper-drawer-panel {
       height:100%;
       background-color: #EFEFEF;--D9D9D9;--#E0F2F1
-      
+
     }
- 
+
   </style>
-  
+
   <template>
-    <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width='200px' narrow="{{narrow}}">
-
-      <aq-sidebar menuSelected="{{view}}" drawer></aq-sidebar>
-      <paper-header-panel id="mainpanel" main fixed mode="seamed">
-        <aq-toolbar class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar> 
-
+        
         <div id="content" class="fit">
         <app-router id="dashboard-router" mode="hash" trailingSlash="ignore">
-          
-          <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
-          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
-          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
-          
-          <app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route>
-          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter=""></app-route>
 
-          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
+
+          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
+          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
+
+          <!--app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route-->
+          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
+
+          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
 
           <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
+         
           <app-route path="/dashboard/community/*" element="aq-community-main" bindrouter=""></app-route>
+
+          <app-route path="/dashboard/community/*/*" element="aq-community-main" bindrouter=""></app-route>
 
           <app-route path="/dashboard/createpost" redirect="/dashboard/community/create"></app-route>
 
@@ -79,31 +83,14 @@
 
           <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
 
-
-
-        </app-router> 
+        </app-router>
         </div>
-       
-      </paper-header-panel>
 
-        <!--template is="dom-if" if="[[isEditorSelected]]"> 
-           <aq-editor-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-editor-main>
-        </template>
+      <!--/paper-header-panel-->
 
-        <template is="dom-if" if="[[isAnalyzeSelected]]"> 
-           <aq-analyze-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-analyze-main>
-        </template>
-
-        <template is="dom-if" if="[[isCommunitySelected]]">
-           <aq-community-main showMenu="[[computeShowMenu(narrow, showSidebar)]]">
-           </aq-community-main>
-        </template>
-
-        <template is="dom-if" if="[[isHelpSelected]]">
-           <aq-help-main showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-help-main>
-        </template--> 
+    
       <!--/div-->
-    </paper-drawer-panel>
+    <!--/paper-drawer-panel-->
 
   </template>
 
@@ -111,101 +98,8 @@
   Polymer({
     is:'aq-dashboard-main',
 
-    properties: {
-      narrow: {
-        type:Boolean,
-        value:false,
-      },
-
-      showSidebar:{
-        type:Boolean,
-        value:true,
-      },
-
-      view: {
-        type:String,
-        value:'home',
-      },
-
-      isHomeSelected :{
-        type:Boolean,
-        value:false,
-      },
-
-      isEditorSelected :{
-        type:Boolean,
-        value:false,
-      },
-
-      isCommunitySelected :{
-        type:Boolean,
-        value:false,
-      },
-
-      isAnalyzeSelected :{
-        type:Boolean,
-        value:false,
-      },
-
-      isHelpSelected :{
-        type:Boolean,
-        value:false,
-      },
-
-      router: Object,
-    },
-
-    listeners: {
-        'open-menu': 'openMenu',
-        'close-menu':'closeMenu',
-        'change-view-navigation':'viewChanged',
-        'change-view-action':'viewChangedOnAction',
-    },
-
-    computeShowMenu(narrow, showSidebar) {
-      return narrow || !showSidebar;
-    },
-
-    computeForceNarrow(narrow, showSidebar) {
-      return !showSidebar;
-    },
-    
-    computeShowSideBar(narrow, showSidebar){
-      return !showSidebar
-    },
-
-    viewChanged(newMenu) {
-      this.view = newMenu.detail.menu;
-      this.isHomeSelected= this.view=='home';
-      this.isEditorSelected = this.view=='editor';
-      this.isCommunitySelected = this.view=='community';
-      this.isAnalyzeSelected = this.view=='analyze';
-      this.isHelpSelected = this.view=='help';
-      this.router.go('/dashboard/'+this.view);
-      if(this.narrow){
-        this.$.drawerpanel.closeDrawer();
-      }
-    }, 
-
-    viewChangedOnAction(newAction) {
-      this.router.go('/dashboard/' + newAction.detail.action);
-      if(this.narrow){
-        this.$.drawerpanel.closeDrawer();
-      }
-    },
-
-
-    openMenu(e) { 
-      this.$.drawerpanel.openDrawer();
-      this.showSidebar = true;
-    },
-
-    closeMenu() {
-      this.$.drawerpanel.closeDrawer();
-
-      if (this.showSidebar && !this.narrow) {
-        this.showSidebar = false;
-      } 
+    attached() {
+      this.fire('tabChanged',{tab:1});
     },
 
   });

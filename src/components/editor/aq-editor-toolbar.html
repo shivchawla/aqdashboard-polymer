@@ -22,6 +22,7 @@
     		margin-right: 10px;
     		min-width:25px;
     		max-width:35px;
+    		color: #333a56;
   		}
 
   		paper-icon-button {
@@ -33,10 +34,8 @@
   		paper-toolbar {
 		  --paper-toolbar-height:40px;
 		  --paper-toolbar-width:100px;
-		  --paper-toolbar-background:#B2DFDB;--#e0f2f1;
 		  --paper-toolbar-color:teal;
-
-		  --background-color:#e0f2f1;
+  		  --paper-toolbar-background:#99d3df;
 
 		}
 
@@ -47,6 +46,9 @@
 		#strategyName {
 			height:24px;
 			margin-top: 3px;
+			font-size: 12px;
+			padding-left: 3px;
+			font-weight: bolder;
 		}
 
 		.separator{
@@ -58,11 +60,26 @@
 		}
 
 		input {
-			max-width:150px;
+			max-width:250px;
 			min-width: 50px;
 			--width:20%;
+			--font-size: 15px;
 		}
 
+		.toolbarIcon:active {
+			padding:10px;
+		}
+
+		.toolbarPlayIcon {
+			 border:1px solid;
+			 padding:0px;
+			 height:23px;
+			 width:23px;
+		}
+
+		.toolbarPlayIcon:active {
+			 padding:3px;
+		}
 
 		
 	</style>
@@ -70,27 +87,26 @@
 	<template>
 		<paper-toolbar>
 			<div id='toolbar' class="flex layout horizontal">
-				<paper-icon-button id='back-icon' class="flex" icon="icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
-				<input class="flex" id ='strategyName' type="text">
+				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
+				<input class="flex" id ='strategyName' value="[[strategyName]]" type="text">
 	     		 
 	        	<div class="flex" style="max-width:5%"></div>
 
-		 		
-	        	<paper-icon-button class="flex" icon="icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button>
+	        	<paper-icon-button noink class="flex toolbarIcon" icon="icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button>
 
 	        	<span class="self-center separator"></span>
-		 		<paper-icon-button class="flex" icon="icons:save" title="Save"></paper-icon-button>	
-		 		<paper-icon-button class="flex" icon="icons:add" title="New"></paper-icon-button>	
-		 		<paper-icon-button class="flex" icon="icons:content-copy" title="Clone"></paper-icon-button>
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:save" title="Save" on-tap='onSave'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:add" title="New" on-tap='onCreate'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
 		 		
 		 		<span class="self-center separator"></span>
 		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
-		 		<paper-icon-button class="flex self-center" icon="av:play-arrow" title="Run Backtest" style="border:1px solid;padding:0px;height:23px;width:23px"></paper-icon-button>
+		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
 
 	        	<template is='dom-if' if="{{isProgrammer}}">
 	        		<div class="flex"></div>
-		            <paper-icon-button class="flex" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
+		            <paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
 
 		            
 			        <!--paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button-->
@@ -113,6 +129,10 @@
 				isProgrammer: {
 					type:Boolean,
 				}, 
+
+				strategyName:String,
+				strategyDesc:String,
+				strategyId:String,
 			},
 
 			closeAll() {
@@ -145,6 +165,24 @@
 
 			goToAnalyze() {
 				this.fire('analyze-clicked');
+			},
+
+			onSave() {
+				this.strategyName = this.$.strategyName.value;
+				this.fire('save-action',{name:this.strategyName});
+			},
+
+			onCreate() {
+				this.fire('newClicked');
+			},
+
+			onClone() {	
+				this.fire('cloneClicked');	
+			},
+
+			onRun() {
+				this.strategyName = this.$.strategyName.value;
+				this.fire('run-action',{name:this.strategyName});
 			}
 
 		});

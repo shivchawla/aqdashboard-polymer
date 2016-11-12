@@ -5,11 +5,15 @@
 
 <dom-module id='aq-nonprogrammer-constraint-item'>
 	<style>
+		
 		input {
 			margin:10px;
-			--height:20px;
-			width:80px;
+			height:25px;
+			width:120px;
+			font-size:13px;
+			padding-left:5px;
 		}
+
 
 		paper-icon-button {
 			--margin-right:10px;
@@ -47,13 +51,17 @@
 			width:135px;
 		}
 
+		#constraint {
+			margin-top:10px;
+		}
+
 	</style>
 
 	<template>
 		<div id= 'constraint' class="layout horizontal">
-			<aq-dropdown id='constraint-type' options="[[constraintOptions]]"></aq-dropdown>
+			<aq-dropdown class="self-center" id='constraint-type' options="[[constraintOptions]]"></aq-dropdown>
 			<div class="gap"></div>
-			<aq-dropdown id='operator-type' options="[[operatorOptions]]"></aq-dropdown>
+			<aq-dropdown class="self-center" id='operator-type' options="[[operatorOptions]]"></aq-dropdown>
 			
 			<div class="gap"></div>
 		    <input>
@@ -96,7 +104,7 @@
 			
 			onDelete(e){
 				e.currentTarget.parentElement.remove();
-			}
+			},
 			
 		});
 	</script>
@@ -106,144 +114,178 @@
 <dom-module id='aq-editor-edit-nonprogrammer-optimizer'>
 	
 	<style>
+		
+		#container {
+			width:95%;
+			margin: 0 auto;
+			color:#333a56;
+		}
+
 		span {
-			font-size: 13px;
+			font-size: 14px;
+			--margin-left: 10px;
 		}
 
 		.basic {
 			width:30%;
 			margin-right:20px;
-			margin-left:10px;
+			--margin-left:10px;
 		}
 
 		aq-dropdown {
-			--dropdown-width:250px;		
+			--dropdown-width:250px;
+			--background-color: white;
+			
 		}
 
 		#weightscheme-dd {
 			--dropdown-width:250px;
 		}
 
-		paper-button {
-			color:blue;
+		paper-icon-button {
+			margin-left:10px;
+			background-color: teal;
+			color:white;
+			width: 30px;
+			height:30px;
+			padding:5px;
 		}
 
-		#container {
-			margin-left:5%;
-			color:#333a56;
+		paper-icon-button:active {
+			padding:7px;
+		}
+
+		.prg_weights {
+			margin-top: 10px;
+			width: 30%;
+			margin-right: 30px;
+			min-width:300px;
+		}
+
+		.prg_horizon {
+			margin-top:20px;
+			--width:50%;
+		}
+
+		#optType-dd {
+			margin: 10px;
+			margin-left:20px;
+		}
+
+		#header {
+			font-size: 14px;
+		}
+
+		paper-radio-group {
+			font-size: 14px;
+		}
+
+		#constraintContainer {
+			margin-top:10px;
 		}
 
 	</style>
 
-	<template>			
-		<div id='container'>	
-			<h2>Portfolio Optimization</h2>		
-			<span>Pick the optimizer</span>
-			<aq-dropdown id ='optType-dd' options="[[optimizerOptions]]"></aq-dropdown>
-
+	<template>	
+		<div id='container'>		
+		<p id="header">Combine the stocks screened to create a portfolio. For ex: Combine the stocks in <b><i>proportion of market capitilization</i></b></p>	
+			<div class="layout horizontal">
+				<span class="self-center">Pick the optimizer:</span>
+				<aq-dropdown id ='optType-dd' options="[[optimizerOptions]]"></aq-dropdown>
+			</div>
+		
 			<iron-pages selected="{{optimizationType}}">
 
 				<div>
-					<span>Selected a weighting scheme</span>
-					<!--aq-dropdown id='weightscheme-dd' options="[[weightedPortOptions]]"></aq-dropdown>
+					<!--span>Selected a weighting scheme</span>
+					<aq-dropdown id='weightscheme-dd' options="[[weightedPortOptions]]"></aq-dropdown>
+					
 					<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
 						<span>Days:</span>
 						<input>	
 					</template-->
-					<paper-radio-group attr-for-selected="index" selected="{{weightScheme}}">
+					<div class="layout">
+					<paper-radio-group class="prg_weights" attr-for-selected="index" selected="{{weightScheme}}">
 						
 						<template is='dom-repeat' items='{{weightedPortOptions}}'>
 							<paper-radio-button index={{item.index}} name="{{item.value}}">{{item.value}}</paper-radio-button>
 						</template>
-
-						<!--paper-radio-button index=0 name="uniform">
-							Uniform Weighting
-						</paper-radio-button>
-						<paper-radio-button index=1 name="mcap">Market Capitalization
-						</paper-radio-button>
-						<paper-radio-button index=2 name="crmcap">Cube Root Market Capitalization
-						</paper-radio-button>
-						<paper-radio-button index=3 name="1year">Reverse Volatility
-						</paper-radio-button-->
 					</paper-radio-group>
 
 					<template is='dom-if' if='{{isReverseVolatility(weightScheme)}}'>
-						<div>
-							<span>Select the horizon of historical standard deviation</span>
-								<paper-radio-group>
-									<paper-radio-button toggles name="1month">1 Month
-									</paper-radio-button>
-									<paper-radio-button  toggles name="3months">3 Month
-									</paper-radio-button>
-									<paper-radio-button  toggles name="6months">6 months
-									</paper-radio-button>
-									<paper-radio-button  toggles name="1year">1 year
-									</paper-radio-button>
-									<paper-radio-button  toggles name="2year">2 year
-								</paper-radio-button>
-							</paper-radio-group>
-						</div>	
+
+							<div class="layout vertical prg_horizon">	
+								<div><span>Select the horizon of historical standard deviation
+								</span></div>
+								<div>
+									<paper-radio-group noink>
+										<paper-radio-button toggles name="1 month">1 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="3 months">3 Month
+										</paper-radio-button>
+										<paper-radio-button  toggles name="6 months">6 months
+										</paper-radio-button>
+										<paper-radio-button  toggles name="1 year">1 year
+										</paper-radio-button>
+										<paper-radio-button  toggles name="2 year">2 year
+										</paper-radio-button>
+									</paper-radio-group>
+								</div>		
+							</div>
 					</template>
 
 
 					<template is='dom-if' if='{{isNormalizedMomentum(weightScheme)}}'>
-						<div>
-							<span>Select the horizon for momentum</span>
-								<paper-radio-group>
-									<paper-radio-button toggles name="1month">1 Month
+						<div class="layout vertical prg_horizon">
+							<div><span>Select the horizon for momentum</span></div>
+								<paper-radio-group noink>
+									<paper-radio-button toggles name="1 month">1 Month
 									</paper-radio-button>
-									<paper-radio-button  toggles name="3months">3 Month
+									<paper-radio-button  toggles name="3 months">3 Month
 									</paper-radio-button>
-									<paper-radio-button  toggles name="6months">6 months
+									<paper-radio-button  toggles name="6 months">6 months
 									</paper-radio-button>
-									<paper-radio-button  toggles name="1year">1 year
+									<paper-radio-button  toggles name="1 year">1 year
 									</paper-radio-button>
-									<paper-radio-button  toggles name="2year">2 year
+									<paper-radio-button  toggles name="2 year">2 year
 								</paper-radio-button>
 							</paper-radio-group>
 						</div>	
 					</template>
+					</div>
 
 				</div>
 
-				<div class="layout vertical">
+				<div class="layout vertical prg_horizon">
 					<span>Select the horizon of historical standard deviation</span>
-					<paper-radio-group selected name="1month">
-						<paper-radio-button toggles name="1month">1 Month
+					<paper-radio-group noink selected name="1 month">
+						<paper-radio-button toggles name="1 month">1 Month
 						</paper-radio-button>
-						<paper-radio-button  toggles name="3months">3 Month
+						<paper-radio-button  toggles name="3 months">3 Month
 						</paper-radio-button>
-						<paper-radio-button  toggles name="6months">6 months
+						<paper-radio-button  toggles name="6 months">6 months
 						</paper-radio-button>
-						<paper-radio-button  toggles name="1year">1 year
+						<paper-radio-button  toggles name="1 year">1 year
 						</paper-radio-button>
-						<paper-radio-button  toggles name="2year">2 year
+						<paper-radio-button  toggles name="2 year">2 year
 						</paper-radio-button>
 					</paper-radio-group>	
 
-					<div class="layout horizontal">
-						<span>Want to add constaints?</span>
-						<paper-button on-tap='addConstraints'><iron-icon icon="icons:add"></iron-icon>
-							Add Constraints
-						</paper-button>
+					<div id="constraintContainer">
+						<div class="layout horizontal">
+							<span class="self-center">Want to add constaints?</span>
+							<paper-icon-button noink class="self-center" on-tap='addConstraints' icon="icons:add"></paper-icon-button>
+						</div>
 					</div>
-
-					<div id='constraintcontainer'>
-						<aq
-					</div>
-
 
 				</div>
-
 			</iron-pages>
-
-
 		</div>
 	</template>
 
 	<script>
 
-		var optimizerOptions = [{value:'Weighted Portfolio',index:0},{value:'Minimize Absolute Deviation',index:1}];//,{value:'Mean Variance Optimization',index:2}];
+		var optimizerOptions = [{value:'Weighted Portfolio',index:0},{value:'Minimize Absolute Deviation',index:1},{value:'Minimize Absolute Semi-Deviation',index:2},{value:'Minimize "Maximum" Loss',index:3}]
 
 		var weightedPortOptions = [{value:'Uniform Weighting',index:1},{value:'Market Capitalization',index:2},{value:'Cube Root Market Capitalization',index:3},{value:'Reverse Volatility',index:4},{value:'Normalized Momentum',index:5}];
 
@@ -253,7 +295,7 @@
 			properties: {
 				optimizationType :{
 					type:Number,
-					value:-1,
+					value:0,
 				},
 
 				weightScheme:{
@@ -276,8 +318,8 @@
 				console.log('i am here');
 				var x = document.createElement('aq-nonprogrammer-constraint-item');
 				console.log(x);
-				console.log(this.$.constraintcontainer);
-				Polymer.dom(this.$.constraintcontainer).appendChild(x);
+				console.log(this.$.constraintContainer);
+				Polymer.dom(this.$.constraintContainer).appendChild(x);
 			},
 
 			onDropdownChange(e) {
@@ -289,7 +331,6 @@
 			},
 
 			isReverseVolatility(weightScheme) {
-				//console.log(weightScheme);
 				return weightScheme == 4;
 			},
 

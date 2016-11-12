@@ -1,0 +1,85 @@
+<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+<link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
+
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel="import" href="./aq-help-marked-item.html">
+
+<dom-module id="aq-help-home">
+  <style is="custom-style" include="iron-flex iron-positioning"></style>
+   <style>
+    #panel {
+      height:100%;
+    }
+
+    #mainPanel {
+      width: 90%;
+      margin: 0 auto;
+      background-color: white;
+    }
+
+  </style>
+ 
+  <template>
+      <style>
+        #autoScrollSpy div {
+          padding: 150px;
+          border-bottom: 1px solid grey;
+          transition: background 0s;
+        }
+      </style>
+
+      <paper-drawer-panel id="drawerPanel" right-drawer>
+          <paper-header-panel main id="mainPanel" mode="seamed">
+              <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
+                <aq-help-marked-item help-text="# Signals
+The basic currency of Reactive programs is the signal. `Signal{T}` represents a time-varying value of type `T`.
+
+A signal can be created using the `Signal` constructor, and must be given an inital value.
+
+```
+#E.g.
+julia> x = Signal(0)
+Signal{Int64}(0, nactions=0)
+function func()
+  return x
+end```"></aq-help-marked-item>
+              </iron-auto-scroll-spy>
+          </paper-header-panel>
+
+          <paper-header-panel drawer mode="seamed">
+              <paper-listbox selected="{{scrollSelected}}">         
+                  <paper-item>Section A</paper-item>
+                  <paper-item>Section B</paper-item>
+                  <paper-item>Section C</paper-item>
+                  <paper-item>Section D</paper-item>
+                  <paper-item>Section E</paper-item>
+                  <paper-item>Section F</paper-item>
+                  <paper-item>Section G</paper-item>
+                  <paper-item>Section H</paper-item>
+                
+              </paper-listbox>
+          </paper-header-panel>
+
+
+      </paper-drawer-panel>
+
+  </template>
+
+  <script>
+    Polymer ({
+      is: 'aq-help-home',
+
+      ready() {
+        
+         this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
+      },
+
+    });
+  </script>
+
+</dom-module>

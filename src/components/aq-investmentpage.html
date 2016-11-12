@@ -1,0 +1,18 @@
+<link rel="import" href='./aq-toolbar.html'>
+
+<dom-module id="aq-investmentpage">
+	<template>
+		 <!--aq-toolbar current-tab=2 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar-->
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-investmentpage',
+
+			attached() {
+				this.fire('tabChanged',{tab:2});
+			},
+
+		})
+	</script>
+</dom-module>

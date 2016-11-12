@@ -1,5 +1,9 @@
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+
+<link rel="import" href="../../bower_components/paper-icon-button/
+paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-user-menu.html">
@@ -27,18 +31,39 @@
     #profile {
       right:0;
     }
+
+    paper-tabs {
+      --paper-tabs-selection-bar-color:white;
+    }
    
   </style>
 
   <template>
 
       <paper-toolbar>
-        <template is="dom-if" if="[[showmenu]]">
-          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button>
+        <template is="dom-if" if="{{showmenu}}">
+          <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
+          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
           <div class="title">AimsQuant</div>
         </template>
+
         <div class="flex"></div>
-        <aq-user-menu></aq-user-menu>
+        <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
+          <paper-tab on-tap='onHome'>HOME</paper-tab>
+          <paper-tab on-tap='onResearch'>RESEARCH</paper-tab>
+          <paper-tab on-tap='onInvestments'>INVESTMENTS</paper-tab>
+          <paper-tab on-tap='onAbout'>ABOUT US</paper-tab>
+          <template is='dom-if' if="{{!hasToken}}">
+            <paper-tab on-tap='onLogin'>LOG IN</paper-tab>
+            <paper-tab on-tap='onSignup'>SIGN UP</paper-tab>
+          </template>
+
+        </paper-tabs>
+         
+        <template is='dom-if' if="{{hasToken}}">
+            <aq-user-menu></aq-user-menu> 
+        </template>
+
       </paper-toolbar>
 
   </template>
@@ -50,16 +75,53 @@
       properties: {
         showmenu: {
           type:Boolean,
-          value:false,
+          value:true,
         },
 
         narrow:{
           type:Boolean,
         },
+
+        currentTab: {
+          type:Number,
+        },
+
+        hasToken: {
+          type:Boolean,
+          value:false,
+        },
       }, 
 
       toggleMenu() {
         this.fire('open-menu');
+      },
+
+      onLogin() {
+        this.fire('tabChanged',{tab:4});
+      },
+
+      onSignup() {
+        this.fire('tabChanged',{tab:5});
+      },
+
+      computeShowMenu(hasHeader, currentTab) {
+        return currentTab == 1;
+      },
+
+      onResearch() {
+        this.fire('tabChanged',{tab:1});
+      },
+
+      onHome() {    
+        this.fire('tabChanged',{tab:0});
+      },
+
+      onAbout(e) {    
+        this.fire('tabChanged',{tab:3});
+      },
+
+      onInvestments(e) {    
+        this.fire('tabChanged',{tab:2});
       },
 
     });

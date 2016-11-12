@@ -1,0 +1,17 @@
+
+<dom-module id="aq-aboutpage">
+	<template>
+		  <!--aq-toolbar current-tab=3 class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar-->      
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-aboutpage',
+
+			attached() {
+				this.fire('tabChanged',{tab:3});
+			},
+
+		})
+	</script>
+</dom-module>

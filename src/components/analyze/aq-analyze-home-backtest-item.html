@@ -1,6 +1,8 @@
 		
 
 <link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
+<link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
+
 <link rel='import' href='../common/aq-backtest-detail-item.html'>
 
 <dom-module id='aq-analyze-home-backtest-item'>	
@@ -47,7 +49,7 @@
 			padding: 0px;
 
 			margin-top:15px;
-			--paper-checkbox-checked-color: teal;
+			--paper-checkbox-checked-color: #cf6766;--teal;
 		}
 
 	 	#content :hover{
@@ -98,7 +100,7 @@
 	<template>
 		<paper-card>
 			<div id='content' class="layout horizontal flex">		
-				<paper-checkbox noink></paper-checkbox>
+				<paper-checkbox noink id='checkbox' on-tap = 'onCheck'></paper-checkbox>
 
 				<a href$="" on-click='toggle' class="layout horizontal flex"> 
 				
@@ -190,12 +192,21 @@
 					      data: [-65, -59, 80, 81, 56, 55, -40,65, 59, -80, 81, 56, 55, 40,-65, 59, 80, 81, -56, 55, 40,-65, 59, 80, 81, 56, -55, 40,65, -59, 80, 81, 56, 55, 40,65, -59, 80, 81, -56, 55, 40]
 					    }]
 					}, 
+				},
+
+				backtest: {
+					type:Object,
 				},	
 			},
 
 			toggle() {
 				this.$.collapse.toggle();
 			},
+
+			onCheck() {
+				this.fire('backtestChecked',{id:this.backtest._id, checked:this.$.checkbox.checked})
+			},
+
 		});
 	</script>
 </dom-module>

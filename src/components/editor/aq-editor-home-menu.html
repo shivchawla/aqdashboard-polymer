@@ -77,6 +77,37 @@
 			margin: auto 0;
 		}
 
+		.iconButton {
+			outline:1px solid #cf6766;;
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		color: white; --#188364; --#333a56; 
+    		background-color: #cf6766;
+		}
+
+		.iconButton:active {
+			padding: 10px;
+		}
+
+		.iconButton {
+			--paper-icon-button-disabled-text:#f2d9D9;
+		}
+
+		paper-icon-button {
+			--paper-icon-button-disabled:{
+				--background-color: #f2d9D9 !important;
+				color: #cacaca !important;
+			};
+		}
+		paper-icon-button {
+			--paper-icon-button-disabled-text:grey;
+		}
+		
+
+
 		
 	</style>
 	
@@ -85,23 +116,23 @@
 	    
 	    	<div class="flex"><h3>All Strategies</h3></div>
 	      	<div id="search" class="flex">	    	
-	    		<paper-icon-button title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
+	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
              	value="{{searchValue::change}}" type="search"
              	on-keydown="checkForKeys" on-blur='close'>
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	      		<paper-icon-button noink class="searchButton" title="Search" icon="icons:search" on-tap="toggle">	
+	      		<paper-icon-button noink class="iconButton" title="Search" icon="icons:search" on-tap="toggle" raised>	
 	      		</paper-icon-button>
 
-	      		<paper-icon-button noink class="createNewButton" title="New" icon="icons:add" on-tap="createNew">	
+	      		<paper-icon-button noink class="iconButton" title="New" icon="icons:add" on-tap="createNew">	
 	      		</paper-icon-button>
 
-	  			<paper-icon-button noink class="deleteButton" title="Delete" icon="icons:delete" on-tap="onDelete">
+	  			<paper-icon-button noink class="iconButton" title="Delete" icon="icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="compareButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				<paper-icon-button noink class="iconButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
 				</paper-icon-button>
 			</div>      	
   		</div>
@@ -111,6 +142,13 @@
 	<script>
 		Polymer ({
 			is: 'aq-editor-home-menu',
+
+			properties :{
+				activeDelete: {
+					type:Boolean,
+					value:false,
+				},
+			},
 
 			toggle() {
 
@@ -128,15 +166,15 @@
 			},
 
 			onDelete() {
-				this.fire('deletePressed');
+				this.fire('deleteClicked');
 			},
 
 			createNew() {
-				this.fire('newPressed');
+				this.fire('newClicked');
 			},
 
 			onCompare() {
-				this.fire('comparePressed');
+				this.fire('compareClicked');
 			},
 
 			checkForKeys: function (e) {

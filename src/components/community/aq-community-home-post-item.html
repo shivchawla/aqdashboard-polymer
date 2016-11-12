@@ -11,10 +11,11 @@
 
   <style>
     .post-container {
-      width: 70%;
+      max-width: 800px;
       border-bottom: 1px solid #e5e5e5;--#80CBC4;--#666;
       margin-top: 10px;
       padding-bottom: 5px;
+      margin-bottom: 30px;
     }
 
     #top-section {
@@ -24,7 +25,7 @@
     #bottom-section {
       --height:20px;
     }
-    
+
     #date {
       color: #444;
     }
@@ -37,8 +38,7 @@
     }
 
     #right-section {
-      --position: absolute;
-      --margin-left:0px;
+      --min-width: 300px;
     }
 
     a {
@@ -56,27 +56,53 @@
       --width:20px;
     }
 
+    #total-replies {
+      min-width: 70px;
+      margin-right: 10px;
+    }
+
+    #total-views {
+      min-width: 50px;
+      margin-right: 10px;
+    }
+
+    #category {
+      min-width: 150px;
+    }
+
+
   </style>
   <template>
-  	<div class="post-container layout horizontal"> 
-      <profile-img letter="[[getAuthorInitial(authorName)]]"></profile-img>
-      <div class="self-end">
-	        <div><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
+  	<div class="post-container layout horizontal" id='post-container'>
+      <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
+      <div>
+	        <div on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
           <a href$="[[authoraddress]]">
-            <span id="author-name">[[authorName]]</span>
+            <span id="author-name">[[authorFirstname]] [[authorLastname]]</span>
           </a>
-          <span id="date">&nbsp&nbsp&nbspOn [[postDate]]</span>
+          <span id="date">   on [[postDate]]</span>
       </div>
 
-      <div class="flex"></div> 
-      <div id='right-section' class="self-end">
-        <span id="total-replies">Replies:&nbsp[[totalReplies]]</span> 
-        <span id="total-views">View:&nbsp[[totalViews]]</span>
-        <span>Category:&nbsp[[postCategory]]</span>
+      <div class="flex"></div>
+      <div style="width:25%" class="vertical">
+      <div id='right-section' class="layout horizontal">
+        <div id="total-replies"><span>Replies: [[totalReplies]]</span></div>
+        <div id="total-views"><span>Views: [[totalViews]]</span></div></div>
+        <div id='category'><span>Category: [[postCategory]]</span></div>
       </div>
-          
-        
-    </div>     
+
+
+    </div>
+
+    <iron-ajax
+      url="http://localhost:3002/api/v2/thread/[[itemId]]/view"
+      method="POST"
+      id='views'
+      handle-as="json"
+      headers='{{header}}'
+      debounce-duration="300">
+    </iron-ajax>
+
   </template>
 
   <script>
@@ -85,20 +111,39 @@
       properties: {
         topicAddress: String,
         topicHeading: String,
-        authorName: String,
+        authorFirstname: String,
+        authorLastname: String,
         authorAddress: String,
         postDate: String,
         totalReplies: String,
         totalViews: String,
         postCategory: String,
+        itemId:String,
       },
 
-      getAuthorInitial(authorName) {
-        return authorName.charAt(0);
-      }
+      listeners:{
+        'follow-action':'onFollow',
+      },
+
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          if (user.token) {
+            this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};  
+          }
+      },
+
+      getInitials(firstName, lastName) {
+        return firstName.charAt(0) + lastName.charAt(0);
+      },
+
+      onView() {
+        this.$.views.generateRequest();
+      },
+
     });
   </script>
 
 </dom-module>
-
-

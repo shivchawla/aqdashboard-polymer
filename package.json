@@ -1,0 +1,18 @@
+{
+  "name": "aqdashboard",
+  "version": "1.0.0",
+  "description": "Platform to research stock markets in a systematic way",
+  "main": "index.js",
+  "scripts": {
+    "dev": "polymer serve & npm run watch",
+    "test": "polymer test",
+    "watch": "browser-sync start --proxy localhost:8080 --files 'src/*.html, src/*.js, images/*' "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/aimsquant/aqdashboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/aimsquant/aqdashboard#readme"
+}

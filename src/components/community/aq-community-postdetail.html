@@ -13,12 +13,12 @@
 
 
 <dom-module id="aq-community-postdetail">
-  
+
    <style>
     #container {
       margin-top: 20px;
       width:90%;
-      margin-left: 30px;
+      margin-left: 0 auto;
       color: #333a56;
     }
 
@@ -30,38 +30,107 @@
     paper-icon-button {
       padding-left: 0px;
     }
-    
-  </style>
-  <template>
-    <div id='container'>
-      <div class="goBackButton layout horizontal">
-        <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
-        <div class="flex"><h3>Go Back to Community</h3></div>
-      </div>
 
-      <aq-community-postdetail-header></aq-community-postdetail-header>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-      <aq-community-postdetail-content></aq-community-postdetail-content>
-      
-      <aq-community-postdetail-reply></aq-community-postdetail-reply>
-      
-    </div>
+  </style>
+
+  
+  <template>
+    
+      <iron-ajax
+          auto
+          url="http://localhost:3002/api/v2/thread/{{threadid}}"
+          method='GET'
+          id='getThreadQuery'
+          handle-as="json"
+          on-response="onGetThreadDetailResponse"
+          on-error="onGetThreadDetailError"
+          headers='{{header}}'
+          debounce-duration="300">
+      </iron-ajax>
+
+      <template is="dom-if" if="{{threadDetails}}">
+        <div id='container'>
+          
+          <div class="goBackButton layout horizontal">
+            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
+            <div class="flex"><h3>Back to community</h3></div>
+          </div>
+          
+          <aq-community-postdetail-header
+            post-header='{{threadDetails}}'>
+          </aq-community-postdetail-header>
+          
+          <div id="replyContainer">
+            <template is="dom-repeat" 
+                      items="{{threadDetails.replies}}"
+                      initial-count=5>
+              <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
+            </template>
+          </div>
+          
+
+          <aq-community-postdetail-reply id="replyEditor" threadid={{threadDetails._id}}></aq-community-postdetail-reply>
+        </div>
+      </template>
 
   </template>
-  
+
   <script>
     Polymer ({
       is: 'aq-community-postdetail',
+      properties: {
+        threadid: {
+          type: String
+        }
+      },
 
       listeners :{
         'goBackClicked':'goBack',
+        'reply-added':'addReply',
+      },
+
+      onGetThreadDetailResponse(data) {
+          this.threadDetails = data.detail.response;
+      },
+
+      onGetThreadDetailError(data) {
+          console.log(data);
+      },
+
+      ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          if (user.token) {
+            this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};  
+          }
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+          this.email = user.email;
+          this.letter = this.firstName[0];
       },
 
       goBack() {
-        this.router.go('/dashboard/community');
+          this.router.go('/dashboard/community');
       },
-      
+
+      addReply(e) {
+        
+        var reply = e.detail.reply;
+        var replyElement = document.createElement('aq-community-postdetail-content');
+        
+        //var x = localStorage.getItem('my-app-storage');
+        //var user = JSON.parse(x).user;
+
+        reply.user = {"firstName":this.firstName, "lastName":this.lastName};
+        
+        replyElement.item = reply;
+
+        this.$$("#replyContainer").appendChild(replyElement);
+        this.$$("#replyEditor").clearEditor();
+      }
+
     });
 
   </script>

@@ -56,8 +56,9 @@
 
     paper-toolbar {
       --paper-toolbar-height:40px;
-      --paper-toolbar-background:#B2DFDB;--#e0f2f1;
-      --paper-toolbar-color:black;--teal;
+      --paper-toolbar-background:#99d3df;
+      --paper-toolbar-color:#333a56;
+
     }
 
     paper-tabs :hover{
@@ -69,21 +70,22 @@
         --paper-tabs-selection-bar-color: teal;
         height:90%;
     }
+    
+    text-area {
+      left:-120 !important;
+    }
 
 </style>
 
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
   <template>
-
-
-      <paper-drawer-panel drawer-width='370px' responsive-width='730px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
+  
+      <paper-drawer-panel drawer-width='370px' responsive-width='1130px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
        <div main> 
-        <juicy-ace-editor style="height:100%;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="13px" id="code-editor" wrapmode tabsize="4">
+        <juicy-ace-editor style="height:100%;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
         </juicy-ace-editor>  
         </div>
-
-
 
         <paper-header-panel drawer mode="seamed">
           <paper-toolbar>
@@ -118,14 +120,22 @@
           type:Boolean,
           value:true,
         },
+
         selectedSideBar:{
           type:Number,
           value:0,
         },
+
         sideBarOpen:{
           type:Boolean,
           value:true,
-        }
+        },
+
+        code: String,
+      },
+
+      listeners :{
+        'editor-ready':'setCode',
       },
 
       toggleDrawer() {
@@ -151,6 +161,10 @@
           this.showSideBar = false;
         }
       }, 
+
+      getCodeContent() {
+        return this.$.codeEditor.value; 
+      },     
 
     });
   </script>

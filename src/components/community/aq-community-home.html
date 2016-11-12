@@ -1,143 +1,277 @@
-
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item.html">
 
-
-<dom-module id="aq-community-home">
-
-  <style>
+<style>
 
     .insidetoolbar {
-      outline-color: blue;
-      border:solid;
+        outline-color: blue;
+        border: solid;
     }
 
     input {
-      font: inherit;
-      font-size: 16px;
-      color: black;
+        font: inherit;
+        font-size: 16px;
+        color: black;
     }
 
     #container {
-      width:90%;
-      margin:0 auto;
-      margin-top: 30px;
-      color: #333a56;
-    }
+        margin:0 auto;
+        margin-top: 50px;
+        color: #333a56;
+        width: 90%;
+
+      }
 
     #fab {
-      background: #333a56;
-      position: fixed;
-      right: 25px;
-      bottom: 30px;
+        background: teal;
+        --float: right;
+        position: fixed;
+        right: 25px;
+        bottom: 30px;
     }
 
-    
-    paper-tab:hover{
-      font-size: 110%;
-      font-weight: bolder;
+    paper-tabs {
+        
     }
 
-    #community-tabs {
-      max-width: 350px;
-      font-size: 14px;
-      margin-top:20px;
-      border-bottom:1px solid #e5e5e5;
-      --paper-tabs-selection-bar-color: #99ced4; --#333a56;
+    .community-tabs {
+        max-width: 350px;
+        font-size: 14px;
+        margin-top: 50px;
+        border-bottom: 1px solid #e5e5e5;
+        --paper-tabs-selection-bar-color: teal;
     }
-    
+
     #allposts {
-      margin-top: 50px;
+        margin-top: 50px;
     }
-    
-  </style>
 
-  <template>
-      <div id='container'>
-        <aq-community-home-searchbar id="search"></aq-community-home-searchbar>
-        <paper-tabs id="community-tabs" class="flex" selected="{{selected}}" noink>
-          <paper-tab>All</paper-tab>
-          <paper-tab>Popular</paper-tab>
-          <paper-tab>Newest</paper-tab>
-          <paper-tab>Following</paper-tab>
-          <paper-tab>Personal</paper-tab>
-        </paper-tabs>
 
-        <div id='allposts'>
-          <iron-pages selected="{{selected}}">
+</style>
+
+<dom-module id="aq-community-home">
+    <template>
+        <div id='container'>
             <div>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+            <aq-community-home-searchbar></aq-community-home-searchbar></div>
+            <paper-tabs on-iron-select="onActivateTab" class="community-tabs flex" selected="{{selected}}" noink>
+                <paper-tab>Popular</paper-tab>
+                <paper-tab>Newest</paper-tab>
+                <paper-tab>Following</paper-tab>
+                <paper-tab>Personal</paper-tab>
+            </paper-tabs>
 
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Ahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Hil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="il Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            </div> 
+            <div id='allposts'>
+                <!--iron-pages selected="{{selected}}"-->
+                    <div>
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
+                          <aq-community-home-post-item
+                            topic-address="#/dashboard/community/topics/{{item._id}}"
+                            item-id = "{{item._id}}"
+                            topic-heading="{{item.title}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
+                            author-address="{{item.user.email}}"
+                            post-date="{{format(item.createdAt)}}"
+                            total-replies={{item.replies.length}}
+                            total-views="{{item.views}}"
+                            post-category="{{item.category}}">
+                          </aq-community-home-post-item>
+                      </template>
+                    </div>
 
-            <div>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="l Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+                    <!--div>
+                        <template is="dom-repeat" items="{{items}}" initial-count=10>
+                            <aq-community-home-post-item
+                              topic-address="#/dashboard/community/topics/{{item._id}}"
+                              topic-heading="{{item.title}}"
+                              author-firstname="{{item.user.firstName}}"
+                              author-lastname="{{item.user.lastName}}"
+                              author-address="{{item.user.email}}"
+                              post-date="{{item.createdAt}}"
+                              total-replies={{item.replies.length}}
+                              total-views="{{item.views}}"
+                              post-category="{{item.category}}">
+                            </aq-community-home-post-item>
+                        </template>
+                    </div>
 
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>      
-            </div> 
+                    <div>
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
+                          <aq-community-home-post-item
+                            topic-address="#/dashboard/community/topics/{{item._id}}"
+                            topic-heading="{{item.title}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
+                            post-date="{{item.createdAt}}"
+                            total-replies={{item.replies.length}}
+                            total-views="{{item.views}}"
+                            post-category="{{item.category}}">
+                          </aq-community-home-post-item>
+                      </template>
+                    </div>
 
-            <div>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="padhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+                    <div>
+                      <template is="dom-repeat" items="{{items}}" initial-count=10>
+                          <aq-community-home-post-item
+                            topic-address="#/dashboard/community/topics/{{item._id}}"
+                            topic-heading="{{item.title}}"
+                            author-firstname="{{item.user.firstName}}"
+                            author-lastname="{{item.user.lastName}}"
+                            post-date="{{item.createdAt}}"
+                            total-replies={{item.replies.length}}
+                            total-views="{{item.views}}"
+                            post-category="{{item.category}}">
+                          </aq-community-home-post-item>
+                      </template>
+                    </div>
 
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="adhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="dhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
+                    <div>
+                        <template is="dom-repeat" items="{{items}}" initial-count=10>
+                            <aq-community-home-post-item
+                              topic-address="#/dashboard/community/topics/{{item._id}}"
+                              topic-heading="{{item.title}}"
+                              author-firstname="{{item.user.firstName}}"
+                              author-lastname="{{item.user.lastName}}"
+                              post-date="{{item.createdAt}}"
+                              total-replies={{item.replies.length}}
+                              total-views="{{item.views}}"
+                              post-category="{{item.category}}">
+                            </aq-community-home-post-item>
+                        </template>
+                    </div>
+                </iron-pages-->
+                <iron-ajax
+                  url="http://localhost:3002/api/v2/thread"
+                  method='GET'
+                  id='threads'
+                  params='[[params]]'
+                  handle-as="json"
+                  on-response="onGetAllThreadsResponse"
+                  on-error="onGetAllThreadsError"
+                  headers='{{header}}'
+                  debounce-duration="300">
+                </iron-ajax>
 
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            </div> 
-
-            <div>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            </div> 
-
-            <div>
-              <aq-community-home-post-item  topic-address="#/dashboard/community/topics" topic-heading= "My new topics" author-name="Sahil Upadhyay" author-address= "sahil" post-date="jan 15, 2015" total-replies="16" total-views="90" post-category="FAQs"></aq-community-home-post-item>
-            </div> 
-            
-          </iron-pages>
+            </div>
         </div>
-      </div>
-      
-      <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
-  </template>
-</dom-module>  
 
-<script>
-  Polymer({
-    is:'aq-community-home',
+        <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
+    </template>
+    <script>
 
-    properties: {
-      selected: {
-        type: String,
-        value: 0,
-      },
-    },
-    
-    createPost() {
-      this.router.go('/dashboard/community/create');
-    },
+        var options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
 
-  });
-</script>>
+        Polymer({
+            is: 'aq-community-home',
+
+            properties: {
+                selected: {
+                    type: String,
+                    value: 0
+                },
+
+                items: {
+                    type: Object,
+                },
+
+                searchText:{
+                    type: String,
+                    value:"",
+                },
+
+                searchCategory:{
+                  type:String,
+                  value:"",
+                },
+
+                params : Object,
+
+            },
+
+            listeners :{
+              'search-action':'onSearch',
+              'view-action':'onView',
+            },
+
+            ready: function() {
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                if (user.token) {
+                  this.header = {
+                    "aimsquant-token": user.token,
+                    "Content-Type": "application/json"};  
+                }
+              
+
+                this.orderby = "views";
+            },
+
+
+            isPersonalSelected() {
+                return this.selected == 3;
+            },
+
+            onActivateTab() {
+                if (this.selected == 1) {
+                  this.orderby = 'createdAt';
+                } else {
+                  this.orderby = 'views';
+                }
+
+                this.processparams();
+
+                this.getAllThreads();
+            },
+
+            getAllThreads() {
+                this.$.threads.generateRequest();
+            },
+
+            onGetAllThreadsResponse(data) {
+                this.items = data.detail.response.threads;
+                //console.log(this.items);
+            },
+
+            onGetAllThreadsError(data) {
+                console.log(data);         
+            },
+
+            createPost() {
+                if (!this.header) {
+                  this.router.go('/user/signin', {lastRequest:'/dashboard/community/create'});
+                  return;
+                }
+
+                this.router.go('/dashboard/community/create');
+            },
+
+            onSearch(e) {
+              this.searchText = e.detail.text;
+              this.searchCategory = e.detail.category;
+              this.processparams()
+              this.$.threads.generateRequest();        
+            },
+
+  
+            processparams() {
+              this.params = {"skip":"0", "limit":"10", "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+            },
+
+            format(date) {
+              return new Date(date).toLocaleTimeString("en-us", options);
+            },
+
+            onView(e) {
+              
+            },
+
+        });
+    </script>
+</dom-module>
