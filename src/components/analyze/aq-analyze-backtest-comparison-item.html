@@ -3,6 +3,10 @@
 <link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
 <link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="./aq-community-postdetail-header.html">
+
+<link rel="import" href="./aq-community-postdetail-content.html">
+<link rel="import" href="./aq-community-postdetail-reply.html">
 
 <dom-module id='aq-analyze-backtest-comparison-item'>	
 	<style>	
@@ -67,8 +71,12 @@
 
 	<template>
 		
-		
+		<div class="goBackButton layout horizontal">
+            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack1"></paper-icon-button>
+            <div class="flex"><h3>Back to Comparision</h3></div>
+          </div>
 		<div id='comparison-return' class="">
+
 			<div style="display: flex;justify-content: space-between;">
 				<h2 style="margin-left: 10px; margin-bottom: 30px">Compare Backtests Objects: </h2>
 				<paper-tabs style="margin-top: 20px" noink selected={{graphType1}}>
@@ -77,6 +85,21 @@
 					<paper-tab>Comparision Table</paper-tab>
 				</paper-tabs>
 			</div>
+			<iron-ajax auto
+				  id="ajax2"
+				  url=""
+		          handle-as="json"
+		          on-response="handleResponse1"
+		          >
+		          </iron-ajax>
+			<iron-ajax auto
+				  id="ajax1"
+				  url=""
+		          handle-as="json"
+		          on-response="handleResponse"
+		          >
+		          </iron-ajax>
+		          
 			<iron-pages class="a" selected={{graphType1}}>
 		  		<iron-page>
 
@@ -135,7 +158,7 @@
 		<div id='comparison-risk' class = "layout horizontal flex">
 			<iron-ajax auto url="../common/data.json"
 	          handle-as="json"
-	          on-response="handleResponse"
+	          on-response="handleResponse_grid"
 	          debounce-duration="300"></iron-ajax>			
 		</div>	
 			
@@ -151,75 +174,13 @@
 				},
 
 				lineData: {
-					type:Object,
-					value: [{
-					  "key":"Hello1",
-					  "color": "#ff7f0e",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.09983341664682815
-					    }, {
-					      "x": 2,
-					      "y": 0.19866933079506122
-					    }, {
-					      "x": 3,
-					      "y": 0.29552020666133955
-					    }, {
-					      "x": 4,
-					      "y": 0.3894183423086505
-					    }, {
-					      "x": 5,
-					      "y": 0.4794255
-					    }]
-					}], 
+					type: Object,
+					value: [], 
 				},
-
 				barData: {
-					type:Object,
-					value: [{
-					  "color": "#ff7f0e",
-					  "values": [{
-				        "x": "January",
-				        "y": 45.17657645842991837
-				      }, {
-				        "x": "February",
-				        "y": 67.17056295930152043
-				      }, {
-				        "x": "March",
-				        "y": 68.1673443365488047
-				      }, {
-				        "x": "April",
-				        "y": 46.11723298445616456
-				      }, {
-				        "x": "May",
-				        "y": 24.536952569541941
-				      }, {
-				        "x": "June",
-				        "y": 43.3388194660534718
-				      }, {
-				        "x": "July",
-				        "y": 54.36333876908320444
-				      }, {
-				        "x": "August",
-				        "y": 64.3611814096880023
-				      }, {
-				        "x": "September",
-				        "y": 23.1338671870032077
-				      }, {
-				        "x": "October",
-				        "y": 34.17393665276883485
-				      }, {
-				        "x": "November",
-				        "y": 23.10082735638070002
-				      }, {
-				        "x": "December",
-				        "y": 45.11922403030059807
-				      }]
-				    	}],
-							}, 
+					type: Object,
+					value: [],
+							}
 			},
 			ready: function(){
 				var claims = [];
@@ -237,6 +198,13 @@
 		            'Stability': "0.88",
 		            'Avg. Concentration': "0.52"
 		        });
+		        	this.$.ajax2.url = "http://localhost:8080/src/components/common/data3.json";
+					console.log(this.$.ajax2.url);
+			        this.$.ajax2.generateRequest();
+		        	this.$.ajax1.url = "http://localhost:8080/src/components/common/data1.json";
+					console.log(this.$.ajax1.url);
+			        this.$.ajax1.generateRequest();
+			        
 		     //    setTimeout(function(){var grid = document.querySelector('#sort');
 		     //    console.log('claims',claims);
 		     //    console.log(grid);
@@ -244,6 +212,29 @@
 		    	// },6000);
 			},
 			handleResponse: function(e){
+
+				this.set('lineData',e.detail.response);
+
+				console.log(e.detail.response);
+
+				
+				
+
+			},
+			handleResponse1: function(e){
+
+				this.set('barData',e.detail.response);
+				console.log(this.barData);
+				console.log('barData');
+				
+				
+				
+
+			},
+			goBack1() {
+		          this.fire('backClicked_all');
+		      },
+			handleResponse_grid: function(e){
 				var items1=[];
 				var grid1 = document.querySelector('#sort11');
 

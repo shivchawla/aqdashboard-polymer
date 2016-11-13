@@ -137,6 +137,7 @@
     		
 			listeners :{
 				'backClicked':'goToEditor',
+				'backClicked_all':'goToBacktest_all',
 				'compareClicked':'compareBacktests',
 				'backtestChecked':'checkBacktest',
 				'deleteClicked':'onDeletion',
@@ -162,7 +163,9 @@
 			goToEditor() {
 				this.router.go('/dashboard/editor');
 			},
-
+			goToBacktest_all() {
+				this.router.go('/dashboard/analyze/more');
+			},
 
 			onGetAllBacktestsForStrategy(data) {
 				//this.backtests = data.detail.response;
