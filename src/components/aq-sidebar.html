@@ -115,12 +115,14 @@
       
 
       <div id='navigation'><span class='nav-header'><strong>RESEARCH</strong></span>
-        <paper-menu fallback-selection="home" selected="{{menuSelected}}" attr-for-selected="menu-panel">
-          <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, `home')}}">Home
+        <paper-menu fallback-selection="home" 
+                    selected="{{menuSelected}}" 
+                    attr-for-selected="menu-panel">
+          <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
             <iron-icon item-icon icon="icons:home"></iron-icon>
           </paper-icon-item>
 
-          <paper-icon-item id='menu-editor' menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, `editor')}}">Strategy Builder
+          <paper-icon-item id='menu-editor' menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, 'editor')}}">Strategy Builder
             <iron-icon item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
           </paper-icon-item>
 
@@ -140,7 +142,7 @@
       </div>
 
       <div id='action'><span class='nav-header'"><strong>QUICK ACTIONS</strong></span>
-        <paper-icon-item action-panel='createstrategy'  on-tap="onAction">Create a Strategy
+        <paper-icon-item action-panel='createstrategy' on-tap="onAction">Create a Strategy
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
         </paper-icon-item>
           
@@ -151,7 +153,6 @@
         <paper-icon-item action-panel='comparemore' on-tap="onAction">Compare More
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
         </paper-icon-item>
-
 
         <paper-icon-item action-panel='createpost' on-tap="onAction">Write a Post
           <iron-icon item-icon icon="communication:comment"></iron-icon>

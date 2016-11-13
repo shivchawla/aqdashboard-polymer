@@ -147,10 +147,10 @@
 	    	<div class="flex"><h4>All Backtests for {{strategyName}}</h4></div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	  			<paper-icon-button noink class="iconButton" icon="icons:delete" title="Delete"  on-tap="onDelete" disabled="[[!activeButtons]]">
+	  			<paper-icon-button noink class="iconButton" icon="icons:delete" title="Delete"  on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="iconButton" icon="icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!activeButtons]]">
+				<paper-icon-button noink class="iconButton" icon="icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
 				</paper-icon-button>
 			</div>      	
   		</div>
@@ -166,10 +166,18 @@
 					type:String,
 				},
 
-				activeButtons:{
-					type:Boolean,
-					value: false,
+				numActiveBacktests:{
+					type:Number,
+					value:0,
 				},
+			},
+
+			isCompareActive(numActiveBacktests) {
+				return numActiveBacktests > 1;
+			},
+
+			isDeleteActive(numActiveBacktests) {
+				return numActiveBacktests > 0;
 			},
 
 			onDelete() {

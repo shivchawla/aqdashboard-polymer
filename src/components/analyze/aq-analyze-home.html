@@ -10,7 +10,7 @@
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
 <link rel='import' href='./aq-analyze-home-backtest-item.html'>
-<link rel='import' href='../common/aq-backtest-comparison-item.html'>
+<link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
 <link rel='import' href='../common/aq-backtest-detail-item.html'>
 
 <dom-module id='aq-analyze-home'>
@@ -84,21 +84,22 @@
           	debounce-duration="300">
         </iron-ajax>
 		
-		<div id='container'>
-			<aq-analyze-home-menu active-buttons="[[hasCheckedBacktests(checkedCount)]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
-			<template is='dom-repeat' items="{{backtests}}">
-				<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
+		<div id='container'>
+			<template is='dom-if' if="[[!showComparison]]">
+				<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+
+				<template is='dom-repeat' items="{{backtests}}">
+					<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
+				</template>
 			</template>
 
+			<template is='dom-if' if="[[showComparison]]">
+				<aq-analyze-backtest-comparison-item></aq-analyze-backtest-comparison-item>
+			</template>
+	
 		</div>	
-
-		<paper-dialog id='dialog' with-backdrop>
-			<paper-dialog-scrollable id='comparison'>
-				<aq-backtest-comparison-item></aq-backtest-comparison-item>
-			</paper-dialog-scrollable>
-		</paper-dialog>
-			
+	
     </template>
 
     <script>
@@ -126,6 +127,11 @@
     			checkedItems: {
 					type:Object,
 					value:{},
+				},
+
+				showComparison :{
+					type:Boolean,
+					value:false,
 				},
     		}, 
     		
@@ -157,9 +163,6 @@
 				this.router.go('/dashboard/editor');
 			},
 
-			compareBacktests() {
-				this.$.dialog.toggle();
-			},
 
 			onGetAllBacktestsForStrategy(data) {
 				//this.backtests = data.detail.response;
@@ -189,8 +192,8 @@
 	        	}
 	        },
 
-	        hasCheckedBacktests(checkedCount) {
-	        	return checkedCount > 0;
+	        numCheckedBacktests(checkedCount) {
+	        	return checkedCount;
 	        },
 
 	        onDeletion(e) {
@@ -206,6 +209,10 @@
 	    		}
 
 	    		this.checkedItems = {};	        	
+	        },
+
+	        compareBacktests() {
+	        	this.showComparison = true;
 	        },
 
     	});

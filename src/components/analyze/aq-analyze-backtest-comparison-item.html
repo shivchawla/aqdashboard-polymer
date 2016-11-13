@@ -4,7 +4,7 @@
 <link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 
-<dom-module id='aq-analyze-more'>	
+<dom-module id='aq-analyze-backtest-comparison-item'>	
 	<style>	
 		chart-line {
 			width: 50%;
@@ -129,7 +129,7 @@
 				</vaadin-grid>
 				</div>
 				</iron-page>
-		  		</iron-pages>
+	  		</iron-pages>
 		</div>
 		
 		<div id='comparison-risk' class = "layout horizontal flex">
@@ -142,13 +142,14 @@
 	</template>
 	<script>
 		Polymer ({
-			is:'aq-analyze-more',
+			is:'aq-analyze-backtest-comparison-item',
 			
 			properties:{
 				graphType1: {
 					type:Number,
 					value:2,
 				},
+
 				lineData: {
 					type:Object,
 					value: [{
@@ -175,6 +176,7 @@
 					    }]
 					}], 
 				},
+
 				barData: {
 					type:Object,
 					value: [{
@@ -265,6 +267,7 @@
 			            'Avg Concentration': e.detail.response.result[i].Avg_Concentration
 
 			        });
+			        
 			        console.log('items1');
 				}
 					grid1.items = items1;

@@ -95,7 +95,6 @@
 
           view: {
             type:String,
-            value:'home',
           },
 
           isHomeSelected :{
@@ -150,17 +149,26 @@
             'tabChanged':'changeTab',
         },
 
-        ready() {
+        attached() {
             var path = ['home','editor','community','analyze','help'];
 
             for (i in path) {
                 var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
+                
                 if (c && this.view != path[i]) {  
-                      this.view = path[i];
-                      console.log(this.view);
+                      
+                      if (path[i] == 'analyze') {
+                        this.view = 'editor';
+                        
+                      } else {
+                        this.view = path[i];  
+                        
+                      }
+
                       break;   
                 }
             }
+
         },
         
         checkHasToken() {
@@ -255,8 +263,6 @@
           } else {
             this.$$('#router').go(path[tab]);
           }
-
-
           
         },
 
