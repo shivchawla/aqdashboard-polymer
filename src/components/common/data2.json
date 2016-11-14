@@ -1,9 +1,6 @@
 [
 					{
 					  "color": "#ff7f0e",
-					  "key": "Hello1",
-					  "x_axis": "Quantity",
-					  "y_axis": "Price",
 					  "values": [{
 				        "x": "January",
 				        "y": 45.17657645842991837
@@ -44,9 +41,6 @@
 				    	},
 				    	{
 					  "color": "#000",
-					  "key": "Hello2",
-					  "x_axis": "Quantity",
-					  "y_axis": "Price",
 					  "values": [{
 				        "x": "January",
 				        "y": 42.17657645842991837

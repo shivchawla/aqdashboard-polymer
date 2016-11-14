@@ -45,27 +45,28 @@
 		    top: 20px;
 		    right: 7px;
 		}
-		.a{
+		.pages_select{
 			text-align: -webkit-center;
 			margin: 30px 0 30px 10px;
 		}
 		vaadin-grid{
 			--vaadin-grid-header-row-height : 78px;
-			--vaadin-grid-header-row-color : blue;
 			--vaadin-grid-row-cell: blue;
 		}
-		vaadin-grid{
-			background: blue;
+		
+		
+		
+		.axis_labels{
+			position: absolute;
+			top: 100px;
+			left: 50%;
+			text-align: left;
 		}
-		#sort11 .v-table-header-cell{
-			background: blue;
+		.sub_header{
+			display: flex;justify-content: space-between;
 		}
-		.c{
-			background: blue;
-		}
-		.vaadin-grid-0{
-			background-color: green;
-
+		.goBack__text{
+			margin-left: 10px; margin-bottom: 30px;
 		}
 	</style>
 
@@ -75,32 +76,36 @@
             <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack1"></paper-icon-button>
             <div class="flex"><h3>Back to Comparision</h3></div>
           </div>
-		<div id='comparison-return' class="">
+		<div id='comparison-return'>
 
-			<div style="display: flex;justify-content: space-between;">
-				<h2 style="margin-left: 10px; margin-bottom: 30px">Compare Backtests Objects: </h2>
+			<div class="sub_header">
+				<h2 class="goBack__text">Compare Backtests Objects: </h2>
 				<paper-tabs style="margin-top: 20px" noink selected={{graphType1}}>
+				<template is='dom-if'' if="[[lineData]]">
 					<paper-tab>Line Graph</paper-tab>
+					</template>
+					<template is='dom-if'' if="[[barData]]">
 					<paper-tab>Bar Graph</paper-tab>
+					</template>
 					<paper-tab>Comparision Table</paper-tab>
 				</paper-tabs>
 			</div>
 			<iron-ajax auto
-				  id="ajax2"
+				  id="axax_barGraph"
 				  url=""
 		          handle-as="json"
 		          on-response="handleResponse1"
 		          >
 		          </iron-ajax>
 			<iron-ajax auto
-				  id="ajax1"
+				  id="axax_lineGraph"
 				  url=""
 		          handle-as="json"
 		          on-response="handleResponse"
 		          >
 		          </iron-ajax>
 		          
-			<iron-pages class="a" selected={{graphType1}}>
+			<iron-pages class="pages_select" selected={{graphType1}}>
 		  		<iron-page>
 
 				<nvd3-line 
@@ -114,6 +119,10 @@
 		  			no-data="No Data Available!" 
 		  			data=[[lineData]]>
 		  		</nvd3-line>
+		  		<div class="axis_labels">
+		  			<p><strong>X-Axis:</strong> {{x_lineData}}</p>
+		  		<p><strong>Y-Axis:</strong> {{y_lineData}}</p>
+		  		</div>
 		  		</iron-page>
 		  		<iron-page>
 
@@ -128,12 +137,16 @@
 		  			no-data="No Data Available!" 
 		  			data=[[barData]]>
 		  		</nvd3-multi-bar>
+		  		<div class="axis_labels">
+		  			<p><strong>X-Axis:</strong> {{x_barData}}</p>
+		  			<p><strong>Y-Axis:</strong> {{y_barData}}</p>
+		  		</div>
 		  		</iron-page>
 		  		<iron-page>
 		  		<div style="width:100%">
-		  		<vaadin-grid id="sort11" style="overflow: scroll;width: 100%">
+		  		<vaadin-grid id="table_details__comparision" style="overflow: scroll;width: 100%">
 				  <table>
-				    <colgroup class="c">
+				    <colgroup class="table_style">
 				      <col name="Strategy Name" sortable/>
 				      <col name="Total Return1" sortable/>
 				      <col name="Avg Return" sortable/>
@@ -170,17 +183,27 @@
 			properties:{
 				graphType1: {
 					type:Number,
-					value:2,
-				},
-
-				lineData: {
-					type: Object,
-					value: [], 
+					value:1,
 				},
 				barData: {
 					type: Object,
-					value: [],
-							}
+				},
+				lineData: {
+					type: Object,
+				},
+				x_lineData:{
+					type: String,
+				},
+				x_barData:{
+					type: String,
+				},
+				y_lineData:{
+					type: String,
+				},
+				y_barData:{
+					type: String,
+				},
+				
 			},
 			ready: function(){
 				var claims = [];
@@ -198,12 +221,10 @@
 		            'Stability': "0.88",
 		            'Avg. Concentration': "0.52"
 		        });
-		        	this.$.ajax2.url = "http://localhost:8080/src/components/common/data3.json";
-					console.log(this.$.ajax2.url);
-			        this.$.ajax2.generateRequest();
-		        	this.$.ajax1.url = "http://localhost:8080/src/components/common/data1.json";
-					console.log(this.$.ajax1.url);
-			        this.$.ajax1.generateRequest();
+		   //      	
+		        	this.$.axax_lineGraph.url = "http://localhost:8080/src/components/common/data1.json";
+					console.log(this.$.axax_lineGraph.url);
+			        this.$.axax_lineGraph.generateRequest();
 			        
 		     //    setTimeout(function(){var grid = document.querySelector('#sort');
 		     //    console.log('claims',claims);
@@ -217,7 +238,13 @@
 
 				console.log(e.detail.response);
 
-				
+				this.$.axax_barGraph.url = "http://localhost:8080/src/components/common/data3.json";
+				console.log(this.$.axax_barGraph.url);
+		        this.$.axax_barGraph.generateRequest();
+		        this.set('x_lineData', e.detail.response[0].x_axis);
+		        this.set('y_lineData', e.detail.response[0].y_axis);
+
+
 				
 
 			},
@@ -226,7 +253,9 @@
 				this.set('barData',e.detail.response);
 				console.log(this.barData);
 				console.log('barData');
-				
+				this.set('x_barData', e.detail.response[0].x_axis);
+		        this.set('y_barData', e.detail.response[0].y_axis);
+
 				
 				
 
@@ -236,7 +265,7 @@
 		      },
 			handleResponse_grid: function(e){
 				var items1=[];
-				var grid1 = document.querySelector('#sort11');
+				var grid1 = this.$.table_details__comparision;
 
 				var a = e.detail.response.result;
 				console.log(e.detail.response.result.length);

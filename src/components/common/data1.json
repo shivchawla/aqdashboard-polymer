@@ -1,6 +1,8 @@
 [{
 					  "key":"Hello1",
 					  "color": "#ff7f0e",
+					  "x_axis": "Quantity",
+					  "y_axis": "Price",
 					  "values": [{
 					      "x": 0,
 					      "y": 0
@@ -24,6 +26,8 @@
 					{
 				"key":"Hello2",
 					  "color": "#000",
+					  "x_axis": "Quantity",
+					  "y_axis": "Price",
 					  "values": [{
 					      "x": 0,
 					      "y": 31
