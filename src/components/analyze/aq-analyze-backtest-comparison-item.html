@@ -1,4 +1,4 @@
-		
+
 
 <link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
 <link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
@@ -40,62 +40,71 @@
 			text-align: center;
 			margin-top:15px;
 		}
+
 		.paper_align{
 			position: absolute;
 		    top: 20px;
 		    right: 7px;
 		}
+
 		.pages_select{
 			text-align: -webkit-center;
 			margin: 30px 0 30px 10px;
 		}
+
 		vaadin-grid{
 			--vaadin-grid-header-row-height : 78px;
 			--vaadin-grid-row-cell: blue;
 		}
-		#table_details__comparision{
+
+		#table_details__comparison{
 			overflow: scroll;width: 100%;
 		}
 		
 		
 		.sub_header{
-			display: flex;justify-content: space-between;
+			display: flex;
+			justify-content: space-between;
 		}
+
 		.goBack__text{
-			margin-left: 10px; margin-bottom: 30px;
+			margin-left: 10px; 
+			--margin-bottom: 30px;
 		}
 		
 		.vertical-textGraphs {
 			transform: rotate(270deg);
-			margin-right: 900px;
-			margin-top: -400px; 
-
+			margin-right: -40px;	
 		}
+
 		.horizontal-textGraphs {
-			margin-left: 720px ;
-			margin-top: -25px; 
-
+			margin-top: -40px; 
 		}
+
+		#comparison-return {
+			margin-top:0px;
+		}
+
 	</style>
 
 	<template>
 		
 		<div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests"></paper-icon-button>
-            <div class="flex"><h3>Back to Comparision</h3></div>
-          </div>
+            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests">
+            </paper-icon-button>
+            <h3>Back to Comparison</h3>
+      	</div>
+		
 		<div id='comparison-return'>
-
 			<div class="sub_header">
-				<h2 class="goBack__text">Compare Backtests Objects: </h2>
-				<paper-tabs style="margin-top: 20px" noink selected={{graphType1}}>
+				<paper-tabs noink selected={{graphType1}}>
 				<template is='dom-if'' if="[[lineData]]">
 					<paper-tab>Line Graph</paper-tab>
 					</template>
 					<template is='dom-if'' if="[[barData]]">
 					<paper-tab>Bar Graph</paper-tab>
 					</template>
-					<paper-tab>Comparision Table</paper-tab>
+					<paper-tab>Comparison Table</paper-tab>
 				</paper-tabs>
 			</div>
 			<iron-ajax auto
@@ -118,56 +127,62 @@
 		  		
 			  		<iron-page>
 
-					<nvd3-line 
-			  			id="chart-line" 
-			  			class="bar1" 
-			  			height=460
-			  			width=900
-			  			show-legend 
-			  			use-interactive-guideline 
-			  			auto-resize 
-			  			no-data="No Data Available!" 
-			  			data=[[lineData]]>
-			  		</nvd3-line>
-			  		<div class="horizontal-textGraphs">
-			  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
-			  			
-			  		</div>
-			  		<div class="vertical-textGraphs">
-
+			  		<div class="layout horizontal">
+						<div class="vertical-textGraphs self-center">
 			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
+			  			</div>	
+						<div>
+							<nvd3-line 
+					  			id="chart-line" 
+					  			class="bar1" 
+					  			height=460
+					  			width=900
+					  			show-legend 
+					  			use-interactive-guideline 
+					  			auto-resize 
+					  			no-data="No Data Available!" 
+					  			data=[[lineData]]>
+					  		</nvd3-line>
+					  		<div class="horizontal-textGraphs self-center">
+					  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
+					  		</div>
+				  		</div>
 			  		</div>
+			  		
 			  		</iron-page>
 		  		</template>
 				<template is='dom-if'' if="[[barData]]">
 
 			  		<iron-page>
 
-					<nvd3-multi-bar 
-			  			id="chart-bar" 
-			  			class="bar" 
-			  			height=460
-			  			width=900
-			  			show-legend 
-			  			use-interactive-guideline 
-			  			auto-resize 
-			  			no-data="No Data Available!" 
-			  			data=[[barData]]>
-			  		</nvd3-multi-bar>
-			  		<div class="horizontal-textGraphs">
-			  			<p><strong>{{x_barData}} &#x2192;</strong></p>
-			  			
-			  		</div>
-			  		<div class="vertical-textGraphs">
-
-			  				<p><strong>{{y_barData}} &#x2192;</strong></p>
+			  		<div class="layout horizontal">
+						<div class="vertical-textGraphs self-center">
+			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
+			  			</div>	
+						
+						<div>	
+							<nvd3-multi-bar 
+					  			id="chart-bar" 
+					  			class="bar" 
+					  			height=460
+					  			width=900
+					  			show-legend 
+					  			use-interactive-guideline 
+					  			auto-resize 
+					  			no-data="No Data Available!" 
+					  			data=[[barData]]>
+					  		</nvd3-multi-bar>
+			  				<div class="horizontal-textGraphs self-center">
+					  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
+					  		</div>
+				  		</div>
 			  		</div>
 			  		</iron-page>
 				</template>
 
 		  		<iron-page>
 			  		<div style="width:100%">
-			  		<vaadin-grid id="table_details__comparision">
+			  		<vaadin-grid id="table_details__comparison">
 					  <table>
 					    <colgroup class="table_style">
 					      <col name="Strategy Name" sortable/>
@@ -194,7 +209,7 @@
 		<div id='comparison-risk' class = "layout horizontal flex">
 			<iron-ajax auto url="../common/data.json"
 	          handle-as="json"
-	          on-response="handleResponse_grid"
+	          on-response="handleResponseGrid"
 	          debounce-duration="300"></iron-ajax>			
 		</div>	
 			
@@ -228,51 +243,34 @@
 				}
 				
 			},
+
 			ready: function(){
 				
-				this.$.ajaxBarGraph.url = "http://localhost:8080/src/components/common/data3.json";
-		   //      	
-		        	this.$.ajaxLineGraph.url = "http://localhost:8080/src/components/common/data1.json";
-					console.log(this.$.ajaxLineGraph.url);
-			        
-		     //    setTimeout(function(){var grid = document.querySelector('#sort');
-		     //    console.log('claims',claims);
-		     //    console.log(grid);
-		     //    grid.items = claims;
-		    	// },6000);
+				this.$.ajaxBarGraph.url = "http://localhost:8080/src/components/common/data3.json";      	
+	        	this.$.ajaxLineGraph.url = "http://localhost:8080/src/components/common/data1.json";
 			},
+
 			handleResponseLineGraph: function(e){
 
 				this.set('lineData',e.detail.response);
-
-				console.log(e.detail.response);
-
-				console.log(this.$.ajaxBarGraph.url);
-		        this.set('x_lineData', e.detail.response[0].x_axis);
+			    this.set('x_lineData', e.detail.response[0].x_axis);
 		        this.set('y_lineData', e.detail.response[0].y_axis);
-
-
-				
-
 			},
+
 			handleResponseBarGraph: function(e){
 
 				this.set('barData',e.detail.response);
-				console.log(this.barData);
-				console.log('barData');
 				this.set('x_barData', e.detail.response[0].x_axis);
 		        this.set('y_barData', e.detail.response[0].y_axis);
-
-				
-				
-
 			},
+
 			goBackAllBacktests() {
-		          this.fire('backClicked_all');
-		      },
-			handleResponse_grid: function(e){
+	          	this.fire('backClicked_all');
+	        },
+
+			handleResponseGrid: function(e){
 				var items =[];
-				var grid = this.$.table_details__comparision;
+				var grid = this.$.table_details__comparison;
 
 				console.log(e.detail.response.result.length);
 				for(var i=0; i<e.detail.response.result.length;i++){
@@ -296,10 +294,9 @@
 			        
 			        console.log('items');
 				}
-					grid.items = items;
-
-					grid.frozenColumns = 1;
-
+				
+				grid.items = items;
+				grid.frozenColumns = 1;
 
 			}
 		});
