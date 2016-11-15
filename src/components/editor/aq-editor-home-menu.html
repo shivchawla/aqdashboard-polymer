@@ -184,8 +184,7 @@
 					this.$$('#menu-icons').style.display = 'inline';
                 }
                 else if(e.keyCode == 13) {
-                	this.fire('search-action',{searchtext:this.$$('#searchbox').value})
-                	
+                	this.doSearch();
                 }
             },
 
