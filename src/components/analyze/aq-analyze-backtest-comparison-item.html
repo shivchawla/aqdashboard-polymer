@@ -85,10 +85,18 @@
 			margin-top:0px;
 		}
 
+		paper-tab:hover{
+    		font-weight: bold;
+    		font-size:110%;
+    	}
+
+    	paper-tabs {
+    		--paper-tabs-selection-bar-color: teal;
+    	}
+
 	</style>
 
-	<template>
-		
+	<template>	
 		<div class="goBackButton layout horizontal">
             <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests">
             </paper-icon-button>
@@ -123,10 +131,9 @@
 		    </iron-ajax>
 		          
 			<iron-pages class="pages_select" selected={{graphType1}}>
-				<template is='dom-if'' if="[[lineData]]">
-		  		
-			  		<iron-page>
-
+				
+				<iron-page>
+				<template is='dom-if'' if="[[lineData]]">			 
 			  		<div class="layout horizontal">
 						<div class="vertical-textGraphs self-center">
 			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
@@ -148,38 +155,36 @@
 					  		</div>
 				  		</div>
 			  		</div>
-			  		
-			  		</iron-page>
-		  		</template>
-				<template is='dom-if'' if="[[barData]]">
-
-			  		<iron-page>
-
-			  		<div class="layout horizontal">
-						<div class="vertical-textGraphs self-center">
-			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
-			  			</div>	
-						
-						<div>	
-							<nvd3-multi-bar 
-					  			id="chart-bar" 
-					  			class="bar" 
-					  			height=460
-					  			width=900
-					  			show-legend 
-					  			use-interactive-guideline 
-					  			auto-resize 
-					  			no-data="No Data Available!" 
-					  			data=[[barData]]>
-					  		</nvd3-multi-bar>
-			  				<div class="horizontal-textGraphs self-center">
-					  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
-					  		</div>
+			  	</template>	
+		  		</iron-page>
+		  		
+		  		<iron-page>
+		  		<template is='dom-if'' if="[[barData]]">	
+		  		<div class="layout horizontal">
+					<div class="vertical-textGraphs self-center">
+		  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
+		  			</div>	
+					
+					<div>
+						<nvd3-multi-bar 
+				  			id="chart-bar" 
+				  			class="bar" 
+				  			height=460
+				  			width=900
+				  			show-legend 
+				  			use-interactive-guideline 
+				  			auto-resize 
+				  			no-data="No Data Available!" 
+				  			data=[[barData]]>
+				  		</nvd3-multi-bar>
+		  				<div class="horizontal-textGraphs self-center">
+				  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
 				  		</div>
 			  		</div>
-			  		</iron-page>
-				</template>
-
+		  		</div>
+		  		</template>
+		  		</iron-page>
+				
 		  		<iron-page>
 			  		<div style="width:100%">
 			  		<vaadin-grid id="table_details__comparison">
@@ -240,7 +245,9 @@
 				},
 				y_barData:{
 					type: String,
-				}
+				},
+
+				showComparison:Boolean,
 				
 			},
 
@@ -265,7 +272,7 @@
 			},
 
 			goBackAllBacktests() {
-	          	this.fire('backClicked_all');
+	          	this.fire('comparison-off');
 	        },
 
 			handleResponseGrid: function(e){

@@ -84,7 +84,6 @@
           	debounce-duration="300">
         </iron-ajax>
 		
-
 		<div id='container'>
 			<template is='dom-if' if="[[!showComparison]]">
 				<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
@@ -95,7 +94,8 @@
 			</template>
 
 			<template is='dom-if' if="[[showComparison]]">
-				<aq-analyze-backtest-comparison-item></aq-analyze-backtest-comparison-item>
+				<aq-analyze-backtest-comparison-item>
+				</aq-analyze-backtest-comparison-item>
 			</template>
 	
 		</div>	
@@ -137,10 +137,10 @@
     		
 			listeners :{
 				'backClicked':'goToEditor',
-				'backClicked_all':'goToBacktest_all',
-				'compareClicked':'compareBacktests',
+				'compareClicked':'toggleComparison',
 				'backtestChecked':'checkBacktest',
 				'deleteClicked':'onDeletion',
+				'comparison-off':'toggleComparison',
 			},
 
 			ready: function() {
@@ -163,8 +163,9 @@
 			goToEditor() {
 				this.router.go('/dashboard/editor');
 			},
+			
 			goToBacktest_all() {
-				this.router.go('/dashboard/analyze/more');
+				//this.showComparison = false;
 			},
 
 			onGetAllBacktestsForStrategy(data) {
@@ -214,8 +215,8 @@
 	    		this.checkedItems = {};	        	
 	        },
 
-	        compareBacktests() {
-	        	this.showComparison = true;
+	        toggleComparison() {
+	        	this.showComparison = !this.showComparison;
 	        },
 
     	});
