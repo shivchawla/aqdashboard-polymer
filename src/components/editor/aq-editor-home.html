@@ -113,8 +113,6 @@
  		<div id='container'>
 	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
-	  		<div id="ifsearch"><p>Strategy results for: <i>"[[searchParam.search]]"</i></p></div>
-
 		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
 		      <div class="name">Name<span class="narrow">/Description</span></div>
 		      <div class="description">Description</div>
@@ -125,22 +123,10 @@
 		    	  auto	
                   url="http://localhost:3002/api/v2/strategy"
                   method='GET'
-                  params="[[searchParam]]"
                   id='getStrategiesQuery'
                   handle-as="json"
                   on-response="onGetStrategiesResponse"
                   on-error="onGetStrategiesError"
-                  headers='{{header}}'
-                  debounce-duration="300">
-            </iron-ajax>
-
-            <iron-ajax	
-                  url="http://localhost:3002/api/v2/strategy/[[deleteId]]"
-                  method='DELETE'
-                  id='deleteStrategyQuery'
-                  handle-as="json"
-                  on-response="onDeleteStrategyResponse"
-                  on-error="onDeleteStrategyError"
                   headers='{{header}}'
                   debounce-duration="300">
             </iron-ajax>
@@ -203,10 +189,6 @@
 				vaue:0,
 			},
 
-			deleteId: String,
-
-			searchParam:Object,
-
 		},
 
 		attached() {
@@ -223,8 +205,6 @@
 	            "aimsquant-token": user.token,
 	            "Content-Type": "application/json"};  
 	        }
-
-	        this.$.ifsearch.style.display = 'none';
         },
 
         onGetStrategiesResponse(data) {
@@ -250,7 +230,6 @@
 			//'create-action':'createStrategy',
 			'check-action':'checkStrategy',
 			'delete-action':'onDeletion',
-			'search-action':'onSearch',
 		},
 
 		_currentRowIndex: -1,
@@ -400,43 +379,9 @@
         	return checkedCount > 0;
         },
 
-        onSearch(e) {
-        	searchtext = e.detail.searchtext;
-        	
-        	if(searchtext!="") {
-        		this.$.ifsearch.style.display = 'block';
-        	} else {
-        		this.$.ifsearch.style.display = 'none';
-        	}
-
-        	this.searchParam = {"search":searchtext};
-        },
-
         onDeletion() {
         	//Send DELETE request to backend
         	for (key in this.checkedItems) {
-        		for (i in this.strategies) {		
-        			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
-        				this.deleteId = this.strategies[i]._id;
-        				this.$.deleteStrategyQuery.generateRequest();
-        				//this.splice('strategies', i, 1);
-        				//this.checkedCount -= 1;
-        			}
-        		}
-    		}
-
-    		this.deleteId = "";	        	
-        },
-
-        onDeleteStrategyError() {
-
-        },
-
-        onDeleteStrategyResponse(data) {
-        	console.log(data);
-    	},
-
-        	/*for (key in this.checkedItems) {
         		for (i in this.strategies) {		
         			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
         				this.splice('strategies', i, 1);
@@ -445,8 +390,8 @@
         		}
     		}
 
-    		this.checkedItems = {};
-        },*/
+    		this.checkedItems = {};	        	
+        },
 
 	});
   </script>
