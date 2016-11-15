@@ -1,7 +1,7 @@
 [{
 					  "key":"Hello1",
 					  "color": "#ff7f0e",
-					  "x_axis": "Stocks",
+					  "x_axis": "Quantity",
 					  "y_axis": "Price",
 					  "values": [{
 					      "x": 0,
@@ -26,7 +26,7 @@
 					{
 				"key":"Hello2",
 					  "color": "#000",
-					  "x_axis": "Stocks",
+					  "x_axis": "Quantity",
 					  "y_axis": "Price",
 					  "values": [{
 					      "x": 0,
@@ -46,30 +46,5 @@
 					    }, {
 					      "x": 5,
 					      "y": 2
-					    }]
-					},
-					{
-					  "key":"Hello3",
-					  "color": "#673ab7",
-					  "x_axis": "Stocks",
-					  "y_axis": "Price",
-					  "values": [{
-					      "x": 0,
-					      "y": 20
-					    }, {
-					      "x": 1,
-					      "y": 18
-					    }, {
-					      "x": 2,
-					      "y": 5
-					    }, {
-					      "x": 3,
-					      "y": 3
-					    }, {
-					      "x": 4,
-					      "y": 1
-					    }, {
-					      "x": 5,
-					      "y": 4
 					    }]
 					}]
