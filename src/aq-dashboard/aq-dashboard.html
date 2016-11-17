@@ -43,20 +43,22 @@
           on-iron-localstorage-load-empty="initializeDefaultValue">
       </iron-localstorage>
 
-      <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width='200px' narrow="{{narrow}}">
+      <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
+          
           <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
+          
       
           <paper-header-panel id="mainpanel" main fixed mode="seamed">
             <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
           <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
           
-            <app-route path="/" redirect="/home"></app-route>
+            <app-route path="/" redirect="/main"></app-route>
             <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
             <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
-            <app-route path="/home" element="aq-homepage" bindrouter=""></app-route>
+            <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
             <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
 
@@ -137,6 +139,11 @@
             value: {user:''},
           },
 
+          drawerWidth:{
+            type:String,
+            value:"0px",
+          },
+
         },
 
         listeners: {
@@ -169,6 +176,8 @@
                 }
             }
 
+
+
         },
         
         checkHasToken() {
@@ -194,7 +203,7 @@
         },
 
         computeShowSideBar(narrow, showSidebar){
-          return !showSidebar
+          return !showSidebar;
         },
 
         viewChanged(newMenu) {
@@ -245,7 +254,7 @@
             return
           }
 
-          path = ['/home', 
+          path = ['/main', 
                   '/dashboard', 
                   '/investments', 
                   '/about',
@@ -254,8 +263,9 @@
 
           this.currentTab = tab;
 
-          if (tab == 1) {
-            this.view = "home";
+          if (this.currentTab == 1) {
+            //this.view = "dashboard";
+            this.drawerWidth ="200px;"
           }
 
           if (this.URLcontains(path[tab])) {
