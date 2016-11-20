@@ -1,0 +1,90 @@
+
+<link rel='import' href ="../common/aq-backtest-detail-item.html">
+<link rel='import' href='../../../bower_components/web-socket/web-socket.html'>
+
+<dom-module id='aq-editor-edit-backtest-screen'>
+	<style>
+	</style>
+
+	<template>
+		<div class="goBackButton layout horizontal">
+            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="onBack">
+            </paper-icon-button>
+            <h3>Back to Strategy</h3>
+      	</div>
+
+      	<aq-backtest-detail-item id='backtestDisplay'></aq-backtest-detail-item>
+		
+      	<web-socket 
+      		url="ws://localhost:8000"
+            id="webSocketConn"
+            json
+            on-open="_onOpen"
+            on-message="_onMessage"
+            on-error="_onError">
+    	</web-socket>
+
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-editor-edit-backtest-screen',
+
+			properties:{
+				isActive: {
+					type:Boolean,
+					value:false,
+					observer:'_isActiveChanged'
+				},
+			},
+
+			_isActiveChanged(newValue, oldValue) {
+				if (newValue) {
+					this.start();
+				} else {
+					this.stop();
+				}
+			},
+
+			start() {
+				console.log("Starting Websocket:");	
+        		this.$.webSocketConn.open();
+			},
+
+			stop() {
+				console.log("Stopping Websocket");	
+        		this.$.webSocketConn.close();
+			},
+
+			_onOpen(e){
+		        console.log("Open");
+		        //console.log(e);
+		        this.$.backtestDisplay.reset();
+		        this.$.webSocketConn.send("run");
+	      	},
+
+	      	_onMessage(e) {    
+	          	if (e.detail.outputtype == "performance") {
+	            	this.$.backtestDisplay.addLineData(e.detail);
+	          	}
+
+	          	//this.$.webSocketConn.close();
+	      	},
+
+      		_onError(e) {
+        		console.log("Error");	
+  			},
+
+      		_onClose(e) {
+        		console.log("Close:");
+        		//console.log(e);
+      		},
+
+			onBack() {
+				this.isActive = false;
+				this.fire('backClicked-backtest');
+			},
+
+		});
+	</script>
+</dom-module>
