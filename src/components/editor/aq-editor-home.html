@@ -103,46 +103,58 @@
         right: 5%;
       }
 
+      #ifsearch {
+      	display: none;
+      }
+
     </style>
 
 	<template>
 		<!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
 
- 		<div id='container'>
+		<iron-ajax
+	    	  auto	
+              url="http://localhost:3002/api/v2/strategy"
+              method='GET'
+              params="[[searchParam]]"
+              id='getStrategiesQuery'
+              handle-as="json"
+              on-response="onGetStrategiesResponse"
+              on-error="onGetStrategiesError"
+              headers='{{header}}'
+              debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax	
+              url="http://localhost:3002/api/v2/strategy/[[deleteId]]"
+              method='DELETE'
+              id='deleteStrategyQuery'
+              handle-as="json"
+              on-response="onDeleteStrategyResponse"
+              on-error="onDeleteStrategyError"
+              headers='{{header}}'
+              debounce-duration="300">
+        </iron-ajax>
+
+        	
+        <div id='container'>
+	  		
 	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
-	  		<div id="ifsearch"><p>Strategy results for: <i>"[[searchParam.search]]"</i></p></div>
+	  		<div id="ifsearch">
+	  			<p>Strategy results for: 
+	  				<i>"[[searchParam.search]]"</i>
+  				</p>
+	  		</div>
 
 		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
 		      <div class="name">Name<span class="narrow">/Description</span></div>
 		      <div class="description">Description</div>
 		      <div class="backtest">#Backtests</div>
 		    </div>
-
-	        <iron-ajax
-		    	  auto	
-                  url="http://localhost:3002/api/v2/strategy"
-                  method='GET'
-                  params="[[searchParam]]"
-                  id='getStrategiesQuery'
-                  handle-as="json"
-                  on-response="onGetStrategiesResponse"
-                  on-error="onGetStrategiesError"
-                  headers='{{header}}'
-                  debounce-duration="300">
-            </iron-ajax>
-
-            <iron-ajax	
-                  url="http://localhost:3002/api/v2/strategy/[[deleteId]]"
-                  method='DELETE'
-                  id='deleteStrategyQuery'
-                  handle-as="json"
-                  on-response="onDeleteStrategyResponse"
-                  on-error="onDeleteStrategyError"
-                  headers='{{header}}'
-                  debounce-duration="300">
-            </iron-ajax>
-        
+            
+            <!--template is="dom-if" if="[[strategies]]"-->
+	  	 
 	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
 	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
 	    									num-backtest = "5[[item.backtests.length]]"
@@ -166,7 +178,8 @@
 		    
 		    <div id="actions"></div>
 		</div> 
-
+		<!--/template-->
+		
   </template>
 
   <script>
@@ -176,7 +189,7 @@
 		
 		properties: {
 			strategies: {
-				type: Array,
+				type: Object,
 			},
 			
 			color: { type: String },
@@ -216,13 +229,13 @@
 		ready: function() {
             var x = localStorage.getItem('my-app-storage');
 	        var user = JSON.parse(x).user;
-	        if (user.token) {
+	        if (user.token) {	
 	          this.header = {
 	            "aimsquant-token": user.token,
 	            "Content-Type": "application/json"};  
-	        }
+	        } 
 
-	        this.$.ifsearch.style.display = 'none';
+	        //this.$$('#ifsearch').style.display = 'none';
         },
 
         onGetStrategiesResponse(data) {
@@ -231,8 +244,7 @@
         },
 
 		onGetStrategiesError(data) {
-        	//console.log(data);
-        	//check for error
+        	//this.router.go('/user/signin');
         },        
 
 		listeners: {
@@ -286,7 +298,7 @@
 			if (!sharedActionMenu) {
 				this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
 				this._sharedActionMenu.classList.add('hidden');
-				Polymer.dom(this.$.actions).appendChild(this._sharedActionMenu);
+				Polymer.dom(this.$$('#actions')).appendChild(this._sharedActionMenu);
 				sharedActionMenu = this._sharedActionMenu;
 			}
 			sharedActionMenu.iconsOnly = true;
@@ -333,15 +345,15 @@
 		},
 
 		openDeletionDialog() {
-			this.$.dialog.open();
+			this.$$('#dialog').open();
 		},
 
 		openCompareDialog() {
-			this.$.strategyCompareDialog.open();
+			this.$$('#strategyCompareDialog').open();
 		},
 
 		openPreview() {
-  			this.$.strategyPreviewDialog.open();
+  			this.$$('#strategyPreviewDialog').open();
 		},
 
 		click() {
@@ -402,9 +414,9 @@
         	searchtext = e.detail.searchtext;
         	
         	if(searchtext!="") {
-        		this.$.ifsearch.style.display = 'block';
+        		this.$$('#ifsearch').style.display = 'block';
         	} else {
-        		this.$.ifsearch.style.display = 'none';
+        		this.$$('#ifsearch').style.display = 'none';
         	}
 
         	this.searchParam = {"search":searchtext};
