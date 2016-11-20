@@ -38,9 +38,9 @@
         }
 
         #userEmailInput {
-            width: 340px;
-            margin-left: -17px;
-            margin-top: -50px;
+            --width: 340px;
+            --margin-left: -17px;
+            --margin-top: -50px;
             --width:100%;
         }
 
@@ -256,6 +256,7 @@
         </div>
 
          <iron-localstorage
+          id='localStorage'  
           name="my-app-storage"
           value="{{aimsquant}}">
         </iron-localstorage>
@@ -394,7 +395,12 @@
                 actionFailedMessage:{
                     type:String,
                     value:'',
-                }
+                },
+
+                aimsquant:{
+                    type:Object,
+                    notify:true,
+                },
             },
 
             /**
@@ -689,11 +695,14 @@
                 };
 
                 this.set('aimsquant.user', data.detail.response);
+                //this.$.localStorage.value = data.detail.response;
                 //console.log(this.aimsquant);
-                var x = localStorage.getItem('my-app-storage');
-                //console.log(x);
+                this.$.localStorage.save();
+
+                /*var x = localStorage.getItem('my-app-storage');
+                console.log(x);
                 var user = JSON.parse(x).user;
-                //console.log(user);
+                console.log(user);*/
 
                 this.actionSucceeded();
                 this.router.go('/dashboard');
