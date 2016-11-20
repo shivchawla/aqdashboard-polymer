@@ -7,6 +7,7 @@
 
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
@@ -26,6 +27,7 @@
 		  margin-top: 5px;
 		  margin-left:4px;
 		  width:200px;
+		  @apply(--layout-vertical);
 		}
 	
 		.inputbox iron-icon {
@@ -40,7 +42,8 @@
 
 		.inputbox span {
 			font-size: 14px;
-			font-weight: bold;
+			--font-weight: bold;
+		 	margin-bottom: 0px;
 		}
 
 		input {
@@ -48,212 +51,221 @@
 		  border: 0;
 		  margin: 0;
 		  padding-left: 4px;
-		  border: 1px solid #e5e5e5;
+		  border: 2px solid #e5e5e5;
 		  @apply(--paper-font-body1);
-		  font-size: 12px;
+		  font-size: 14px;
 		  z-index: 2;
+		  --background-color: black;
+		  --color: white;
+		  border-radius: 2px;
+
 		}
 
-		#date-box {
-		  --height: 200%;
-		  -webkit-appearance: none;
-		  width:71.2%;	 
+		#box {
+		  width:80%;	 
 		}
-
-		#capital-box {
-		  width:55%;
-		}
-
-		#plan-box {
-			width:62%;	
-		}
-
-		#rebalance-box {
-			width:45%;	
-		}
-
-		#dt-box {
-			width:52%;	
-		}
-
+	
 		input :focus {
 		  outline: 0;
 		  background-color: #eceff1;
 		  border-color: #cfd8dc;
 		}
 
+		
 		#basic-settings {
-			height:140px;
-			margin-top:20px;
-			margin-left:5px;
-			border: 1px solid #e5e5e5;
+			--height:140px;
+			margin-top:5px;
+			--margin-left:5px;
+			padding-bottom:10px;
+			--border: 1px solid #e5e5e5;
+			border-bottom: 1px solid #333a56;
+
 		}
 
 		#advancedSettings {
-			height:35px;
-			margin-top:15px;
-			margin-left:5px;
-			border: 1px solid #e5e5e5;
+			--height:35px;
+			margin-top:5px;
+			--margin-left:5px;
+			--border: 1px solid #e5e5e5;
+			padding-bottom:10px;
+		}
+
+		#universeSettings {
+			border-bottom: 1px solid #333a56;
+			padding-bottom:10px;
 		}
 
 		#extra-settings {
-			height:80px;
+			--height:80px;
 			margin-top:8px;
-			margin-left:10px;
-			border: 1px solid #e5e5e5;	
-			width:90%;
+			margin-left:14px;
+			--border: 1px solid #e5e5e5;	
+			--width:90%;
+
+			
+		}
+
+		#date-settings {
+			--height:80px;
+			margin-top:8px;
+			margin-left:14px;
+			--border: 1px solid #e5e5e5;	
+			--width:90%;
 		}
 
 		#heading {
 			margin-top: 10px;
-			margin-left: 4px;
+			margin-left: 14px;
 		}
 
 		#heading span{
 			font-weight: bold;
-		}
-
-		#advancedheading span{
-			font-weight: bold;
-		}
-
-
-		#extra-settings #heading {
-			margin-top: 5px;
-			margin-left: 4px;
-		}
-
-		#extra-settings #heading span{
-			font-size: 14px;
-			font-weight: bold;	
-		}
-
-		#advancedheading {
-			margin-top: 0px;
-			margin-left: 4px;
-		}
-
-		paper-icon-button {
-			height: 30px;
-			width: 30px;
-			padding-bottom:5px;
+			--color: green;
 		}
 
 		paper-button {
-			margin-top: 10px;
+			top:0;
+			--margin-top: 10px;
 		}
+
 		paper-button :active{
 			background-color: blue;
+		}
+
+		.input-span {
+			--border: 1px solid;
+			--border-radius: 3px;
+			--width:80%;
+			--height:34px;
+			--margin-bottom: -20px;
+			height:40px;
+
+		}
+
+		.input-span span { 
+			--margin:0 auto;
+			--height:24px;
+			font-size: 12px;
+		}
+
+		textarea {
+			font-size: 14px;
 		}
 
 	</style>
 
 	<template>
 		
-		<div id = 'run'>
-			<h3>Run Settings</h3>
+		<div id = 'run' class="layout vertical">
 			<div id = 'basic-settings' class="layout vertical">
 				<div id='heading'><span>Basic Settings</span></div>
 				<div id='date-settings' class="layout horizontal">
 			
 					<div class="inputbox">	
-						<span>Start:</span> 	
+						
+						<span class="input-span">Start Date</span>
+						
 			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-		      			<input id="date-box" placeholder="Start Date"
-		             	value="{{searchValue::change}}" type="date"
+		      			<input id="box" placeholder="Start Date"
+		             	value="{{startDateValue::change}}" type="date"
 		             	on-keydown="checkForKeys" on-blur='close'>
 		        	</div>
 
 		        	<div class="inputbox">	
-						<span>End:</span> 	
+						<span class="input-span">End Date</span> 	
 			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-		      			<input id="date-box" placeholder="Start Date"
-		             	value="{{searchValue::change}}" type="date"
+		      			<input id="box" placeholder="Start Date"
+		             	value="{{endDateValue::change}}" type="date"
 		             	on-keydown="checkForKeys" on-blur='close'>
 		        	</div>
-		    	</div>
-
-		    	<div id='capital-settings' class="layout horizontal">
-			    	<div class="inputbox">	
-						<span>Capital:</span> 	
+		    		<div class="inputbox">	
+						<span class="input-span">Initial Capital</span> 	
 			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-			  			<input id="capital-box" placeholder="Seed Capital"
-			         	value="{{searchValue::change}}" type="number"
+			  			<input id="box" placeholder="Seed Capital"
+			         	value="{{initialCashValue::change}}" type="number"
 			         	on-keydown="checkForKeys" on-blur='close'>
 			    	</div>
 
-			    	<div class="inputbox">	
+			    	<!--div class="inputbox">	
 						<span>Plan:</span> 	
 			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-			  			<input id="plan-box" placeholder="Investment Plan"
+			  			<!--input id="plan-box" placeholder="Investment Plan"
 			         	value="{{searchValue::change}}" type="text"
 			         	on-keydown="checkForKeys" on-blur='close'>
-			    	</div>
+			    	</div-->
 		    	</div>
 
 			</div>
+
+			<div id = 'universeSettings' class="layout vertical">		
+				<div id='heading'><span>Universe Settings</span></div>
+						
+				<div id='extra-settings' class="layout horizontal" >
+					
+					<textarea rows="8" cols="71"></textarea>
+        		</div>
+    		</div>
+
 	
-			<div id = 'advancedSettings' class="layout vertical">
-				
-				<div id='advancedheading'>
-						<span>Advanced Settings</span>
-						<paper-icon-button noink icon="icons:add" on-tap='toggle'>
-						</paper-icon-button>
-				</div>
-
-				<iron-collapse id='adcollapse'>
-				
-					<div id='extra-settings' >
+			<div id = 'advancedSettings' class="layout vertical">		
+				<div id='heading'><span>Advanced Settings</span></div>
 						
-						<div id='heading'><span>Rebalance Settings</span></div>
-						<div class="layout horizontal">
-							<div class="inputbox">	
-								<span>Rebalance:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="rebalance-box" placeholder="Frequency"
-				             	value="{{searchValue::change}}" type="text"
-				             	on-keydown="checkForKeys" on-blur='close'>
-			        		</div>
+				<div id='extra-settings' class="layout horizontal" >
+					
+						<div class="inputbox">	
+							<span class="input-span">Rebalance</span> 	
+				    		<input id="box" placeholder="Rebalance Frequency"
+			             	value="{{rebalanceValue::change}}" type="text"
+			             	on-keydown="checkForKeys" on-blur='close'>
+		        		</div>
 
-				        	<div class="inputbox">	
-								<span>Time:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="dt-box" placeholder="DateTime"
-				             	value="{{searchValue::change}}" type="time"
-				             	on-keydown="checkForKeys" on-blur='close'>
-				        	</div>
-				    	</div>
+		        		<div class="inputbox">	
+							<span class="input-span">Cancel Policy</span> 	
+				    		<input id="box" placeholder="Cancel Policy"
+			             	value="{{cancelPolicyValue::change}}" type="text"
+			             	on-keydown="checkForKeys" on-blur='close'>
+		        		</div>
+
+		        		<div class="inputbox">	
+							<span class="input-span">Resolution</span> 	
+				    		<input id="box" placeholder="Resolution"
+			             	value="{{resolutionValue::change}}" type="text"
+			             	on-keydown="checkForKeys" on-blur='close'>
+		        		</div>
+	        		</div>
+
+	        		<div id='extra-settings' class="layout horizontal" >
+				
+			    		<div class="inputbox">	
+							<span class="input-span">Commission</span> 	
+				    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+			      			<input id="box" placeholder="Commission"
+			             	value="{{commissionValue::change}}" type="text"
+			             	on-keydown="checkForKeys" on-blur='close'>
+
+		        		</div>
+
+			        	<div class="inputbox">	
+							<span class="input-span">Slippage</span> 	
+				    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+			      			<input id="box" placeholder="Slippage"
+			             	value="{{slippageValue::change}}" type="number"
+			             	on-keydown="checkForKeys" on-blur='close'>
+
+			             	<!--input id="dt-box" placeholder="Value"
+			             	value="{{searchValue::change}}" type="number"
+			             	on-keydown="checkForKeys" on-blur='close'-->
+			        	</div>
 			    	</div>
+		    	</div>
 
-					<div id='extra-settings' >
-						
-						<div id='heading'><span>Commission Settings</span></div>
-						<div class="layout horizontal">
-							<div class="inputbox">	
-								<span>Model:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="rebalance-box" placeholder="Model"
-				             	value="{{searchValue::change}}" type="text"
-				             	on-keydown="checkForKeys" on-blur='close'>
-			        		</div>
-
-				        	<div class="inputbox">	
-								<span>Value:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="dt-box" placeholder="Value"
-				             	value="{{searchValue::change}}" type="number"
-				             	on-keydown="checkForKeys" on-blur='close'>
-				        	</div>
-				    	</div>
-			    	</div>
-
-			    	<div id='extra-settings' >
+			    	<!--div id='extra-settings' >
 						
 						<div id='heading'><span>Slippage Settings</span></div>
 						<div class="layout horizontal">
 							<div class="inputbox">	
 								<span>Model:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+
 				      			<input id="rebalance-box" placeholder="Model"
 				             	value="{{searchValue::change}}" type="text"
 				             	on-keydown="checkForKeys" on-blur='close'>
@@ -261,18 +273,17 @@
 
 				        	<div class="inputbox">	
 								<span>Value:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
+					    		
 				      			<input id="dt-box" placeholder="Value"
 				             	value="{{searchValue::change}}" type="number"
 				             	on-keydown="checkForKeys" on-blur='close'>
 				        	</div>
 				    	</div>
-			    	</div>
-		    	</iron-collapse>
+			    	</div-->
+		    	<!--/iron-collapse-->
 			</div>
 
-			<paper-button noink raised class="flex">Start Backtest</paper-button>
-		</div>	
+			<!--paper-button noink raised class="flex">Start Backtest</paper-button-->	
 	</template>
 
 	<script>

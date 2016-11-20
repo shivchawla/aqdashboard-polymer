@@ -18,13 +18,14 @@
     }
 
     #heading {
-      border-bottom: 1px solid;
+      border-bottom: 1px solid teal;
       font-size: 30px;
     }
 
     #category {
      font-size: 15px;
      margin-top:5px;
+     color:teal;
     }
 
     #author {
@@ -48,8 +49,9 @@
       width:35px;
       margin-right: 15px;
       margin-top:5px;
-      outline: 1px solid; -- #333a56;
-      --color: #188364; --#99ced4;
+      outline: 1px solid; 
+      --color: white;
+      --background-color: #cf6766;
     }
 
     #header-content {
@@ -66,10 +68,10 @@
       </div>
 
       <div class="layout horizontal">
-        <span id='category' class="self-top">[[postHeader.category]]</span>
+        <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
         <div class="flex"></div>
         <paper-icon-button title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
-        <paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button>
+        <!--paper-icon-button title="Share" icon="vaadin-icons:share-square"></paper-icon-button-->
       </div>
 
       <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>

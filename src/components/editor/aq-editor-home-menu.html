@@ -46,6 +46,8 @@
 		  width:100%;
 		  font-size: 16px;
 		  z-index: 2;
+	    	background-color: #eceff1;
+		  --border-color: #cfd8dc;
 		}
 
 		#searchbox:focus {
@@ -119,7 +121,7 @@
 	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
              	value="{{searchValue::change}}" type="search"
-             	on-keydown="checkForKeys" on-blur='close'>
+             	on-keydown="checkForKeys" on-blur='blur' on-search='search'>
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
@@ -132,8 +134,8 @@
 	  			<paper-icon-button noink class="iconButton" title="Delete" icon="icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="iconButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
-				</paper-icon-button>
+				<!--paper-icon-button noink class="iconButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				</paper-icon-button-->
 			</div>      	
   		</div>
 
@@ -148,12 +150,15 @@
 					type:Boolean,
 					value:false,
 				},
+
+				searchText:{
+					type:String,
+					value:"",
+				},
 			},
 
 			toggle() {
-
 				var d = this.$$('#search').style.display;
-				//console.log(d);
 				if(d == 'block') {
 					this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
@@ -183,15 +188,18 @@
                     this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
                 }
-                else if(e.keyCode == 13) {
-                	this.fire('search-action',{searchtext:this.$$('#searchbox').value})
-                	
-                }
             },
 
-            close() {
-            	this.$$('#search').style.display = 'none';
-				this.$$('#menu-icons').style.display = 'inline';
+            blur() {
+            	if(this.$$('#searchbox').value=="") {
+            		this.$$('#search').style.display = 'none';
+					this.$$('#menu-icons').style.display = 'inline';
+				} 
+            },
+
+            search() {
+            	this.searchText = this.$$('#searchbox').value;
+            	this.fire('search-action',{searchtext: this.searchText});
             },
 
 		});

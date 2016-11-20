@@ -56,8 +56,9 @@
 
     paper-toolbar {
       --paper-toolbar-height:40px;
-      --paper-toolbar-background:#99d3df;
-      --paper-toolbar-color:#333a56;
+      --paper-toolbar-background:#333a56; --#99d3df;
+      --paper-toolbar-color:white;
+      --border-bottom: 1px solid white;
 
     }
 
@@ -67,7 +68,7 @@
       }
 
     paper-tabs {
-        --paper-tabs-selection-bar-color: teal;
+        --paper-tabs-selection-bar-color: white;
         height:90%;
     }
     
@@ -75,27 +76,61 @@
       left:-120 !important;
     }
 
+    paper-header-panel {
+      background-color:  #e5f1f5;--white;--#333a56;
+      color:#333a56;
+      border: 1px solid #333a56;
+      border-bottom: 1px solid #333a56;
+      opacity: 1;
+      z-index: 3;
+    }
+
+    .toolbarPlayIcon {
+       border:1px solid;
+       padding:0px;
+       height:23px;
+       width:35px;
+    }
+
+    .toolbarPlayIcon:active {
+       padding:3px;
+    }
+
+    paper-button {
+      border:1px white;
+    }
+
+   
+
 </style>
 
 <style is="custom-style" include="iron-flex iron-positioning"></style>
 
   <template>
   
-      <paper-drawer-panel drawer-width='370px' responsive-width='1130px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
+      <paper-drawer-panel drawer-width='560px' responsive-width='1000px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
        <div main> 
-        <juicy-ace-editor style="height:100%;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
+        <juicy-ace-editor style="height:100%;" theme="ace/theme/monokai" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
         </juicy-ace-editor>  
         </div>
 
         <paper-header-panel drawer mode="seamed">
           <paper-toolbar>
-              <paper-tabs selected="{{selectedSideBar}}" noink>
+              <paper-tabs selected="{{selectedSidebar}}" noink>
                 <paper-tab>Run</paper-tab>
                 <paper-tab>Quick Help</paper-tab>
               </paper-tabs>
+
+              <div class="flex"></div>
+              
+              <template is='dom-if' 
+                        if="[[isSelectedBarRun(selectedSidebar)]]">
+                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='onRun' class="toolbarPlayIcon" icon="av:play-arrow"></paper-icon-button>
+              </template>
+
           </paper-toolbar>
 
-            <iron-pages selected="{{selectedSideBar}}">
+            <iron-pages selected="{{selectedSidebar}}">
            
               <aq-editor-sidebar-run></aq-editor-sidebar-run>  
               <div>This is quick help!!</div>
@@ -121,7 +156,7 @@
           value:true,
         },
 
-        selectedSideBar:{
+        selectedSidebar:{
           type:Number,
           value:0,
         },
@@ -164,7 +199,11 @@
 
       getCodeContent() {
         return this.$.codeEditor.value; 
-      },     
+      }, 
+
+      isSelectedBarRun(sideBar) {
+        return sideBar == 0;
+      },    
 
     });
   </script>

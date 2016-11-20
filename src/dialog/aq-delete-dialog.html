@@ -11,7 +11,35 @@
 		paper-dialog {
     		width: 400px;
     		height: 175px;
+    		margin-right:0px;
+    		margin-left:0px;
+    		padding-right: 0px;
+    		padding-left:0px;
+    		border-radius: 5px;
+    		border: 2px solid teal;
   		}
+
+  		#buttons {
+  			margin-bottom:0px;
+  			--margin-top: 10px;
+  		}
+
+  		paper-button {
+  			--paper-button:{
+  				color:teal;
+  			};
+		}
+
+		paper-button{
+  			border-radius: 5px;
+    		border: 1px solid teal;
+    		height:30px;
+  		}
+
+  		h2 {
+  			color:teal;
+  		} 
+  		
 	</style>
 	
 	<template>
@@ -19,8 +47,8 @@
  			<h2>[[heading]]</h2>
  			<p>[[message]]</p>	 	
   			<div class="buttons">
-  				<paper-button dialog-dismiss>[[cancel]]</paper-button>
-    			<paper-button dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
+  				<paper-button raised dialog-dismiss>[[cancel]]</paper-button>
+    			<paper-button raised dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
   			</div>
 		</paper-dialog>
 

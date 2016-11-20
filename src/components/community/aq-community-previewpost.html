@@ -26,24 +26,33 @@
             margin-bottom:10px;
         }
 
-        --max-width:5%"
+        paper-button {
+            border: 1px solid #333a56;
+            height:30px;
+            font-size: 13px;
+        }
+
+        #buttons{
+            margin-bottom: 10px;
+        }
+
     </style>
 
     <template>
   
-        <div class="layout vertical" id="previewContainer">
+        <div class="layout vertical flex" id="previewContainer">
             <div class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised  noink on-tap='goBack'>Edit</paper-button>
-                <paper-button raised  noink>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>
             
-            <aq-community-postdetail-header heading="[[heading]]" category="[[category]]" content="[[content]]"></aq-community-postdetail-header>
+            <aq-community-postdetail-header post-header="[[threadData]]"></aq-community-postdetail-header>
             
-            <div class="layout horizontal">
+            <div id='buttons' class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised noink on-tap='goBack'>Edit</paper-button>
-                <paper-button raised noink>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>   
 
         </div>        
@@ -55,7 +64,8 @@
 
         properties :{
           
-          header :{
+          threadData:Object,
+          /*header :{
             type:String,
            },
             category:{
@@ -65,12 +75,22 @@
               type:String,
             },
 
-          },
+          },*/
+        },
+
+        attached () {
+            console.log(this.threadData);
         },
         
-        goBack() {
-          this.router.go("/dashboard/community/create");
+        onEdit() {
+          this.fire('edit-clicked');
         },
+
+        onSubmit() {
+            this.fire('submit-clicked');
+        },
+
+
       });
     </script>
 

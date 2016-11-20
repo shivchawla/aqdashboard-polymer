@@ -6,6 +6,7 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="../aq-markdown-editor.html">
+<link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-selectstrategybacktest-dialog.html">
 <link rel='import' href='../common/aq-dropdown.html'>
 <link rel='import' href='../analyze/aq-analyze-home-backtest-item.html'>
@@ -18,7 +19,13 @@
       #container {
           width:90%;
           margin:0 auto;
-          color:#333a56;   
+          color:#333a56; 
+          margin-top:10px;  
+      }
+
+      .goBackButton {
+        margin-left: -7px;
+        margin-bottom: 10px;
       }
    
       input {
@@ -40,22 +47,65 @@
 
       }
 
+      p {         
+          font-size: 28px;
+          margin-bottom: 10px;
+          margin-top:0px;
+        }
+
+      paper-button {
+        border: 1px solid #333a56;
+        height:30px;
+        font-size: 13px;
+      }
+
+      #attachButton {
+        position:absolute;
+        top:185px;
+        right:65px;
+      }
+
+      #attachButton paper-button {
+        border:none !important;
+      }
+
+      #buttons {
+        margin-bottom: 10px;
+      }
+
     </style>
 
     <template>
+
+
+        <template is='dom-if' if="[[preview]]">
+          <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>  
+        </template>
+
+        <template is='dom-if' if="[[!preview]]">
         <div id='container' class="layout vertical flex">
-            <h1>Create a Post</h1>
-       
+            <div class="goBackButton layout horizontal">
+            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBack"></paper-icon-button>
+            <div class="flex"><h4>Back to Community</h4></div>
+          </div>
+          
+            <p>Create a Post</p>
+
+            <div id='attachButton'>
+            <paper-button raised noink on-tap='attachSelected'>Attach<iron-icon icon="editor:attach-file"></iron-icon></paper-button>
+            </div>
+
             <div class="layout horizontal">
                 <aq-dropdown id="category_dd" options="[[categories]]"></aq-dropdown>
                 <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
             </div>
-                
+            
             <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
 
-            <div class="layout horizontal">
+            <div id='buttons' class="layout horizontal">
+                <div><i>[[error]]</i></div>
                 <div class="flex"></div>
-                <paper-button raised noink on-tap='previewSelected'>Preview</paper-button>
+                <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
 
                 <paper-button raised noink on-tap="postThread">Submit</paper-button>
             </div>
@@ -64,6 +114,7 @@
 
         <aq-community-selectstrategybacktest-dialog id ="dialog" heading="Select Strategy-Backtest">
         </aq-community-selectstrategybacktest-dialog>
+        </template>
 
 
         <iron-ajax 
@@ -94,28 +145,25 @@
                   value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
                 },
 
-                header:{
-                  type:Object,
-                },
-
-                share: {
-                  type:String,
-                  value:"",
-                },
-
                 id:{
                   type:String,
                   value:"",
                 },
+
+                preview:{
+                  type:Boolean,
+                  value:false,
+                },
+                error:String,
             },
 
             listeners :{
               'attach-pressed':'onAttach',
+              'edit-clicked':'onEdit',
+              'submit-clicked':'postThread',
             },
 
-            ready: function() {
-                this.categories = categories;
-                
+            ready: function() { 
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
                 if (user.token) {
@@ -125,21 +173,14 @@
                 }
             },
 
-            attached() {
+            /*attached() {
               //Write the sharing your startegy code and 
               console.log(this.id);
               console.log(this.share);  
-            },
+            },*/
 
             postThread: function() {
-                const markdownText = this.$.editor.getContent();
-                const category = this.$.category_dd.getSelectedValue();
-                const title = this.$.topicInput.value;
-                this.threadData = {
-                    "category": category,
-                    "title": title,
-                    "markdownText": markdownText
-                };
+                this.processInput();
                 this.$.thread.generateRequest();
             },
             
@@ -152,10 +193,44 @@
             onPostThreadError: function(data) {
               console.log(data);
             },
-  
-                     
+                       
             onAttach() {
               this.$.dialog.open();      
+            },
+
+            goBack() {
+              this.router.go('/dashboard/community');
+            },
+
+            processInput() {
+              const markdownText = this.$$('#editor').getContent();
+              const category = this.$$('#category_dd').getSelectedValue();
+              const title = this.$$('#topicInput').value;
+              this.threadData = {
+                  "category": category,
+                  "title": title,
+                  "markdownText": markdownText,
+                  "user":{"firstName":"Shiv","lastName":"Chawala"},
+                  "updatedAt":Date(),
+              };
+            },
+
+            onPreview() { 
+              this.processInput();
+              if(this.threadData["title"]!="" && 
+                  this.threadData["category"]!="" &&
+                  this.threadData["markdownText"]!=""
+                ) {
+                this.error = "";
+                console.log(this.threadData);
+                this.preview = true;
+              } else {
+                this.error = "No preview available for empty post. Please create a valid post.";
+              }
+            },
+
+            onEdit() {
+              this.preview = false;
             },
 
         });

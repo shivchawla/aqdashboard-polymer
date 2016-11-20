@@ -10,7 +10,6 @@
 
 
 <dom-module id='aq-editor-strategy-input-dialog'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
 
 	<style>
 		paper-dialog {
@@ -26,16 +25,28 @@
 
   		.input-fields {
   			--padding-bottom: 20px;
+  			--paper-input-container-color:#333a56;
+  			--paper-input-container-input-color:#333a56;
+  			--paper-input-container-underline:{
+  				color:teal
+  			};
   		}
 
   		#buttons {
   			margin-bottom:0px;
+  			margin-left: 58%;
   		}
 
   		paper-button {
   			--paper-button:{
   				color:teal;
   			};
+  		}
+
+  		paper-button{
+  			border-radius: 5px;
+    		border: 1px solid teal;
+    		height:30px;
   		}
 
   		h2 {
@@ -73,7 +84,9 @@
 		                     char-counter
 		                     no-wrap>
             </paper-input>
-           <div id="buttons" class="horizontal">
+
+           	<div id="buttons">
+
   				<paper-button noink dialog-dismiss>Cancel</paper-button>
     			<paper-button noink on-tap='onSubmit'>OK</paper-button>
   			</div>

@@ -4,11 +4,42 @@
 
 <dom-module id="aq-community-postdetail-reply">
 
-  <template>
-      <div id="replybox" class="flex layout vertical">
+   <style is="custom-style" include="iron-flex iron-positioning">
+   </style>
+   
+  <style>
 
+    #attachButton {
+        margin-bottom: -40px;
+        margin-right:5px;
+    }
+
+    #attachButton paper-button {
+        border:none !important;
+    }
+
+    paper-button {
+        border: 1px solid #333a56;
+        height:30px;
+        font-size: 13px;
+    }
+
+    #buttons{
+        margin-bottom: 10px;
+    }
+
+
+  </style>
+
+  <template>
+      <div id='attachButton' class="layout horizontal flex">
+          <div class="flex"></div>
+          <paper-button class="self-end" raised noink on-tap='attachSelected'>Attach<iron-icon icon="editor:attach-file"></iron-icon></paper-button>
+      </div>
+        
+      <div id="replybox" class="flex layout vertical">
         <aq-markdown-editor id="editor" placeholder="Write a reply"></aq-markdown-editor>
-        <div class="layout horizontal">
+        <div class="layout horizontal" id='buttons'>
           <div class="flex"></div>
           <paper-button raised noink>Preview</paper-button>
           <paper-button raised noink on-tap="postThread">Reply</paper-button>

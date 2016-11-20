@@ -11,11 +11,16 @@
 
   <style>
     .post-container {
-      max-width: 800px;
+      max-width: 900px;
       border-bottom: 1px solid #e5e5e5;--#80CBC4;--#666;
       margin-top: 10px;
+      --padding-top: 25px;
       padding-bottom: 5px;
       margin-bottom: 30px;
+    }
+
+    .post-container:hover {
+      --background-color:#e5f1f5
     }
 
     #top-section {
@@ -26,11 +31,10 @@
       --height:20px;
     }
 
-    #date {
-      color: #444;
-    }
+
     #author-name {
-      color: teal;
+      --color: teal;
+      font-size: 15px;
     }
 
     #left-section {
@@ -42,11 +46,17 @@
     }
 
     a {
-      text-decoration: none;
+      text-decoration: none; 
+      color:#333a56;
+      font-size:16px;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     span {
-      font-size: 12px;
+      font-size: 13px;
     }
 
     profile-img {
@@ -67,28 +77,36 @@
     }
 
     #category {
-      min-width: 150px;
+      min-width: 250px;
     }
 
+    .span2{
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    #date {
+      --color:teal;
+    }
 
   </style>
   <template>
   	<div class="post-container layout horizontal" id='post-container'>
       <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
       <div>
-	        <div on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
-          <a href$="[[authoraddress]]">
+	        <div id='postText' on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
+          <!--a href$="[[authoraddress]]"-->
             <span id="author-name">[[authorFirstname]] [[authorLastname]]</span>
-          </a>
-          <span id="date">   on [[postDate]]</span>
+          <!--/a-->
+          <span id="date"><i>   on [[postDate]]</i></span>
       </div>
 
       <div class="flex"></div>
       <div style="width:25%" class="vertical">
       <div id='right-section' class="layout horizontal">
-        <div id="total-replies"><span>Replies: [[totalReplies]]</span></div>
-        <div id="total-views"><span>Views: [[totalViews]]</span></div></div>
-        <div id='category'><span>Category: [[postCategory]]</span></div>
+        <div id="total-replies"><span><i>Replies</i>:</span> <span class="span2">[[totalReplies]]</span></div>
+        <div id="total-views"><span><i>Views</i>:</span> <span class="span2">[[totalViews]]</span></div></div>
+        <div id='category'><span><i>Category:</i></span><span class="span2"> [[postCategory]]</span></div>
       </div>
 
 

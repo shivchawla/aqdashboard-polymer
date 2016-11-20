@@ -7,6 +7,8 @@
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
 
+
+<link rel="import" href="../common/aq-backtest-detail-item.html">
 <link rel="import" href="../profile-img.html">
 
 <dom-module id="aq-community-postdetail-content">
@@ -18,7 +20,7 @@
     #author {
       --margin-top:40px;
       --margin-bottom: 15px;
-      border-bottom: 1px solid;
+      border-bottom: 1px solid teal;--#bfbfbf;
     }
 
     #img {
@@ -34,22 +36,39 @@
       margin-bottom:50px;
     }
 
+    .markdown-html {
+      border: 1px solid #efefef;
+
+      --margin-left: 5px;
+      padding-left: 5px;
+      margin-top:5px;
+      font-size: 15px;
+      min-height: 50px;
+      --max-height: 350px;
+      overflow: auto;
+    }
+
+    i {
+      font-size: 12px;
+    }
+
   </style>
+
   <template>
     <div id='post-content'>
       <div id='author' class="layout horizontal">
         <profile-img id='img' letter="[[getinitials(item)]]" class="self-end"></profile-img>
-         <div id='author-desc' class="layout vertical self-end">
-            <a href$="{{authoraddress}}">
-              <span id="author-name">{{item.user.firstName}} {{item.user.lastName}}</span>
-            </a>
-            <span id="date">{{item.updatedAt}}</span>
+         <div id='author-desc' class="layout vertical self-center">
+              <span id="author-name">{{item.user.firstName}} {{item.user.lastName}}
+            <i style="color:teal">on {{format(item.updatedAt)}}</i></span>
           </div>
       </div>
       <marked-element markdown="{{item.markdownText}}">
         <div class="markdown-html"></div>
       </marked-element>
 
+      <aq-backtest-detail-item></aq-backtest-detail-item>
+      
     </div>
 
   </template>
@@ -79,6 +98,11 @@
       getinitials(item) {
         return item.user.firstName[0] + item.user.lastName[0];
       },
+
+      format(date) {
+          return new Date(date).toLocaleTimeString("en-us", options);
+      },
+
 
     });
 

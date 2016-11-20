@@ -4,60 +4,81 @@
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item.html">
 
-<style>
-
-    .insidetoolbar {
-        outline-color: blue;
-        border: solid;
-    }
-
-    input {
-        font: inherit;
-        font-size: 16px;
-        color: black;
-    }
-
-    #container {
-        margin:0 auto;
-        margin-top: 50px;
-        color: #333a56;
-        width: 90%;
-
-      }
-
-    #fab {
-        background: teal;
-        --float: right;
-        position: fixed;
-        right: 25px;
-        bottom: 30px;
-    }
-
-    paper-tabs {
-        
-    }
-
-    .community-tabs {
-        max-width: 350px;
-        font-size: 14px;
-        margin-top: 50px;
-        border-bottom: 1px solid #e5e5e5;
-        --paper-tabs-selection-bar-color: teal;
-    }
-
-    #allposts {
-        margin-top: 50px;
-    }
-
-
-</style>
 
 <dom-module id="aq-community-home">
+    <style>
+
+        p {         
+          font-size: 28px;
+          margin-bottom: 0px;
+        }
+
+        #header {
+          margin-bottom: 40px;
+        }
+
+        i {
+          font-size :16px;
+        }
+    
+
+        .insidetoolbar {
+            outline-color: blue;
+            border: solid;
+        }
+
+        input {
+            font: inherit;
+            font-size: 16px;
+            color: black;
+        }
+
+        #container {
+            margin:0 auto;
+            margin-top: 50px;
+            color: #333a56;
+            width: 90%;
+          }
+
+
+        #fab {
+            background: #333a56;
+            --float: right;
+            position: fixed;
+            right: 25px;
+            bottom: 30px;
+
+        }
+
+        paper-tab:hover {
+            font-weight: bold;
+            font-size: 18px;
+        }   
+
+        #community-tabs {
+            max-width: 350px;
+            font-size: 16px;
+            margin-top: 50px;
+            border-bottom: 2px solid #e5e5e5;
+            --paper-tabs-selection-bar-color: teal !important;     
+        }
+
+        #allposts {
+            margin-top: 50px;
+        }
+
+
+    </style>
     <template>
         <div id='container'>
+            <div id="header">
+            <p> AimsQuant Community</p>
+            <i style="margin-bottom:50px; color:teal;"> Share, Learn and Code</i>
+            </div>
+
             <div>
             <aq-community-home-searchbar></aq-community-home-searchbar></div>
-            <paper-tabs on-iron-select="onActivateTab" class="community-tabs flex" selected="{{selected}}" noink>
+            <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
                 <paper-tab>Popular</paper-tab>
                 <paper-tab>Newest</paper-tab>
                 <paper-tab>Following</paper-tab>
@@ -158,6 +179,7 @@
 
             </div>
         </div>
+        
 
         <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
     </template>

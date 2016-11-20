@@ -26,6 +26,7 @@
 <link rel='import' href ="./aq-editor-sidebar-run.html">
 <link rel='import' href ='./aq-editor-edit-nonprogrammer.html'>
 <link rel='import' href ='./aq-editor-edit-programmer.html'>
+<link rel='import' href ='./aq-editor-edit-backtest-screen.html'>
 
 <dom-module id="aq-editor-edit">
 
@@ -71,19 +72,30 @@
 
     <template is='dom-if' if="{{strategy}}">         
         <paper-header-panel class="fit" mode="seamed"> 
-          <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]"></aq-editor-toolbar>
           
-          <template is='dom-if' if='{{isProgrammer}}'>
-            <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
+          <template is='dom-if' if='[[!isRunning]]'>
+            <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]"> 
+            </aq-editor-toolbar>
+            
+            <template is='dom-if' if='{{isProgrammer}}'>
+              <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
+            </template>
+             
+            <template is='dom-if' if='{{!isProgrammer}}'>
+              <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
+            </template>
+                 
+            <iron-collapse id='collapse'>
+              <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
+            </iron-collapse>
           </template>
-           
-          <template is='dom-if' if='{{!isProgrammer}}'>
-            <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
+
+          <template is='dom-if' if='[[isRunning]]'>
+            <aq-editor-edit-backtest-screen is-active="[[isRunning]]" 
+                                            id='backtestScreen'>
+            </aq-editor-edit-backtest-screen>
           </template>
-               
-          <iron-collapse id='collapse'>
-            <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
-          </iron-collapse>
+
         </paper-header-panel>
                       
       </template>
@@ -130,6 +142,16 @@
         
         runSwitch:{
           type: Number,
+          value: 0,
+        },
+
+        isRunning: {
+          type: Boolean,
+          value: false,
+        },
+
+        counter:{
+          type:Number,
           value:0,
         },
       },
@@ -145,13 +167,14 @@
         'close-console':'closeConsole',
         'selected-items-changed':'rowSelected',
         'toggle-design':'designChanged',
-        'back-clicked':'goToHome',
+        'backClicked':'goToHome',
         //'analyze-clicked':'goToAnalyze',
         'open-drawer':'openDrawer',
         'close-drawer':'closeDrawer',
         'save-action':'saveStrategy',
         'run-action':'runStrategy',
         'cloneClicked':'cloneStrategy',
+        'backClicked-backtest':'toggleIsRunning',
       },
 
       ready: function() {
@@ -201,12 +224,12 @@
         this.isProgrammer = !this.isProgrammer;
       },
 
-      goToHome() {
-        this.router.go('/dashboard/editor');
-      },
-
       goToAnalyze() {
         this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
+      },
+
+      goToHome() {
+        this.router.go('/dashboard/editor');
       },
 
       onGetStrategyResponse(data) {
@@ -247,6 +270,7 @@
       },
 
       runStrategy(e) {
+         console.log("Going to Run:");
         // first save the strategy
         this.runStrategyData = {  
                   "start": "2015-11-07T03:41:47.262Z",
@@ -255,8 +279,9 @@
                   "plan": "string"};
 
         this.runSwitch = 1;
-        this.saveStrategy(e);
-        
+        this.saveStrategy(e);  
+        this.isRunning = true;
+        //this.$$('#backtestScreen').start();
       },
 
       onStrategyExecutionResponse(data) {
@@ -274,6 +299,10 @@
       cloneStrategy(e) {
           e.detail.strategy = this.strategy;
           //let the event propagate
+      },
+
+      toggleIsRunning() {
+        this.isRunning = !this.isRunning;
       },
 
     });
