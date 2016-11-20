@@ -46,7 +46,6 @@
     "mocha": "^2.3.0",
     "paper-card": "PolymerElements/paper-card#^1.1.2",
     "paper-checkbox": "^1.4.0",
-    "paper-date-picker": "^0.1.5",
     "paper-datatable": "^0.9.8",
     "paper-dialog-scrollable": "^1.1.5",
     "paper-dialog": "^1.1.0",
