@@ -18,14 +18,14 @@
     }
 
     #mainPanel {
-      width: 90%;
       margin: 0 auto;
+      border-right: 1px solid;
       background-color: white;
     }
-    .selectable{
+    .selectableCategories{
       cursor: pointer;
     }
-    .selectable:hover{
+    .selectableCategories:hover{
       color: green;
       font-weight: bold;
     }
@@ -58,21 +58,21 @@
           </paper-header-panel>
           <iron-ajax auto url=""
             handle-as="json"
-            id="ajaxCategories"
-            on-response="handleResponseCategories"
+            id="getHelpCategoryQuery"
+            on-response="onGetHelpCategoriesSuccess"
             debounce-duration="300"></iron-ajax>
 
             <iron-ajax auto url=""
             handle-as="json"
-            id="ajaxHelpContent"
-            on-response="handleResponseHelpContent"
+            id="getHelpContentQuery"
+            on-response="onGetHelpContentSuccess"
             debounce-duration="300"></iron-ajax>
 
           <paper-header-panel drawer mode="seamed">
             <paper-input class="searchCategories" label="Search Categories" on-keyup="search" id="search_input"></paper-input>
               <paper-listbox selected="{{scrollSelected}}">   
                 <template is="dom-repeat" items="{{itemsCategories}}">      
-                  <paper-item class="selectable">{{item.Category}}</paper-item>
+                  <paper-item class="selectableCategories">{{item.Category}}</paper-item>
                 </template>
               </paper-listbox>
           </paper-header-panel>
@@ -103,15 +103,15 @@
 
       ready() {
          this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
-         this.$.ajaxCategories.url = "http://localhost:8080/src/components/help/data_categories.json";
-         this.$.ajaxHelpContent.url = "http://localhost:8080/src/components/help/data_help.json";
+         this.$.getHelpCategoryQuery.url = "http://localhost:8080/src/components/help/data_categories.json";
+         this.$.getHelpContentQuery.url = "http://localhost:8080/src/components/help/data_help.json";
       },
 
       search: function(){
         var search = this.$$('#search_input').value;
         search = search.toLowerCase();
         var parent = this;
-        var categoriesClass = document.getElementsByClassName('selectable');
+        var categoriesClass = document.getElementsByClassName('selectableCategories');
         // for(var i=0; i<this.itemsCategories.length;i++){
           // if(search.indexOf(parent.itemsCategories[i].Category))
         // }
@@ -128,11 +128,11 @@
         }
       },
 
-      handleResponseCategories: function(e){
+      onGetHelpCategoriesSuccess: function(e){
         this.set('itemsCategories',e.detail.response.Categories);
         this.categoriesArray = this.itemsCategories;
       },
-      handleResponseHelpContent: function(e){
+      onGetHelpContentSuccess: function(e){
         this.set('itemsHelpContent', e.detail.response.Help)
       }
     });
