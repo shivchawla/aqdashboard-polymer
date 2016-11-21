@@ -8,6 +8,7 @@
 <link rel='import' href='../../bower_components/iron-icon/iron-icon.html'>
 <link rel='import' href='../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../bower_components/iron-icons/communication-icons.html'>
+<link rel='import' href='../../bower_components/iron-icons/social-icons.html'>
 
 <link rel='import' href='../../bower_components/vaadin-icons/vaadin-icons.html'>
 <link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
@@ -32,7 +33,7 @@
       -ms-user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
-      background-color: #333a56;--#30415d; --#1C263C;-- #EFEFEF;--D9D9D9;--#E0F2F1
+      background-color: #e5f1f5;--#333a56;--#30415d; --#1C263C;-- #EFEFEF;--D9D9D9;--#E0F2F1
       opacity: var(--dark-primary-opacity);
     }
 
@@ -50,13 +51,14 @@
 
     paper-menu {
       padding-bottom: 0;
-      background-color: #333a56;--#30415d;
+      background-color: #e5f1f5;--#333a56;--#30415d;
       opacity: var(--dark-primary-opacity);
     }
 
      iron-icon{
      --iron-icon-width:20px;
      --iron-icon-height:20px;
+     color:#333a56;
    }
 
    paper-icon-item {
@@ -70,7 +72,7 @@
         font-size: 13px;
         --font-weight: bolder; 
         --background-color:#1C263C;
-        color:white;
+        color:#333a56;--white;
         width:75%;  
         margin: 0 auto;
       }
@@ -98,9 +100,17 @@
       margin-top:20px;
     }
 
+    #gap {
+      border-top: 1px solid grey;
+      margin-top:10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: -10px;
+    }
+
     .nav-header {
-      font-size: 12px;
-      --font-style: strong;
+      font-size: 14px;
+      font-weight: bold;
       margin-left:10px;
     }
   
@@ -114,7 +124,7 @@
       </paper-toolbar>
       
 
-      <div id='navigation'><span class='nav-header'><strong>RESEARCH</strong></span>
+      <div id='navigation'><span class='nav-header'>RESEARCH</span>
         <paper-menu fallback-selection="home" 
                     selected="{{menuSelected}}" 
                     attr-for-selected="menu-panel">
@@ -141,25 +151,28 @@
 
       </div>
 
-      <div id='action'><span class='nav-header'"><strong>QUICK ACTIONS</strong></span>
-        <paper-icon-item action-panel='createstrategy' on-tap="onAction">Create a Strategy
+      <div id='gap'></div>
+      <div id='action'>
+        <div class='nav-header' style="margin-bottom:15px;"><span >QUICK ACTIONS</span>
+        </div>
+        <paper-icon-item menu-panel = 'editor' action-panel='createstrategy' on-tap="onAction">Create a Strategy
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
         </paper-icon-item>
           
-        <paper-icon-item action-panel='comparebacktests' on-tap="onAction">Compare Backtests
+        <paper-icon-item menu-panel = 'editor'action-panel='comparebacktests' on-tap="onAction">Compare Backtests
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
         </paper-icon-item>
 
-        <paper-icon-item action-panel='createpost' on-tap="onAction">Write a Post
+        <paper-icon-item menu-panel = 'community' action-panel='createpost' on-tap="onAction">Write a Post
           <iron-icon item-icon icon="communication:comment"></iron-icon>
         </paper-icon-item>
         
-        <paper-icon-item action-panel='sendfeedback' on-tap="onAction">Send us Feedback
+        <paper-icon-item menu-panel = '' action-panel='sendfeedback' on-tap="onAction">Send us Feedback
           <iron-icon item-icon icon="icons:feedback"></iron-icon>
         </paper-icon-item>
 
-        <paper-icon-item action-panel='invitefriend' on-tap="onAction">Invite a Friend
-          <iron-icon item-icon icon="editor:insert-invitation">
+        <paper-icon-item menu-panel = '' action-panel='invitefriend' on-tap="onAction">Invite a Friend
+          <iron-icon item-icon icon="social:person-add">
           </iron-icon>
         </paper-icon-item>
 
@@ -203,7 +216,7 @@
     },
 
     onAction(e) {
-      this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel')});
+      this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel'), menu: e.currentTarget.getAttribute('menu-panel')});
     },  
 
     selectPanel(newChoice){

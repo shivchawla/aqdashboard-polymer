@@ -58,9 +58,12 @@
             <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
             
               <app-route path="/" redirect="/main"></app-route>
-              <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+              
+              <template is='dom-if' if='[[!hasToken]]'>
+                <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
-              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+                <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+              </template>
 
               <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
@@ -72,7 +75,9 @@
 
               <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter=""></app-route>
 
-              <app-route path="*" element="aq-dashboard-main" bindrouter="" onurlchange=""></app-route>
+              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+
+              <app-route path="*" redirect ="/main"></app-route>
 
             </app-router>
 
@@ -243,7 +248,8 @@
             this.openFeedbackDialog();
           } else if(newAction.detail.action == "invitefriend") {
             this.openInviteDialog();
-          } {
+          } else {
+            this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
             this.$.router.go('/dashboard/' + newAction.detail.action);
           }
 
