@@ -65,6 +65,8 @@
 			height: 60px;
 			width: 100%;
 		    --border:1px solid;
+		    margin-bottom: 10px
+		    margin-top:0px;
 		}
 
 		#menu-icons {
@@ -107,8 +109,11 @@
 		paper-icon-button {
 			--paper-icon-button-disabled-text:grey;
 		}
-		
 
+		p {
+			font-size: 28px;
+			margin:0px;
+		}
 
 		
 	</style>
@@ -116,7 +121,7 @@
 	<template>
 	    <div class="toolbar layout horizontal">
 	    
-	    	<div class="flex"><h3>All Strategies</h3></div>
+	    	<div class="flex self-center"><p>All Strategies</p></div>
 	      	<div id="search" class="flex">	    	
 	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"

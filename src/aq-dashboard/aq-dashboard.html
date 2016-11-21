@@ -11,6 +11,8 @@
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
+<link rel="import" href='../dialog/aq-sendfeedback-dialog.html'>
+<link rel="import" href='../dialog/aq-invitefriend-dialog.html'>
 
 <dom-module id="aq-dashboard">
     <style>
@@ -76,6 +78,12 @@
 
           </paper-header-panel>
         </paper-drawer-panel>
+
+        <aq-sendfeedback-dialog id='feedbackDialog'>
+        </aq-sendfeedback-dialog>
+
+        <aq-invitefriend-dialog id='inviteDialog'">
+        </aq-invitefriend-dialog>
 
       </div>
 
@@ -157,8 +165,10 @@
             'signupClicked':'gotoSignup',
             'tabChanged':'changeTab',
             'signout-action':'onSignOut',
-            'feedback-action':'onFeedback',
-            'invite-action':'onInvite',
+            'take-feedback-action':'openFeedbackDialog',
+            'send-feedback-action':'sendFeedBack',
+            'enter-invite-action':'openInviteDialog',
+            'send-invite-action':'sendInvite',
             'myaccount-action':'onMyAccount',
         },
 
@@ -228,7 +238,15 @@
         },
 
         viewChangedOnAction(newAction) {
-          this.$.router.go('/dashboard/' + newAction.detail.action);
+          console.log(newAction.detail.action);
+          if(newAction.detail.action == "sendfeedback") {
+            this.openFeedbackDialog();
+          } else if(newAction.detail.action == "invitefriend") {
+            this.openInviteDialog();
+          } {
+            this.$.router.go('/dashboard/' + newAction.detail.action);
+          }
+
           if(this.narrow){
             this.$.drawerpanel.closeDrawer();
           }
@@ -293,20 +311,26 @@
 
           //this.$.localstorage.value = null;
           console.log(localStorage.getItem('my-app-storage'));
-
-          
+ 
           //this.$.localstorage.reload();
 
           console.log("Aimsquant: " + this.aimsquant.user);
           this.$.router.go('/user/signout');
         },
 
-        onFeedback() {
-          this.$.router.go('/feedback');
+        openFeedbackDialog() {
+          this.$.feedbackDialog.open();
         },
 
-        onInvite() {
-          this.$.router.go('/invite');
+        sendFeedBack(e){
+
+        },
+
+        openInviteDialog() {
+          this.$.inviteDialog.open();
+        },
+
+        sendInvite(e) {
         },
 
         onMyAccount() {

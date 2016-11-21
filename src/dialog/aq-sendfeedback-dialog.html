@@ -1,0 +1,158 @@
+
+<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
+<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../../bower_components/paper-input/paper-textarea.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../aq-markdown-editor.html'>
+
+<dom-module id='aq-sendfeedback-dialog'>
+
+	<style>
+		paper-dialog {
+    		width: 80%;
+    		--height: 250px;
+    		margin-right:0px;
+    		margin-left:0px;
+    		padding-right: 0px;
+    		padding-left:0px;
+    		border-radius: 5px;
+    		border: 2px solid teal;
+  		}
+
+  		.input-fields {
+
+  			  padding-bottom: 20px;
+  			--paper-input-container-color:#333a56;
+  			--paper-input-container-input-color:#333a56;
+  			--paper-input-container-underline:{
+  				color:teal
+  			};
+  		}
+
+  		#buttons {
+  			margin:15px;
+  		}
+
+  		paper-button {
+  			--paper-button:{
+  				color:teal;
+  			};
+  		}
+
+  		paper-button{
+  			border-radius: 5px;
+    		border: 1px solid teal;
+    		height:30px;
+  		}
+
+  		#header {
+        margin-left: 15px;
+        margin-bottom: 5px;
+  		}
+
+      p, i{
+        color:teal; 
+        margin-bottom: 5px;
+      }
+
+      p {
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      #editor {
+        margin:15px;
+        --width:90%;
+      }
+
+      paper-input {
+        --paper-input-container-underline-focus:{
+            background-color: teal;
+        }
+      }
+  
+
+  		
+
+	</style>
+	
+	<template>
+	    <paper-dialog id='sendFeedbackModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
+	    	
+        <div id='header'><p>Send Feedback</p>
+        <i>Glad to see you on this platform. We take your feedback seriously and pledge to improve our product.</i></div>
+
+ 			<div id='editor'><paper-input id='feedbackSubjectInput' class='input-fields'
+                         label="Subject" 
+                         value="{{feedbackSubject}}"
+                         default="FeedBack"
+                         error-message="Please enter a subject. It can not be empty."
+                         type="text"
+                         no-label-float
+                         required
+                         maxlength=100
+                         char-counter> 
+     	</paper-input>
+ 				
+			<aq-markdown-editor id='mkdEditor' place-holder="Share your feedback"></aq-markdown-editor>
+      </div>
+     	
+      
+          <div class="layout horizontal self-end">
+          <template is='dom-if' if='[[error]]'>
+            <i style="color:red; margin-left: 15px;"> Feedback is empty. Please enter some feedback.</i>
+          </template>
+          <div class="flex"></div>
+          <paper-button noink dialog-dismiss>Cancel</paper-button>
+    			<paper-button  noink on-tap='onSubmit'>Send</paper-button>
+          </div>
+			
+		 	
+		</paper-dialog>
+
+	</template>
+	
+	<script>
+		Polymer ({
+			is: 'aq-sendfeedback-dialog',
+
+			properties: {
+				feedbackSubject:{
+          type:String,
+          value: "Feedback or Feature Request",
+        },
+				
+			},
+
+			onSubmit() {
+				if(this.$.feedbackSubjectInput.validate()) {
+          if(this.$.mkdEditor.getContent()!=""){
+					   this.fire('send-feedback-action',{subject:this.$.feedbackSubjectInput.value, feedback: this.$.mkdEditor.getContent()});
+					   this.error = false;
+             this.$.sendFeedbackModalDialog.close();
+
+				  } else {
+            this.error = true;
+          }
+        }			
+			},
+
+			open() {
+				this.$.sendFeedbackModalDialog.open();
+			},
+
+      onCancel() {
+        this.$.mkdEditor.setContent("");
+        this.error = false; 
+        this.feedbackSubject = "Feedback or Feature Request";
+      },
+
+		});
+		
+	</script>
+</dom-module>

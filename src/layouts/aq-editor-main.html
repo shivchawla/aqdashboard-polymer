@@ -129,7 +129,7 @@
       openNewDialog() {   
 
         if(!this.hasToken) {
-          localStorage.addItem('lastRequest','/dashboard/createstrategy');
+          localStorage.setItem('lastRequest',{path:'/dashboard/createstrategy'});
           this.router.go('/user/signin');
           return;
         } 

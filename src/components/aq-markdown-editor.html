@@ -35,14 +35,14 @@
                   "code", "quote", "link", "|", "unordered-list","ordered-list", "table","|","preview","side-by-side", "fullscreen"],
         },
         
-        placeholder: {
+        placeHolder: {
           type:String,
           value:"Share your thoughts",
         },
       },
       
       ready() {
-        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeholder});
+        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeHolder});
       },
     
       getContent: function(){

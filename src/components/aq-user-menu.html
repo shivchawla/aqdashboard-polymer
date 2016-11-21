@@ -54,7 +54,7 @@
     </style>
 
     <template>
-        <paper-menu-button on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=50>
+        <paper-menu-button id = 'userMenu' on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=50>
             <profile-img letter={{letter}} class="dropdown-trigger"></profile-img>
 
             <div class="dropdown-content">
@@ -113,18 +113,22 @@
 	        },
 
             onMyAccount() {
+                this.$.userMenu.close();
                 this.fire('myaccount-action');
             },
 
             onInvite() {
-                this.fire('invite-action');
+                this.$.userMenu.close();
+                this.fire('enter-invite-action');
             },
 
             onFeedback() {
-                this.fire('feedback-action');
+                this.$.userMenu.close();
+                this.fire('take-feedback-action');
             },
 
             onSignOut() {
+                this.$.userMenu.close();
                 this.fire('signout-action');
             },
 		});
