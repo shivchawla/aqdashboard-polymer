@@ -52,12 +52,31 @@
   		h2 {
   			color:teal;
   		} 
+
+  		paper-input {
+        --paper-input-container-underline-focus:{
+            background-color: teal;
+        }
+      }
+
+     iron-icon {
+        height:50px;
+        width: 50px;
+        color: teal;
+        margin-bottom: -35px;
+        margin-top:-15px;
+      }
 		
 
 	</style>
 	
 	<template>
 	    <paper-dialog id='createStrategyModalDialog' with-backdrop>
+	    	<div class="layout horizontal">
+          		<div class="flex"></div>
+          		<iron-icon icon="icons:add"></iron-icon>
+        	</div>
+
 	    	<h2>[[header]]</h2>
 
  			<paper-input id='strategyNameInput' class='input-fields'

@@ -39,11 +39,24 @@
   		h2 {
   			color:teal;
   		} 
+
+		  iron-icon {
+	        height:50px;
+	        width: 50px;
+	        color: teal;
+	        margin-bottom: -35px;
+	        margin-top:-15px;
+	      }
   		
 	</style>
 	
 	<template>
 	    <paper-dialog id='modal' with-backdrop>
+	    	<div class="layout horizontal">
+          		<div class="flex"></div>
+          		<iron-icon icon="icons:delete"></iron-icon>
+        	</div>
+
  			<h2>[[heading]]</h2>
  			<p>[[message]]</p>	 	
   			<div class="buttons">

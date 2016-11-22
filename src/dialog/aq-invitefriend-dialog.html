@@ -16,7 +16,7 @@
 
 	<style>
 		paper-dialog {
-    		width: 50%;
+    		width: 40%;
     		--height: 250px;
     		margin-right:0px;
     		margin-left:0px;
@@ -59,12 +59,13 @@
 
       p, i{
         color:teal; 
-        margin-bottom: 5px;
       }
 
       p {
         font-size: 22px;
         font-weight: bold;
+        margin-top:0px;
+        margin-bottom: 0px;
       }
 
       #editor {
@@ -77,15 +78,30 @@
         }
 
       }
+
+      iron-icon {
+        height:50px;
+        width: 50px;
+        color: teal;
+        margin-bottom: -35px;
+        margin-top:-15px;
+      }
     
 	</style>
 	
 	<template>
 	    <paper-dialog id='sendInviteModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
 	    	
-        <div id='header'><p>Invite A Friend</p>
-        <i>We are thrilled you liked our platform. Spread the Joy!!</i></div>
+        <div class="layout horizontal">
+          <div class="flex"></div>
+          <iron-icon icon="social:person-add"></iron-icon>
+        </div>
 
+        <div id='header'>
+        <p class="self-end">Invite A Friend</p>
+        <i>We are thrilled you liked our platform. Spread the Joy!!</i></div>
+      
+        
  			<div id='editor'> 
          <gold-email-input 
               id='userEmailInput'

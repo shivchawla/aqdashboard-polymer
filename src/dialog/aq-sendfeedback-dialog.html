@@ -76,14 +76,24 @@
         }
       }
   
-
+      iron-icon {
+        height:50px;
+        width: 50px;
+        color: teal;
+        margin-bottom: -35px;
+        margin-top:-15px;
+      }
   		
-
 	</style>
 	
 	<template>
 	    <paper-dialog id='sendFeedbackModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
 	    	
+        <div class="layout horizontal">
+          <div class="flex"></div>
+          <iron-icon icon="icons:feedback"></iron-icon>
+        </div>
+
         <div id='header'><p>Send Feedback</p>
         <i>Glad to see you on this platform. We take your feedback seriously and pledge to improve our product.</i></div>
 
