@@ -29,24 +29,20 @@
 
     }
 
-    .sidenav {
-      -ms-user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      background-color: #e5f1f5;--#333a56;--#30415d; --#1C263C;-- #EFEFEF;--D9D9D9;--#E0F2F1
-      opacity: var(--dark-primary-opacity);
+    #content {
+       border-right: 1px solid #e5e5e5; 
+       background-color: #e5f1f5;
     }
+
 
     paper-toolbar {
       --paper-toolbar-title: {
         text-align: left;
         margin-left: 0px !important;
       };
-
-    --paper-toolbar-background: #1C263C;
-
-      opacity: var(--dark-primary-opacity);
-      --border-bottom: 1px solid #e0e0e0;
+    }
+    paper-toolbar {
+      --paper-toolbar-background: #333a56;
     }
 
     paper-menu {
@@ -70,13 +66,13 @@
       --paper-icon-item: {
         cursor: pointer;
         font-size: 13px;
-        --font-weight: bolder; 
-        --background-color:#1C263C;
         color:#333a56;--white;
         width:75%;  
         margin: 0 auto;
       }
+    }
       
+    paper-icon-item {
       --paper-item-min-height:35px;
       --paper-item-icon-width:35px;
       
@@ -89,7 +85,6 @@
         --width:80%;
         --margin:0 auto;
       }
-
     }
 
     #navigation {
@@ -113,7 +108,8 @@
       font-weight: bold;
       margin-left:10px;
     }
-  
+
+   
   </style>
 
   <template>
@@ -123,7 +119,7 @@
         <div class="title">AimsQuant</div>
       </paper-toolbar>
       
-
+      <div id = 'content' class="fit">
       <div id='navigation'><span class='nav-header'>RESEARCH</span>
         <paper-menu fallback-selection="home" 
                     selected="{{menuSelected}}" 
@@ -180,6 +176,7 @@
           <iron-icon item-icon icon="vaadin-icons:lock"></iron-icon>
         </paper-icon-item-->
 
+      </div>
       </div>
             
       

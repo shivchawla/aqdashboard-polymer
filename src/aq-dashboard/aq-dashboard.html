@@ -50,21 +50,19 @@
         <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
             <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
-            
-        
+                
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+
 
             <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
             
               <app-route path="/" redirect="/main"></app-route>
-              
-              <template is='dom-if' if='[[!hasToken]]'>
-                <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+               
+              <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
-                <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
-              </template>
-
+              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+            
               <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
               <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
@@ -77,7 +75,9 @@
 
               <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
 
-              <app-route path="*" redirect ="/main"></app-route>
+              <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+
+              <!--app-route path="*" redirect ="/main"></app-route-->
 
             </app-router>
 
@@ -197,22 +197,26 @@
                 }
             }
         },
-        
-        checkHasToken() {
+
+        ready() {
+          this.checkHasToken();
           
+             if(this.hasToken) {
+              if(this.URLcontains('/user')) {
+                this.$$('#router').go('/main');
+              }
+          }
+
+        },
+        
+        checkHasToken() {      
           var x = localStorage.getItem('my-app-storage');
           if (x) {
             var user = JSON.parse(x).user;
-            console.log(user);
-            //console.log(user.token);
             this.hasToken = (user && user.token) ? true : false;  
           } else {
             this.hasToken = false;
           }
-
-          //console.log(this.hasToken);
-
-          //return true;
         },
 
         computeShowMenu(narrow, showSidebar) {

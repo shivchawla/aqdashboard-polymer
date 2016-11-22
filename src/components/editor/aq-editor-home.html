@@ -93,7 +93,7 @@
 
       #container {
       	margin:0 auto;
-      	margin-top: 40px;
+      	margin-top: 20px;
       	color: #333a56;
       	width: 95%;
 
@@ -157,7 +157,7 @@
 	  	 
 	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
 	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
-	    									num-backtest = "5[[item.backtests.length]]"
+	    									num-backtest = "[[item.backtests]]"
 	    									strategy-desc = "[[item.description]]"
 											strategy-id = "[[item._id]]"
 	    									>
@@ -239,7 +239,6 @@
         },
 
         onGetStrategiesResponse(data) {
-        	//check for error
         	this.strategies = data.detail.response;	
         },
 
@@ -374,6 +373,7 @@
         },
 
         goToClone(e) {
+        	console.log("Cloning");
         	strategyId = this._currentRow.id;
 
         	for (i in this.strategies) {
@@ -443,20 +443,14 @@
         },
 
         onDeleteStrategyResponse(data) {
-        	//console.log(data);
-    	},
-
-        	/*for (key in this.checkedItems) {
-        		for (i in this.strategies) {		
-        			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
-        				this.splice('strategies', i, 1);
-        				this.checkedCount -= 1;
-        			}
-        		}
+        	var idDeleted = data.detail.response.id;
+        	for (i in this.strategies) {	
+    			if (idDeleted == this.strategies[i]._id) {
+    				this.splice('strategies', i, 1);
+    				this.checkedCount -= 1;
+    			}
     		}
-
-    		this.checkedItems = {};
-        },*/
+    	},
 
 	});
   </script>

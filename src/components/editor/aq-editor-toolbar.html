@@ -34,14 +34,15 @@
 		  --paper-toolbar-height:40px;
 		  --paper-toolbar-width:100px;
 		  --paper-toolbar-color:teal;
-  		  --paper-toolbar-background: #99ced4;--#e5f1f5;--#99d3df;
+  		  --paper-toolbar-background:#e5f1f5;--#dadde9; --#ebeff1; --#f1e091;
+  		  --border-right: 5px solid #333a56;
 		}
 
 		paper-button {
 			height:35px;
 		}
 
-		#strategyName {
+		#strategyName, #box {
 			height:24px;
 			margin-top: 3px;
 			font-size: 12px;
@@ -59,7 +60,7 @@
 
 		input {
 			max-width:250px;
-			min-width: 50px;
+			min-width: 150px;
 			--width:20%;
 			--font-size: 15px;
 		}
@@ -79,6 +80,29 @@
 			 padding:3px;
 		}
 
+		paper-tabs {
+			height:35px;
+		}
+
+		.inputbox {
+			margin-left:10px;
+			margin-right:10px;
+			@apply(--layout-horizontal);
+		}
+
+		.input-span {
+			color:#333a56;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		#box {
+			max-width: 130px;
+			font-weight: normal;
+			--border:1px solid black;
+			min-width:100px;
+
+		}
 		
 	</style>
 	
@@ -98,16 +122,15 @@
 		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
 		 		
 		 		<span class="self-center separator"></span>
-		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
+	
 		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
-
 	        	<template is='dom-if' if="{{isProgrammer}}">
-	        		<div class="flex"></div>
-		            <paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
-
-		            
-			        <!--paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button-->
+	        		<template is='dom-if' if='[[narrow]]'>
+		            <div class="flex"></div>
+		            <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
+		            </template>
+		           
 		        </template>
 		        
        		</div> 
@@ -120,7 +143,7 @@
 			is:'aq-editor-toolbar',
 
 			properties: {
-				showSideBar : {
+				narrow : {
 					type:Boolean,
 				},
 

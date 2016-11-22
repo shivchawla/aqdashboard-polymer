@@ -108,8 +108,6 @@
       },
 
       onFollow() {
-        console.log("Came here on follow");
-
         if(!this.header) {
           this.router.go('/user/signin', {lastRequest:('/dashboard/community/topics/[[postHeader._id]]')});
           return;

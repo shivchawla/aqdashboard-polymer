@@ -38,11 +38,12 @@
       </div>
         
       <div id="replybox" class="flex layout vertical">
-        <aq-markdown-editor id="editor" placeholder="Write a reply"></aq-markdown-editor>
+        <aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>
         <div class="layout horizontal" id='buttons'>
-          <div class="flex"></div>
-          <paper-button raised noink>Preview</paper-button>
-          <paper-button raised noink on-tap="postThread">Reply</paper-button>
+            <div><i>[[error]]</i></div>
+            <div class="flex"></div>
+            <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
+            <paper-button raised noink on-tap="postThread">Reply</paper-button>
         </div>
       </div>
       
@@ -63,6 +64,7 @@
   <script>
     Polymer({
       is: 'aq-community-postdetail-reply',
+      error:String,
 
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
@@ -81,17 +83,15 @@
             return;
           }
           
-          const markdownText = this.$.editor.getContent();
-          
-          if (markdownText.length>0) {
-            this.threadData = {
-                "markdownText": markdownText
-            };
+          if(this.processInput()) {
             this.$.postThreadQuery.generateRequest();
+          } else {
+              this.error = "Cannot post an empty reply. Please create a valid reply.";
           }
+          
       },
 
-      onPostThreadResponse: function(e) {
+      onPostReplyResponse: function(e) {
         var replies = e.detail.response.replies;
         if (replies.length > 0) {
           this.fire('reply-added',{reply:replies[replies.length - 1]});  
@@ -105,6 +105,39 @@
       clearEditor() {
         this.$.editor.setContent("");
       },
+
+      processInput() {
+          const markdownText = this.$$('#editor').getContent();
+          this.threadData = {
+              "markdownText": markdownText,
+              "user":{"firstName":"Shiv","lastName":"Chawla"},
+              "updatedAt":Date(),
+          };
+
+          if(this.threadData["title"]!="" && 
+              this.threadData["category"]!="" &&
+              this.threadData["markdownText"]!=""
+            ) {
+            this.error = "";
+            return true;
+            
+          } else {
+            
+            return false;
+          }
+      },
+
+      onPreview() { 
+          this.preview = this.processInput();
+          if(!this.preview) {
+              this.error = "No preview available for empty reply. Please create a valid reply.";
+          }
+      },
+
+      onEdit() {
+          this.preview = false;
+      },
+
 
     });
   </script>

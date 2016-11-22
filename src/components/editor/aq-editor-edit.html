@@ -50,8 +50,34 @@
 
   paper-toolbar {
       --paper-toolbar-height:40px;
-    }
+      --paper-toolbar-color:#333a56;
+      --paper-toolbar-background:#c9e2ea;--#c1c6da;--#ced2e2;--#dadde9;--#9bbef2;--#ddf2f0;
+       border-bottom: 1px solid #333a56;
+  }
 
+  paper-tabs :hover{
+    font-weight: bold;
+    font-size:110%;
+  }
+
+  paper-tabs {
+    --paper-tabs-selection-bar-color: #333a56;
+    height:80%;
+  }
+
+  paper-tab {
+    --height:30px;
+  }
+
+  #leftPanel {
+    border-right: 5px solid #333a56;
+  }
+
+  #rightPanel {
+    background-color:#f3f9fa;--#f3f4f8;
+    border-left: 5px solid #333a56;
+  }
+    
 </style>
 
 <style is="custom-style" include="iron-flex iron-positioning"></style>
@@ -70,10 +96,12 @@
     </iron-ajax>  
 
     <template is='dom-if' if="{{strategy}}">         
-        <paper-header-panel class="fit" mode="seamed"> 
+        
+      <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='800px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
+        <paper-header-panel id='leftPanel' main mode="seamed"> 
           
           <template is='dom-if' if='[[!isRunning]]'>
-            <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]"> 
+            <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
             </aq-editor-toolbar>
             
             <template is='dom-if' if='{{isProgrammer}}'>
@@ -91,11 +119,51 @@
 
           <template is='dom-if' if='[[isRunning]]'>
             <aq-editor-edit-backtest-screen is-active="[[isRunning]]" 
-                                            id='backtestScreen'>
+                                            id='backtestScreen'
+                                            narrow="[[narrow]]">
             </aq-editor-edit-backtest-screen>
           </template>
 
         </paper-header-panel>
+
+        
+        <paper-header-panel id='rightPanel' drawer mode="seamed">
+          <paper-toolbar >
+              <paper-tabs selected="{{selectedSidebar}}" noink>
+                <template is="dom-if" if="[[!isRunning]]">
+                <paper-tab>Run</paper-tab>
+                <paper-tab>Quick Help</paper-tab>
+                </template>
+                
+                <template is="dom-if" if="[[isRunning]]">
+                  <paper-tab>Log</paper-tab>
+                </template>
+              
+              </paper-tabs>
+
+              <div class="flex"></div>
+              
+              <template is='dom-if' 
+                        if="[[isSelectedBarRun(selectedSidebar)]]">
+                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='onRun' class="toolbarPlayIcon" icon="av:play-arrow"></paper-icon-button>
+              </template>
+
+              <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
+
+
+          </paper-toolbar>
+
+            <iron-pages selected="{{selectedSidebar}}">
+           
+              <aq-editor-sidebar-run></aq-editor-sidebar-run>  
+              <div>This is quick help!!</div>
+              <div style="background-color: black; color:red;">This is log!!</div>
+              
+              
+            </iron-pages>
+        
+        </paper-header-panel>
+        
                       
       </template>
 
@@ -132,6 +200,21 @@
       is:'aq-editor-edit',
 
       properties :{
+        showSideBar: {
+          type:Boolean,
+          value:true,
+        },
+
+        selectedSidebar:{
+          type:Number,
+          value:0,
+        },
+
+        sideBarOpen:{
+          type:Boolean,
+          value:true,
+        },
+
         isProgrammer:{
           type:Boolean,
           value:true,
@@ -186,6 +269,18 @@
           }
       },
 
+      computeDrawerWidth(isProgrammer, isRunning) {
+        //var width =  isProgrammer ? "560px" :"0px"; 
+
+        if (isProgrammer && isRunning) {
+          return "360px";
+        } else if (isProgrammer){
+          return "560px";
+        } else {
+          return "0px";
+        }
+      },
+
       toggleConsole() {
         this.$.collapse.toggle();
       },
@@ -207,7 +302,31 @@
         this.closeConsole();
       },
 
-      toggleDrawer() {
+      toggleDrawer() { 
+        if(this.showSideBar && this.narrow) {
+          this.$$('#drawerpanel').togglePanel();
+        } else if (this.showSideBar && !this.narrow) {
+          this.closeDrawer();
+        } else {
+          this.openDrawer();
+        }
+
+      },
+
+      openDrawer() { 
+        this.$$('#drawerpanel').openDrawer();
+        this.showSideBar = true;
+      },
+
+      closeDrawer() {
+        this.$$('#drawerpanel').closeDrawer();
+  
+        if (this.showSideBar && !this.narrow) {
+          this.showSideBar = false;
+        }
+      }, 
+
+      /*toggleDrawer() {
         this.$$('#codeEditorPanel').toggleDrawer();
       },
 
@@ -217,7 +336,7 @@
 
       closeDrawer() {
         this.$$('#codeEditorPanel').closeDrawer();
-      },
+      },*/
 
       designChanged() {
         this.isProgrammer = !this.isProgrammer;
@@ -278,9 +397,9 @@
                   "plan": "string"};
 
         this.runSwitch = 1;
-        this.saveStrategy(e);  
+        //this.saveStrategy(e);  
         this.isRunning = true;
-        //this.$$('#backtestScreen').start();
+        this.selectedSidebar = 2;
       },
 
       onStrategyExecutionResponse(data) {

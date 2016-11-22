@@ -53,23 +53,6 @@
     background-color: white;
   }
 
-    paper-toolbar {
-      --paper-toolbar-height:40px;
-      --paper-toolbar-background:#333a56; --#99d3df;
-      --paper-toolbar-color:white;
-      --border-bottom: 1px solid white;
-
-    }
-
-    paper-tabs :hover{
-        font-weight: bold;
-        font-size:110%;
-      }
-
-    paper-tabs {
-        --paper-tabs-selection-bar-color: white;
-        height:90%;
-    }
     
     text-area {
       left:-120 !important;
@@ -78,7 +61,7 @@
     paper-header-panel {
       background-color:  #e5f1f5;--white;--#333a56;
       color:#333a56;
-      border: 1px solid #333a56;
+      --border: 1px solid #333a56;
       border-bottom: 1px solid #333a56;
       opacity: 1;
       z-index: 3;
@@ -107,13 +90,13 @@
 
   <template>
   
-      <paper-drawer-panel drawer-width='560px' responsive-width='1000px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}">
-       <div main> 
+      <!--paper-drawer-panel drawer-width='560px' responsive-width='1000px' class="drawerpanel" id="drawerpanel" right-drawer force-narrow="{{!showSideBar}}"-->
+       <div class="fit"> 
         <juicy-ace-editor style="height:100%;" theme="ace/theme/monokai" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
         </juicy-ace-editor>  
         </div>
 
-        <paper-header-panel drawer mode="seamed">
+        <!--paper-header-panel drawer mode="seamed">
           <paper-toolbar>
               <paper-tabs selected="{{selectedSidebar}}" noink>
                 <paper-tab>Run</paper-tab>
@@ -136,8 +119,8 @@
               
             </iron-pages>
         
-        </paper-header-panel>
-      </paper-drawer-panel>  
+        </paper-header-panel-->
+      <!--/paper-drawer-panel-->  
 
       <iron-collapse id='collapse'>
         <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
@@ -150,51 +133,12 @@
       is:'aq-editor-edit-programmer',
 
       properties :{
-        showSideBar: {
-          type:Boolean,
-          value:true,
-        },
-
-        selectedSidebar:{
-          type:Number,
-          value:0,
-        },
-
-        sideBarOpen:{
-          type:Boolean,
-          value:true,
-        },
-
-        code: String,
+          code: String,
       },
 
       listeners :{
         'editor-ready':'setCode',
       },
-
-      toggleDrawer() {
-        
-        if(this.showSideBar && this.$.drawerpanel.narrow) {
-          this.$.drawerpanel.togglePanel();
-        } else if (this.showSideBar && !this.$.drawerpanel.narrow) {
-          this.closeDrawer();
-        } else {
-          this.openDrawer();
-        }
-      },
-
-      openDrawer() { 
-        this.$.drawerpanel.openDrawer();
-        this.showSideBar = true;
-      },
-
-      closeDrawer() {
-        this.$.drawerpanel.closeDrawer();
-  
-        if (this.showSideBar && !this.$.drawerpanel.narrow) {
-          this.showSideBar = false;
-        }
-      }, 
 
       getCodeContent() {
         return this.$.codeEditor.value; 

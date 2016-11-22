@@ -58,11 +58,14 @@
 			--height:400px;
 		}	
 
+		p{
+			font-size: 20px;
+		}
+
 	</style>
 
 	<template>
-		<iron-ajax
-		  	auto	
+		<iron-ajax	
           	url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
      	 	method='GET'
           	id='getStrategyQuery'
@@ -73,7 +76,6 @@
           	debounce-duration="300">
         </iron-ajax>
 		<iron-ajax
-		  	auto	
           	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
      	 	method='GET'
           	id='getBacktestsQuery'
@@ -84,10 +86,22 @@
           	debounce-duration="300">
         </iron-ajax>
 		
+		<iron-ajax
+          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests/[[deleteId]]"
+     	 	method='DELETE'
+          	id='deleteBacktestQuery'
+          	handle-as="json"
+          	on-response="onDeleteBacktestForStrategySuccess"
+          	on-error="onDeleteBacktestForStrategyError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+		
 		<div id='container'>
 			<template is='dom-if' if="[[!showComparison]]">
 				<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
+				<p>All Backtests for <i>{{strategyName}}</i></p>
 				<template is='dom-repeat' items="{{backtests}}">
 					<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
 				</template>
@@ -154,10 +168,7 @@
 	      	},
 
 	      	attached() {
-	      		//console.log("Attached in Analyze");
-	      		//console.log(this.backtests);
-	      		//console.log(this.strategyId);
-	      		//console.log(this.strategyName);
+	      		this.$.getStrategyQuery.generateRequest();
 	      	},
 
 			goToEditor() {
@@ -169,7 +180,7 @@
 			},
 
 			onGetAllBacktestsForStrategy(data) {
-				//this.backtests = data.detail.response;
+				this.backtests = data.detail.response;
 			},
 
 			onGetAllBacktestsForStrategyError(data) {
@@ -178,6 +189,7 @@
 
 			onGetStrategy(data) {
 				this.strategyName = data.detail.response.name;
+				this.$.getBacktestsQuery.generateRequest();
 			},
 
 			onGetStrategyError(data) {
@@ -206,14 +218,28 @@
 	        	for (key in this.checkedItems) {
 	        		for (i in this.backtests) {		
 	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
-	        				this.splice('backtests', i, 1);
-	        				this.checkedCount -= 1;
+	        				this.deleteId = this.backtests[i]._id;
+	        				this.$.deleteBacktestQuery.generateRequest();
 	        			}
 	        		}
 	    		}
-
-	    		this.checkedItems = {};	        	
+	    		this.deleteId="";
 	        },
+
+	        onDeleteBacktestForStrategySuccess(data) {
+	        	console.log(data.detail.response);
+	        	var deletedId = data.detail.response.id;
+	        	for (i in this.backtests) {		
+        			if (deleteId == this.backtests[i]._id) {
+        				this.splice('backtests', i, 1);
+        				this.checkedCount -= 1;
+        			}
+        		}
+	        },
+
+	        onDeleteBacktestForStrategyError(data) {
+
+	        }, 
 
 	        toggleComparison() {
 	        	this.showComparison = !this.showComparison;

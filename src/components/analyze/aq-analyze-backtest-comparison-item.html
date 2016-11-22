@@ -20,6 +20,20 @@
 			height:50px;
 		}
 
+		paper-icon-button {
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		--color:#188364; 
+		}
+
+		#backButton {
+			margin:auto 0;
+			outline: none !important;
+		}
+
 		.head span {
 			--font-weight: bold;
 			--margin-top: 20px;
@@ -62,11 +76,6 @@
 			display: flex;
 			justify-content: space-between;
 		}
-
-		.goBack__text{
-			margin-left: 10px; 
-			--margin-bottom: 30px;
-		}
 		
 		.vertical-textGraphs {
 			transform: rotate(270deg);
@@ -93,10 +102,11 @@
 	</style>
 
 	<template>	
+
 		<div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests">
+            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests">
             </paper-icon-button>
-            <h3>Back to Comparison</h3>
+            <p class="self-center">Back to All Backtests</p>
       	</div>
 		
 		<div id='comparison-return'>

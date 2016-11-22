@@ -92,7 +92,7 @@
             <p>Create a Post</p>
 
             <div id='attachButton'>
-            <paper-button raised noink on-tap='attachSelected'>Attach<iron-icon icon="editor:attach-file"></iron-icon></paper-button>
+            <paper-button raised noink on-tap='onAttach'>Attach<iron-icon icon="editor:attach-file"></iron-icon></paper-button>
             </div>
 
             <div class="layout horizontal">
@@ -180,8 +180,11 @@
             },*/
 
             postThread: function() {
-                this.processInput();
-                this.$.thread.generateRequest();
+                var x = this.processInput();
+                
+                if(x) {
+                  this.$.thread.generateRequest();
+                }
             },
             
             onPostThreadResponse: function(data) {
@@ -213,20 +216,23 @@
                   "user":{"firstName":"Shiv","lastName":"Chawala"},
                   "updatedAt":Date(),
               };
-            },
 
-            onPreview() { 
-              this.processInput();
               if(this.threadData["title"]!="" && 
                   this.threadData["category"]!="" &&
                   this.threadData["markdownText"]!=""
                 ) {
-                this.error = "";
-                console.log(this.threadData);
-                this.preview = true;
+                  this.error = "";
+                
+                  return true;
               } else {
                 this.error = "No preview available for empty post. Please create a valid post.";
+                return false;
               }
+
+            },
+
+            onPreview() { 
+              this.preview = this.processInput();   
             },
 
             onEdit() {

@@ -11,6 +11,13 @@
             <paper-icon-button noink class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="onBack">
             </paper-icon-button>
             <h3>Back to Strategy</h3>
+            <div class="flex"></div>
+         	
+         	<template is='dom-if' if='[[narrow]]'>
+         		<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
+         		</paper-icon-button>
+         	</template>
+
       	</div>
 
       	<aq-backtest-detail-item id='backtestDisplay'></aq-backtest-detail-item>
@@ -35,6 +42,11 @@
 					type:Boolean,
 					value:false,
 					observer:'_isActiveChanged'
+				},
+
+				narrow:{
+					type:Boolean,
+					value:true,
 				},
 			},
 
@@ -83,6 +95,10 @@
 			onBack() {
 				this.isActive = false;
 				this.fire('backClicked-backtest');
+			},
+
+			toggleDrawer() {
+				this.fire('toggle-drawer');
 			},
 
 		});

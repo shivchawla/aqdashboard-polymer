@@ -152,14 +152,7 @@
         }
         
         strategy  = e.detail.strategy;
-        var newName = "";
-        var originalName = strategy.name;
-
-        if (originalName.search("Clone of") > -1) {
-            return;
-        } else {
-          newName = "Clone of "+ originalName;
-        }
+        var newName = strategy.name + "_C";
 
         this.strategyData = {"name":newName, 
                           "desc" : strategy.description,
@@ -168,6 +161,7 @@
                           "type":strategy.type};
 
         this.$.strategyCloneDialog.open();
+        
       },
 
     });

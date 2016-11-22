@@ -14,7 +14,7 @@
         }
 
         #header {
-          margin-bottom: 40px;
+          margin-bottom: 30px;
         }
 
         i {
@@ -35,7 +35,7 @@
 
         #container {
             margin:0 auto;
-            margin-top: 50px;
+            margin-top: 20px;
             color: #333a56;
             width: 90%;
           }
@@ -58,7 +58,7 @@
         #community-tabs {
             max-width: 350px;
             font-size: 16px;
-            margin-top: 50px;
+            margin-top: 20px;
             border-bottom: 2px solid #e5e5e5;
             --paper-tabs-selection-bar-color: teal !important;     
         }
@@ -67,17 +67,28 @@
             margin-top: 50px;
         }
 
+        #ifsearch {
+          display: none;
+        }
 
     </style>
     <template>
         <div id='container'>
             <div id="header">
             <p> AimsQuant Community</p>
-            <i style="margin-bottom:50px; color:teal;"> Share, Learn and Code</i>
+            <i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>
             </div>
 
-            <div>
-            <aq-community-home-searchbar></aq-community-home-searchbar></div>
+            <div class="wrap flex_container">
+            <aq-community-home-searchbar></aq-community-home-searchbar>
+
+            <div id="ifsearch">
+              <p style="font-size: 16px;">Search results for: 
+                <i>"[[searchParam.q]]"</i>
+              </p>
+            </div>
+            </div>
+
             <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
                 <paper-tab>Popular</paper-tab>
                 <paper-tab>Newest</paper-tab>
@@ -166,10 +177,11 @@
                     </div>
                 </iron-pages-->
                 <iron-ajax
+                  auto
                   url="http://localhost:3002/api/v2/thread"
                   method='GET'
                   id='threads'
-                  params='[[params]]'
+                  params='[[searchParam]]'
                   handle-as="json"
                   on-response="onGetAllThreadsResponse"
                   on-error="onGetAllThreadsError"
@@ -203,17 +215,19 @@
                     type: Object,
                 },
 
+                searchParam:{
+                  type:Object,
+                },
+
                 searchText:{
-                    type: String,
-                    value:"",
+                  type:String,
+                  value:"",
                 },
 
                 searchCategory:{
                   type:String,
                   value:"",
                 },
-
-                params : Object,
 
             },
 
@@ -247,9 +261,9 @@
                   this.orderby = 'views';
                 }
 
-                this.processparams();
+                this.processparams({"text":"","category":""});
 
-                this.getAllThreads();
+                //this.getAllThreads();
             },
 
             getAllThreads() {
@@ -275,15 +289,21 @@
             },
 
             onSearch(e) {
+              
+              if(e.detail.text!="") {
+                this.$$('#ifsearch').style.display = 'block';
+              } else {
+                this.$$('#ifsearch').style.display = 'none';
+              }
+              
               this.searchText = e.detail.text;
               this.searchCategory = e.detail.category;
-              this.processparams()
-              this.$.threads.generateRequest();        
+              this.processparams();
+              //this.$.threads.generateRequest();        
             },
 
-  
             processparams() {
-              this.params = {"skip":"0", "limit":"10", "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+              this.searchParam = {"skip":"0", "limit":"10", "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
             },
 
             format(date) {
