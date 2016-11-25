@@ -166,7 +166,7 @@
 	
 
 		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-		    						 message="Are you sure to delete {{checkedCount}} strategies?"	
+		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
 		    						 cancel="Cancel"
 		    						 accept="OK">
 	    	</aq-delete-dialog>
@@ -408,6 +408,10 @@
 
         hasCheckedStrategies(checkedCount) {
         	return checkedCount > 0;
+        },
+
+        getMessageSuffix(checkedCount) {
+        	return checkedCount > 1 ? "ies" :"y";
         },
 
         onSearch(e) {

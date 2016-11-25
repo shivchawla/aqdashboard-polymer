@@ -77,6 +77,13 @@
     background-color:#f3f9fa;--#f3f4f8;
     border-left: 5px solid #333a56;
   }
+
+  .toolbarPlayIcon {
+       border:1px solid;
+       padding:0px;
+       height:23px;
+       width:23px;
+    }
     
 </style>
 
@@ -101,7 +108,7 @@
         <paper-header-panel id='leftPanel' main mode="seamed"> 
           
           <template is='dom-if' if='[[!isRunning]]'>
-            <aq-editor-toolbar is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
+            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
             </aq-editor-toolbar>
             
             <template is='dom-if' if='{{isProgrammer}}'>
@@ -144,8 +151,8 @@
               <div class="flex"></div>
               
               <template is='dom-if' 
-                        if="[[isSelectedBarRun(selectedSidebar)]]">
-                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='onRun' class="toolbarPlayIcon" icon="av:play-arrow"></paper-icon-button>
+                        if="[[isSelectedSidebarRun(selectedSidebar)]]">
+                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="av:play-arrow"></paper-icon-button>
               </template>
 
               <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
@@ -326,17 +333,9 @@
         }
       }, 
 
-      /*toggleDrawer() {
-        this.$$('#codeEditorPanel').toggleDrawer();
+      isSelectedSidebarRun(selectedSidebar) {
+        return selectedSidebar == 0;
       },
-
-      openDrawer() {
-        this.$$('#codeEditorPanel').openDrawer();
-      },
-
-      closeDrawer() {
-        this.$$('#codeEditorPanel').closeDrawer();
-      },*/
 
       designChanged() {
         this.isProgrammer = !this.isProgrammer;
@@ -359,9 +358,6 @@
       },
 
       onStrategySavedResponse(data) {
-        
-        //this.strategy = data.detail.response;
-
         if(this.runSwitch == 1) {
           //reset the run swtch to off
           this.runSwitch = 0;
@@ -372,7 +368,12 @@
       },
 
       onStrategySavedError(data) {
+        console.log("Error Saving");
+        console.log(data);
+      },
 
+      runStrategyFromPanel() {
+        this.$$('#editorToolbar').onRun();
       },
 
       saveStrategy(e) {
@@ -385,6 +386,7 @@
         };
       
         this.$.saveStrategyQuery.generateRequest();
+        this.isRunning = true;
       },
 
       runStrategy(e) {
@@ -397,13 +399,14 @@
                   "plan": "string"};
 
         this.runSwitch = 1;
-        //this.saveStrategy(e);  
-        this.isRunning = true;
         this.selectedSidebar = 2;
+        this.saveStrategy(e);  
       },
 
       onStrategyExecutionResponse(data) {
+        console.log("Run: Success");
         console.log(data);
+        
         //This get back the created backtest object with just the settings,
         //HAS no output
       },

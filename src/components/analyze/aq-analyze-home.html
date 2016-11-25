@@ -12,6 +12,7 @@
 <link rel='import' href='./aq-analyze-home-backtest-item.html'>
 <link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
 <link rel='import' href='../common/aq-backtest-detail-item.html'>
+<link rel='import' href='../../dialog/aq-delete-dialog.html'>
 
 <dom-module id='aq-analyze-home'>
 	
@@ -87,7 +88,7 @@
         </iron-ajax>
 		
 		<iron-ajax
-          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests/[[deleteId]]"
+          	url="http://localhost:3002/api/v2/backtest/[[deleteId]]"
      	 	method='DELETE'
           	id='deleteBacktestQuery'
           	handle-as="json"
@@ -113,7 +114,13 @@
 			</template>
 	
 		</div>	
-	
+
+	    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
+						 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
+						 cancel="Cancel"
+						 accept="OK">
+    	</aq-delete-dialog>
+
     </template>
 
     <script>
@@ -128,10 +135,7 @@
 
     			backtests: {
     				type:Object,
-    				value:[
-			            {_id: 'Bob', last: 'Smith'},
-			            {_id: 'Sally', last: 'Johnson'}],
-    			},
+       			},
 
     			checkedCount: {
     				type: Number,
@@ -153,8 +157,10 @@
 				'backClicked':'goToEditor',
 				'compareClicked':'toggleComparison',
 				'backtestChecked':'checkBacktest',
-				'deleteClicked':'onDeletion',
+				'deleteClicked':'openDeleteDialog',
+				'shareClicked':'goToShare',
 				'comparison-off':'toggleComparison',
+				'delete-action':'onDeletion',
 			},
 
 			ready: function() {
@@ -173,6 +179,21 @@
 
 			goToEditor() {
 				this.router.go('/dashboard/editor');
+			},
+
+			goToShare() {
+				var sharebacktestId = "";
+				for (key in this.checkedItems) {
+	        		for (i in this.backtests) {		
+	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
+	        				sharebacktestId = this.backtests[i]._id;
+	        			}
+	        		}
+	    		}
+
+	    		if (sharebacktestId != "") {
+        			this.router.go('/dashboard/community/create/'+sharebacktestId+"?share=backtest");
+        		}
 			},
 			
 			goToBacktest_all() {
@@ -212,6 +233,14 @@
 	        	return checkedCount;
 	        },
 
+	        getMessageSuffix(checkedCount) {
+        		return checkedCount > 1 ? "s" :"";
+        	},
+
+	        openDeleteDialog() {
+	        	this.$.deleteDialog.open();
+	        },
+
 	        onDeletion(e) {
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
@@ -223,12 +252,13 @@
 	        			}
 	        		}
 	    		}
+
 	    		this.deleteId="";
 	        },
 
 	        onDeleteBacktestForStrategySuccess(data) {
 	        	console.log(data.detail.response);
-	        	var deletedId = data.detail.response.id;
+	        	var deleteId = data.detail.response.id;
 	        	for (i in this.backtests) {		
         			if (deleteId == this.backtests[i]._id) {
         				this.splice('backtests', i, 1);
@@ -238,7 +268,7 @@
 	        },
 
 	        onDeleteBacktestForStrategyError(data) {
-
+	        	console.log(data.detail.response);
 	        }, 
 
 	        toggleComparison() {

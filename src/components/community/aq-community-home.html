@@ -1,9 +1,11 @@
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
+<link rel='import' href='../common/aq-pagination.html'>
+
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item.html">
-
+<link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 
 <dom-module id="aq-community-home">
     <style>
@@ -73,7 +75,27 @@
 
     </style>
     <template>
-        <div id='container'>
+
+        <iron-ajax
+            auto
+            url="http://localhost:3002/api/v2/thread"
+            method='GET'
+            id='threads'
+            params='[[searchParam]]'
+            handle-as="json"
+            on-response="onGetAllThreadsResponse"
+            on-error="onGetAllThreadsError"
+            headers='{{header}}'
+            debounce-duration="300">
+        </iron-ajax>
+
+        <iron-localstorage
+          id = "localStorage"
+          name = "my-app-storage" 
+          value = "{{aimsquant}}">
+        </iron-localstorage>
+
+        <div id='container' class="layout vertical flex">
             <div id="header">
             <p> AimsQuant Community</p>
             <i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>
@@ -97,7 +119,7 @@
             </paper-tabs>
 
             <div id='allposts'>
-                <!--iron-pages selected="{{selected}}"-->
+                <!--iron-currentPages selected="{{selected}}"-->
                     <div>
                       <template is="dom-repeat" items="{{items}}" initial-count=10>
                           <aq-community-home-post-item
@@ -115,6 +137,7 @@
                       </template>
                     </div>
 
+                
                     <!--div>
                         <template is="dom-repeat" items="{{items}}" initial-count=10>
                             <aq-community-home-post-item
@@ -175,24 +198,20 @@
                             </aq-community-home-post-item>
                         </template>
                     </div>
-                </iron-pages-->
-                <iron-ajax
-                  auto
-                  url="http://localhost:3002/api/v2/thread"
-                  method='GET'
-                  id='threads'
-                  params='[[searchParam]]'
-                  handle-as="json"
-                  on-response="onGetAllThreadsResponse"
-                  on-error="onGetAllThreadsError"
-                  headers='{{header}}'
-                  debounce-duration="300">
-                </iron-ajax>
-
+                </iron-currentPages-->
             </div>
+
+            <div class="flex"></div>
+            <template is='dom-if' if='[[items]]'>
+                <aq-pagination class="self-center" 
+                                per-page="[[perPage]]"   
+                                page-count="[[pageCount]]"
+                                current-page="{{currentPage}}">
+                                  
+                </aq-pagination>
+            </template>
         </div>
         
-
         <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
     </template>
     <script>
@@ -216,18 +235,36 @@
                 },
 
                 searchParam:{
-                  type:Object,
+                    type:Object,
                 },
 
                 searchText:{
-                  type:String,
-                  value:"",
+                    type:String,
+                    value:"",
                 },
 
                 searchCategory:{
-                  type:String,
-                  value:"",
+                    type:String,
+                    value:"",
                 },
+
+                currentPage: {
+                  type:Number,
+                  value:1,
+                  observer: '_currentPageChanged',
+                },
+
+                perPage :{
+                  type:Number,
+                  value:10,
+                },
+
+                pageCount: {
+                  type:Number,
+                  value:10,
+                },
+
+                aimsquant:Object,
 
             },
 
@@ -244,12 +281,27 @@
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"};  
                 }
-              
 
                 this.orderby = "views";
+                 
             },
 
+            attached() {
+              var x = localStorage.getItem('my-app-storage');
+              if (x) {
+                  var community = JSON.parse(x).community;
+                  if (community) {
+                      console.log("latpage:" + community.lastPage);
+                      this.currentPage = community.lastPage;
+                  } else {
+                    this.aimsquant.community = {lastPage:1};
+                    this.$.localStorage.save();
+                    console.log(localStorage);
+                  }
+              }                  
+            },
 
+          
             isPersonalSelected() {
                 return this.selected == 3;
             },
@@ -261,25 +313,20 @@
                   this.orderby = 'views';
                 }
 
-                this.processparams({"text":"","category":""});
-
-                //this.getAllThreads();
-            },
-
-            getAllThreads() {
-                this.$.threads.generateRequest();
+                this.processparams();
             },
 
             onGetAllThreadsResponse(data) {
                 this.items = data.detail.response.threads;
-                //console.log(this.items);
             },
 
             onGetAllThreadsError(data) {
-                console.log(data);         
+                //console.log(data);         
             },
 
             createPost() {
+                this.saveCurrentPage();
+
                 if (!this.header) {
                   this.router.go('/user/signin', {lastRequest:'/dashboard/community/create'});
                   return;
@@ -299,19 +346,31 @@
               this.searchText = e.detail.text;
               this.searchCategory = e.detail.category;
               this.processparams();
-              //this.$.threads.generateRequest();        
             },
 
             processparams() {
-              this.searchParam = {"skip":"0", "limit":"10", "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
             },
 
             format(date) {
               return new Date(date).toLocaleTimeString("en-us", options);
             },
 
-            onView(e) {
-              
+            _currentPageChanged(newPage, oldPage) {       
+              if (newPage !=oldPage) {
+                this.saveCurrentPage();
+              }
+
+              this.processparams();
+            },
+
+            saveCurrentPage() {
+              console.log(localStorage);
+              if(this.aimsquant) {
+                this.aimsquant.community.lastPage = this.currentPage;
+                this.$.localStorage.save();
+              }
+               console.log(localStorage);
             },
 
         });

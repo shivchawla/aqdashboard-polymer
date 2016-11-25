@@ -39,12 +39,6 @@
     
     
     <template>
-        <iron-localstorage
-            id='localStorage'
-            name="my-app-storage"
-            value="{{aimsquant}}"
-            on-iron-localstorage-load-empty="initializeDefaultValue">
-        </iron-localstorage>
   
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
@@ -53,7 +47,6 @@
                 
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
-
 
             <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
             
@@ -92,6 +85,14 @@
 
       </div>
 
+       <iron-localstorage
+          id='localStorage'  
+          name="my-app-storage"
+          value="{{aimsquant}}"
+          auto-save-disabled
+          >
+        </iron-localstorage>
+
   </template>
 
   <script>
@@ -114,31 +115,6 @@
             type:String,
           },
 
-          isHomeSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isEditorSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isCommunitySelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isAnalyzeSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isHelpSelected :{
-            type:Boolean,
-            value:false,
-          },
-
           hasToken: {
               type:Boolean,
               value:false,
@@ -147,6 +123,7 @@
           currentTab:{
             type:Number,
             value:0,
+            observer:'_currentTabChanged',
           },
 
           aimsquant:{
@@ -178,11 +155,20 @@
         },
 
         attached() {
+
+            var x = localStorage.getItem('my-app-storage');
+            if (x) {
+              this.currentTab = JSON.parse(x).lastTab;
+            }
             var path = ['home','editor','community','analyze','help'];
 
             for (i in path) {
                 var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
                 
+                if(c) {
+                  this.currentTab = 1;
+                }
+
                 if (c && this.view != path[i]) {  
                       
                       if (path[i] == 'analyze') {
@@ -198,18 +184,16 @@
             }
         },
 
-        ready() {
-          this.checkHasToken();
-          
-             if(this.hasToken) {
-              if(this.URLcontains('/user')) {
-                this.$$('#router').go('/main');
-              }
-          }
-
+        ready() { 
+            if(this.checkHasToken()) {
+                if(this.URLcontains('/user')) {
+                    this.$$('#router').go('/main');
+                }
+            }
         },
-        
-        checkHasToken() {      
+
+        checkHasToken() {  
+
           var x = localStorage.getItem('my-app-storage');
           if (x) {
             var user = JSON.parse(x).user;
@@ -217,6 +201,8 @@
           } else {
             this.hasToken = false;
           }
+
+          console.log("HasToken: " + this.hasToken);
         },
 
         computeShowMenu(narrow, showSidebar) {
@@ -232,13 +218,7 @@
         },
 
         viewChanged(newMenu) {
-          this.view = newMenu.detail.menu;
-          /*this.isHomeSelected= this.view=='home';
-          this.isEditorSelected = this.view=='editor';
-          this.isCommunitySelected = this.view=='community';
-          this.isAnalyzeSelected = this.view=='analyze';
-          this.isHelpSelected = this.view=='help';*/
-          
+          this.view = newMenu.detail.menu; 
           this.$.router.go('/dashboard/' + this.view);
           
           if(this.narrow){
@@ -247,7 +227,6 @@
         },
 
         viewChangedOnAction(newAction) {
-          console.log(newAction.detail.action);
           if(newAction.detail.action == "sendfeedback") {
             this.openFeedbackDialog();
           } else if(newAction.detail.action == "invitefriend") {
@@ -275,11 +254,6 @@
           }
         },
 
-        initializeDefaultValue: function () {
-            //localstorage.removeItem('my-app-storage');
-            this.aimsquant = {user:''};
-        },
-
         changeTab(e) {
           this.checkHasToken();
           this.showSidebar = (e.detail.tab == 1);
@@ -298,7 +272,6 @@
           this.currentTab = tab;
 
           if (this.currentTab == 1) {
-            //this.view = "dashboard";
             this.drawerWidth ="200px;"
           }
 
@@ -310,21 +283,55 @@
           
         },
 
+        _currentTabChanged(newTab, oldTab) {        
+          
+          if (!(oldTab + 1)) {
+            return;
+          }
+
+          
+          this.checkHasToken();
+              
+          this.showSidebar = (newTab == 1);  
+          
+          console.log(localStorage);
+          this.aimsquant.lastTab = newTab;
+          this.$.localStorage.save();
+          console.log(localStorage);
+          
+          path = ['/main', 
+                  '/dashboard', 
+                  '/investments', 
+                  '/about',
+                  '/user/signin',
+                  '/user/signup'];
+
+          if (this.currentTab == 1) {
+            this.drawerWidth ="200px;"
+            this.view = 'home';
+          }
+
+          if (this.URLcontains(path[newTab])) {
+            return;
+          } else {
+            this.$$('#router').go(path[newTab]);
+          }
+          
+        },
+
         URLcontains(path) {
           return (document.URL.match(path)) ? true : false;
         },
 
         onSignOut() {
-          console.log("Sign Out");
           this.set('aimsquant.user','');
-          this.$.localStorage.save();
-
-          //this.$.localstorage.value = null;
-          console.log(localStorage.getItem('my-app-storage'));
- 
-          //this.$.localstorage.reload();
-
-          console.log("Aimsquant: " + this.aimsquant.user);
+          this.$.localStorage.save(); 
+          
+          if(!this.checkHasToken()) {
+            this.currentTab = 4;
+          
+          }
+          
           this.$.router.go('/user/signout');
         },
 
@@ -345,10 +352,6 @@
 
         onMyAccount() {
           this.$.router.go('/user/myaccount');
-        },
-
-        _aimsquantChanged(newvalue, oldvalue) {
-          //this.checkHasToken();
         },
 
     });

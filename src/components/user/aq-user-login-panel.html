@@ -127,6 +127,11 @@
 
         }
 
+        #signoutMessage {
+            margin-bottom: -50px;
+            color:white;
+        }
+
     }
 
     </style>
@@ -134,7 +139,7 @@
     <template>
         <div id='containerr' class="layout vertical fit">
             
-                    
+            <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>            
             <paper-card class="self-center" heading="{{aRsrc.headerText}}">
 
                 <div class="dialog-fields" class="layout vertical">
@@ -276,10 +281,18 @@
 
         </div>
 
-         <iron-localstorage
+         <!--iron-localstorage
           id='localStorage'  
           name="my-app-storage"
-          value="{{aimsquant}}">
+          value="{{aimsquant}}"
+          >
+        </iron-localstorage-->
+
+          <iron-localstorage
+            id='localStorage'
+            name="my-app-storage"
+            value="{{aimsquant}}"
+            on-iron-localstorage-load-empty="initializeDefaultValue">
         </iron-localstorage>
 
     </template>
@@ -289,7 +302,8 @@
         var displayModes = {
             signin: 'signin',
             signup: 'signup',
-            forgotPassword: 'forgotPassword'
+            forgotPassword: 'forgotPassword',
+            signout:'signout'
         };
 
         Polymer({
@@ -420,6 +434,7 @@
 
                 aimsquant:{
                     type:Object,
+                    value:{},
                     notify:true,
                 },
             },
@@ -489,9 +504,14 @@
 
                 if (this.displayMode != displayModes.signin && 
                     this.displayMode != displayModes.signup &&
-                    this.displayMode != displayModes.forgotPassword) {
-
+                    this.displayMode != displayModes.forgotPassword &&
+                    this.displayMode != displayModes.signout) {
                     
+                    this.displayMode = displayModes.signin;
+                }
+
+                if (this.displayMode == displayModes.signout) {
+                    this.signoutMessage = "Successfully signed out!!"
                     this.displayMode = displayModes.signin;
                 } 
 
@@ -502,6 +522,10 @@
                 } else if (this.displayMode == displayModes.signin) {
                     this.fire('tabChanged',{tab:5})
                 } 
+            },
+
+            initializeDefaultValue() {
+                this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
             },
 
             computeSigninBody: function(email, password) {
@@ -651,6 +675,7 @@
             },
 
             onUserEmailFocus: function() {
+                this.signoutMessage ='';
                 this.actionFailedMessage = '';
                 this.userEmailInFocus = true;
             },
@@ -709,24 +734,12 @@
             },
 
             handleLoginResponse: function(data) {
-                //console.log(data.detail.response);
-                //console.log(this.aimsquant);
-                this.aimsquant = {
-                    user: ''
-                };
-
+            
+                this.aimsquant.user = '';    
                 this.set('aimsquant.user', data.detail.response);
-                //this.$.localStorage.value = data.detail.response;
-                //console.log(this.aimsquant);
                 this.$.localStorage.save();
-
-                /*var x = localStorage.getItem('my-app-storage');
-                console.log(x);
-                var user = JSON.parse(x).user;
-                console.log(user);*/
-
                 this.actionSucceeded();
-                this.router.go('/dashboard');
+                this.router.go('/dashboard/home');
             },
 
             handleLoginError(data) {

@@ -153,6 +153,10 @@
 
 				<paper-icon-button noink class="iconButton" icon="icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
 				</paper-icon-button>
+
+				<paper-icon-button noink class="iconButton" icon="vaadin-icons:share-square" title="Share" on-tap="onShare" disabled="[[!isShareActive(numActiveBacktests)]]">
+				</paper-icon-button>
+					
 			</div>      	
   		</div>
 
@@ -181,12 +185,20 @@
 				return numActiveBacktests > 0;
 			},
 
+			isShareActive(numActiveBacktests) {
+				return numActiveBacktests == 1;
+			},
+
 			onDelete() {
 				this.fire('deleteClicked');
 			},
 
 			onCompare() {
 				this.fire('compareClicked');
+			},
+
+			onShare() {
+				this.fire('shareClicked');
 			},
 
             goToEditor() {

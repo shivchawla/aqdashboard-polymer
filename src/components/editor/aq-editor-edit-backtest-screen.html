@@ -52,7 +52,9 @@
 
 			_isActiveChanged(newValue, oldValue) {
 				if (newValue) {
-					this.start();
+					this.debounce('start', function() {
+						this.start();
+					}, 2000);	
 				} else {
 					this.stop();
 				}
@@ -70,7 +72,6 @@
 
 			_onOpen(e){
 		        console.log("Open");
-		        //console.log(e);
 		        this.$.backtestDisplay.reset();
 		        this.$.webSocketConn.send("run");
 	      	},
@@ -79,17 +80,16 @@
 	          	if (e.detail.outputtype == "performance") {
 	            	this.$.backtestDisplay.addLineData(e.detail);
 	          	}
-
-	          	//this.$.webSocketConn.close();
 	      	},
 
       		_onError(e) {
-        		console.log("Error");	
+      			console.log(e.detail);
+        		console.log("Error");
+        			
   			},
 
       		_onClose(e) {
         		console.log("Close:");
-        		//console.log(e);
       		},
 
 			onBack() {
