@@ -1,0 +1,82 @@
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+
+<dom-module id='aq-backtest-metric-item'>
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+  	
+	<style>
+		span {
+			margin-top: 5px;
+			text-align: center;
+		}
+		
+		paper-card{
+			width:100%;
+			border-top: 2px solid teal;
+			color:#333a56;
+		}
+
+		#metric {
+			margin-bottom:5px;
+			font-size: var(--font-size-metric, 14px);
+		}
+
+		#metric-value {
+			font-size: var(--font-size-metric-value, 20px);
+			color: #333a56;
+			font-weight: bold;
+		}
+
+    	
+     	paper-tooltip {
+	        --paper-tooltip-background: teal; 
+	
+      	}
+
+	</style>
+
+    <style is="custom-style">
+      paper-tooltip.giant {
+        --paper-tooltip: {
+          font-size: 15px;
+        }
+      }
+    </style>
+
+	
+	<template>
+		
+		<div class="vertical">
+
+		<paper-card class="flex" id='metric-card'>
+			<div id='cont' class="layout vertical flex">
+				<span id='metric-value'>[[metricValue]]</span>
+				<span id='metric'>[[metricName]]</span>
+			</div>
+		</paper-card>
+
+		<paper-tooltip fit-to-visible-bounds class="giant" for='metric-card' offset="0" position="top">{{metricDesc}}</paper-tooltip>
+	</template>
+
+	<script>
+		Polymer ({
+			is:'aq-backtest-metric-item',
+			properties: {
+				metricName:{
+					type:String,
+				},
+				metricValue:{
+					type:String,
+				},
+				metricDesc:{
+					type:String,
+				},
+			},	
+
+		});
+	</script>
+</dom-module>
+

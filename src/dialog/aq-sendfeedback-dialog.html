@@ -1,17 +1,15 @@
 
-<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
-<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
-<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
-<link rel='import' href='../../../bower_components/paper-input/paper-textarea.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../bower_components/paper-input/paper-textarea.html'>
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
-<link rel='import' href='../aq-markdown-editor.html'>
+<link rel='import' href='../components/aq-markdown-editor.html'>
+<link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id='aq-sendfeedback-dialog'>
-
+  <style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		paper-dialog {
     		width: 80%;
@@ -91,7 +89,7 @@
 	    	
         <div class="layout horizontal">
           <div class="flex"></div>
-          <iron-icon icon="icons:feedback"></iron-icon>
+          <iron-icon icon="aq-icons:feedback"></iron-icon>
         </div>
 
         <div id='header'><p>Send Feedback</p>
@@ -136,10 +134,15 @@
           type:String,
           value: "Feedback or Feature Request",
         },
+
+        error:{
+          type:Boolean,
+          value:false,
+        },
 				
 			},
 
-			onSubmit() {
+			onSubmit: function() {
 				if(this.$.feedbackSubjectInput.validate()) {
           if(this.$.mkdEditor.getContent()!=""){
 					   this.fire('send-feedback-action',{subject:this.$.feedbackSubjectInput.value, feedback: this.$.mkdEditor.getContent()});
@@ -152,11 +155,11 @@
         }			
 			},
 
-			open() {
+			open: function() {
 				this.$.sendFeedbackModalDialog.open();
 			},
 
-      onCancel() {
+      onCancel: function() {
         this.$.mkdEditor.setContent("");
         this.error = false; 
         this.feedbackSubject = "Feedback or Feature Request";

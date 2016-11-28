@@ -1,0 +1,47 @@
+
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+<link rel="import" href="../common/aq-backtest-detail-item.html">
+
+<dom-module id="aq-analyze-detail">
+	
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<template>
+		
+		<div class="goBackButton layout horizontal">
+            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+            </paper-icon-button>
+            <p class="self-center">Back to All Backtests</p>
+      	</div>
+
+      	<aq-backtest-detail-item></aq-backtest-detail-item>
+
+	</template>
+	<script>
+		Polymer ({
+			is:'aq-analyze-detail',
+			
+			properties:{
+				strategyId:String,
+
+				backtestId:String,
+			},
+
+			goBackAllBacktests: function() {
+				this.router.go('/dashboard/analyze/' + this.strategyId);
+			},
+
+			attached: function() {
+				console.log(this.router);
+			},
+				
+		});
+	</script>
+			
+</dom-module>
+
+

@@ -1,11 +1,5 @@
 		
-
-<link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
-<link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
-  <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-
-
 
 <dom-module id='aq-backtest-comparison-item'>	
 	<style>	
@@ -56,6 +50,7 @@
 				<paper-tab>Bar Graph</paper-tab>
 			</paper-tabs>
 			<iron-pages selected={{graphType1}}>
+				
 				<nvd3-line 
 		  			id="chart-line1" 
 		  			class="bar1" 
@@ -65,7 +60,8 @@
 		  			use-interactive-guideline 
 		  			auto-resize 
 		  			no-data="No Data Available!" 
-		  			data=[[lineData]]>
+		  			data=[[lineData]]
+		  			x-axis-label="label">
 		  		</nvd3-line>
 				<nvd3-multi-bar 
 		  			id="chart-bar" 
@@ -452,7 +448,7 @@
 		            'Stability': "0.88",
 		            'Avg. Concentration': "0.52"
 		        });
-		     //    setTimeout(function(){var grid = document.querySelector('#sort');
+		     //    setTimeout(: function(){var grid = document.querySelector('#sort');
 		     //    console.log('claims',claims);
 		     //    console.log(grid);
 		     //    grid.items = claims;

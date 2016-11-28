@@ -1,8 +1,10 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-
 <link rel='import' href='../common/aq-backtest-comparison-item.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
+
 <dom-module id='aq-analyze-compare-results'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
 	
 	<style>
 		chart-line {
@@ -50,7 +52,7 @@
 	<template>
 
 		<div class="layout horizontal" style="height:60px;"> 
-	    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
+	    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
 			<div class="flex self-center">Compare Backtests for Strategies</div>	
 		</div>	
 

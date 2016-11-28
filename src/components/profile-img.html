@@ -1,7 +1,10 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id="profile-img">
+  <style is="custom-style" include="iron-flex iron-flex-alignment">
+  </style>
+
   <style>
     :host([selected]) .profile {
       transform: rotate3d(0,1,0,180deg);

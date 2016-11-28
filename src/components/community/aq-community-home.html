@@ -1,13 +1,19 @@
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
-<link rel='import' href='../common/aq-pagination.html'>
+<link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item.html">
-<link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel='import' href='../common/aq-pagination.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-community-home">
+    
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+  
     <style>
 
         p {         
@@ -119,86 +125,22 @@
             </paper-tabs>
 
             <div id='allposts'>
-                <!--iron-currentPages selected="{{selected}}"-->
-                    <div>
-                      <template is="dom-repeat" items="{{items}}" initial-count=10>
-                          <aq-community-home-post-item
-                            topic-address="#/dashboard/community/topics/{{item._id}}"
-                            item-id = "{{item._id}}"
-                            topic-heading="{{item.title}}"
-                            author-firstname="{{item.user.firstName}}"
-                            author-lastname="{{item.user.lastName}}"
-                            author-address="{{item.user.email}}"
-                            post-date="{{format(item.createdAt)}}"
-                            total-replies={{item.replies.length}}
-                            total-views="{{item.views}}"
-                            post-category="{{item.category}}">
-                          </aq-community-home-post-item>
-                      </template>
-                    </div>
-
-                
-                    <!--div>
-                        <template is="dom-repeat" items="{{items}}" initial-count=10>
-                            <aq-community-home-post-item
-                              topic-address="#/dashboard/community/topics/{{item._id}}"
-                              topic-heading="{{item.title}}"
-                              author-firstname="{{item.user.firstName}}"
-                              author-lastname="{{item.user.lastName}}"
-                              author-address="{{item.user.email}}"
-                              post-date="{{item.createdAt}}"
-                              total-replies={{item.replies.length}}
-                              total-views="{{item.views}}"
-                              post-category="{{item.category}}">
-                            </aq-community-home-post-item>
-                        </template>
-                    </div>
-
-                    <div>
-                      <template is="dom-repeat" items="{{items}}" initial-count=10>
-                          <aq-community-home-post-item
-                            topic-address="#/dashboard/community/topics/{{item._id}}"
-                            topic-heading="{{item.title}}"
-                            author-firstname="{{item.user.firstName}}"
-                            author-lastname="{{item.user.lastName}}"
-                            post-date="{{item.createdAt}}"
-                            total-replies={{item.replies.length}}
-                            total-views="{{item.views}}"
-                            post-category="{{item.category}}">
-                          </aq-community-home-post-item>
-                      </template>
-                    </div>
-
-                    <div>
-                      <template is="dom-repeat" items="{{items}}" initial-count=10>
-                          <aq-community-home-post-item
-                            topic-address="#/dashboard/community/topics/{{item._id}}"
-                            topic-heading="{{item.title}}"
-                            author-firstname="{{item.user.firstName}}"
-                            author-lastname="{{item.user.lastName}}"
-                            post-date="{{item.createdAt}}"
-                            total-replies={{item.replies.length}}
-                            total-views="{{item.views}}"
-                            post-category="{{item.category}}">
-                          </aq-community-home-post-item>
-                      </template>
-                    </div>
-
-                    <div>
-                        <template is="dom-repeat" items="{{items}}" initial-count=10>
-                            <aq-community-home-post-item
-                              topic-address="#/dashboard/community/topics/{{item._id}}"
-                              topic-heading="{{item.title}}"
-                              author-firstname="{{item.user.firstName}}"
-                              author-lastname="{{item.user.lastName}}"
-                              post-date="{{item.createdAt}}"
-                              total-replies={{item.replies.length}}
-                              total-views="{{item.views}}"
-                              post-category="{{item.category}}">
-                            </aq-community-home-post-item>
-                        </template>
-                    </div>
-                </iron-currentPages-->
+                <div>
+                  <template is="dom-repeat" items="{{items}}" initial-count=10>
+                      <aq-community-home-post-item
+                        topic-address="#/dashboard/community/topics/{{item._id}}"
+                        item-id = "{{item._id}}"
+                        topic-heading="{{item.title}}"
+                        author-firstname="{{item.user.firstName}}"
+                        author-lastname="{{item.user.lastName}}"
+                        author-address="{{item.user.email}}"
+                        post-date="{{format(item.createdAt)}}"
+                        total-replies={{item.replies.length}}
+                        total-views="{{item.views}}"
+                        post-category="{{item.category}}">
+                      </aq-community-home-post-item>
+                  </template>
+                </div>
             </div>
 
             <div class="flex"></div>
@@ -212,7 +154,7 @@
             </template>
         </div>
         
-        <paper-fab id='fab' noik icon="icons:add" title="New Post" on-tap='createPost'></paper-fab>
+        <paper-fab id='fab' noik icon="aq-icons:add" title="New Post" on-tap='createPost'></paper-fab>
     </template>
     <script>
 
@@ -265,6 +207,7 @@
                 },
 
                 aimsquant:Object,
+                header:Object,
 
             },
 
@@ -286,7 +229,7 @@
                  
             },
 
-            attached() {
+            attached: function() {
               var x = localStorage.getItem('my-app-storage');
               if (x) {
                   var community = JSON.parse(x).community;
@@ -302,11 +245,11 @@
             },
 
           
-            isPersonalSelected() {
+            isPersonalSelected: function() {
                 return this.selected == 3;
             },
 
-            onActivateTab() {
+            onActivateTab: function() {
                 if (this.selected == 1) {
                   this.orderby = 'createdAt';
                 } else {
@@ -316,15 +259,15 @@
                 this.processparams();
             },
 
-            onGetAllThreadsResponse(data) {
+            onGetAllThreadsResponse: function(data) {
                 this.items = data.detail.response.threads;
             },
 
-            onGetAllThreadsError(data) {
+            onGetAllThreadsError: function(data) {
                 //console.log(data);         
             },
 
-            createPost() {
+            createPost: function() {
                 this.saveCurrentPage();
 
                 if (!this.header) {
@@ -335,7 +278,7 @@
                 this.router.go('/dashboard/community/create');
             },
 
-            onSearch(e) {
+            onSearch: function(e) {
               
               if(e.detail.text!="") {
                 this.$$('#ifsearch').style.display = 'block';
@@ -348,15 +291,15 @@
               this.processparams();
             },
 
-            processparams() {
+            processparams: function() {
               this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
             },
 
-            format(date) {
+            format: function(date) {
               return new Date(date).toLocaleTimeString("en-us", options);
             },
 
-            _currentPageChanged(newPage, oldPage) {       
+            _currentPageChanged: function(newPage, oldPage) {       
               if (newPage !=oldPage) {
                 this.saveCurrentPage();
               }
@@ -364,7 +307,7 @@
               this.processparams();
             },
 
-            saveCurrentPage() {
+            saveCurrentPage: function() {
               console.log(localStorage);
               if(this.aimsquant) {
                 this.aimsquant.community.lastPage = this.currentPage;

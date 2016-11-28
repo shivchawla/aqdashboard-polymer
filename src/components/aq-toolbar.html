@@ -2,15 +2,17 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 
-<link rel="import" href="../../bower_components/paper-icon-button/
-paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-user-menu.html">
+<link rel='import' href='../icons/aq-iconset.html'>
 
 
 <dom-module id="aq-toolbar">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning">  
+  </style>
+  
   <style>
 
   paper-toolbar {
@@ -43,7 +45,7 @@ paper-icon-button.html">
       <paper-toolbar>
         <template is="dom-if" if="{{showmenu}}">
           <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
-          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
+          <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
           <div class="title">AimsQuant</div>
         </template>
 
@@ -93,11 +95,11 @@ paper-icon-button.html">
         },
       }, 
 
-      toggleMenu() {
+      toggleMenu: function() {
         this.fire('open-menu');
       },
 
-      computeShowMenu(hasHeader, currentTab) {
+      computeShowMenu: function(hasHeader, currentTab) {
         return currentTab == 1;
       },
 

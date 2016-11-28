@@ -1,9 +1,5 @@
 
-<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
-
-<link rel='import' href='../../../bower_components/iron-media-query/iron-media-query.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
@@ -14,9 +10,8 @@
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
 
-
 <dom-module id="aq-editor-home">
- 	<style is="custom-style" include="iron-flex iron-positioning"></style>
+ 	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
   
     <style>
       
@@ -153,14 +148,11 @@
 		      <div class="backtest">#Backtests</div>
 		    </div>
             
-            <!--template is="dom-if" if="[[strategies]]"-->
-	  	 
 	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
-	    									num-backtest = "[[item.backtests]]"
-	    									strategy-desc = "[[item.description]]"
-											strategy-id = "[[item._id]]"
-	    									>
+	    		<aq-editor-home-strategy-item										strategy-name = "[[item.name]]"
+							num-backtest = "[[item.backtests]]"
+							strategy-desc = "[[item.description]]"
+							strategy-id = "[[item._id]]">
 				</aq-editor-home-strategy-item>	
 	    	</template>
 	
@@ -178,7 +170,6 @@
 		    
 		    <div id="actions"></div>
 		</div> 
-		<!--/template-->
 		
   </template>
 
@@ -220,7 +211,7 @@
 
 		},
 
-		attached() {
+		attached: function() {
 			if (this.create == 1){
 				this.fire('newClicked');
 			}
@@ -234,15 +225,13 @@
 	            "aimsquant-token": user.token,
 	            "Content-Type": "application/json"};  
 	        } 
-
-	        //this.$$('#ifsearch').style.display = 'none';
         },
 
-        onGetStrategiesResponse(data) {
+        onGetStrategiesResponse: function(data) {
         	this.strategies = data.detail.response;	
         },
 
-		onGetStrategiesError(data) {
+		onGetStrategiesError: function(data) {
         	//this.router.go('/user/signin');
         },        
 
@@ -273,7 +262,7 @@
 			return node;
 		},
 
-		_mouseOver: function (e) {
+		_mouseOver: function(e) {
 			var row = this._findAncestor(e.target, function (node) {
 				return node != this && !node.classList.contains('row') && node.id !== 'actions';
 			});
@@ -287,11 +276,11 @@
 			}
 		},
 		
-		_mouseLeave: function () {
+		_mouseLeave: function() {
 			this._hideActions();
 		},
 		
-		_showActions: function (row) {
+		_showActions: function(row) {
 			var sharedActionMenu = this._sharedActionMenu;
 			var rowOffsetTop = row.offsetTop;
 			if (!sharedActionMenu) {
@@ -311,7 +300,7 @@
 			this._currentRow = row;
 		},
 		
-		_hideActions: function () {
+		_hideActions: function() {
 			var row = this._currentRow;
 			var sharedActionMenu = this._sharedActionMenu;
 			if (row) {
@@ -324,57 +313,48 @@
 			}
 		},
 
-		_elementLink: function (name) {
+		_elementLink: function(name) {
 			return '/elements/' + name;
 		},
 
-		_getHeaderStyle: function (color) {
+		_getHeaderStyle: function(color) {
 		return 'background-color: ' + color + ';';
 		},
 
-		_elementsChanged: function () {
+		_elementsChanged: function() {
 			this.classList.add('hidden');
-			this.async(function () {
+			this.async(function() {
 				this.classList.remove('hidden');
 			}, 1);
 		},
 		
-		_layoutIfNeeded: function (el) {
+		_layoutIfNeeded: function(el) {
 			return el.offsetTop;
 		},
 
-		openDeletionDialog() {
+		openDeletionDialog: function() {
 			this.$$('#dialog').open();
 		},
 
-		openCompareDialog() {
+		openCompareDialog: function() {
 			this.$$('#strategyCompareDialog').open();
 		},
 
-		openPreview() {
+		openPreview: function() {
   			this.$$('#strategyPreviewDialog').open();
 		},
 
-		click() {
+		click: function() {
 			this.router.go('/dashboard')
 		},
 
-	 	goToAnalyze() {
-        	strategyId = this._currentRow.id;
-        	strategyName="";
-        	for (i in this.strategies) {
-        		if(strategyId == this.strategies[i]._id) {
-        			strategyName = this.strategies[i].name;
-        			break;
-        		}
-        	}
-
+	 	goToAnalyze: function() {
+        	var strategyId = this._currentRow.id;
         	this.router.go('/dashboard/analyze/' + strategyId);
         },
 
-        goToClone(e) {
-        	console.log("Cloning");
-        	strategyId = this._currentRow.id;
+        goToClone: function(e) {
+        	var strategyId = this._currentRow.id;
 
         	for (i in this.strategies) {
         		if(strategyId == this.strategies[i]._id) {
@@ -385,16 +365,17 @@
         	//Let the event propagate. It's handled in editor-main.   	
         },
 
-        goToShare() {
+        goToShare: function() {
         	strategyId = this._currentRow.id;
         	this.router.go('/dashboard/community/create/'+strategyId+"?share=strategy");
         },
 
-        goToEditor(e) {
-        	this.router.go('/dashboard/editor/' + e.detail.id);
+        goToEditor: function(e) {
+        	var strategyId = this._currentRow.id;
+        	this.router.go('/dashboard/editor/' + strategyId);
         },
 
-        checkStrategy(e) {
+        checkStrategy: function(e) {
         	var checked = e.detail.checked;
 
         	this.checkedItems[e.detail.id] = e.detail.checked;
@@ -406,15 +387,15 @@
         	}
         },
 
-        hasCheckedStrategies(checkedCount) {
+        hasCheckedStrategies: function(checkedCount) {
         	return checkedCount > 0;
         },
 
-        getMessageSuffix(checkedCount) {
+        getMessageSuffix: function(checkedCount) {
         	return checkedCount > 1 ? "ies" :"y";
         },
 
-        onSearch(e) {
+        onSearch: function(e) {
         	searchtext = e.detail.searchtext;
         	
         	if(searchtext!="") {
@@ -426,7 +407,7 @@
         	this.searchParam = {"search":searchtext};
         },
 
-        onDeletion() {
+        onDeletion: function() {
         	//Send DELETE request to backend
         	for (key in this.checkedItems) {
         		for (i in this.strategies) {		
@@ -442,11 +423,11 @@
     		this.deleteId = "";	        	
         },
 
-        onDeleteStrategyError() {
+        onDeleteStrategyError: function() {
 
         },
 
-        onDeleteStrategyResponse(data) {
+        onDeleteStrategyResponse: function(data) {
         	var idDeleted = data.detail.response.id;
         	for (i in this.strategies) {	
     			if (idDeleted == this.strategies[i]._id) {

@@ -1,18 +1,27 @@
-		
+
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel='import' href='../common/aq-backtest-metric-item.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
-<link rel='import' href='../common/aq-backtest-detail-item.html'>
-
-<dom-module id='aq-analyze-home-backtest-item'>	
-	
+<dom-module id='aq-analyze-home-backtest-item2'>	
 	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
+
 	<style>
 		paper-card {
-			width:100%;
-			margin-bottom: 20px;			
+			--width:48%;
+			margin-bottom: 13px;
+			height:240px;
+			min-width: 500px;
+			--max-width: 1000px;
+			--margin-right: 5px;
+			--margin-left: 5px; 			
 		}
 		
 		a {
@@ -50,6 +59,7 @@
 			size:10px;
 			margin: 5px;
 			padding: 0px;
+			margin-right: 15px;
 
 			margin-top:15px;
 			--paper-checkbox-checked-color: #cf6766;--teal;
@@ -89,7 +99,6 @@
 			margin-bottom:8px;
 			height:100px;
 		}
-
 	
 		#detail-header {
 			margin-bottom: 20px;
@@ -98,63 +107,130 @@
 			font-weight: bold;
 		}
 
+		aq-backtest-metric-item {
+			margin-top: 8px;
+			--margin-bottom: 15px;
+			min-width: 100px;
+			height: 50px;
+			margin-right: 5px;
+			margin-left: 5px;
+			--font-size-metric:13px;
+			--font-size-metric-value:16px;
+
+		}
+
+		#content {
+			height:70px;
+		}
+
+		.metric {
+			--min-width: 120px;
+			margin-right: 15px;
+		}
+
+		.bold-span {
+			--font-weight: bold;
+			--font-size: 14px;
+		}
+
+		.container-int {
+			height:30px;
+		}
+
+
 	</style>
 
 	<template>
-		<paper-card>
-			<div id='content' class="layout horizontal flex">		
-				<paper-checkbox noink id='checkbox' on-tap = 'onCheck'></paper-checkbox>
+		<paper-card class="self-center flex">
+			<div id='content' class="card-content flex">
+				<div  class="container-int layout horizontal">
+					<paper-checkbox noink id='checkbox' on-tap = 'onCheck'></paper-checkbox>	
+					<p>Backtest: 1</p>
+					<div class="flex"></div>
+		          	<paper-icon-button  title="Detail" on-tap="onDetail" icon="vaadin-icons:chart"></paper-icon-button>
+		          	<paper-icon-button class="icons" title="Share" on-tap="onShare" icon="vaadin-icons:share-square"></paper-icon-button>
+					
+				</div>
 
-				<a href$="" on-click='toggle' class="layout horizontal flex"> 
-				
-					<div class="layout vertical metric flex">	
-						<span>01/01/2010-01/01/2016</span>
+				<div class=" container-int layout horizontal">
+					<div class="layout vertical metric">	
+						<span class="bold-span">01/01/2010 - 01/01/2016</span>
 						<span>Date Range</span>		
 					</div>
 
-					<div class="layout vertical metric1 flex">	
-						<span>Completed</span>
-						<span>Status</span>	
-					</div>
-
-					<div class="layout vertical metric1 flex">	
-						<span>08/07/2016</span>
+					
+					<div class="layout vertical metric flex">	
+						<span class="bold-span">08/07/2016</span>
 						<span>Created</span>					
+					</div>	
+
+					<div class="layout vertical metric flex">	
+						<span class="bold-span">Complete</span>
+						<span>Status</span>		
 					</div>
 
-
-					<div class="layout vertical metric1 flex">	
-						<div class="flex"><span>4.7</span></div>
-						<div class="flex"><span>Total Return</span></div>	
+					<div class="layout vertical metric flex">	
+						<span class="bold-span">52s</span>
+						<span>Time</span>		
 					</div>
 
-					<div class="layout vertical metric1 flex">	
-						<div class="flex"><span id='m'>4.7</span></div>
-						<div class="flex"><span>Avg. Return</span></div>	
-					</div>
+				</div>
+			</div>
 
-					<div class="layout vertical metric1 flex">		
-						<div class="flex"><span>4.7</span></div>
-						<div class="flex"><span>Volatility</span></div>	
-					</div>
+			<div class="card-actions">
+				<div class="self-center wrap flex_container layout horizontal">
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
 
-					<div class="layout vertical metric1">		
-						<div class="flex"><span>4.7</span></div>
-						<div class="flex"><span>Sharpe Ratio</span></div>	
-					</div>
-				</a>
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+							
+				</div>
+
+				<div class="self-center wrap flex_container layout horizontal">
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+
+					<aq-backtest-metric-item class="flex width_tab" metric-name="Sharpe Ratio"
+						metric-value="2.47"
+						metric-desc="Sharpe ratio of the strategy">
+					</aq-backtest-metric-item>
+									
+				</div>
 
 			</div>	
 			
-			<iron-collapse id='collapse'>
-				<div><aq-backtest-detail-item></aq-backtest-detail-item></div>
-			</iron-collapse>
-
 		</paper-card>
 	</template>
 	<script>
 		Polymer ({
-			is:'aq-analyze-home-backtest-item',
+			is:'aq-analyze-home-backtest-item2',
 			
 			properties:{
 				lineData: {
@@ -177,6 +253,7 @@
 					    }]
 					}, 
 				},
+
 				barData: {
 					type:Object,
 					value: {
@@ -199,16 +276,27 @@
 
 				backtest: {
 					type:Object,
-				},	
-			},
+				},
 
-			toggle: function() {
-				this.$.collapse.toggle();
+				detailActive:{
+					type:Boolean,
+					value:false,
+				},
+
 			},
 
 			onCheck: function() {
 				this.fire('backtestChecked',{id:this.backtest._id, checked:this.$.checkbox.checked})
 			},
+
+			onDetail: function() {
+				this.fire('detail-action',{id:this.backtest._id});
+			},
+
+			onShare: function() {
+				this.fire('shareClicked',{id:this.backtest._id});
+			},
+
 
 		});
 	</script>

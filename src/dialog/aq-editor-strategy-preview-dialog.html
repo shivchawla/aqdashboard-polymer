@@ -1,17 +1,16 @@
-
-<link rel='import' href='../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../bower_components/iron-icons/iron-icons.html'>
-<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/paper-dialog/paper-dialog.html'>
+
+<link rel='import' href='../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html'>
+
 <link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href='../../bower_components/paper-input/paper-input.html'>
-<link rel='import' href='../../bower_components/paper-input/paper-textarea.html'>
 <link rel='import' href='../../bower_components/marked-element/marked-element.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id='aq-editor-strategy-preview-dialog'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		paper-dialog {
     		width: 900px;
@@ -68,7 +67,7 @@
 	<template>
 	    <paper-dialog id='previewStrategyModalDialog' with-backdrop>
  			<div style="margin-left:-30px;margin-top:-5px">
- 				<paper-icon-button dialog-dismiss icon="icons:cancel"></paper-icon-button>
+ 				<paper-icon-button dialog-dismiss icon="aq-icons:cancel"></paper-icon-button>
  			</div>
 
  			<div>
@@ -104,12 +103,12 @@
 						</div>
 
 						
-				        <paper-icon-button noink icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button>
+				        <paper-icon-button noink icon="aq-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button>
 				    
 
-				        <paper-icon-button noink icon="icons:content-copy" title="Clone Strategy" on-tap='goToClone'></paper-icon-button>
+				        <paper-icon-button noink icon="aq-icons:content-copy" title="Clone Strategy" on-tap='goToClone'></paper-icon-button>
 				    
-				        <paper-icon-button noink icon="social:share" title="Share Strategy" on-tap='goToShare'></paper-icon-button>
+				        <paper-icon-button noink icon="aq-icons:share" title="Share Strategy" on-tap='goToShare'></paper-icon-button>
 					    
 					</div>
 				</div>		
@@ -134,19 +133,19 @@
 				numBacktests:Number,
 			},
 
-			goToAnalyze() {
+			goToAnalyze: function() {
 				this.fire('analyzeClicked');
 			},
 
-			goToClone() {
+			goToClone: function() {
 				this.fire('cloneClicked');
 			},
 				
-			goToShare() {
+			goToShare: function() {
 				this.fire('shareClicked');
 			},
 
-			open() {
+			open: function() {
 				this.$.previewStrategyModalDialog.open();
 			},
 

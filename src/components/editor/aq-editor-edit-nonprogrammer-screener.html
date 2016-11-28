@@ -1,7 +1,10 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
 <link rel='import' href='../common/aq-dropdown.html'>
-<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-nonprogrammer-screener-item'>
+	<style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		input {
 			margin:10px;
@@ -65,7 +68,7 @@
 		    <input>
 		    <div id='gap' class="fflex"></div>
 		    <input id='secondInput'>	   
-		    <paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>
+		    <paper-icon-button on-tap='onDelete' class="self-center" icon='aq-icons:cancel'></paper-icon-button>
 		</div>	
 	
 	</template>
@@ -90,16 +93,17 @@
 					type:String,
 				},
 			},
+			
 			listeners: {
 				'dropdown-changed':'onDropdownChange',	
 			},
 
-			ready() {
+			ready: function() {
 				this.operatorOptions = operatorOptions_u;
 				this.operator = this.operatorOptions[0];
 			},
 
-			onDropdownChange(e) {
+			onDropdownChange: function(e) {
 				
 				if(e.detail.index==4) {
 					this.$.secondInput.style.display='inline';
@@ -111,7 +115,7 @@
 
 			},
 
-			onDelete(e){
+			onDelete: function(e){
 				e.currentTarget.parentElement.remove();
 			}
 			
@@ -190,8 +194,6 @@
  			<aq-nonprogrammer-screener-item screener-name="Market Capitalization"></aq-nonprogrammer-screener-item>
 		</div>
 
-
-		<!--/paper-header-panel-->
  	</template>
 
 	<script>
@@ -205,11 +207,11 @@
 				'screener-pressed':'onAddScreener',
 			},
 
-			ready() {
+			ready: function() {
 				this.exchangeOptions = exchangeOptions;
 			},
 
-			addScreener() {
+			addScreener: function() {
 				var x = document.createElement('aq-nonprogrammer-screener-item');
 				Polymer.dom(this.$.container).appendChild(x);
 			},

@@ -1,17 +1,10 @@
 
-
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
-<link rel='import' href='../../../bower_components/marked-element/marked-element.html'>
-
-
-<link rel='import' href='./aq-editor-home-backtest-table.html'>
-
 
 <dom-module id = 'aq-editor-home-strategy-item'>
 
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
   
 	<style>
 
@@ -101,7 +94,7 @@
 	</style>
 
 	<template>
-		<div class="row layout horizontal" id="{{strategyId}}">
+		<div id$="[[strategyId]]" class="row layout horizontal">
 	      	<paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
 	          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
 	          <div class="strategy-desc self-center">[[strategyDesc]]</div>
@@ -116,112 +109,30 @@
 			properties: {
 				strategyName: {
 					type:String,
-					value:'Sample Strategy',
 				},
 
 				strategyDesc: {
 					type:String,
-					value: 'Sample strategy description to test the UI',
 				},
 
 				numBacktest: {
 					type:Number,
-					value: 5,
 				},
 
 				strategyId :String,
 			},
 
-			listeners :{
-				'cloneClicked':'onClone',
-			},
-/*
-			listeners :{
-				'mouseover': '_mouseOver',
-				'mouseleave': '_mouseLeave',
-
+			goToEditor: function() {
+				this.fire('editorClicked');//, {id:this.strategyId});
 			},
 
-			_actionMenu: null,
-
-			_mouseOver: function (e) {
-				var row = this._findAncestor(e.target, function (node) {
-					return node != this && !node.classList.contains('row') && node.id !== 'actions';
-				});
-
-				if (row && row.classList.contains('row')) {
-						this._hideActions();
-						this._showActions(row);
-					
-				} else if (row.id !== 'actions') {
-						this._hideActions();
-				}
-			},
-		
-			_mouseLeave: function () {
-				this._hideActions();
+			goToAnalyze: function() {
+				this.fire('analyzeClicked');//, {id:this.strategyId});
 			},
 
-			_showActions: function (row) {
-				console.log("Woow");
-				var actionMenu = this._actionMenu;
-				var rowOffsetTop = row.offsetTop;
-				if (!actionMenu) {
-					this._actionMenu = document.createElement('aq-editor-home-elementmenu');
-					this._actionMenu.classList.add('hidden');
-					Polymer.dom(this.$.actions).appendChild(this._actionMenu);
-					actionMenu = this._actionMenu;
-				}
-				actionMenu.iconsOnly = true;
-				actionMenu.style.top = rowOffsetTop + 'px';
-				//this._layoutIfNeeded(actionMenu);
-				actionMenu.classList.remove('hidden');
-				row.classList.add('hover');
-				//this._currentRowIndex = index;
-				this._currentRow = row;
-			},
-		
-			_hideActions: function () {
-				var row = this._currentRow;
-				var actionMenu = this._actionMenu;
-				if (row) {
-					if (actionMenu) {
-						actionMenu.classList.add('hidden');
-					}
-					//row.classList.remove('hover');
-					//this._currentRowIndex = -1;
-					this._currentRow = null;
-				}
-			},
-
-			_findAncestor: function (node, fn) {
-				while (node && fn.call(this, node)) {
-					node = node.parentNode;
-				}
-				return node;
-			},*/
-
-			goToEditor() {
-				this.fire('editorClicked', {id:this.strategyId});
-			},
-
-			goToAnalyze(e) {
-				this.fire('analyzeClicked');
-				e.stopPropagation();
-			},
-
-			onCheck() {
+			onCheck: function() {
 				this.fire('check-action',{id:this.strategyId, checked:this.$.checkbox.checked})
 			},
-
-			isCheckBoxActive() {
-				return this.$.checkbox.checked;
-			},
-
-			onClone(e) {
-				this.firec
-			}
-
 		});
 	</script>
 

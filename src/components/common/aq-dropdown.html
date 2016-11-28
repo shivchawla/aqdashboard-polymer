@@ -1,4 +1,15 @@
+<link rel='import' href='../../../bower_components/paper-menu-button/paper-menu-button.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../../../bower_components/paper-listbox/paper-listbox.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
+
 <dom-module id='aq-dropdown'>
+
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+  
 	<style>
 		paper-menu-button {
 			width: 100%;
@@ -45,7 +56,7 @@
 		<paper-menu-button vertical-offset=[[verticalOffset]] horizontal-offset=[[horizontalOffset]]>
     		<paper-button noink class="button flex dropdown-trigger self-center">
 				<span class="flex" id="category">{{selectedCategory.value}}</span>
-				<iron-icon icon="icons:arrow-drop-down"></iron-icon>
+				<iron-icon icon="aq-icons:arrow-drop-down"></iron-icon>
     		</paper-button>
         	
 			<paper-listbox class="dropdown-content" attr-for-selected='label' selected="{{selectedCategory}}">
@@ -86,15 +97,15 @@
 				},
 			},
 
-			optionsAdded() {
+			optionsAdded: function() {
 				this.selectedCategory = this.options[this.defaultIndex];
 			},
 
-			selectedIndexChanged() {
+			selectedIndexChanged: function() {
 				this.fire('dropdown-changed', {'index':this.selectedCategory.index});
 			},
 
-			getSelectedValue() {
+			getSelectedValue: function() {
 				return this.selectedCategory.value;
 			}
 

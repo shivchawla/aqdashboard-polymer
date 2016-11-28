@@ -1,21 +1,7 @@
 
-<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
-
-<link rel="import" href="../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../../../bower_components/juicy-ace-editor/juicy-ace-editor.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
-
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
-
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-
-<link rel="import" href="../../../bower_components/paper-input/paper-input-container.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 
@@ -23,11 +9,14 @@
 <link rel='import' href ="./aq-editor-toolbar.html">
 <link rel='import' href ="./aq-editor-console-window.html">
 <link rel='import' href ="./aq-editor-sidebar-run.html">
-<link rel='import' href ='./aq-editor-edit-nonprogrammer.html'>
+<!--link rel='import' href ='./aq-editor-edit-nonprogrammer.html'-->
 <link rel='import' href ='./aq-editor-edit-programmer.html'>
 <link rel='import' href ='./aq-editor-edit-backtest-screen.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-editor-edit">
+  <style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning">
+  </style> 
 
 <style>
 
@@ -108,16 +97,16 @@
         <paper-header-panel id='leftPanel' main mode="seamed"> 
           
           <template is='dom-if' if='[[!isRunning]]'>
-            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]"" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
+            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
             </aq-editor-toolbar>
             
             <template is='dom-if' if='{{isProgrammer}}'>
               <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
             </template>
              
-            <template is='dom-if' if='{{!isProgrammer}}'>
+            <!--template is='dom-if' if='{{!isProgrammer}}'>
               <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
-            </template>
+            </template-->
                  
             <iron-collapse id='collapse'>
               <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
@@ -152,7 +141,7 @@
               
               <template is='dom-if' 
                         if="[[isSelectedSidebarRun(selectedSidebar)]]">
-                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="av:play-arrow"></paper-icon-button>
+                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="aq-icons:play-arrow"></paper-icon-button>
               </template>
 
               <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
@@ -228,6 +217,8 @@
         },
 
         strategyId: String,
+
+        strategy: Object,
         
         runSwitch:{
           type: Number,
@@ -243,9 +234,13 @@
           type:Number,
           value:0,
         },
+
+        putStrategyData:Object,
+        runStrategyData:Object,
+
       },
 
-      attached() {
+      attached: function() {
         this.fire('close-menu');
       },
 
@@ -276,7 +271,7 @@
           }
       },
 
-      computeDrawerWidth(isProgrammer, isRunning) {
+      computeDrawerWidth: function(isProgrammer, isRunning) {
         //var width =  isProgrammer ? "560px" :"0px"; 
 
         if (isProgrammer && isRunning) {
@@ -288,28 +283,28 @@
         }
       },
 
-      toggleConsole() {
+      toggleConsole: function() {
         this.$.collapse.toggle();
       },
 
-      openConsole() {
+      openConsole: function() {
         if (this.$.collapse.opened == false) {
           this.$.collapse.toggle();
         }
       },
 
-      closeConsole() {
+      closeConsole: function() {
        if (this.$.collapse.opened == true) {
           this.$.collapse.toggle();
         }
       },
 
-      closeAll() {
+      closeAll: function() {
         this.$$('#codeEditorPanel').closeDrawer();
         this.closeConsole();
       },
 
-      toggleDrawer() { 
+      toggleDrawer: function() { 
         if(this.showSideBar && this.narrow) {
           this.$$('#drawerpanel').togglePanel();
         } else if (this.showSideBar && !this.narrow) {
@@ -320,12 +315,12 @@
 
       },
 
-      openDrawer() { 
+      openDrawer: function() { 
         this.$$('#drawerpanel').openDrawer();
         this.showSideBar = true;
       },
 
-      closeDrawer() {
+      closeDrawer: function() {
         this.$$('#drawerpanel').closeDrawer();
   
         if (this.showSideBar && !this.narrow) {
@@ -333,50 +328,51 @@
         }
       }, 
 
-      isSelectedSidebarRun(selectedSidebar) {
+      isSelectedSidebarRun: function(selectedSidebar) {
         return selectedSidebar == 0;
       },
 
-      designChanged() {
+      designChanged: function() {
         this.isProgrammer = !this.isProgrammer;
       },
 
-      goToAnalyze() {
+      goToAnalyze: function() {
         this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
       },
 
-      goToHome() {
+      goToHome: function() {
         this.router.go('/dashboard/editor');
       },
 
-      onGetStrategyResponse(data) {
+      onGetStrategyResponse: function(data) {
         this.strategy = data.detail.response;
       },
 
-      onGetStrategyError(data) {
+      onGetStrategyError: function(data) {
         console.log(data);
       },
 
-      onStrategySavedResponse(data) {
+      onStrategySavedResponse: function(data) {
         if(this.runSwitch == 1) {
           //reset the run swtch to off
           this.runSwitch = 0;
 
           //now run the saved strategy
           this.$.runStrategyQuery.generateRequest();
+          this.isRunning = true;
         }
       },
 
-      onStrategySavedError(data) {
+      onStrategySavedError: function(data) {
         console.log("Error Saving");
         console.log(data);
       },
 
-      runStrategyFromPanel() {
+      runStrategyFromPanel: function() {
         this.$$('#editorToolbar').onRun();
       },
 
-      saveStrategy(e) {
+      saveStrategy: function(e) {
         this.putStrategyData = {
             "name":e.detail.name,
             "description": this.strategy.description,
@@ -386,10 +382,9 @@
         };
       
         this.$.saveStrategyQuery.generateRequest();
-        this.isRunning = true;
       },
 
-      runStrategy(e) {
+      runStrategy: function(e) {
          console.log("Going to Run:");
         // first save the strategy
         this.runStrategyData = {  
@@ -403,7 +398,7 @@
         this.saveStrategy(e);  
       },
 
-      onStrategyExecutionResponse(data) {
+      onStrategyExecutionResponse: function(data) {
         console.log("Run: Success");
         console.log(data);
         
@@ -411,18 +406,18 @@
         //HAS no output
       },
 
-      onStrategyExecutionError(data) {
+      onStrategyExecutionError: function(data) {
         console.log(data);
         //This get back the created backtest object with just the settings,
         //HAS no output
       },
 
-      cloneStrategy(e) {
+      cloneStrategy: function(e) {
           e.detail.strategy = this.strategy;
           //let the event propagate
       },
 
-      toggleIsRunning() {
+      toggleIsRunning: function() {
         this.isRunning = !this.isRunning;
       },
 

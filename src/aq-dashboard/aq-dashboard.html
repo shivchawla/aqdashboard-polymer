@@ -1,6 +1,8 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-router/app-router.html">
+
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
 
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
@@ -80,7 +82,7 @@
         <aq-sendfeedback-dialog id='feedbackDialog'>
         </aq-sendfeedback-dialog>
 
-        <aq-invitefriend-dialog id='inviteDialog'">
+        <aq-invitefriend-dialog id='inviteDialog'>
         </aq-invitefriend-dialog>
 
       </div>
@@ -154,7 +156,7 @@
             'myaccount-action':'onMyAccount',
         },
 
-        attached() {
+        attached: function() {
 
             var x = localStorage.getItem('my-app-storage');
             if (x) {
@@ -184,7 +186,7 @@
             }
         },
 
-        ready() { 
+        ready: function() { 
             if(this.checkHasToken()) {
                 if(this.URLcontains('/user')) {
                     this.$$('#router').go('/main');
@@ -192,7 +194,7 @@
             }
         },
 
-        checkHasToken() {  
+        checkHasToken: function() {  
 
           var x = localStorage.getItem('my-app-storage');
           if (x) {
@@ -205,19 +207,19 @@
           console.log("HasToken: " + this.hasToken);
         },
 
-        computeShowMenu(narrow, showSidebar) {
+        computeShowMenu: function(narrow, showSidebar) {
           return narrow || !showSidebar;
         },
 
-        computeForceNarrow(narrow, showSidebar) {
+        computeForceNarrow: function(narrow, showSidebar) {
           return !showSidebar;
         },
 
-        computeShowSideBar(narrow, showSidebar){
+        computeShowSideBar: function(narrow, showSidebar){
           return !showSidebar;
         },
 
-        viewChanged(newMenu) {
+        viewChanged: function(newMenu) {
           this.view = newMenu.detail.menu; 
           this.$.router.go('/dashboard/' + this.view);
           
@@ -226,7 +228,7 @@
           }
         },
 
-        viewChangedOnAction(newAction) {
+        viewChangedOnAction: function(newAction) {
           if(newAction.detail.action == "sendfeedback") {
             this.openFeedbackDialog();
           } else if(newAction.detail.action == "invitefriend") {
@@ -241,12 +243,12 @@
           }
         },
 
-        openMenu(e) {
+        openMenu: function(e) {
           this.$.drawerpanel.openDrawer();
           this.showSidebar = true;
         },
 
-        closeMenu() {
+        closeMenu: function() {
           this.$.drawerpanel.closeDrawer();
 
           if (this.showSidebar && !this.narrow) {
@@ -254,7 +256,7 @@
           }
         },
 
-        changeTab(e) {
+        changeTab: function(e) {
           this.checkHasToken();
           this.showSidebar = (e.detail.tab == 1);
           tab = e.detail.tab;
@@ -283,7 +285,7 @@
           
         },
 
-        _currentTabChanged(newTab, oldTab) {        
+        _currentTabChanged: function(newTab, oldTab) {        
           
           if (!(oldTab + 1)) {
             return;
@@ -319,11 +321,11 @@
           
         },
 
-        URLcontains(path) {
+        URLcontains: function(path) {
           return (document.URL.match(path)) ? true : false;
         },
 
-        onSignOut() {
+        onSignOut: function() {
           this.set('aimsquant.user','');
           this.$.localStorage.save(); 
           
@@ -335,22 +337,22 @@
           this.$.router.go('/user/signout');
         },
 
-        openFeedbackDialog() {
+        openFeedbackDialog: function() {
           this.$.feedbackDialog.open();
         },
 
-        sendFeedBack(e){
+        sendFeedBack: function(e){
 
         },
 
-        openInviteDialog() {
+        openInviteDialog: function() {
           this.$.inviteDialog.open();
         },
 
-        sendInvite(e) {
+        sendInvite: function(e) {
         },
 
-        onMyAccount() {
+        onMyAccount: function() {
           this.$.router.go('/user/myaccount');
         },
 

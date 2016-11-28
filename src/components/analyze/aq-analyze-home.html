@@ -1,28 +1,20 @@
 
-<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
-<link rel='import' href='../../../bower_components/paper-datatable/paper-datatable.html'>
-<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
-<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
-<link rel='import' href='../../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html'>
-
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
-<link rel='import' href='./aq-analyze-home-backtest-item.html'>
+<link rel='import' href='./aq-analyze-home-backtest-item2.html'>
+
 <link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
-<link rel='import' href='../common/aq-backtest-detail-item.html'>
+
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 
-<dom-module id='aq-analyze-home'>
+<dom-module id="aq-analyze-home">
 	
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
   
 	<style>
-		:host{
-			font-family: 'Roboto', sans-serif;
-		}
-	
+		
 		.metric {
 			margin-right: 10px;
 			margin-left:10px;
@@ -45,7 +37,7 @@
 			margin:0 auto;
 		    --margin-left: 30px;
 		    --margin-right: 30px;
-		    margin-top: 10px;
+		    margin-top: 0px;
 		    color: #333a56; 
 		  }
 
@@ -61,6 +53,12 @@
 
 		p{
 			font-size: 20px;
+		}
+
+		.spacer {
+			margin-bottom: 13px;
+			height:0px;
+			min-width: 500px; 			
 		}
 
 	</style>
@@ -103,22 +101,27 @@
 				<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
 				<p>All Backtests for <i>{{strategyName}}</i></p>
+				<div class="layout horizontal wrap flex around-justified">
 				<template is='dom-repeat' items="{{backtests}}">
-					<aq-analyze-home-backtest-item backtest={{item}}></aq-analyze-home-backtest-item>
+					<aq-analyze-home-backtest-item2 backtest="{{item}}"></aq-analyze-home-backtest-item2>
 				</template>
+				<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
+					<div class="spacer"></div>
+				</template>
+				</div>
 			</template>
 
 			<template is='dom-if' if="[[showComparison]]">
 				<aq-analyze-backtest-comparison-item>
 				</aq-analyze-backtest-comparison-item>
 			</template>
-	
+
 		</div>	
 
 	    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
-						 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
-						 cancel="Cancel"
-						 accept="OK">
+			 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
+			 cancel="Cancel"
+			 accept="OK">
     	</aq-delete-dialog>
 
     </template>
@@ -137,6 +140,10 @@
     				type:Object,
        			},
 
+       			backtestId:String,
+
+       			deleteId: String,
+
     			checkedCount: {
     				type: Number,
     				value:0,
@@ -151,9 +158,10 @@
 					type:Boolean,
 					value:false,
 				},
+
     		}, 
     		
-			listeners :{
+			listeners: {
 				'backClicked':'goToEditor',
 				'compareClicked':'toggleComparison',
 				'backtestChecked':'checkBacktest',
@@ -161,6 +169,7 @@
 				'shareClicked':'goToShare',
 				'comparison-off':'toggleComparison',
 				'delete-action':'onDeletion',
+				'detail-action':'onDetail',
 			},
 
 			ready: function() {
@@ -173,16 +182,16 @@
 		        }
 	      	},
 
-	      	attached() {
+	      	attached: function() {
 	      		this.$.getStrategyQuery.generateRequest();
 	      	},
 
-			goToEditor() {
+			goToEditor: function() {
 				this.router.go('/dashboard/editor');
 			},
 
-			goToShare() {
-				var sharebacktestId = "";
+			goToShare: function(e) {
+				/*var sharebacktestId = "";
 				for (key in this.checkedItems) {
 	        		for (i in this.backtests) {		
 	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
@@ -193,32 +202,34 @@
 
 	    		if (sharebacktestId != "") {
         			this.router.go('/dashboard/community/create/'+sharebacktestId+"?share=backtest");
-        		}
-			},
-			
-			goToBacktest_all() {
-				//this.showComparison = false;
+        		}*/
+
+    			this.router.go('/dashboard/community/create/'+e.detail.id+"?share=backtest");
 			},
 
-			onGetAllBacktestsForStrategy(data) {
+			isBacktestCountOdd: function(backtests) {
+				return backtests.length % 2 == 1;
+			},
+			
+			onGetAllBacktestsForStrategy: function(data) {
 				this.backtests = data.detail.response;
 			},
 
-			onGetAllBacktestsForStrategyError(data) {
+			onGetAllBacktestsForStrategyError: function(data) {
 				console.log(data)
 			},
 
-			onGetStrategy(data) {
+			onGetStrategy: function(data) {
 				this.strategyName = data.detail.response.name;
 				this.$.getBacktestsQuery.generateRequest();
 			},
 
-			onGetStrategyError(data) {
+			onGetStrategyError: function(data) {
 				console.log(data);
 			},
 
-			checkBacktest(e) {
-        		var checked = e.detail.checked;
+			checkBacktest: function(e) {
+				var checked = e.detail.checked;
 
 	        	this.checkedItems[e.detail.id] = e.detail.checked;
 
@@ -229,19 +240,19 @@
 	        	}
 	        },
 
-	        numCheckedBacktests(checkedCount) {
+	        numCheckedBacktests: function(checkedCount) {
 	        	return checkedCount;
 	        },
 
-	        getMessageSuffix(checkedCount) {
+	        getMessageSuffix: function(checkedCount) {
         		return checkedCount > 1 ? "s" :"";
         	},
 
-	        openDeleteDialog() {
+	        openDeleteDialog: function() {
 	        	this.$.deleteDialog.open();
 	        },
 
-	        onDeletion(e) {
+	        onDeletion: function(e) {
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
 	        	for (key in this.checkedItems) {
@@ -256,8 +267,7 @@
 	    		this.deleteId="";
 	        },
 
-	        onDeleteBacktestForStrategySuccess(data) {
-	        	console.log(data.detail.response);
+	        onDeleteBacktestForStrategySuccess: function(data) {
 	        	var deleteId = data.detail.response.id;
 	        	for (i in this.backtests) {		
         			if (deleteId == this.backtests[i]._id) {
@@ -267,12 +277,17 @@
         		}
 	        },
 
-	        onDeleteBacktestForStrategyError(data) {
+	        onDeleteBacktestForStrategyError: function(data) {
 	        	console.log(data.detail.response);
 	        }, 
 
-	        toggleComparison() {
+	        toggleComparison: function() {
 	        	this.showComparison = !this.showComparison;
+	        },
+
+	        onDetail: function(e) {  
+	        	console.log(this.router);    	
+	        	this.router.go('/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id);
 	        },
 
     	});

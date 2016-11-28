@@ -1,6 +1,6 @@
 <link rel='import' href='../../bower_components/paper-button/paper-button.html'>
-
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
 <link rel="import" href="./profile-img.html">
 
 <dom-module id='aq-user-menu'>
@@ -55,7 +55,7 @@
 
     <template>
         <paper-menu-button id = 'userMenu' on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=50>
-            <profile-img letter={{letter}} class="dropdown-trigger"></profile-img>
+            <profile-img letter="[[letter]]" class="dropdown-trigger"></profile-img>
 
             <div class="dropdown-content">
                 <div id='top' class="layout horizontal">
@@ -64,7 +64,7 @@
                     <div class="flex"></div>
 
                     <div id='userid' class="layout vertical self-end">
-                        <div class="self-end" id='name'><span>[[firstName]] [[lastName]]</span></div>
+                        <div class="self-end" id='name'><span>[[firstName]]</span><span>&nbsp[[lastName]]</span></div>
                         <div class="self-end" id='email'><span>[[email]]</span></div>
                     </div>
 
@@ -96,12 +96,17 @@
             properties: {
                 firstName: {
                   type: String,
-                  value: ''
+                  value: '',
                 },
+
                 lastName: {
                   type: String,
-                  value: ''
-                }
+                  value: '',
+                },
+
+                letter: String,
+                email:String,
+
             },
             ready: function() {
     		  	var x = localStorage.getItem('my-app-storage');
@@ -112,22 +117,22 @@
                 this.letter = this.firstName[0]+this.lastName[0];
 	        },
 
-            onMyAccount() {
+            onMyAccount: function() {
                 this.$.userMenu.close();
                 this.fire('myaccount-action');
             },
 
-            onInvite() {
+            onInvite: function() {
                 this.$.userMenu.close();
                 this.fire('enter-invite-action');
             },
 
-            onFeedback() {
+            onFeedback: function() {
                 this.$.userMenu.close();
                 this.fire('take-feedback-action');
             },
 
-            onSignOut() {
+            onSignOut: function() {
                 this.$.userMenu.close();
                 this.fire('signout-action');
             },

@@ -1,10 +1,15 @@
 
-
-<link rel='import' href='../../../bower_components/google-chart/google-chart.html'>
-<link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-analyze-backtest-comparison-item'>	
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
 	<style>	
 		chart-line {
 			width: 50%;
@@ -104,7 +109,7 @@
 	<template>	
 
 		<div class="goBackButton layout horizontal">
-            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="icons:arrow-back" on-tap="goBackAllBacktests">
+            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
             </paper-icon-button>
             <p class="self-center">Back to All Backtests</p>
       	</div>
@@ -112,10 +117,10 @@
 		<div id='comparison-return'>
 			<div class="sub_header">
 				<paper-tabs noink selected={{graphType1}}>
-				<template is='dom-if'' if="[[lineData]]">
+				<template is='dom-if' if="[[lineData]]">
 					<paper-tab>Line Graph</paper-tab>
 					</template>
-					<template is='dom-if'' if="[[barData]]">
+					<template is='dom-if' if="[[barData]]">
 					<paper-tab>Bar Graph</paper-tab>
 					</template>
 					<paper-tab>Comparison Table</paper-tab>
@@ -138,8 +143,7 @@
 		          
 			<iron-pages class="pages_select" selected={{graphType1}}>
 				
-				<iron-page>
-				<template is='dom-if'' if="[[lineData]]">			 
+				<template is='dom-if' if="[[lineData]]">			 
 			  		<div class="layout horizontal">
 						<div class="vertical-textGraphs self-center">
 			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
@@ -162,10 +166,8 @@
 				  		</div>
 			  		</div>
 			  	</template>	
-		  		</iron-page>
 		  		
-		  		<iron-page>
-		  		<template is='dom-if'' if="[[barData]]">	
+		  		<template is='dom-if' if="[[barData]]">	
 		  		<div class="layout horizontal">
 					<div class="vertical-textGraphs self-center">
 		  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
@@ -189,10 +191,8 @@
 			  		</div>
 		  		</div>
 		  		</template>
-		  		</iron-page>
-				
-		  		<iron-page>
-			  		<div style="width:100%">
+		  		
+		  			<div style="width:100%">
 			  		<vaadin-grid id="table_details__comparison">
 					  <table>
 					    <colgroup class="table_style">
@@ -213,7 +213,6 @@
 					  </table>
 					</vaadin-grid>
 					</div>
-				</iron-page>
 	  		</iron-pages>
 		</div>
 		
@@ -277,7 +276,7 @@
 		        this.set('y_barData', e.detail.response[0].y_axis);
 			},
 
-			goBackAllBacktests() {
+			goBackAllBacktests: function() {
 	          	this.fire('comparison-off');
 	        },
 

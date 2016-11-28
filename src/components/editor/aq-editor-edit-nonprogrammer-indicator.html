@@ -1,9 +1,13 @@
 <link rel='import' href='../common/aq-dropdown.html'>
 <link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
 <link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 
 <dom-module id='aq-nonprogrammer-indicator-item'>
+	<style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		input {
 			margin:10px;
@@ -83,7 +87,7 @@
 				<!--/div-->
 			<!--/div-->
 			<div class="flex"></div>
-		<paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>	  
+		<paper-icon-button on-tap='onDelete' class="self-center" icon='aq-icons:cancel'></paper-icon-button>	  
 		</div>
 	</template>
 
@@ -125,7 +129,7 @@
 				'dropdown-changed':'onDropdownChange',
 			},
 
-			ready() {
+			ready: function() {
 				this.operatorOptions = operatorOptions_i;
 				this.analyticOptions = analyticOptions_i;
 				this.indicatorOptions = indicatorOptions_i;
@@ -136,7 +140,7 @@
 				this.horizon = this.horizonOptions[0].value;
 			},
 
-			onDropdownChange(e) {
+			onDropdownChange: function(e) {
 				index = e.detail.index;
 				id = e.target.id;
 
@@ -156,11 +160,11 @@
 				}
 			},
 			
-			onDelete(e){
+			onDelete: function(e){
 				this.$.indicator.remove();
 			},
 
-			toggle(){
+			toggle: function(){
 				this.$.collapse.toggle();
 			}
 			
@@ -208,7 +212,7 @@
 		<div class="layout horizontal">
 			<p id="header">Adding indicators to further filter the stock universe. For ex: Select stocks with <b><i> simple moving average of price</i></b> over last 1 month greater than 10.</p>
 			<div class="flex"></div>
-			<paper-icon-button on-tap='addConstraints' title="Add Indicator" noink icon="icons::add"></paper-icon-button> 
+			<paper-icon-button on-tap='addConstraints' title="Add Indicator" noink icon="aq-icons::add"></paper-icon-button> 
 		</div>	
 		
 			<aq-nonprogrammer-indicator-item></aq-nonprogrammer-indicator-item>
@@ -239,7 +243,7 @@
 				'dropdown-changed':'onDropdownChange',
 			},
 
-			addConstraints() {
+			addConstraints: function() {
 				console.log('i am here');
 				var x = document.createElement('aq-nonprogrammer-indicator-item');
 				console.log(x);
@@ -247,7 +251,7 @@
 				Polymer.dom(this.$.container).appendChild(x);
 			},
 
-			onDropdownChange(e) {
+			onDropdownChange: function(e) {
 				if(e.target.id =='optType-dd') {
 					this.optimizationType = e.detail.index;
 				} else if (e.target.id =='weightscheme-dd') {

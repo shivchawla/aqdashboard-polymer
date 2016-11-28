@@ -11,7 +11,7 @@
 <link rel="import" href="./aq-help-marked-item.html">
 
 <dom-module id="aq-help-home">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
    <style>
     #panel {
       height:100%;
@@ -101,7 +101,7 @@
         }
       },
 
-      ready() {
+      ready: function() {
          this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
          this.$.getHelpCategoryQuery.url = "http://localhost:8080/src/components/help/data_categories.json";
          this.$.getHelpContentQuery.url = "http://localhost:8080/src/components/help/data_help.json";
