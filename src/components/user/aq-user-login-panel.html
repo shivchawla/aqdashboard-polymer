@@ -4,12 +4,11 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/gold-email-input/gold-email-input.html">
-<!--link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html"-->
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <dom-module id="aq-user-login-panel">
-    <style is="custom-style" include="iron-flex iron-positioning"></style>
+    <style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
     <style>
 
         paper-card {
@@ -242,7 +241,6 @@
                         handle-as="json" 
                         on-response="handleSignupResponse"
                         on-error="handleSignupError"
-                        last-response="{{ajaxResponse}}" 
                         headers='{"Content-Type": "application/json"}' debounce-duration="300">  
                         </iron-ajax>
                     <template is="dom-if" if="{{isSigninMode(displayMode)}}">
@@ -403,6 +401,11 @@
                     value: ""
                 },
 
+                signoutMessage:{
+                    type:String,
+                    value:'',
+                },
+
                 rememberMe: {
                     type: Boolean,
                     value: false
@@ -496,11 +499,14 @@
                     actionButtonSuccessLabel: "Success! Please check your inbox."
                 }
             },
-            ready: function() {
-                //this.aimsquant = localStorage.getItem('my-app-storage');
-            },
 
-            attached() {
+            attached: function() {
+
+                if(this.checkHasToken()) {
+                    console.log("Came Here: But why?");
+                    this.router.go('/dashboard');
+                    return;
+                }
 
                 if (this.displayMode != displayModes.signin && 
                     this.displayMode != displayModes.signup &&
@@ -524,7 +530,18 @@
                 } 
             },
 
-            initializeDefaultValue() {
+            checkHasToken: function() {
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                if (user && user.token && user.token!="") {   
+                    return true;
+                } 
+
+                return false;
+            },
+            
+
+            initializeDefaultValue: function() {
                 this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
             },
 
@@ -616,7 +633,7 @@
                 return passwordInFocus | password == '' | this.passwordValid;
             },
 
-            isUserEmailValid(userEmail, userEmailInFocus) {
+            isUserEmailValid: function(userEmail, userEmailInFocus) {
                 return userEmailInFocus | userEmail == '' | this.userEmailValid;
             },
 
@@ -742,7 +759,7 @@
                 this.router.go('/dashboard/home');
             },
 
-            handleLoginError(data) {
+            handleLoginError: function(data) {
                 this.clearErrorMessages();
                 this.actionFailed("Incorrect Username/Password");
             },

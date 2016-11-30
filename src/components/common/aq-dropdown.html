@@ -15,19 +15,29 @@
 			width: 100%;
 			
 			padding: 0px;
+
 		}
 
 		paper-button {	
 			margin:0px;
 			border-radius: 5px;	
 			border: var(--dropdown-border, 1px solid #e5e5e5);
+			border-color: var(--dropdown-background-color, #e5e5e5);
 			width: var(--dropdown-width,100%);	
  			text-transform: none;
 			font-weight: var(--dropdown-font-weight, normal);
 			font-size: var(--dropdown-font-size,13px);
 			height: var(--dropdown-height, 30px);
 			background-color: var(--dropdown-background-color, white);
+		}
+
+		paper-button, span#category {
 			height: var(--dropdown-height, 36px); 
+			line-height: var(--dropdown-height, 36px); 
+		}
+
+		span#category{
+			vertical-align: center;
 		}
 
 		paper-item {
@@ -46,17 +56,24 @@
 			--paper-listbox-background-color:var(--dropdown-background-color, white);
 			border-radius: 5px;
 			--width: 100%;
+			--z-index: 1002;
+			--opacity: 1.0;
 		}
 
-		
+		#icon {
+			background-color: var(--dropdown-icon-background, none);
+			color: var(--dropdown-icon-color, black);
+			border-radius: 5px;
+			margin-right: -10px;
+		}
 		
 	</style>
 
 	<template>
 		<paper-menu-button vertical-offset=[[verticalOffset]] horizontal-offset=[[horizontalOffset]]>
     		<paper-button noink class="button flex dropdown-trigger self-center">
-				<span class="flex" id="category">{{selectedCategory.value}}</span>
-				<iron-icon icon="aq-icons:arrow-drop-down"></iron-icon>
+				<span class="flex"  id="category">{{selectedCategory.value}}</span>
+				<div id="icon"><iron-icon icon="aq-icons:arrow-drop-down"></iron-icon></div>
     		</paper-button>
         	
 			<paper-listbox class="dropdown-content" attr-for-selected='label' selected="{{selectedCategory}}">
@@ -73,9 +90,14 @@
 		Polymer ({
 			is:'aq-dropdown',
 			properties :{
+				selected:{
+					type:String,
+					notify:true,
+				},
 				selectedCategory: {
 					type:Object,
 					observer: 'selectedIndexChanged',
+					notify:true,
 				},
 				options:{
 					type:Array,
@@ -102,6 +124,7 @@
 			},
 
 			selectedIndexChanged: function() {
+				this.selected = this.selectedCategory.value;
 				this.fire('dropdown-changed', {'index':this.selectedCategory.index});
 			},
 

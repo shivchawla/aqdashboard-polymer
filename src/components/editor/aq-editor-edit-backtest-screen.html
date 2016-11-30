@@ -8,31 +8,40 @@
 
 <dom-module id='aq-editor-edit-backtest-screen'>
 	<style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
+	
+	<style>
+		#container {
+			width:97%;
+			margin: 0 auto;
+		}
+	</style>
 
 	<template>
-		<div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="onBack">
-            </paper-icon-button>
-            <h3>Back to Strategy</h3>
-            <div class="flex"></div>
-         	
-         	<template is='dom-if' if='[[narrow]]'>
-         		<paper-icon-button noink class="toolbarIcon" icon="aq-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
-         		</paper-icon-button>
-         	</template>
+		<div id='container'>
+			<div class="goBackButton layout horizontal">
+	            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="onBack">
+	            </paper-icon-button>
+	            <h3>Back to Strategy</h3>
+	            <div class="flex"></div>
+	         	
+	         	<template is='dom-if' if='[[narrow]]'>
+	         		<paper-icon-button noink class="toolbarIcon" icon="aq-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
+	         		</paper-icon-button>
+	         	</template>
 
-      	</div>
+	      	</div>
 
-      	<aq-backtest-detail-item id='backtestDisplay'></aq-backtest-detail-item>
-		
-      	<web-socket 
-      		url="ws://localhost:8000"
-            id="webSocketConn"
-            json
-            on-open="_onOpen"
-            on-message="_onMessage"
-            on-error="_onError">
-    	</web-socket>
+	      	<aq-backtest-detail-item id='backtestDisplay'></aq-backtest-detail-item>
+			
+	      	<web-socket 
+	      		url="ws://localhost:8000"
+	            id="webSocketConn"
+	            json
+	            on-open="_onOpen"
+	            on-message="_onMessage"
+	            on-error="_onError">
+	    	</web-socket>
+		</div>
 
 	</template>
 
@@ -41,10 +50,11 @@
 			is:'aq-editor-edit-backtest-screen',
 
 			properties:{
-				isActive: {
+				isRunning: {
 					type:Boolean,
 					value:false,
-					observer:'_isActiveChanged'
+					observer:'_isRunningChanged',
+					notify:true,
 				},
 
 				narrow:{
@@ -53,7 +63,7 @@
 				},
 			},
 
-			_isActiveChanged: function(newValue, oldValue) {
+			_isRunningChanged: function(newValue, oldValue) {
 				if (newValue) {
 					this.debounce('start', function() {
 						this.start();
@@ -96,8 +106,8 @@
       		},
 
 			onBack: function() {
-				this.isActive = false;
-				this.fire('backClicked-backtest');
+				this.isRunning = false;
+				//this.fire('backClicked-backtest');
 			},
 
 			toggleDrawer: function() {

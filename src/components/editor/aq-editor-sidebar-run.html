@@ -1,16 +1,22 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../common/aq-dropdown.html'>
 
 <dom-module id='aq-editor-sidebar-run'>
 	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
 
 	<style>
+
+		:host{
+			--font-family: 'Roboto';
+			color:#333a56;
+		};
 		
 		.inputbox {
-		  height: 10%;
+		  --height: 10%;
 		  line-height: 48px;
 		  --margin-bottom: 12px;
 		  position: relative;
-		  z-index:2;
+		  --z-index:2;
 		  margin-top: 5px;
 		  margin-left:4px;
 		  width:200px;
@@ -41,10 +47,10 @@
 		  border: 2px solid #e5e5e5;
 		  @apply(--paper-font-body1);
 		  font-size: 14px;
-		  z-index: 2;
+		  --z-index: 2;
 		  --background-color: black;
 		  --color: white;
-		  border-radius: 2px;
+		  border-radius: 4px;
 
 		}
 
@@ -75,10 +81,10 @@
 			--margin-left:5px;
 			--border: 1px solid #e5e5e5;
 			padding-bottom:10px;
+			border-bottom: 1px solid #333a56;
 		}
 
-		#universeSettings {
-			border-bottom: 1px solid #333a56;
+		#universeSettings {	
 			padding-bottom:10px;
 		}
 
@@ -87,9 +93,7 @@
 			margin-top:8px;
 			margin-left:14px;
 			--border: 1px solid #e5e5e5;	
-			--width:90%;
-
-			
+			--width:90%;			
 		}
 
 		#date-settings {
@@ -134,6 +138,27 @@
 			font-size: 14px;
 		}
 
+		aq-dropdown{
+			--dropdown-height:27px;
+			--dropdown-width:140px;
+			margin-top: -13px;
+		}
+
+		.smallInputBox {
+			width:40px !important;
+			height: 21px !important;
+			margin-left: 5px;
+			margin-top:-1px;
+		}
+
+		.smallDropdown{
+			--dropdown-width:90px;
+		}
+
+		#run {
+			z-index: 1002;
+		}
+
 	</style>
 
 	<template>
@@ -149,14 +174,14 @@
 						
 			    		<input id="box" placeholder="Start Date"
 		             	value="{{startDate::change}}" type="date"
-		             	on-keydown="checkForKeys" on-blur='close'>
+		             	 on-blur='close'>
 		        	</div>
 
 		        	<div class="inputbox">	
 						<span class="input-span">End Date</span> 	
-			    		<input id="box" placeholder="Start Date"
+			    		<input id="box" placeholder="End Date"
 		             	value="{{endDate::change}}" type="date"
-		             	on-keydown="checkForKeys" on-blur='close'>
+		             	on-blur='close'>
 		        	</div>
 		    		<div class="inputbox">	
 						<span class="input-span">Initial Capital</span> 	
@@ -168,89 +193,170 @@
 
 			</div>
 
-			<div id = 'universeSettings' class="layout vertical">		
-				<div id='heading'><span>Universe Settings</span></div>
-						
-				<div id='extra-settings' class="layout horizontal" >
-					
-					<textarea rows="8" cols="71"></textarea>
-        		</div>
-    		</div>
-
-	
 			<div id = 'advancedSettings' class="layout vertical">		
 				<div id='heading'><span>Advanced Settings</span></div>
 						
 				<div id='extra-settings' class="layout horizontal" >
-					
-						<div class="inputbox">	
-							<span class="input-span">Rebalance</span> 	
-				    		<input id="box" placeholder="Rebalance Frequency"
-			             	value="{{rebalance::change}}" type="text"
-			             	on-keydown="checkForKeys" on-blur='close'>
-		        		</div>
 
-		        		<div class="inputbox">	
-							<span class="input-span">Cancel Policy</span> 	
-				    		<input id="box" placeholder="Cancel Policy"
-			             	value="{{cancelPolicy::change}}" type="text"
-			             	on-keydown="checkForKeys" on-blur='close'>
-		        		</div>
-
-		        		<div class="inputbox">	
-							<span class="input-span">Resolution</span> 	
-				    		<input id="box" placeholder="Resolution"
-			             	value="{{resolution::change}}" type="text"
-			             	on-keydown="checkForKeys" on-blur='close'>
-		        		</div>
+					<div class="inputbox">	
+						<span class="input-span">Rebalance</span> 	
+			    		<aq-dropdown selected="{{rebalance}}" options="[[rebalanceOptions]]"></aq-dropdown> 	
+			    		
 	        		</div>
 
-	        		<div id='extra-settings' class="layout horizontal" >
+	        		<div class="inputbox">	
+						<span class="input-span">Cancel Policy</span> 
+						<aq-dropdown selected="{{cancelPolicy}}"" options="[[cancelOptions]]"></aq-dropdown>	
+		
+	        		</div>
+
+	        		<div class="inputbox">	
+						<span class="input-span">Resolution</span> 	
+			    		<aq-dropdown selected="{{resolution}}" options="[[resolutionOptions]]"></aq-dropdown>	
+		
+	        		</div>
+        		</div>
+
+        		<div id='extra-settings' class="layout horizontal" >
 				
-			    		<div class="inputbox">	
-							<span class="input-span">Commission</span> 	
-				    		<input id="box" placeholder="Commission"
-			             	value="{{commission::change}}" type="text"
-			             	on-keydown="checkForKeys" on-blur='close'>
+		    		<div class="inputbox">	
+						<span class="input-span">Commission</span> 	
+		    			<div class="layout horizontal">
+		    			<aq-dropdown selected="{{commissionModel}}" class="self-start smallDropdown" options="[[commissionOptions]]"></aq-dropdown>
+			    		<input id="box" placeholder="Commission" class="smallInputBox"
+		             	value="{{commissionValue::change}}" type="number" default
+		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
 
+	        		</div>
+
+		        	<div class="inputbox">	
+						<span class="input-span">Slippage</span>
+						<div class="layout horizontal">
+						<aq-dropdown selected="{{slippageModel}}" class="smallDropdown" options="[[slippageOptions]]"></aq-dropdown> 	
+			    		<input id="box" class="smallInputBox" placeholder="Slippage"
+		             	value="{{slippageValue::change}}" type="number"
+		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
+
+		        	</div>
+
+		        	<div class="inputbox">	
+						<span class="input-span">Investment Plan</span>
+						<div class="layout horizontal">
+						<aq-dropdown selected="{{investmentPlan}}" options="[[investmentPlanOptions]]"></aq-dropdown> 	
 		        		</div>
+		    		</div>
+	    		</div>
+    		</div>
 
-			        	<div class="inputbox">	
-							<span class="input-span">Slippage</span> 	
-				    		<input id="box" placeholder="Slippage"
-			             	value="{{slippage::change}}" type="number"
-			             	on-keydown="checkForKeys" on-blur='close'>
-
-			        	</div>
-			    	</div>
-		    	</div>
-
+	    	<div id = 'universeSettings' class="layout vertical">
+				<div id='heading'><span>Universe Settings</span></div>
+							
+				<div id='extra-settings' class="layout horizontal" >
+					<textarea rows="10" cols="71" value="{{universe::input}}" placeholder="Optional list of symbols"></textarea>
+    			</div>
 			</div>
-
+		</div>
 			
 	</template>
 
 	<script>
+		var slippageOptions = [{index:0, value:'Variable'},
+							{index:1, value:'Spread'}];
+
+		var cancelOptions = [{index:0, value:'EOD'},
+							{index:1, value:'GTC'}];
+
+		var commissionOptions = [{index:0, value:'PerTrade'},
+							{index:1, value:'PerShare'}];
+
+		var rebalanceOptions = [{index:0, value:'Daily'},
+							{index:1, value:'Weekly'},
+							{index:2, value:'Monthly'}];
+							
+		var resolutionOptions = [{index:0, value:'Day'}]
+
+		var investmentPlanOptions = [{index:0, value:'All-In'},
+									{index:1, value:'Monthly'},
+									{index:2, value:'Yearly'},
+									{index:3, value:'Weekly'}]
+							
+
 		Polymer({
 			is:'aq-editor-sidebar-run',
 
-			properties:{
-				startDate:Date,
+			properties: {
 
-				endDate:Date,
+				startDate: {
+					type: String,
+					value: "",
+				},
 
-				initialCash:Number,
+				endDate: {
+					type: String,
+					value: "",
+				},
 
-				rebalance:String,
+				initialCash: {
+					type:Number,
+					value:1000000,
+				},
 
-				cancelPolicy: String,
+				rebalance:{
+					type:String,
+					value: rebalanceOptions[0].value,
+				},
 
-				slippage: Number,
+				cancelPolicy: {
+					type:String,
+					value: cancelOptions[0].value,
+				},
 
-				commission: String,
+				slippageValue: {
+					type: Number,
+					value: 0.5,
+				},
 
-				resolution: String,
+				slippageModel: {
+					type: String,
+					value: slippageOptions[0].value,
+				},
 
+				commissionValue:{
+					type:Number,
+					value: 0.05,
+				},
+
+				commissionModel:{
+					type:String,
+					value:commissionOptions[0].value,
+				},
+
+
+				resolution: {
+					type: String,
+					value: resolutionOptions[0].value,
+				},
+
+				universe:{
+					type:String,
+					value:"",
+				},
+
+				investmentPlan:{
+					type:String,
+					value:investmentPlanOptions[0].value,
+				},
+			},
+
+			ready: function() {
+				this.slippageOptions = slippageOptions;
+				this.cancelOptions = cancelOptions;
+				this.commissionOptions = commissionOptions;
+				this.rebalanceOptions = rebalanceOptions;
+				this.resolutionOptions = resolutionOptions;
+				this.investmentPlanOptions = investmentPlanOptions;
+				this.startDate = this.getTodayDate(365)
+				this.endDate = this.getTodayDate(2);
 			},
 
 			toggle: function() {
@@ -262,6 +368,41 @@
 				}
 					
 				this.$.adcollapse.toggle();
+			},
+
+
+			getSettings: function() {
+				var settings = {startDate:this.startDate,
+						endDate:this.endDate,
+						initialCash:this.initialCash,
+						rebalance:this.rebalance,
+						cancelPolicy:this.cancelPolicy,
+						slippage:{model:this.slippageModel, value:this.slippageValue},
+						commission:{model:this.commissionModel, value:this.commissionValue},
+						resolution:this.resolution,
+						universe:this.universe,
+						investmentPlan:this.investmentPlan};
+				console.log(settings);
+				return settings;
+			},
+
+			getTodayDate: function(offset){
+				var today = new Date();
+				today.setDate(today.getDate() - offset);
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; //January is 0!
+				var yyyy = today.getFullYear();
+
+				if(dd<10) {
+				    dd='0'+dd
+				} 
+
+				if(mm<10) {
+				    mm='0'+mm
+				} 
+
+				today = yyyy + '-' + mm + '-' + dd;
+				return today;
 			},
 
 		});

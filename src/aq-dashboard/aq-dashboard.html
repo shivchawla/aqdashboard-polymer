@@ -60,7 +60,10 @@
             
               <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
-              <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
+             
+              <app-route path="/about" redirect="/about/home"></app-route>
+
+              <app-route path="/about/:section" element="aq-aboutpage" bindrouter=""></app-route>
 
               <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
 
@@ -91,7 +94,6 @@
           id='localStorage'  
           name="my-app-storage"
           value="{{aimsquant}}"
-          auto-save-disabled
           >
         </iron-localstorage>
 
@@ -158,40 +160,48 @@
 
         attached: function() {
 
-            var x = localStorage.getItem('my-app-storage');
-            if (x) {
-              this.currentTab = JSON.parse(x).lastTab;
-            }
-            var path = ['home','editor','community','analyze','help'];
-
-            for (i in path) {
-                var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
-                
-                if(c) {
-                  this.currentTab = 1;
+            if(this.checkHasToken()) {
+                if(this.URLcontains('/user')) {
+                    this.$$('#router').go('/dashboard');
                 }
+            }
 
-                if (c && this.view != path[i]) {  
+            //debugger;
+
+            var lastTab;
+            var x = localStorage.getItem('my-app-storage');
+            
+            if (x) {
+              lastTab = JSON.parse(x).lastTab;
+              console.log("lastTab:" + lastTab);
+            }
+
+            if (lastTab == 1) {
+                var path = ['home','editor','community','analyze','help'];
+
+                for (i in path) {
+                    var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
+                
+                    if (c && this.view != path[i]) {  
                       
-                      if (path[i] == 'analyze') {
-                        this.view = 'editor';
+                        if (path[i] == 'analyze') {
+                            this.view = 'editor';
                         
-                      } else {
-                        this.view = path[i];  
+                        } else {
+                            this.view = path[i];  
                         
-                      }
+                        }
 
                       break;   
+                    }
                 }
             }
+
+            this.currentTab = lastTab;
         },
 
         ready: function() { 
-            if(this.checkHasToken()) {
-                if(this.URLcontains('/user')) {
-                    this.$$('#router').go('/main');
-                }
-            }
+            
         },
 
         checkHasToken: function() {  
@@ -199,12 +209,16 @@
           var x = localStorage.getItem('my-app-storage');
           if (x) {
             var user = JSON.parse(x).user;
+
             this.hasToken = (user && user.token) ? true : false;  
           } else {
             this.hasToken = false;
           }
 
-          console.log("HasToken: " + this.hasToken);
+          //console.log("HasToken: " + this.hasToken);
+          return this.hasToken;
+
+          
         },
 
         computeShowMenu: function(narrow, showSidebar) {
@@ -266,7 +280,7 @@
 
           path = ['/main', 
                   '/dashboard', 
-                  '/investments', 
+                  //'/investments', 
                   '/about',
                   '/user/signin',
                   '/user/signup'];
@@ -287,23 +301,26 @@
 
         _currentTabChanged: function(newTab, oldTab) {        
           
+          console.log(oldTab);
+          
           if (!(oldTab + 1)) {
             return;
           }
 
+          console.log(oldTab);
           
           this.checkHasToken();
               
           this.showSidebar = (newTab == 1);  
           
-          console.log(localStorage);
+          
           this.aimsquant.lastTab = newTab;
           this.$.localStorage.save();
-          console.log(localStorage);
+          
           
           path = ['/main', 
                   '/dashboard', 
-                  '/investments', 
+                  //'/investments', 
                   '/about',
                   '/user/signin',
                   '/user/signup'];
@@ -330,7 +347,7 @@
           this.$.localStorage.save(); 
           
           if(!this.checkHasToken()) {
-            this.currentTab = 4;
+            this.currentTab = 3;
           
           }
           

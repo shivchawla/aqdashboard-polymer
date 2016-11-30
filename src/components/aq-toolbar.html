@@ -45,7 +45,7 @@
       <paper-toolbar>
         <template is="dom-if" if="{{showmenu}}">
           <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
-          <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
+          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
           <div class="title">AimsQuant</div>
         </template>
 
@@ -53,7 +53,7 @@
         <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
           <paper-tab>HOME</paper-tab>
           <paper-tab>RESEARCH</paper-tab>
-          <paper-tab>INVESTMENTS</paper-tab>
+          <!--paper-tab>INVESTMENTS</paper-tab-->
           <paper-tab>ABOUT US</paper-tab>
           <template is='dom-if' if="{{!hasToken}}">
             <paper-tab>LOG IN</paper-tab>

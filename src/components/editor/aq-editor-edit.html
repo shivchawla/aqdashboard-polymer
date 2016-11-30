@@ -114,7 +114,7 @@
           </template>
 
           <template is='dom-if' if='[[isRunning]]'>
-            <aq-editor-edit-backtest-screen is-active="[[isRunning]]" 
+            <aq-editor-edit-backtest-screen is-running="{{isRunning}}" 
                                             id='backtestScreen'
                                             narrow="[[narrow]]">
             </aq-editor-edit-backtest-screen>
@@ -151,7 +151,7 @@
 
             <iron-pages selected="{{selectedSidebar}}">
            
-              <aq-editor-sidebar-run></aq-editor-sidebar-run>  
+              <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
               <div>This is quick help!!</div>
               <div style="background-color: black; color:red;">This is log!!</div>
               
@@ -201,6 +201,11 @@
           value:true,
         },
 
+        narrow:{
+          type:Boolean,
+          observer:'_narrowChanged',
+        },
+
         selectedSidebar:{
           type:Number,
           value:0,
@@ -228,6 +233,7 @@
         isRunning: {
           type: Boolean,
           value: false,
+          observer:'_isRunningChanged',
         },
 
         counter:{
@@ -236,6 +242,7 @@
         },
 
         putStrategyData:Object,
+
         runStrategyData:Object,
 
       },
@@ -271,9 +278,13 @@
           }
       },
 
-      computeDrawerWidth: function(isProgrammer, isRunning) {
-        //var width =  isProgrammer ? "560px" :"0px"; 
+      _narrowChanged: function(newVal, oldVal) {
+        if (!newVal) {
+          this.$$('#codeEditorPanel').style.display = 'block';
+        }
+      },
 
+      computeDrawerWidth: function(isProgrammer, isRunning) {
         if (isProgrammer && isRunning) {
           return "360px";
         } else if (isProgrammer){
@@ -307,6 +318,15 @@
       toggleDrawer: function() { 
         if(this.showSideBar && this.narrow) {
           this.$$('#drawerpanel').togglePanel();
+
+          var x = this.$$('#codeEditorPanel').style.display;
+
+          if(x=='none') {
+            this.$$('#codeEditorPanel').style.display = 'block';
+          } else {
+            this.$$('#codeEditorPanel').style.display = 'none';
+          }
+
         } else if (this.showSideBar && !this.narrow) {
           this.closeDrawer();
         } else {
@@ -386,6 +406,10 @@
 
       runStrategy: function(e) {
          console.log("Going to Run:");
+
+         //Get settings from the sidebar
+         var strategySettings = this.$$('#runSidebar').getSettings();
+
         // first save the strategy
         this.runStrategyData = {  
                   "start": "2015-11-07T03:41:47.262Z",
@@ -418,7 +442,13 @@
       },
 
       toggleIsRunning: function() {
-        this.isRunning = !this.isRunning;
+        //this.isRunning = !this.isRunning;
+      },
+
+      _isRunningChanged: function() {
+        if(!this.isRunning) {
+          this.selectedSidebar = 0;
+        }
       },
 
     });
