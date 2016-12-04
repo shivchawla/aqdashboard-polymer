@@ -3,21 +3,42 @@
 <dom-module id="aq-help-marked-item">
 
 	<style>
-		
+
 		marked-element {
-			margin-bottom: 10px;
-			background-color: none;
+			--margin-bottom: 10px;
+			--background-color: none;
 		}
 
 		.markdown-html pre {
+			--background-color: #e0e0e0;
+		}
+
+		code {
 			background-color: #e0e0e0;
 		}
+
+		p {
+			font-size: 16px;
+		}
+
+		strong {
+			font-weight: bold;
+			font-size: 18px;
+		}
+
+		em strong {
+			font-size:16px;
+			text-decoration: underline;
+			font-weight: bold;
+		}
+
+
 
 	</style>
 
     <template>  
-    	<prism-highlighter></prism-highlighter>
-		<marked-element markdown="[[helpText]]">
+    	<!--prism-highlighter></prism-highlighter-->
+		<marked-element on-marked-render-complete='highlight' markdown="[[helpText]]">
 		    <div class="markdown-html"></div>
 			<!--script type="text/markdown">[[helpText]]```hkfhdshfshskfsfshk```</script-->
 		</marked-element>
@@ -31,6 +52,19 @@
 					type:String,
 				},
 			},
+
+			highlight() {
+				var codeblocks = this.$$('.markdown-html').querySelectorAll('pre code');
+
+				//console.log(codeblocks);
+
+				for (i=0;i<codeblocks.length;i++) {
+            		//hljs.highlightBlock(this.$$('.markdown-html pre code'));
+            		//console.log(codeblocks[i]);
+            		hljs.highlightBlock(codeblocks[i]);
+        		}
+			},
+
 		});
 	</script>
 

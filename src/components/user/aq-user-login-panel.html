@@ -8,7 +8,7 @@
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <dom-module id="aq-user-login-panel">
-    <style is="custom-style" include="iron-flex iron-flex-alignment  iron-positioning"></style>
+    <style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
     <style>
 
         paper-card {
@@ -524,9 +524,9 @@
                 this.updateMessageStrings(); 
 
                 if (this.displayMode == displayModes.signin) {
-                    this.fire('tabChanged',{tab:4})
+                    this.fire('tabChanged',{tab:3})
                 } else if (this.displayMode == displayModes.signin) {
-                    this.fire('tabChanged',{tab:5})
+                    this.fire('tabChanged',{tab:4})
                 } 
             },
 
@@ -573,11 +573,11 @@
                 e.stopPropagation();
                 switch (this.displayMode) {
                     case displayModes.signin:
-                        this.fire('tabChanged',{tab:5});
+                        this.fire('tabChanged',{tab:4});
                         //this.setDisplayMode(displayModes.signup);
                         break;
                     case displayModes.signup:
-                        this.fire('tabChanged',{tab:4});
+                        this.fire('tabChanged',{tab:3});
                         //this.setDisplayMode(displayModes.signin);
                         break;
                     case displayModes.forgotPassword:

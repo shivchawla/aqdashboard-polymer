@@ -1,22 +1,27 @@
 <!doctype html>
 
-
-
 <html>
   <head>
     <title>AQDashboard</title>
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.json">
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="stylesheet" href="/highlight/styles/default.css">
+    <script src="/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <link rel="import" href="/src/aq-dashboard/aq-dashboard.html">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <style>
+      body {
+        font-family: 'Open Sans', sans-serif;
+      }
+    </style>
+
   </head>
-  <style>
-    body {
-      font-family: 'Open Sans', sans-serif;
-    }
-  </style>
+
   <body class="fullbleed layout vertical">
     <span id="browser-sync-binding"></span>
     <aq-dashboard></aq-dashboard>

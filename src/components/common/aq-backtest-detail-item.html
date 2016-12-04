@@ -9,7 +9,7 @@
 <link rel='import' href='./aq-backtest-metric-item.html'>
 
 <dom-module id='aq-backtest-detail-item'>
-	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
   
 	<style> 
@@ -74,12 +74,14 @@
 		  flex-wrap: wrap;
 		}  
 
-		.paper_body{
+		.paper_body {
 			width: 98%;
 		    text-align: -webkit-center;
 		    color:#333a56;
-
+		    border:1px solid teal;
+		    
 		}
+
 		.flex_container{
 			display: flex;
 		}
@@ -104,8 +106,8 @@
 					<div class="toggle_tab">
 						<div>
 							<paper-tabs noink selected={{graphType}}>
-								<paper-tab>Line Graph</paper-tab>
-								<paper-tab>Bar Graph</paper-tab>
+								<paper-tab>Equity</paper-tab>
+								<paper-tab>Returns</paper-tab>
 							</paper-tabs>
 						</div>
 					</div>
@@ -170,28 +172,6 @@
 
 				lineData: {
 					type:Object, 
-					value: {
-					  "color": "#ff7f0e",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.09983341664682815
-					    }, {
-					      "x": 2,
-					      "y": 0.19866933079506122
-					    }, {
-					      "x": 3,
-					      "y": 0.29552020666133955
-					    }, {
-					      "x": 4,
-					      "y": 0.3894183423086505
-					    }, {
-					      "x": 5,
-					      "y": 0.479425538604203
-					    }]
-					},
 				},
 
 				maxLineData:{
@@ -208,29 +188,7 @@
 				},
 
 				barData: {
-					type:Object,
-					value: {
-					  "color": "#ff7f0e",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.09983341664682815
-					    }, {
-					      "x": 2,
-					      "y": 0.19866933079506122
-					    }, {
-					      "x": 3,
-					      "y": 0.29552020666133955
-					    }, {
-					      "x": 4,
-					      "y": 0.3894183423086505
-					    }, {
-					      "x": 5,
-					      "y": 0.479425538604203
-					    }]
-					}, 
+					type:Object, 
 				},
 			},
 
@@ -244,19 +202,19 @@
 					      "y": 0
 					    }, {
 					      "x": 1,
-					      "y": 0.09983341664682815
+					      "y": 0.099
 					    }, {
 					      "x": 2,
-					      "y": 0.1866933079506122
+					      "y": 0.186
 					    }, {
 					      "x": 3,
-					      "y": 0.09552020666133955
+					      "y": 0.095
 					    }, {
 					      "x": 4,
-					      "y": 0.3894183423086505
+					      "y": 0.389
 					    }, {
 					      "x": 5,
-					      "y": 0.79425538604203
+					      "y": 0.794
 					    }]
 					}];
 			},

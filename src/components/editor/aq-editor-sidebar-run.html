@@ -2,7 +2,7 @@
 <link rel='import' href='../common/aq-dropdown.html'>
 
 <dom-module id='aq-editor-sidebar-run'>
-	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 
 	<style>
 
@@ -44,14 +44,12 @@
 		  border: 0;
 		  margin: 0;
 		  padding-left: 4px;
-		  border: 2px solid #e5e5e5;
+		  border: 2px solid teal;--#e5e5e5;
 		  @apply(--paper-font-body1);
 		  font-size: 14px;
-		  --z-index: 2;
-		  --background-color: black;
-		  --color: white;
-		  border-radius: 4px;
-
+		  border-radius: 5px;
+		  border:1px solid #c9e4e9;--#f3f9fa;
+		  color:#02558b;
 		}
 
 		#box {
@@ -112,6 +110,7 @@
 		#heading span{
 			font-weight: bold;
 			--color: green;
+			color:#333a56;
 		}
 
 		paper-button {
@@ -125,7 +124,6 @@
 
 		.input-span {
 			height:40px;
-
 		}
 
 		.input-span span { 
@@ -135,13 +133,15 @@
 		}
 
 		textarea {
-			font-size: 14px;
+			font-size: 15px;
+		  	color:#02558b;
 		}
 
-		aq-dropdown{
+		aq-dropdown {
 			--dropdown-height:27px;
 			--dropdown-width:140px;
 			margin-top: -13px;
+			--dropdown-background-color:#c9e4e9;--#f3f9fa;
 		}
 
 		.smallInputBox {
@@ -149,6 +149,7 @@
 			height: 21px !important;
 			margin-left: 5px;
 			margin-top:-1px;
+
 		}
 
 		.smallDropdown{
@@ -157,6 +158,7 @@
 
 		#run {
 			z-index: 1002;
+			color:#02558b;
 		}
 
 	</style>

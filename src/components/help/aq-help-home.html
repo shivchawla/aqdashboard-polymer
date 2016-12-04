@@ -11,7 +11,7 @@
 <link rel="import" href="./aq-help-marked-item.html">
 
 <dom-module id="aq-help-home">
-  <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
    <style>
     #panel {
       height:100%;
@@ -21,58 +21,121 @@
       margin: 0 auto;
       border-right: 1px solid;
       background-color: white;
+      color: #24293d;
     }
+    
     .selectableCategories{
       cursor: pointer;
     }
+    
     .selectableCategories:hover{
-      color: green;
       font-weight: bold;
+      cursor: pointer;
     }
+    
     .searchCategories{
-      width: 90%;
-      margin-left:5%;
+      --width: 90%;
+      --margin-left:0%;
+      padding-left:10px;
+      padding-right:10px;
+      background-color: white;
+    }
+
+    #drawerPanel {
+      background-color: #333a56;
+    }
+
+    paper-listbox {
+      background-color: #333a56;
+    }
+    
+    paper-item {
+      --paper-item-min-height:32px;
+      --paper-item: {
+        height:32px;
+        font-size: 16px;
+        color:white;
+      }
+      
+      --paper-item-selected:{
+        font-weight: bold;
+      }
+
+    }
+
+    .Small {
+      padding-left: 20px;
+      font-size:15px;
+     }
+
+    .Mini {
+      padding-left: 30px;
+      font-size:14px;
+    }
+
+     .SMini {
+      padding-left: 40px;
+      font-size:13px;
+      font-style: italic;
+    }
+
+    
+    #autoScrollSpy div {
+        padding-top:20px;
+        padding-bottom: 5px;
+        margin-left: 30px;
+        margin-right:30px;
+        --margin-bottom:40px;
+        --padding: 150px;
+        --border-bottom: 1px solid grey;
+        transition: background 0.2s;
+    }
+
+    #top {
+      padding-top: 300px;
+    }
+
+    #bottom{
+      padding-bottom: 500px;
     }
 
   </style>
  
   <template>
-      <style>
-        #autoScrollSpy div {
-          padding: 150px;
-          border-bottom: 1px solid grey;
-          transition: background 0.2s;
-        }
-      </style>
 
       <paper-drawer-panel id="drawerPanel" right-drawer>
 
           <paper-header-panel main id="mainPanel" mode="seamed">
+              
+              <div id='top'></div>
+              
               <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
                 <template is="dom-repeat" items="{{itemsHelpContent}}">      
-                  <div> <h1>{{item.header}}</h1> <br>
-                  <img src="{{item.img_src}}" height="400" width="400">
-                  <p>{{item.text}}</p></div>
+                  <div id='content'> 
+                  
+                  <!--img src="{{item.img_src}}" height="400" width="400"-->
+                  
+                  <aq-help-marked-item help-text = "[[item.text]]">
+                  </aq-help-marked-item></div>
+
                 </template>
               </iron-auto-scroll-spy>
-          </paper-header-panel>
-          <iron-ajax auto url=""
-            handle-as="json"
-            id="getHelpCategoryQuery"
-            on-response="onGetHelpCategoriesSuccess"
-            debounce-duration="300"></iron-ajax>
 
-            <iron-ajax auto url=""
+              <div id='bottom'></div>
+          </paper-header-panel>
+          
+          <iron-ajax url=""
             handle-as="json"
             id="getHelpContentQuery"
             on-response="onGetHelpContentSuccess"
-            debounce-duration="300"></iron-ajax>
+            debounce-duration="300">
+          </iron-ajax>
 
-          <paper-header-panel drawer mode="seamed">
-            <paper-input class="searchCategories" label="Search Categories" on-keyup="search" id="search_input"></paper-input>
+          <paper-header-panel id='drawerPanel' drawer mode="seamed">
+            <paper-input class="searchCategories" label="Search Help" on-keyup="search" id="search_input"></paper-input>
               <paper-listbox selected="{{scrollSelected}}">   
-                <template is="dom-repeat" items="{{itemsCategories}}">      
-                  <paper-item class="selectableCategories">{{item.Category}}</paper-item>
+                <template is="dom-repeat" items="{{categoriesArray}}">      
+                  <paper-item class$="selectableCategories [[item.Category.size]]">[[item.Category.value]]</paper-item>
                 </template>
               </paper-listbox>
           </paper-header-panel>
@@ -87,37 +150,30 @@
       is: 'aq-help-home',
 
       properties:{
-        itemsCategories: {
-          type: Object,
-          value: true,
-        },
         itemsHelpContent: {
           type: Object,
-          value: true,
         },
+
         categoriesArray:{
-          type: Object,
-          value: true,
-        }
+          type: Array,
+          value:[],
+        },
       },
 
       ready: function() {
          this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
-         this.$.getHelpCategoryQuery.url = "http://localhost:8080/src/components/help/data_categories.json";
          this.$.getHelpContentQuery.url = "http://localhost:8080/src/components/help/data_help.json";
+         this.$.getHelpContentQuery.generateRequest();
       },
 
       search: function(){
         var search = this.$$('#search_input').value;
         search = search.toLowerCase();
         var parent = this;
-        var categoriesClass = document.getElementsByClassName('selectableCategories');
-        // for(var i=0; i<this.itemsCategories.length;i++){
-          // if(search.indexOf(parent.itemsCategories[i].Category))
-        // }
+        var categoriesClass = Polymer.dom(this.root).querySelectorAll('.selectableCategories');
         var text;
         for(var i=0; i<this.categoriesArray.length;i++){
-          text = parent.categoriesArray[i].Category.toLowerCase();
+          text = parent.categoriesArray[i].Category.value.toLowerCase();
           if(text.indexOf(search) > -1){
             categoriesClass[i].style.display="block";
             categoriesClass[i].style.lineHeight="3";
@@ -128,12 +184,15 @@
         }
       },
 
-      onGetHelpCategoriesSuccess: function(e){
-        this.set('itemsCategories',e.detail.response.Categories);
-        this.categoriesArray = this.itemsCategories;
-      },
       onGetHelpContentSuccess: function(e){
-        this.set('itemsHelpContent', e.detail.response.Help)
+        this.set('itemsHelpContent', e.detail.response.Help);
+        var array = []
+        for (i in e.detail.response.Help){
+          array.push({"Category":e.detail.response.Help[i].header});
+        }
+
+        this.set('categoriesArray', array); 
+
       }
     });
   </script>
