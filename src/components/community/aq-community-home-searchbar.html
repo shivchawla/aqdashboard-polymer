@@ -1,15 +1,9 @@
-<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/paper-menu/paper-menu.html'>
-<link rel='import' href='../../../bower_components/paper-item/paper-item.html'>
-<link rel='import' href='../../../bower_components/paper-menu-button/paper-menu-button.html'>
-<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
-<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <dom-module id='aq-community-home-searchbar'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
   
 	<style>
 
@@ -35,6 +29,8 @@
 		  margin-top:1px;
 		  max-width: 520px;
 		  min-width: 400px;
+		  margin-left: -5px;
+		  padding-right: 10px;
 		}
 
 		#searchbox:focus{
@@ -80,7 +76,7 @@
 
 		#category_dd {
 			---button-width:170px;
-			--dropdown-width:250px;
+			--dropdown-width:240px;
 			--dropdown-border: 1px solid #e5e5e5;
 			--dropdown-height:46px;
 			--dropdown-font-size:15px;
@@ -96,7 +92,7 @@
     		
 
 	  			<input id="searchbox" placeholder="Search posts" class="flex"
-	         	value="{{searchValue::input}}" type="search" on-keydown="onSearch">	
+	         	value="{{searchValue::input}}" type="search" on-search="onSearch">	
 			</div>
 	</template>
 	<script >
@@ -122,14 +118,14 @@
 				},
 			},
 
-			ready() {
+			ready: function() {
 				//this.categories = categories;
 			},
 
-			onSearch(e) {
-				if (e.keyCode == 13) {
-                    this.fire('search-action', {text: this.searchValue, category: this.$.category_dd.getSelectedValue()});
-                }
+			onSearch: function(e) {
+				
+                this.fire('search-action', {text: this.searchValue, category: this.$.category_dd.getSelectedValue()});
+           
 			},
 
 		});

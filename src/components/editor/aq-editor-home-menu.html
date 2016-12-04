@@ -1,11 +1,10 @@
 
-<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 
 <dom-module id='aq-editor-home-menu'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
   
 	<style>
 
@@ -46,6 +45,8 @@
 		  width:100%;
 		  font-size: 16px;
 		  z-index: 2;
+	    	background-color: #eceff1;
+		  --border-color: #cfd8dc;
 		}
 
 		#searchbox:focus {
@@ -63,6 +64,8 @@
 			height: 60px;
 			width: 100%;
 		    --border:1px solid;
+		    margin-bottom: 10px
+		    margin-top:0px;
 		}
 
 		#menu-icons {
@@ -105,8 +108,11 @@
 		paper-icon-button {
 			--paper-icon-button-disabled-text:grey;
 		}
-		
 
+		p {
+			font-size: 28px;
+			margin:0px;
+		}
 
 		
 	</style>
@@ -114,26 +120,23 @@
 	<template>
 	    <div class="toolbar layout horizontal">
 	    
-	    	<div class="flex"><h3>All Strategies</h3></div>
+	    	<div class="flex self-center"><p>All Strategies</p></div>
 	      	<div id="search" class="flex">	    	
-	    		<paper-icon-button noink title="Go Back" icon="arrow-back" on-tap="toggle"></paper-icon-button>
+	    		<paper-icon-button noink title="Go Back" icon="aq-icons:arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
-             	value="{{searchValue::change}}" type="search"
-             	on-keydown="checkForKeys" on-blur='close'>
+             	value="{{searchText::change}}" type="search"
+             	on-keydown="checkForKeys" on-blur='blur' on-search='search'>
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	      		<paper-icon-button noink class="iconButton" title="Search" icon="icons:search" on-tap="toggle" raised>	
+	      		<paper-icon-button noink class="iconButton" title="Search" icon="aq-icons:search" on-tap="toggle" raised>	
 	      		</paper-icon-button>
 
-	      		<paper-icon-button noink class="iconButton" title="New" icon="icons:add" on-tap="createNew">	
+	      		<paper-icon-button noink class="iconButton" title="New" icon="aq-icons:add" on-tap="createNew">	
 	      		</paper-icon-button>
 
-	  			<paper-icon-button noink class="iconButton" title="Delete" icon="icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
+	  			<paper-icon-button noink class="iconButton" title="Delete" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
 	  			</paper-icon-button>
-
-				<paper-icon-button noink class="iconButton" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
-				</paper-icon-button>
 			</div>      	
   		</div>
 
@@ -148,12 +151,15 @@
 					type:Boolean,
 					value:false,
 				},
+
+				searchText:{
+					type:String,
+					value:"",
+				},
 			},
 
-			toggle() {
-
+			toggle: function() {
 				var d = this.$$('#search').style.display;
-				//console.log(d);
 				if(d == 'block') {
 					this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
@@ -165,32 +171,36 @@
 				}			
 			},
 
-			onDelete() {
+			onDelete: function() {
 				this.fire('deleteClicked');
 			},
 
-			createNew() {
+			createNew: function() {
 				this.fire('newClicked');
 			},
 
-			onCompare() {
+			onCompare: function() {
 				this.fire('compareClicked');
 			},
 
-			checkForKeys: function (e) {
+			checkForKeys: function(e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
                     this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
-                }
-                else if(e.keyCode == 13) {
-                	this.doSearch();
-                }
+                } 
             },
 
-            close() {
-            	this.$$('#search').style.display = 'none';
-				this.$$('#menu-icons').style.display = 'inline';
+            blur: function() {
+            	if(this.$$('#searchbox').value=="") {
+            		this.$$('#search').style.display = 'none';
+					this.$$('#menu-icons').style.display = 'inline';
+				} 
+            },
+
+            search: function() {
+            	this.searchText = this.$$('#searchbox').value;
+            	this.fire('search-action',{searchtext: this.searchText});
             },
 
 		});

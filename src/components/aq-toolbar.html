@@ -2,15 +2,17 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 
-<link rel="import" href="../../bower_components/paper-icon-button/
-paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-user-menu.html">
+<link rel='import' href='../icons/aq-iconset.html'>
 
 
 <dom-module id="aq-toolbar">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment  iron-positioning">  
+  </style>
+  
   <style>
 
   paper-toolbar {
@@ -49,13 +51,13 @@ paper-icon-button.html">
 
         <div class="flex"></div>
         <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
-          <paper-tab on-tap='onHome'>HOME</paper-tab>
-          <paper-tab on-tap='onResearch'>RESEARCH</paper-tab>
-          <paper-tab on-tap='onInvestments'>INVESTMENTS</paper-tab>
-          <paper-tab on-tap='onAbout'>ABOUT US</paper-tab>
+          <paper-tab>HOME</paper-tab>
+          <paper-tab>RESEARCH</paper-tab>
+          <!--paper-tab>INVESTMENTS</paper-tab-->
+          <paper-tab>ABOUT US</paper-tab>
           <template is='dom-if' if="{{!hasToken}}">
-            <paper-tab on-tap='onLogin'>LOG IN</paper-tab>
-            <paper-tab on-tap='onSignup'>SIGN UP</paper-tab>
+            <paper-tab>LOG IN</paper-tab>
+            <paper-tab>SIGN UP</paper-tab>
           </template>
 
         </paper-tabs>
@@ -84,6 +86,7 @@ paper-icon-button.html">
 
         currentTab: {
           type:Number,
+          notify:true,
         },
 
         hasToken: {
@@ -92,36 +95,12 @@ paper-icon-button.html">
         },
       }, 
 
-      toggleMenu() {
+      toggleMenu: function() {
         this.fire('open-menu');
       },
 
-      onLogin() {
-        this.fire('tabChanged',{tab:4});
-      },
-
-      onSignup() {
-        this.fire('tabChanged',{tab:5});
-      },
-
-      computeShowMenu(hasHeader, currentTab) {
+      computeShowMenu: function(hasHeader, currentTab) {
         return currentTab == 1;
-      },
-
-      onResearch() {
-        this.fire('tabChanged',{tab:1});
-      },
-
-      onHome() {    
-        this.fire('tabChanged',{tab:0});
-      },
-
-      onAbout(e) {    
-        this.fire('tabChanged',{tab:3});
-      },
-
-      onInvestments(e) {    
-        this.fire('tabChanged',{tab:2});
       },
 
     });

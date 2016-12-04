@@ -1,21 +1,23 @@
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel='import' href='../profile-img.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-community-home-post-item">
-  <style is="custom-style" include="iron-flex iron-positioning iron-flex-alignment"></style>
+  <style  include="iron-flex iron-positioning iron-flex-alignment">
+  </style>
 
   <style>
-    .post-container {
-      max-width: 800px;
+    #post-container {
+      max-width: 900px;
       border-bottom: 1px solid #e5e5e5;--#80CBC4;--#666;
       margin-top: 10px;
+      --padding-top: 25px;
       padding-bottom: 5px;
       margin-bottom: 30px;
+    }
+
+    #post-container:hover {
+      --background-color:#e5f1f5
     }
 
     #top-section {
@@ -26,11 +28,10 @@
       --height:20px;
     }
 
-    #date {
-      color: #444;
-    }
-    #author-name {
-      color: teal;
+
+    #author-name span{
+      --color: teal;
+      font-size: 15px;
     }
 
     #left-section {
@@ -42,11 +43,17 @@
     }
 
     a {
-      text-decoration: none;
+      text-decoration: none; 
+      color:#333a56;
+      font-size:16px;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     span {
-      font-size: 12px;
+      font-size: 13px;
     }
 
     profile-img {
@@ -67,28 +74,34 @@
     }
 
     #category {
-      min-width: 150px;
+      min-width: 250px;
     }
 
+    .span2{
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    #date {
+      --color:teal;
+    }
 
   </style>
   <template>
-  	<div class="post-container layout horizontal" id='post-container'>
+  	<div class="layout horizontal flex" id='post-container'>
       <profile-img letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
       <div>
-	        <div on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
-          <a href$="[[authoraddress]]">
-            <span id="author-name">[[authorFirstname]] [[authorLastname]]</span>
-          </a>
-          <span id="date">   on [[postDate]]</span>
+	        <div id='postText' on-tap='onView'><a href$="[[topicAddress]]">[[topicHeading]]</a></div>
+            <div id="author-name" class="layout horizontal"><span>[[authorFirstname]]</span><span>&nbsp[[authorLastname]]</span>
+          <span id="date"><i>&nbsp on [[postDate]]</i></span> </div>
       </div>
 
       <div class="flex"></div>
       <div style="width:25%" class="vertical">
       <div id='right-section' class="layout horizontal">
-        <div id="total-replies"><span>Replies: [[totalReplies]]</span></div>
-        <div id="total-views"><span>Views: [[totalViews]]</span></div></div>
-        <div id='category'><span>Category: [[postCategory]]</span></div>
+        <div id="total-replies"><span><i>Replies</i>:</span> <span class="span2">[[totalReplies]]</span></div>
+        <div id="total-views"><span><i>Views</i>:</span> <span class="span2">[[totalViews]]</span></div></div>
+        <div id='category'><span><i>Category:</i></span><span class="span2"> [[postCategory]]</span></div>
       </div>
 
 
@@ -119,6 +132,7 @@
         totalViews: String,
         postCategory: String,
         itemId:String,
+        header: Object,
       },
 
       listeners:{
@@ -135,11 +149,11 @@
           }
       },
 
-      getInitials(firstName, lastName) {
+      getInitials: function(firstName, lastName) {
         return firstName.charAt(0) + lastName.charAt(0);
       },
 
-      onView() {
+      onView: function() {
         this.$.views.generateRequest();
       },
 

@@ -1,24 +1,16 @@
 <link rel='import' href='../../bower_components/paper-header-panel/paper-header-panel.html'>
 <link rel='import' href='../../bower_components/paper-toolbar/paper-toolbar.html'>
 <link rel='import' href='../../bower_components/paper-menu/paper-menu.html'>
-<link rel='import' href='../../bower_components/paper-menu/paper-submenu.html'>
-<link rel='import' href='../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html'>
-<link rel='import' href='../../bower_components/paper-listbox/paper-listbox.html'>
-
-<link rel='import' href='../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../bower_components/iron-icons/iron-icons.html'>
-<link rel='import' href='../../bower_components/iron-icons/communication-icons.html'>
-
-<link rel='import' href='../../bower_components/vaadin-icons/vaadin-icons.html'>
-<link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
 
 <link rel='import' href='../../bower_components/paper-item/paper-item.html'>
 <link rel='import' href='../../bower_components/paper-item/paper-icon-item.html'>
 <link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel='import' href='../icons/aq-iconset.html'>
+
 <dom-module id='aq-sidebar'>
-  <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
   <style>
     :host {
       --sidebar-text: {
@@ -28,35 +20,32 @@
 
     }
 
-    .sidenav {
-      -ms-user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      background-color: #333a56;--#30415d; --#1C263C;-- #EFEFEF;--D9D9D9;--#E0F2F1
-      opacity: var(--dark-primary-opacity);
+    #content {
+       border-right: 1px solid #9ecbda;--#e5e5e5; 
+       background-color: #e5f1f5;
     }
+
 
     paper-toolbar {
       --paper-toolbar-title: {
         text-align: left;
         margin-left: 0px !important;
       };
-
-    --paper-toolbar-background: #1C263C;
-
-      opacity: var(--dark-primary-opacity);
-      --border-bottom: 1px solid #e0e0e0;
+    }
+    paper-toolbar {
+      --paper-toolbar-background: #333a56;
     }
 
     paper-menu {
       padding-bottom: 0;
-      background-color: #333a56;--#30415d;
+      background-color: #e5f1f5;
       opacity: var(--dark-primary-opacity);
     }
 
      iron-icon{
      --iron-icon-width:20px;
      --iron-icon-height:20px;
+     color:#333a56;
    }
 
    paper-icon-item {
@@ -68,13 +57,13 @@
       --paper-icon-item: {
         cursor: pointer;
         font-size: 13px;
-        --font-weight: bolder; 
-        --background-color:#1C263C;
-        color:white;
+        color:#333a56;--white;
         width:75%;  
         margin: 0 auto;
       }
+    }
       
+    paper-icon-item {
       --paper-item-min-height:35px;
       --paper-item-icon-width:35px;
       
@@ -83,11 +72,8 @@
       }
 
       --paper-item-selected: {
-        background-color: #99ced4; 
-        --width:80%;
-        --margin:0 auto;
+        background-color: #9ecbda;
       }
-
     }
 
     #navigation {
@@ -98,12 +84,21 @@
       margin-top:20px;
     }
 
+    #gap {
+      border-top: 1px solid grey;
+      margin-top:10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: -10px;
+    }
+
     .nav-header {
-      font-size: 12px;
-      --font-style: strong;
+      font-size: 14px;
+      font-weight: bold;
       margin-left:10px;
     }
-  
+
+   
   </style>
 
   <template>
@@ -113,19 +108,21 @@
         <div class="title">AimsQuant</div>
       </paper-toolbar>
       
-
-      <div id='navigation'><span class='nav-header'><strong>RESEARCH</strong></span>
-        <paper-menu fallback-selection="home" selected="{{menuSelected}}" attr-for-selected="menu-panel">
-          <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, `home')}}">Home
-            <iron-icon item-icon icon="icons:home"></iron-icon>
+      <div id = 'content' class="fit">
+      <div id='navigation'><span class='nav-header'>RESEARCH</span>
+        <paper-menu fallback-selection="home" 
+                    selected="{{menuSelected}}" 
+                    attr-for-selected="menu-panel">
+          <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
+            <iron-icon item-icon icon="aq-icons:home"></iron-icon>
           </paper-icon-item>
 
-          <paper-icon-item id='menu-editor' menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, `editor')}}">Strategy Builder
+          <paper-icon-item id='menu-editor' menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, 'editor')}}">Strategy Builder
             <iron-icon item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
           </paper-icon-item>
 
           <!--paper-icon-item id='menu-analyze' menu-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">Analyze
-            <iron-icon item-icon icon="vaadin-icons:chart"></iron-icon>
+            <iron-icon item-icon icon="aq-icons:chart"></iron-icon>
           </paper-icon-item-->
           
           <paper-icon-item menu-panel="community" on-tap="onSelected" active="{{_isEqual(menuSelected, 'community')}}">Community
@@ -139,32 +136,36 @@
 
       </div>
 
-      <div id='action'><span class='nav-header'"><strong>QUICK ACTIONS</strong></span>
-        <paper-icon-item action-panel='createstrategy'  on-tap="onAction">Create a Strategy
+      <div id='gap'></div>
+      <div id='action'>
+        <div class='nav-header' style="margin-bottom:15px;"><span >QUICK ACTIONS</span>
+        </div>
+        <paper-icon-item menu-panel = 'editor' action-panel='createstrategy' on-tap="onAction">Create a Strategy
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
         </paper-icon-item>
           
-        <paper-icon-item action-panel='comparebacktests' on-tap="onAction">Compare Backtests
+        <!--paper-icon-item menu-panel = 'editor'action-panel='comparebacktests' on-tap="onAction">Compare Backtests
           <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
-        </paper-icon-item>
+        </paper-icon-item-->
 
-        <paper-icon-item action-panel='comparemore' on-tap="onAction">Compare More
-          <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon> 
-        </paper-icon-item>
-
-
-        <paper-icon-item action-panel='createpost' on-tap="onAction">Write a Post
-          <iron-icon item-icon icon="communication:comment"></iron-icon>
+        <paper-icon-item menu-panel = 'community' action-panel='createpost' on-tap="onAction">Write a Post
+          <iron-icon item-icon icon="aq-icons:comment"></iron-icon>
         </paper-icon-item>
         
-        <paper-icon-item action-panel='sendfeedback' on-tap="onAction">Send us Feedback
-          <iron-icon item-icon icon="icons:feedback"></iron-icon>
+        <paper-icon-item menu-panel = '' action-panel='sendfeedback' on-tap="onAction">Send us Feedback
+          <iron-icon item-icon icon="aq-icons:feedback"></iron-icon>
+        </paper-icon-item>
+
+        <paper-icon-item menu-panel = '' action-panel='invitefriend' on-tap="onAction">Invite a Friend
+          <iron-icon item-icon icon="aq-icons:person-add">
+          </iron-icon>
         </paper-icon-item>
 
         <!--paper-icon-item action-panel='lockscreen' on-tap="onAction">Lock Screen
-          <iron-icon item-icon icon="vaadin-icons:lock"></iron-icon>
+          <iron-icon item-icon icon="aq-icons:lock"></iron-icon>
         </paper-icon-item-->
 
+      </div>
       </div>
             
       
@@ -188,23 +189,23 @@
 
     },
 
-    _isEqual(view1, view2) {
+    _isEqual: function(view1, view2) {
       return view1 == view2;
     },
     
-    toggleMenu() {
+    toggleMenu: function() {
       this.fire('close-menu');
     },
 
-    onSelected(e) {
+    onSelected: function(e) {
       this.fire('change-view-navigation', {menu: e.currentTarget.getAttribute('menu-panel')});
     },
 
-    onAction(e) {
-      this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel')});
+    onAction: function(e) {
+      this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel'), menu: e.currentTarget.getAttribute('menu-panel')});
     },  
 
-    selectPanel(newChoice){
+    selectPanel: function(newChoice){
       if (newChoice === this.selected) {
         return;
       } 

@@ -1,7 +1,7 @@
 
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../../bower_components/paper-dropdown/paper-dropdown.html">
+
 
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
@@ -15,9 +15,10 @@
 <link rel='import' href="./aq-editor-edit-nonprogrammer-screener.html">
 <link rel='import' href="./aq-editor-edit-nonprogrammer-optimizer.html">
 <link rel='import' href="./aq-editor-edit-nonprogrammer-indicator.html">
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-editor-edit-nonprogrammer'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
 
 	<style>
 
@@ -121,7 +122,7 @@
 						<paper-toolbar>
 							
 							<template is="dom-if" if="{{!isSelectedBarUniverse(selectedSideBar)}}">
-								<paper-icon-button noink icon="icons:arrow-back" on-tap="goback"></paper-icon-button>
+								<paper-icon-button noink icon="aq-icons:arrow-back" on-tap="goback"></paper-icon-button>
 							</template>
 							
 							<div class="flex"></div>
@@ -137,7 +138,7 @@
 							
 							
 							<template is="dom-if" if="{{!isSelectedBarRun(selectedSideBar)}}">
-							<paper-icon-button noink icon="icons:arrow-forward" on-tap="goforward"></paper-icon-button>
+							<paper-icon-button noink icon="aq-icons:arrow-forward" on-tap="goforward"></paper-icon-button>
 							</template>
 						</paper-toolbar>
 
@@ -210,49 +211,49 @@
 				'screener-pressed':'onAddScreener',
 			},	
 				
-			toFixedOne(value){
+			toFixedOne: function(value){
 				return value.toFixed(1);
 			},
 			
-			toPercentage(value) {
+			toPercentage: function(value) {
 				return Math.round(value * 10000)/100 + '%';
 			},
 	
-		    toggleDrawer() {
+		    toggleDrawer: function() {
 		        this.$.drawerpanel.togglePanel();
 		        //this.showSideBar = !this.showSideBar;
 		    },
 
-		    closeDrawer() {
+		    closeDrawer: function() {
 		    	if(this.showSideBar) {
 		    		this.toggleDrawer();
 		    	}
 		    },
 
-		    onAddScreener() {
+		    onAddScreener: function() {
 		    	this.$.screenerCanvas.addScreener();
 		    },
 
-		    isSelectedBarUniverse(selectedSideBar) {
+		    isSelectedBarUniverse: function(selectedSideBar) {
 		    	//console.log(selectedSideBar);
 		    	return selectedSideBar==0;
 		    },
 
-		    isSelectedBarRun(selectedSideBar) {
+		    isSelectedBarRun: function(selectedSideBar) {
 		    	return selectedSideBar==3;
 		    },
 
-		    computeForceNarrow(showSideBar, selectedSideBar) {
+		    computeForceNarrow: function(showSideBar, selectedSideBar) {
 		    	return !showSideBar || selectedSideBar!=0;
 		    },
 
-		    goback() {
+		    goback: function() {
 
 		    	this.selectedSideBar-=1;
 		    		console.log(this.selectedSideBar);
 		    },
 
-		    goforward() {
+		    goforward: function() {
 		    	
 		    	this.selectedSideBar+=1;
 		    	console.log(this.selectedSideBar);

@@ -1,0 +1,154 @@
+<link rel='import' href='../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+
+<link rel='import' href='../icons/aq-iconset.html'>
+
+<dom-module id='aq-invitefriend-dialog'>
+  <style  include="iron-flex iron-flex-alignment iron-positioning">
+  </style>
+	<style>
+		paper-dialog {
+    		width: 40%;
+    		--height: 250px;
+    		margin-right:0px;
+    		margin-left:0px;
+    		padding-right: 0px;
+    		padding-left:0px;
+    		border-radius: 5px;
+    		border: 2px solid teal;
+  		}
+
+  		.input-fields {
+
+  			  padding-bottom: 20px;
+  			--paper-input-container-color:#333a56;
+  			--paper-input-container-input-color:#333a56;
+  			--paper-input-container-underline:{
+  				color:teal
+  			};
+  		}
+
+  		#buttons {
+  			margin:15px;
+  		}
+
+  		paper-button {
+  			--paper-button:{
+  				color:teal;
+  			};
+  		}
+
+  		paper-button{
+  			border-radius: 5px;
+    		border: 1px solid teal;
+    		height:30px;
+  		}
+
+  		#header {
+        margin-left: 15px;
+        margin-bottom: 5px;
+  		}
+
+      p, i{
+        color:teal; 
+      }
+
+      p {
+        font-size: 22px;
+        font-weight: bold;
+        margin-top:0px;
+        margin-bottom: 0px;
+      }
+
+      #editor {
+        margin:15px;
+      }
+
+      gold-email-input {
+        --paper-input-container-underline-focus:{
+            background-color: teal;
+        }
+
+      }
+
+      iron-icon {
+        height:50px;
+        width: 50px;
+        color: teal;
+        margin-bottom: -35px;
+        margin-top:-15px;
+      }
+    
+	</style>
+	
+	<template>
+	    <paper-dialog id='sendInviteModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
+	    	
+        <div class="layout horizontal">
+          <div class="flex"></div>
+          <iron-icon icon="aq-icons:person-add"></iron-icon>
+        </div>
+
+        <div id='header'>
+        <p class="self-end">Invite A Friend</p>
+        <i>We are thrilled you liked our platform. Spread the Joy!!</i></div>
+      
+        
+ 			<div id='editor'> 
+         <gold-email-input 
+              id='userEmailInput'
+              class='input-fields'
+              auto-complete='on'
+              value="{{userEmail}}"
+              error-message="Please enter a valid email address"
+              no-label-float
+              auto-validate
+              required>  
+          </gold-email-input>
+      </div>
+ 				 	
+      <div id='buttons' class="layout vertical">    
+        <div class="layout horizontal self-end">
+          <paper-button noink dialog-dismiss>Cancel</paper-button>
+  		  	<paper-button  noink on-tap='onSubmit'>Send</paper-button>
+        </div>
+      </div>
+	
+		 	
+		</paper-dialog>
+
+	</template>
+	
+	<script>
+		Polymer ({
+			is: 'aq-invitefriend-dialog',
+
+			properties: {
+				userEmail:{
+          type:String,
+        },		
+			},
+
+			onSubmit: function() {
+				if(this.$.userEmailInput.validate()) {
+					   this.fire('send-invite-action',{address:this.userEmail});
+             this.$.sendInviteModalDialog.close();
+				  } 		
+			},
+
+			open: function() {
+				this.$.sendInviteModalDialog.open();
+			},
+
+      onCancel: function() {
+        this.emailAddress = "";
+      },
+
+		});
+		
+	</script>
+</dom-module>

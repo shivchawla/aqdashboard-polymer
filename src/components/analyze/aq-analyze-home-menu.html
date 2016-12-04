@@ -1,11 +1,9 @@
-
-<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-analyze-home-menu'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
   
 	<style>
 
@@ -142,16 +140,18 @@
 	<template>
 	    <div class="toolbar layout horizontal">
 	    
-	    	<paper-icon-button noink id="backButton" title="Go Back" icon="icons:arrow-back" on-tap="goToEditor">
+	    	<paper-icon-button noink id="backButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToEditor">
 	  			</paper-icon-button>
-	    	<div class="flex"><h4>All Backtests for {{strategyName}}</h4></div>
+
+	    	<p class="self-center flex">Back to Strategies</p>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	  			<paper-icon-button noink class="iconButton" icon="icons:delete" title="Delete"  on-tap="onDelete" disabled="[[!activeButtons]]">
+	  			<paper-icon-button noink class="iconButton" icon="aq-icons:delete" title="Delete"  on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
 	  			</paper-icon-button>
 
-				<paper-icon-button noink class="iconButton" icon="icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!activeButtons]]">
+				<paper-icon-button noink class="iconButton" icon="aq-icons:chrome-reader-mode" title="Compare" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
 				</paper-icon-button>
+					
 			</div>      	
   		</div>
 
@@ -166,21 +166,37 @@
 					type:String,
 				},
 
-				activeButtons:{
-					type:Boolean,
-					value: false,
+				numActiveBacktests:{
+					type:Number,
+					value:0,
 				},
 			},
 
-			onDelete() {
+			isCompareActive: function(numActiveBacktests) {
+				return numActiveBacktests > 1;
+			},
+
+			isDeleteActive: function(numActiveBacktests) {
+				return numActiveBacktests > 0;
+			},
+
+			isShareActive: function(numActiveBacktests) {
+				return numActiveBacktests == 1;
+			},
+
+			onDelete: function() {
 				this.fire('deleteClicked');
 			},
 
-			onCompare() {
+			onCompare: function() {
 				this.fire('compareClicked');
 			},
 
-            goToEditor() {
+			/*onShare: function() {
+				this.fire('shareClicked');
+			},*/
+
+            goToEditor: function() {
             	this.fire('backClicked');
             },
 

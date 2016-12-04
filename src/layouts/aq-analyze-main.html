@@ -1,16 +1,15 @@
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-router/app-router.html'>
 
 <link rel="import" href="../components/analyze/aq-analyze-home.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare.html">
-<link rel="import" href="../components/analyze/aq-analyze-more.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare-results.html">
 
+<link rel="import" href="../components/analyze/aq-analyze-detail.html">
+
 <dom-module id="aq-analyze-main">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment iron-positioning">
+  </style>
    <style>
     #panel {
       height:100%;
@@ -22,10 +21,12 @@
         <!--app-route path="/dashboard/analyze/*" element='aq-analyze-home' bindrouter=""></app-route-->
 
         <app-route path="/dashboard/analyze/compare" element='aq-analyze-compare' bindrouter=""></app-route>
-        <app-route path="/dashboard/analyze/more" element='aq-analyze-more' bindrouter=""></app-route>
+      
         <app-route path="/dashboard/analyze/compare/x" element='aq-analyze-compare-results' bindrouter=""></app-route>
 
         <app-route path="/dashboard/analyze/:strategyId" element='aq-analyze-home' bindrouter=""></app-route>
+
+        <app-route path="/dashboard/analyze/:strategyId/*" element='aq-analyze-detail' bindrouter="" onUrlUpdate=""></app-route>
 
     </app-router>
   </template>

@@ -1,18 +1,11 @@
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 
-<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
-<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input-container.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 
 <dom-module id='aq-editor-toolbar'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 
 	<style>
 
@@ -35,15 +28,11 @@
 		  --paper-toolbar-height:40px;
 		  --paper-toolbar-width:100px;
 		  --paper-toolbar-color:teal;
-  		  --paper-toolbar-background:#99d3df;
-
+  		  --paper-toolbar-background:#e5f1f5;
+  		  --border-right: 5px solid #333a56;
 		}
 
-		paper-button {
-			height:35px;
-		}
-
-		#strategyName {
+		#strategyName, #box {
 			height:24px;
 			margin-top: 3px;
 			font-size: 12px;
@@ -61,7 +50,7 @@
 
 		input {
 			max-width:250px;
-			min-width: 50px;
+			min-width: 150px;
 			--width:20%;
 			--font-size: 15px;
 		}
@@ -81,35 +70,57 @@
 			 padding:3px;
 		}
 
+		paper-tabs {
+			height:35px;
+		}
+
+		.inputbox {
+			margin-left:10px;
+			margin-right:10px;
+			@apply(--layout-horizontal);
+		}
+
+		.input-span {
+			color:#333a56;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		#box {
+			max-width: 130px;
+			font-weight: normal;
+			--border:1px solid black;
+			min-width:100px;
+
+		}
 		
 	</style>
 	
 	<template>
 		<paper-toolbar>
 			<div id='toolbar' class="flex layout horizontal">
-				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
+				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="aq-icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
 				<input class="flex" id ='strategyName' value="[[strategyName]]" type="text">
 	     		 
 	        	<div class="flex" style="max-width:5%"></div>
 
-	        	<paper-icon-button noink class="flex toolbarIcon" icon="icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button>
+	        	<!--paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button-->
 
 	        	<span class="self-center separator"></span>
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:save" title="Save" on-tap='onSave'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:add" title="New" on-tap='onCreate'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save" on-tap='onSave'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New" on-tap='onCreate'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
 		 		
 		 		<span class="self-center separator"></span>
-		 		<!--paper-icon-button class="flex" icon="vaadin-icons:chart" title="Analyze" on-tap='goToAnalyze'></paper-icon-button-->
-		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="av:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
-
+	
+		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="aq-icons:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
 	        	<template is='dom-if' if="{{isProgrammer}}">
-	        		<div class="flex"></div>
-		            <paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
-
-		            
-			        <!--paper-icon-button icon="vaadin-icons:expand-full" title="Expand" on-tap="closeAll"></paper-icon-button-->
+	        		<template is='dom-if' if='[[narrow]]'>
+		            <div class="flex"></div>
+		            <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
+		            </template>
+		           
 		        </template>
 		        
        		</div> 
@@ -122,7 +133,7 @@
 			is:'aq-editor-toolbar',
 
 			properties: {
-				showSideBar : {
+				narrow : {
 					type:Boolean,
 				},
 
@@ -135,52 +146,52 @@
 				strategyId:String,
 			},
 
-			closeAll() {
+			closeAll: function() {
 				this.fire('close-all');
 			},
 
-			openDrawer() {
+			openDrawer: function() {
 				this.fire('open-drawer');
 			},
 
-			closeDrawer() {
+			closeDrawer: function() {
 				this.fire('close-drawer');
 			},
 
-			toggleDrawer() {
+			toggleDrawer: function() {
 				this.fire('toggle-drawer');
 			},
 
-			toggleConsole() {
+			toggleConsole: function() {
 				this.fire('toggle-console');
 			},
 
-			toggleDesign(){
+			toggleDesign: function(){
 				this.fire('toggle-design');
 			},
 
-			goBack() {
-				this.fire('back-clicked');
+			goBack: function() {
+        		this.fire('backClicked');
 			},
 
-			goToAnalyze() {
+			goToAnalyze: function() {
 				this.fire('analyze-clicked');
 			},
 
-			onSave() {
+			onSave: function() {
 				this.strategyName = this.$.strategyName.value;
 				this.fire('save-action',{name:this.strategyName});
 			},
 
-			onCreate() {
+			onCreate: function() {
 				this.fire('newClicked');
 			},
 
-			onClone() {	
+			onClone: function() {	
 				this.fire('cloneClicked');	
 			},
 
-			onRun() {
+			onRun: function() {
 				this.strategyName = this.$.strategyName.value;
 				this.fire('run-action',{name:this.strategyName});
 			}

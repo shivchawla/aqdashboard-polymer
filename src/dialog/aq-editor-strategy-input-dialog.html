@@ -1,17 +1,13 @@
 
-<link rel='import' href='../../../bower_components/iron-icon/iron-icon.html'>
-<link rel='import' href='../../../bower_components/iron-icons/iron-icons.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/paper-dialog/paper-dialog.html'>
-<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
-<link rel='import' href='../../../bower_components/paper-input/paper-input.html'>
-<link rel='import' href='../../../bower_components/paper-input/paper-textarea.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id='aq-editor-strategy-input-dialog'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
-
+	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		paper-dialog {
     		width: 520px;
@@ -26,10 +22,16 @@
 
   		.input-fields {
   			--padding-bottom: 20px;
+  			--paper-input-container-color:#333a56;
+  			--paper-input-container-input-color:#333a56;
+  			--paper-input-container-underline:{
+  				color:teal
+  			};
   		}
 
   		#buttons {
   			margin-bottom:0px;
+  			margin-left: 58%;
   		}
 
   		paper-button {
@@ -38,15 +40,40 @@
   			};
   		}
 
+  		paper-button{
+  			border-radius: 5px;
+    		border: 1px solid teal;
+    		height:30px;
+  		}
+
   		h2 {
   			color:teal;
   		} 
+
+  		paper-input {
+        --paper-input-container-underline-focus:{
+            background-color: teal;
+        }
+      }
+
+     iron-icon {
+        height:50px;
+        width: 50px;
+        color: teal;
+        margin-bottom: -35px;
+        margin-top:-15px;
+      }
 		
 
 	</style>
 	
 	<template>
 	    <paper-dialog id='createStrategyModalDialog' with-backdrop>
+	    	<div class="layout horizontal">
+          		<div class="flex"></div>
+          		<iron-icon icon="icons:add"></iron-icon>
+        	</div>
+
 	    	<h2>[[header]]</h2>
 
  			<paper-input id='strategyNameInput' class='input-fields'
@@ -73,7 +100,9 @@
 		                     char-counter
 		                     no-wrap>
             </paper-input>
-           <div id="buttons" class="horizontal">
+
+           	<div id="buttons">
+
   				<paper-button noink dialog-dismiss>Cancel</paper-button>
     			<paper-button noink on-tap='onSubmit'>OK</paper-button>
   			</div>
@@ -93,7 +122,7 @@
 				//dialogType:String, 
 			},
 
-			onSubmit() {
+			onSubmit: function() {
 				if(this.$.strategyNameInput.validate() && this.$.strategyDesc.validate()){
 					this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
 					this.$.createStrategyModalDialog.close();
@@ -101,7 +130,7 @@
 			
 			},
 
-			open() {
+			open: function() {
 				this.$.createStrategyModalDialog.open();
 			},
 

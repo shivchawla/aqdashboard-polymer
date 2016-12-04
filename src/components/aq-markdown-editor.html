@@ -1,18 +1,26 @@
 
 <link rel="import" href="./simplemde.html">
-
+ 
 <dom-module id="aq-markdown-editor">
 
   <style>
     
+    .CodeMirror .CodeMirror-scroll {
+        min-height: 100px !important;
+    }
+
     .CodeMirror {
-      height: var(--editor-height, 300px);
+        --min-height: 100px;
+    }
+
+    .CodeMirror {
+      height: 300px;
     }
 
   </style>
 
   <template>
-    <textarea id="MyID" name="content" class="te"></textarea>
+    <textarea id="MyID" name="content" class="te"></textarea> 
   </template>
 
   <script>
@@ -24,18 +32,17 @@
         toolbar:{
           type:Array,
           value:["bold","italic","heading","strikethrough","|",
-                  "code", "quote", "unordered-list", "ordered-list","|",
-                 "link","table","dsd","|","preview","side-by-side", "fullscreen"],
+                  "code", "quote", "link", "|", "unordered-list","ordered-list", "table","|","preview","side-by-side", "fullscreen"],
         },
         
-        placeholder: {
+        placeHolder: {
           type:String,
           value:"Share your thoughts",
         },
       },
       
-      ready() {
-        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeholder});
+      ready: function() {
+        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeHolder});
       },
     
       getContent: function(){
@@ -51,4 +58,5 @@
   </script>
 
 </dom-module>
+
 

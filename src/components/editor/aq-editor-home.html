@@ -1,9 +1,5 @@
 
-<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
-
-<link rel='import' href='../../../bower_components/iron-media-query/iron-media-query.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
@@ -14,9 +10,8 @@
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
 
-
 <dom-module id="aq-editor-home">
- 	<style is="custom-style" include="iron-flex iron-positioning"></style>
+ 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
   
     <style>
       
@@ -27,13 +22,12 @@
       }
 
       .header {
-      	border: 1px solid #d0d0d0;
+      	border: 1px solid #9ecbda;--#d0d0d0;
         padding: 0 55px;
         line-height: 56px;
         font-size: 18px;
         font-weight: bold;
-        border-bottom: 1px solid #e5e5e5;
-        background-color:#99ced4;
+        background-color:#9ecbda;--#90c3d4;--#acd2df;
         min-width:640px;
 
       }
@@ -93,7 +87,7 @@
 
       #container {
       	margin:0 auto;
-      	margin-top: 10px;
+      	margin-top: 20px;
       	color: #333a56;
       	width: 95%;
 
@@ -103,46 +97,67 @@
         right: 5%;
       }
 
-}
+      #ifsearch {
+      	display: none;
+      }
 
     </style>
 
 	<template>
 		<!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
 
- 		<div id='container'>
+		<iron-ajax
+	    	  auto	
+              url="http://localhost:3002/api/v2/strategy"
+              method='GET'
+              params="[[searchParam]]"
+              id='getStrategiesQuery'
+              handle-as="json"
+              on-response="onGetStrategiesResponse"
+              on-error="onGetStrategiesError"
+              headers='{{header}}'
+              debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax	
+              url="http://localhost:3002/api/v2/strategy/[[deleteId]]"
+              method='DELETE'
+              id='deleteStrategyQuery'
+              handle-as="json"
+              on-response="onDeleteStrategyResponse"
+              on-error="onDeleteStrategyError"
+              headers='{{header}}'
+              debounce-duration="300">
+        </iron-ajax>
+
+        	
+        <div id='container'>
+	  		
 	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
+
+	  		<div id="ifsearch">
+	  			<p>Strategy results for: 
+	  				<i>"[[searchParam.search]]"</i>
+  				</p>
+	  		</div>
 
 		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
 		      <div class="name">Name<span class="narrow">/Description</span></div>
 		      <div class="description">Description</div>
 		      <div class="backtest">#Backtests</div>
 		    </div>
-
-	        <iron-ajax
-		    	  auto	
-                  url="http://localhost:3002/api/v2/strategy"
-                  method='GET'
-                  id='getStrategiesQuery'
-                  handle-as="json"
-                  on-response="onGetStrategiesResponse"
-                  on-error="onGetStrategiesError"
-                  headers='{{header}}'
-                  debounce-duration="300">
-            </iron-ajax>
-        
+            
 	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-	    		<aq-editor-home-strategy-item strategy-name = "[[item.name]]"
-	    									num-backtest = "5[[item.backtests.length]]"
-	    									strategy-desc = "[[item.description]]"
-											strategy-id = "[[item._id]]"
-	    									>
+	    		<aq-editor-home-strategy-item										strategy-name = "[[item.name]]"
+							num-backtest = "[[item.backtests]]"
+							strategy-desc = "[[item.description]]"
+							strategy-id = "[[item._id]]">
 				</aq-editor-home-strategy-item>	
 	    	</template>
 	
 
 		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-		    						 message="Are you sure to delete {{checkedCount}} strategies?"	
+		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
 		    						 cancel="Cancel"
 		    						 accept="OK">
 	    	</aq-delete-dialog>
@@ -154,7 +169,7 @@
 		    
 		    <div id="actions"></div>
 		</div> 
-
+		
   </template>
 
   <script>
@@ -164,7 +179,7 @@
 		
 		properties: {
 			strategies: {
-				type: Array,
+				type: Object,
 			},
 			
 			color: { type: String },
@@ -189,9 +204,13 @@
 				vaue:0,
 			},
 
+			deleteId: String,
+
+			searchParam:Object,
+
 		},
 
-		attached() {
+		attached: function() {
 			if (this.create == 1){
 				this.fire('newClicked');
 			}
@@ -200,21 +219,19 @@
 		ready: function() {
             var x = localStorage.getItem('my-app-storage');
 	        var user = JSON.parse(x).user;
-	        if (user.token) {
+	        if (user.token) {	
 	          this.header = {
 	            "aimsquant-token": user.token,
 	            "Content-Type": "application/json"};  
-	        }
+	        } 
         },
 
-        onGetStrategiesResponse(data) {
-        	//check for error
+        onGetStrategiesResponse: function(data) {
         	this.strategies = data.detail.response;	
         },
 
-		onGetStrategiesError(data) {
-        	//console.log(data);
-        	//check for error
+		onGetStrategiesError: function(data) {
+        	//this.router.go('/user/signin');
         },        
 
 		listeners: {
@@ -230,6 +247,7 @@
 			//'create-action':'createStrategy',
 			'check-action':'checkStrategy',
 			'delete-action':'onDeletion',
+			'search-action':'onSearch',
 		},
 
 		_currentRowIndex: -1,
@@ -243,7 +261,7 @@
 			return node;
 		},
 
-		_mouseOver: function (e) {
+		_mouseOver: function(e) {
 			var row = this._findAncestor(e.target, function (node) {
 				return node != this && !node.classList.contains('row') && node.id !== 'actions';
 			});
@@ -257,17 +275,17 @@
 			}
 		},
 		
-		_mouseLeave: function () {
+		_mouseLeave: function() {
 			this._hideActions();
 		},
 		
-		_showActions: function (row) {
+		_showActions: function(row) {
 			var sharedActionMenu = this._sharedActionMenu;
 			var rowOffsetTop = row.offsetTop;
 			if (!sharedActionMenu) {
 				this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
 				this._sharedActionMenu.classList.add('hidden');
-				Polymer.dom(this.$.actions).appendChild(this._sharedActionMenu);
+				Polymer.dom(this.$$('#actions')).appendChild(this._sharedActionMenu);
 				sharedActionMenu = this._sharedActionMenu;
 			}
 			sharedActionMenu.iconsOnly = true;
@@ -281,7 +299,7 @@
 			this._currentRow = row;
 		},
 		
-		_hideActions: function () {
+		_hideActions: function() {
 			var row = this._currentRow;
 			var sharedActionMenu = this._sharedActionMenu;
 			if (row) {
@@ -294,56 +312,48 @@
 			}
 		},
 
-		_elementLink: function (name) {
+		_elementLink: function(name) {
 			return '/elements/' + name;
 		},
 
-		_getHeaderStyle: function (color) {
+		_getHeaderStyle: function(color) {
 		return 'background-color: ' + color + ';';
 		},
 
-		_elementsChanged: function () {
+		_elementsChanged: function() {
 			this.classList.add('hidden');
-			this.async(function () {
+			this.async(function() {
 				this.classList.remove('hidden');
 			}, 1);
 		},
 		
-		_layoutIfNeeded: function (el) {
+		_layoutIfNeeded: function(el) {
 			return el.offsetTop;
 		},
 
-		openDeletionDialog() {
-			this.$.dialog.open();
+		openDeletionDialog: function() {
+			this.$$('#dialog').open();
 		},
 
-		openCompareDialog() {
-			this.$.strategyCompareDialog.open();
+		openCompareDialog: function() {
+			this.$$('#strategyCompareDialog').open();
 		},
 
-		openPreview() {
-  			this.$.strategyPreviewDialog.open();
+		openPreview: function() {
+  			this.$$('#strategyPreviewDialog').open();
 		},
 
-		click() {
+		click: function() {
 			this.router.go('/dashboard')
 		},
 
-	 	goToAnalyze() {
-        	strategyId = this._currentRow.id;
-        	strategyName="";
-        	for (i in this.strategies) {
-        		if(strategyId == this.strategies[i]._id) {
-        			strategyName = this.strategies[i].name;
-        			break;
-        		}
-        	}
-
+	 	goToAnalyze: function() {
+        	var strategyId = this._currentRow.id;
         	this.router.go('/dashboard/analyze/' + strategyId);
         },
 
-        goToClone(e) {
-        	strategyId = this._currentRow.id;
+        goToClone: function(e) {
+        	var strategyId = this._currentRow.id;
 
         	for (i in this.strategies) {
         		if(strategyId == this.strategies[i]._id) {
@@ -354,16 +364,17 @@
         	//Let the event propagate. It's handled in editor-main.   	
         },
 
-        goToShare() {
+        goToShare: function() {
         	strategyId = this._currentRow.id;
         	this.router.go('/dashboard/community/create/'+strategyId+"?share=strategy");
         },
 
-        goToEditor(e) {
-        	this.router.go('/dashboard/editor/' + e.detail.id);
+        goToEditor: function(e) {
+        	var strategyId = this._currentRow.id;
+        	this.router.go('/dashboard/editor/' + strategyId);
         },
 
-        checkStrategy(e) {
+        checkStrategy: function(e) {
         	var checked = e.detail.checked;
 
         	this.checkedItems[e.detail.id] = e.detail.checked;
@@ -375,23 +386,55 @@
         	}
         },
 
-        hasCheckedStrategies(checkedCount) {
+        hasCheckedStrategies: function(checkedCount) {
         	return checkedCount > 0;
         },
 
-        onDeletion() {
+        getMessageSuffix: function(checkedCount) {
+        	return checkedCount > 1 ? "ies" :"y";
+        },
+
+        onSearch: function(e) {
+        	searchtext = e.detail.searchtext;
+        	
+        	if(searchtext!="") {
+        		this.$$('#ifsearch').style.display = 'block';
+        	} else {
+        		this.$$('#ifsearch').style.display = 'none';
+        	}
+
+        	this.searchParam = {"search":searchtext};
+        },
+
+        onDeletion: function() {
         	//Send DELETE request to backend
         	for (key in this.checkedItems) {
         		for (i in this.strategies) {		
         			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
-        				this.splice('strategies', i, 1);
-        				this.checkedCount -= 1;
+        				this.deleteId = this.strategies[i]._id;
+        				this.$.deleteStrategyQuery.generateRequest();
+        				//this.splice('strategies', i, 1);
+        				//this.checkedCount -= 1;
         			}
         		}
     		}
 
-    		this.checkedItems = {};	        	
+    		this.deleteId = "";	        	
         },
+
+        onDeleteStrategyError: function() {
+
+        },
+
+        onDeleteStrategyResponse: function(data) {
+        	var idDeleted = data.detail.response.id;
+        	for (i in this.strategies) {	
+    			if (idDeleted == this.strategies[i]._id) {
+    				this.splice('strategies', i, 1);
+    				this.checkedCount -= 1;
+    			}
+    		}
+    	},
 
 	});
   </script>

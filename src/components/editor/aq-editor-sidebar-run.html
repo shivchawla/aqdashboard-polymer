@@ -1,31 +1,26 @@
-<!--aq-editor-sidebar-run></aq-editor-sidebar-run-->
-
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
-
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-
+<link rel='import' href='../common/aq-dropdown.html'>
 
 <dom-module id='aq-editor-sidebar-run'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 
 	<style>
+
+		:host{
+			--font-family: 'Roboto';
+			color:#333a56;
+		};
 		
 		.inputbox {
-		  height: 10%;
+		  --height: 10%;
 		  line-height: 48px;
 		  --margin-bottom: 12px;
 		  position: relative;
-		  z-index:2;
+		  --z-index:2;
 		  margin-top: 5px;
 		  margin-left:4px;
 		  width:200px;
+		  @apply(--layout-vertical);
 		}
 	
 		.inputbox iron-icon {
@@ -40,7 +35,8 @@
 
 		.inputbox span {
 			font-size: 14px;
-			font-weight: bold;
+			--font-weight: bold;
+		 	margin-bottom: 0px;
 		}
 
 		input {
@@ -48,238 +44,324 @@
 		  border: 0;
 		  margin: 0;
 		  padding-left: 4px;
-		  border: 1px solid #e5e5e5;
+		  border: 2px solid teal;--#e5e5e5;
 		  @apply(--paper-font-body1);
-		  font-size: 12px;
-		  z-index: 2;
+		  font-size: 14px;
+		  border-radius: 5px;
+		  border:1px solid #c9e4e9;--#f3f9fa;
+		  color:#02558b;
 		}
 
-		#date-box {
-		  --height: 200%;
-		  -webkit-appearance: none;
-		  width:71.2%;	 
+		#box {
+		  width:80%;	 
 		}
-
-		#capital-box {
-		  width:55%;
-		}
-
-		#plan-box {
-			width:62%;	
-		}
-
-		#rebalance-box {
-			width:45%;	
-		}
-
-		#dt-box {
-			width:52%;	
-		}
-
+	
 		input :focus {
 		  outline: 0;
 		  background-color: #eceff1;
 		  border-color: #cfd8dc;
 		}
 
+		
 		#basic-settings {
-			height:140px;
-			margin-top:20px;
-			margin-left:5px;
-			border: 1px solid #e5e5e5;
+			--height:140px;
+			margin-top:5px;
+			--margin-left:5px;
+			padding-bottom:10px;
+			--border: 1px solid #e5e5e5;
+			border-bottom: 1px solid #333a56;
+
 		}
 
 		#advancedSettings {
-			height:35px;
-			margin-top:15px;
-			margin-left:5px;
-			border: 1px solid #e5e5e5;
+			--height:35px;
+			margin-top:5px;
+			--margin-left:5px;
+			--border: 1px solid #e5e5e5;
+			padding-bottom:10px;
+			border-bottom: 1px solid #333a56;
+		}
+
+		#universeSettings {	
+			padding-bottom:10px;
 		}
 
 		#extra-settings {
-			height:80px;
+			--height:80px;
 			margin-top:8px;
-			margin-left:10px;
-			border: 1px solid #e5e5e5;	
-			width:90%;
+			margin-left:14px;
+			--border: 1px solid #e5e5e5;	
+			--width:90%;			
+		}
+
+		#date-settings {
+			--height:80px;
+			margin-top:8px;
+			margin-left:14px;
+			--border: 1px solid #e5e5e5;	
+			--width:90%;
 		}
 
 		#heading {
 			margin-top: 10px;
-			margin-left: 4px;
+			margin-left: 14px;
 		}
 
 		#heading span{
 			font-weight: bold;
-		}
-
-		#advancedheading span{
-			font-weight: bold;
-		}
-
-
-		#extra-settings #heading {
-			margin-top: 5px;
-			margin-left: 4px;
-		}
-
-		#extra-settings #heading span{
-			font-size: 14px;
-			font-weight: bold;	
-		}
-
-		#advancedheading {
-			margin-top: 0px;
-			margin-left: 4px;
-		}
-
-		paper-icon-button {
-			height: 30px;
-			width: 30px;
-			padding-bottom:5px;
+			--color: green;
+			color:#333a56;
 		}
 
 		paper-button {
-			margin-top: 10px;
+			top:0;
+			--margin-top: 10px;
 		}
+
 		paper-button :active{
 			background-color: blue;
+		}
+
+		.input-span {
+			height:40px;
+		}
+
+		.input-span span { 
+			--margin:0 auto;
+			--height:24px;
+			font-size: 12px;
+		}
+
+		textarea {
+			font-size: 15px;
+		  	color:#02558b;
+		}
+
+		aq-dropdown {
+			--dropdown-height:27px;
+			--dropdown-width:140px;
+			margin-top: -13px;
+			--dropdown-background-color:#c9e4e9;--#f3f9fa;
+		}
+
+		.smallInputBox {
+			width:40px !important;
+			height: 21px !important;
+			margin-left: 5px;
+			margin-top:-1px;
+
+		}
+
+		.smallDropdown{
+			--dropdown-width:90px;
+		}
+
+		#run {
+			z-index: 1002;
+			color:#02558b;
 		}
 
 	</style>
 
 	<template>
 		
-		<div id = 'run'>
-			<h3>Run Settings</h3>
+		<div id = 'run' class="layout vertical">
 			<div id = 'basic-settings' class="layout vertical">
 				<div id='heading'><span>Basic Settings</span></div>
 				<div id='date-settings' class="layout horizontal">
 			
 					<div class="inputbox">	
-						<span>Start:</span> 	
-			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-		      			<input id="date-box" placeholder="Start Date"
-		             	value="{{searchValue::change}}" type="date"
-		             	on-keydown="checkForKeys" on-blur='close'>
+						
+						<span class="input-span">Start Date</span>
+						
+			    		<input id="box" placeholder="Start Date"
+		             	value="{{startDate::change}}" type="date"
+		             	 on-blur='close'>
 		        	</div>
 
 		        	<div class="inputbox">	
-						<span>End:</span> 	
-			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-		      			<input id="date-box" placeholder="Start Date"
-		             	value="{{searchValue::change}}" type="date"
-		             	on-keydown="checkForKeys" on-blur='close'>
+						<span class="input-span">End Date</span> 	
+			    		<input id="box" placeholder="End Date"
+		             	value="{{endDate::change}}" type="date"
+		             	on-blur='close'>
 		        	</div>
-		    	</div>
-
-		    	<div id='capital-settings' class="layout horizontal">
-			    	<div class="inputbox">	
-						<span>Capital:</span> 	
-			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-			  			<input id="capital-box" placeholder="Seed Capital"
-			         	value="{{searchValue::change}}" type="number"
-			         	on-keydown="checkForKeys" on-blur='close'>
-			    	</div>
-
-			    	<div class="inputbox">	
-						<span>Plan:</span> 	
-			    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-			  			<input id="plan-box" placeholder="Investment Plan"
-			         	value="{{searchValue::change}}" type="text"
+		    		<div class="inputbox">	
+						<span class="input-span">Initial Capital</span> 	
+			    		<input id="box" placeholder="Seed Capital"
+			         	value="{{initialCash::change}}" type="number"
 			         	on-keydown="checkForKeys" on-blur='close'>
 			    	</div>
 		    	</div>
 
 			</div>
-	
-			<div id = 'advancedSettings' class="layout vertical">
+
+			<div id = 'advancedSettings' class="layout vertical">		
+				<div id='heading'><span>Advanced Settings</span></div>
+						
+				<div id='extra-settings' class="layout horizontal" >
+
+					<div class="inputbox">	
+						<span class="input-span">Rebalance</span> 	
+			    		<aq-dropdown selected="{{rebalance}}" options="[[rebalanceOptions]]"></aq-dropdown> 	
+			    		
+	        		</div>
+
+	        		<div class="inputbox">	
+						<span class="input-span">Cancel Policy</span> 
+						<aq-dropdown selected="{{cancelPolicy}}"" options="[[cancelOptions]]"></aq-dropdown>	
+		
+	        		</div>
+
+	        		<div class="inputbox">	
+						<span class="input-span">Resolution</span> 	
+			    		<aq-dropdown selected="{{resolution}}" options="[[resolutionOptions]]"></aq-dropdown>	
+		
+	        		</div>
+        		</div>
+
+        		<div id='extra-settings' class="layout horizontal" >
 				
-				<div id='advancedheading'>
-						<span>Advanced Settings</span>
-						<paper-icon-button noink icon="icons:add" on-tap='toggle'>
-						</paper-icon-button>
-				</div>
+		    		<div class="inputbox">	
+						<span class="input-span">Commission</span> 	
+		    			<div class="layout horizontal">
+		    			<aq-dropdown selected="{{commissionModel}}" class="self-start smallDropdown" options="[[commissionOptions]]"></aq-dropdown>
+			    		<input id="box" placeholder="Commission" class="smallInputBox"
+		             	value="{{commissionValue::change}}" type="number" default
+		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
 
-				<iron-collapse id='adcollapse'>
-				
-					<div id='extra-settings' >
-						
-						<div id='heading'><span>Rebalance Settings</span></div>
+	        		</div>
+
+		        	<div class="inputbox">	
+						<span class="input-span">Slippage</span>
 						<div class="layout horizontal">
-							<div class="inputbox">	
-								<span>Rebalance:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="rebalance-box" placeholder="Frequency"
-				             	value="{{searchValue::change}}" type="text"
-				             	on-keydown="checkForKeys" on-blur='close'>
-			        		</div>
+						<aq-dropdown selected="{{slippageModel}}" class="smallDropdown" options="[[slippageOptions]]"></aq-dropdown> 	
+			    		<input id="box" class="smallInputBox" placeholder="Slippage"
+		             	value="{{slippageValue::change}}" type="number"
+		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
 
-				        	<div class="inputbox">	
-								<span>Time:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="dt-box" placeholder="DateTime"
-				             	value="{{searchValue::change}}" type="time"
-				             	on-keydown="checkForKeys" on-blur='close'>
-				        	</div>
-				    	</div>
-			    	</div>
+		        	</div>
 
-					<div id='extra-settings' >
-						
-						<div id='heading'><span>Commission Settings</span></div>
+		        	<div class="inputbox">	
+						<span class="input-span">Investment Plan</span>
 						<div class="layout horizontal">
-							<div class="inputbox">	
-								<span>Model:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="rebalance-box" placeholder="Model"
-				             	value="{{searchValue::change}}" type="text"
-				             	on-keydown="checkForKeys" on-blur='close'>
-			        		</div>
+						<aq-dropdown selected="{{investmentPlan}}" options="[[investmentPlanOptions]]"></aq-dropdown> 	
+		        		</div>
+		    		</div>
+	    		</div>
+    		</div>
 
-				        	<div class="inputbox">	
-								<span>Value:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="dt-box" placeholder="Value"
-				             	value="{{searchValue::change}}" type="number"
-				             	on-keydown="checkForKeys" on-blur='close'>
-				        	</div>
-				    	</div>
-			    	</div>
-
-			    	<div id='extra-settings' >
-						
-						<div id='heading'><span>Slippage Settings</span></div>
-						<div class="layout horizontal">
-							<div class="inputbox">	
-								<span>Model:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="rebalance-box" placeholder="Model"
-				             	value="{{searchValue::change}}" type="text"
-				             	on-keydown="checkForKeys" on-blur='close'>
-			        		</div>
-
-				        	<div class="inputbox">	
-								<span>Value:</span> 	
-					    		<!--iron-icon icon="vaadin-icons:calendar"></iron-icon-->
-				      			<input id="dt-box" placeholder="Value"
-				             	value="{{searchValue::change}}" type="number"
-				             	on-keydown="checkForKeys" on-blur='close'>
-				        	</div>
-				    	</div>
-			    	</div>
-		    	</iron-collapse>
+	    	<div id = 'universeSettings' class="layout vertical">
+				<div id='heading'><span>Universe Settings</span></div>
+							
+				<div id='extra-settings' class="layout horizontal" >
+					<textarea rows="10" cols="71" value="{{universe::input}}" placeholder="Optional list of symbols"></textarea>
+    			</div>
 			</div>
-
-			<paper-button noink raised class="flex">Start Backtest</paper-button>
-		</div>	
+		</div>
+			
 	</template>
 
 	<script>
+		var slippageOptions = [{index:0, value:'Variable'},
+							{index:1, value:'Spread'}];
+
+		var cancelOptions = [{index:0, value:'EOD'},
+							{index:1, value:'GTC'}];
+
+		var commissionOptions = [{index:0, value:'PerTrade'},
+							{index:1, value:'PerShare'}];
+
+		var rebalanceOptions = [{index:0, value:'Daily'},
+							{index:1, value:'Weekly'},
+							{index:2, value:'Monthly'}];
+							
+		var resolutionOptions = [{index:0, value:'Day'}]
+
+		var investmentPlanOptions = [{index:0, value:'All-In'},
+									{index:1, value:'Monthly'},
+									{index:2, value:'Yearly'},
+									{index:3, value:'Weekly'}]
+							
+
 		Polymer({
 			is:'aq-editor-sidebar-run',
 
-			toggle() {
+			properties: {
+
+				startDate: {
+					type: String,
+					value: "",
+				},
+
+				endDate: {
+					type: String,
+					value: "",
+				},
+
+				initialCash: {
+					type:Number,
+					value:1000000,
+				},
+
+				rebalance:{
+					type:String,
+					value: rebalanceOptions[0].value,
+				},
+
+				cancelPolicy: {
+					type:String,
+					value: cancelOptions[0].value,
+				},
+
+				slippageValue: {
+					type: Number,
+					value: 0.5,
+				},
+
+				slippageModel: {
+					type: String,
+					value: slippageOptions[0].value,
+				},
+
+				commissionValue:{
+					type:Number,
+					value: 0.05,
+				},
+
+				commissionModel:{
+					type:String,
+					value:commissionOptions[0].value,
+				},
+
+
+				resolution: {
+					type: String,
+					value: resolutionOptions[0].value,
+				},
+
+				universe:{
+					type:String,
+					value:"",
+				},
+
+				investmentPlan:{
+					type:String,
+					value:investmentPlanOptions[0].value,
+				},
+			},
+
+			ready: function() {
+				this.slippageOptions = slippageOptions;
+				this.cancelOptions = cancelOptions;
+				this.commissionOptions = commissionOptions;
+				this.rebalanceOptions = rebalanceOptions;
+				this.resolutionOptions = resolutionOptions;
+				this.investmentPlanOptions = investmentPlanOptions;
+				this.startDate = this.getTodayDate(365)
+				this.endDate = this.getTodayDate(2);
+			},
+
+			toggle: function() {
 				if (this.$.adcollapse.opened) {
 					this.$.advancedSettings.style.height='35px';
 					
@@ -288,6 +370,41 @@
 				}
 					
 				this.$.adcollapse.toggle();
+			},
+
+
+			getSettings: function() {
+				var settings = {startDate:this.startDate,
+						endDate:this.endDate,
+						initialCash:this.initialCash,
+						rebalance:this.rebalance,
+						cancelPolicy:this.cancelPolicy,
+						slippage:{model:this.slippageModel, value:this.slippageValue},
+						commission:{model:this.commissionModel, value:this.commissionValue},
+						resolution:this.resolution,
+						universe:this.universe,
+						investmentPlan:this.investmentPlan};
+				console.log(settings);
+				return settings;
+			},
+
+			getTodayDate: function(offset){
+				var today = new Date();
+				today.setDate(today.getDate() - offset);
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; //January is 0!
+				var yyyy = today.getFullYear();
+
+				if(dd<10) {
+				    dd='0'+dd
+				} 
+
+				if(mm<10) {
+				    mm='0'+mm
+				} 
+
+				today = yyyy + '-' + mm + '-' + dd;
+				return today;
 			},
 
 		});

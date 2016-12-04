@@ -1,6 +1,8 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-router/app-router.html">
+
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
 
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
@@ -11,9 +13,13 @@
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
+<link rel="import" href='../dialog/aq-sendfeedback-dialog.html'>
+<link rel="import" href='../dialog/aq-invitefriend-dialog.html'>
 
 <dom-module id="aq-dashboard">
-  <template>
+    
+    <style include="iron-flex iron-flex-alignment"></style>
+
     <style>
       
       :host {
@@ -36,44 +42,63 @@
     }
     </style>
     
-    <div id="main">
-      <iron-localstorage
+    
+    <template>
+  
+      <div id="main">
+        <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
+            
+            <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
+                
+            <paper-header-panel id="mainpanel" main fixed mode="seamed">
+              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+
+            <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
+            
+              <app-route path="/" redirect="/main"></app-route>
+               
+              <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+
+              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+            
+              <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
+
+             
+              <app-route path="/about" redirect="/about/home"></app-route>
+
+              <app-route path="/about/:section" element="aq-aboutpage" bindrouter=""></app-route>
+
+              <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
+
+              <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
+
+              <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter=""></app-route>
+
+              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+
+              <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+
+              <!--app-route path="*" redirect ="/main"></app-route-->
+
+            </app-router>
+
+          </paper-header-panel>
+        </paper-drawer-panel>
+
+        <aq-sendfeedback-dialog id='feedbackDialog'>
+        </aq-sendfeedback-dialog>
+
+        <aq-invitefriend-dialog id='inviteDialog'>
+        </aq-invitefriend-dialog>
+
+      </div>
+
+       <iron-localstorage
+          id='localStorage'  
           name="my-app-storage"
           value="{{aimsquant}}"
-          on-iron-localstorage-load-empty="initializeDefaultValue">
-      </iron-localstorage>
-
-      <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width='200px' narrow="{{narrow}}">
-          <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
-      
-          <paper-header-panel id="mainpanel" main fixed mode="seamed">
-            <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
-
-          <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
-          
-            <app-route path="/" redirect="/home"></app-route>
-            <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
-
-            <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
-
-            <app-route path="/home" element="aq-homepage" bindrouter=""></app-route>
-
-            <app-route path="/about" element="aq-aboutpage" bindrouter=""></app-route>
-
-            <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
-
-            <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
-
-            <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter=""></app-route>
-
-            <app-route path="*" element="aq-dashboard-main" bindrouter="" onurlchange=""></app-route>
-
-          </app-router>
-
-        </paper-header-panel>
-      </paper-drawer-panel>
-
-    </div>
+          >
+        </iron-localstorage>
 
   </template>
 
@@ -95,32 +120,6 @@
 
           view: {
             type:String,
-            value:'home',
-          },
-
-          isHomeSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isEditorSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isCommunitySelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isAnalyzeSelected :{
-            type:Boolean,
-            value:false,
-          },
-
-          isHelpSelected :{
-            type:Boolean,
-            value:false,
           },
 
           hasToken: {
@@ -131,11 +130,17 @@
           currentTab:{
             type:Number,
             value:0,
+            observer:'_currentTabChanged',
           },
 
           aimsquant:{
             type: Object,
-            value: {user:''},
+            notify: true,
+          },
+
+          drawerWidth:{
+            type:String,
+            value:"0px",
           },
 
         },
@@ -148,55 +153,91 @@
             'loginClicked':'gotoSignin',
             'signupClicked':'gotoSignup',
             'tabChanged':'changeTab',
+            'signout-action':'onSignOut',
+            'take-feedback-action':'openFeedbackDialog',
+            'send-feedback-action':'sendFeedBack',
+            'enter-invite-action':'openInviteDialog',
+            'send-invite-action':'sendInvite',
+            'myaccount-action':'onMyAccount',
         },
 
-        ready() {
-            var path = ['home','editor','community','analyze','help'];
+        attached: function() {
 
-            for (i in path) {
-                var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
-                if (c && this.view != path[i]) {  
-                      this.view = path[i];
-                      console.log(this.view);
-                      break;   
+            if(this.checkHasToken()) {
+                if(this.URLcontains('/user')) {
+                    this.$$('#router').go('/dashboard');
                 }
             }
+
+            //debugger;
+
+            var lastTab;
+            var x = localStorage.getItem('my-app-storage');
+            
+            if (x) {
+              lastTab = JSON.parse(x).lastTab;
+              console.log("lastTab:" + lastTab);
+            }
+
+            if (lastTab == 1) {
+                var path = ['home','editor','community','analyze','help'];
+
+                for (i in path) {
+                    var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
+                
+                    if (c && this.view != path[i]) {  
+                      
+                        if (path[i] == 'analyze') {
+                            this.view = 'editor';
+                        
+                        } else {
+                            this.view = path[i];  
+                        
+                        }
+
+                      break;   
+                    }
+                }
+            }
+
+            this.currentTab = lastTab;
         },
-        
-        checkHasToken() {
-          
+
+        ready: function() { 
+            
+        },
+
+        checkHasToken: function() {  
+
           var x = localStorage.getItem('my-app-storage');
-          //console.log(x);
-          var user = JSON.parse(x).user;
-        
-          //console.log(user.token);
-          this.hasToken = (user.token) ? true : false;  
+          if (x) {
+            var user = JSON.parse(x).user;
 
-          //console.log(this.hasToken);
+            this.hasToken = (user && user.token) ? true : false;  
+          } else {
+            this.hasToken = false;
+          }
 
-          //return true;
+          //console.log("HasToken: " + this.hasToken);
+          return this.hasToken;
+
+          
         },
 
-        computeShowMenu(narrow, showSidebar) {
+        computeShowMenu: function(narrow, showSidebar) {
           return narrow || !showSidebar;
         },
 
-        computeForceNarrow(narrow, showSidebar) {
+        computeForceNarrow: function(narrow, showSidebar) {
           return !showSidebar;
         },
 
-        computeShowSideBar(narrow, showSidebar){
-          return !showSidebar
+        computeShowSideBar: function(narrow, showSidebar){
+          return !showSidebar;
         },
 
-        viewChanged(newMenu) {
-          this.view = newMenu.detail.menu;
-          /*this.isHomeSelected= this.view=='home';
-          this.isEditorSelected = this.view=='editor';
-          this.isCommunitySelected = this.view=='community';
-          this.isAnalyzeSelected = this.view=='analyze';
-          this.isHelpSelected = this.view=='help';*/
-          
+        viewChanged: function(newMenu) {
+          this.view = newMenu.detail.menu; 
           this.$.router.go('/dashboard/' + this.view);
           
           if(this.narrow){
@@ -204,19 +245,27 @@
           }
         },
 
-        viewChangedOnAction(newAction) {
-          this.$.router.go('/dashboard/' + newAction.detail.action);
+        viewChangedOnAction: function(newAction) {
+          if(newAction.detail.action == "sendfeedback") {
+            this.openFeedbackDialog();
+          } else if(newAction.detail.action == "invitefriend") {
+            this.openInviteDialog();
+          } else {
+            this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
+            this.$.router.go('/dashboard/' + newAction.detail.action);
+          }
+
           if(this.narrow){
             this.$.drawerpanel.closeDrawer();
           }
         },
 
-        openMenu(e) {
+        openMenu: function(e) {
           this.$.drawerpanel.openDrawer();
           this.showSidebar = true;
         },
 
-        closeMenu() {
+        closeMenu: function() {
           this.$.drawerpanel.closeDrawer();
 
           if (this.showSidebar && !this.narrow) {
@@ -224,12 +273,7 @@
           }
         },
 
-        initializeDefaultValue: function () {
-            //localstorage.removeItem('my-app-storage');
-            this.aimsquant = {user:''};
-        },
-
-        changeTab(e) {
+        changeTab: function(e) {
           this.checkHasToken();
           this.showSidebar = (e.detail.tab == 1);
           tab = e.detail.tab;
@@ -237,17 +281,17 @@
             return
           }
 
-          path = ['/home', 
+          path = ['/main', 
                   '/dashboard', 
-                  '/investments', 
+                  //'/investments', 
                   '/about',
-                  '/signin',
-                  '/signup'];
+                  '/user/signin',
+                  '/user/signup'];
 
           this.currentTab = tab;
 
-          if (tab == 1) {
-            this.view = "home";
+          if (this.currentTab == 1) {
+            this.drawerWidth ="200px;"
           }
 
           if (this.URLcontains(path[tab])) {
@@ -255,13 +299,81 @@
           } else {
             this.$$('#router').go(path[tab]);
           }
-
-
           
         },
 
-        URLcontains(path) {
+        _currentTabChanged: function(newTab, oldTab) {        
+          
+          console.log(oldTab);
+          
+          if (!(oldTab + 1)) {
+            return;
+          }
+
+          console.log(oldTab);
+          
+          this.checkHasToken();
+              
+          this.showSidebar = (newTab == 1);  
+          
+          
+          this.aimsquant.lastTab = newTab;
+          this.$.localStorage.save();
+          
+          
+          path = ['/main', 
+                  '/dashboard', 
+                  //'/investments', 
+                  '/about',
+                  '/user/signin',
+                  '/user/signup'];
+
+          if (this.currentTab == 1) {
+            this.drawerWidth ="200px;"
+            this.view = 'home';
+          }
+
+          if (this.URLcontains(path[newTab])) {
+            return;
+          } else {
+            this.$$('#router').go(path[newTab]);
+          }
+          
+        },
+
+        URLcontains: function(path) {
           return (document.URL.match(path)) ? true : false;
+        },
+
+        onSignOut: function() {
+          this.set('aimsquant.user','');
+          this.$.localStorage.save(); 
+          
+          if(!this.checkHasToken()) {
+            this.currentTab = 3;
+          
+          }
+          
+          this.$.router.go('/user/signout');
+        },
+
+        openFeedbackDialog: function() {
+          this.$.feedbackDialog.open();
+        },
+
+        sendFeedBack: function(e){
+
+        },
+
+        openInviteDialog: function() {
+          this.$.inviteDialog.open();
+        },
+
+        sendInvite: function(e) {
+        },
+
+        onMyAccount: function() {
+          this.$.router.go('/user/myaccount');
         },
 
     });

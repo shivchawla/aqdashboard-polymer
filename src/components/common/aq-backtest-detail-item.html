@@ -1,19 +1,20 @@
-<link rel='import' href='../../../bower_components/chart-elements/chart-elements.html'>
-<link rel='import' href='../../../bower_components/paper-toggle-button/paper-toggle-button.html'>
 <link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
 <link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
-<link rel='import' href='../../../bower_components/webcomponentsjs/webcomponents-lite.js'>
-<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
 
-<link rel='import' href='../../../bower_components/iron-collapse/iron-collapse.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./aq-backtest-metric-item.html'>
 
 <dom-module id='aq-backtest-detail-item'>
-
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+  
 	<style> 
-		#chart-line {
-			width:100%%;
+		#lineChart {
+			width:100%;
 			--height:70%;
 		}
 		chart-bar {
@@ -73,29 +74,23 @@
 		  flex-wrap: wrap;
 		}  
 
-		.paper_body{
+		.paper_body {
 			width: 98%;
 		    text-align: -webkit-center;
 		    color:#333a56;
-
+		    border:1px solid teal;
+		    
 		}
+
 		.flex_container{
 			display: flex;
 		}
-		.toggle_tab{
-			display:flex; 
-			justify-content: center;
-			margin-bottom: 20px;
-		}
-		.toggle_name{
-			margin-right: 7px;
-		}
-
+		
 		paper-tabs {
 			--paper-tabs-selection-bar-color:teal;
 
 			--paper-tabs:{
-				height:100%;
+				--height:100%;
 				margin-bottom:10px;
 			};
 		}
@@ -104,34 +99,37 @@
 
 	<template>
 		<div class="layout">
-
 			<paper-card class="flex detail layout vertical paper_body">
 				<div id='detail-header' class="layout horizontal">
-					<span class="self-center">Return Profile</span>
+					<span class="self-center">Equity Curve</span>
 					<div class="flex"></div>	
 					<div class="toggle_tab">
-					<div>
-						<paper-tabs noink selected={{graphType}}>
-							<paper-tab>Line Graph</paper-tab>
-							<paper-tab>Bar Graph</paper-tab>
-						</paper-tabs>
+						<div>
+							<paper-tabs noink selected={{graphType}}>
+								<paper-tab>Equity</paper-tab>
+								<paper-tab>Returns</paper-tab>
+							</paper-tabs>
+						</div>
 					</div>
-				</div>
 				</div>
 				
 				<iron-pages selected={{graphType}}>
-				<nvd3-line 
-		  			id="chart-line" 
-		  			class="bar1" 
-		  			height=300
-		  			show-legend 
-		  			use-interactive-guideline 
-		  			auto-resize 
-		  			no-data="No Data Available!" 
-		  			data=[[lineData]]>
-		  		</nvd3-line>
-			        
+				<template is='dom-if' if="[[lineData]]">
+					<nvd3-line 
+			  			id="lineChart" 
+			  			class="bar1" 
+			  			height=300
+			  			show-legend 
+			  			use-interactive-guideline 
+			  			auto-resize
+			  			no-data="No Data Available!" 
+			  			data=[[lineData]]>
+			  		</nvd3-line>
+		  		</template>
+			      
+			    <template is='dom-if' if="[[barData]]">    
 		  		<nvd3-multi-bar id="chart-1" height="300" class="bar" auto-resize show-legend></nvd3-multi-bar>
+		  		</template>
 	
 		  		</iron-pages>
 			      
@@ -142,12 +140,12 @@
 				</div>
 
 				<div class="wrap flex_container">
-					<template is="dom-repeat" items="{{employees1}}">
-						<div class="layout horizontal flex mdcontainer"> 
-							<aq-metric-item class="flex width_tab" metric-name={{item.metricName}} 
+					<template is="dom-repeat" items="{{metrics}}">
+						<div class="layout horizontal flex mdcontainer">
+							<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}} 
 								metric-value={{item.metricValue}}
 								metric-desc={{item.metricDescription}}>
-							</aq-metric-item>
+							</aq-backtest-metric-item>
 						</div>
 					</template>			
 				</div>
@@ -165,360 +163,141 @@
 					value: true,
 				},
 
+				metrics:Object,
+
 				graphType: {
 					type:Number,
 					value:0,
 				},
 
 				lineData: {
-					type:Object,
-					value: [{
-					  "key":"Hello",
-					  "color": "#ff7f0e",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.09983341664682815
-					    }, {
-					      "x": 2,
-					      "y": 0.19866933079506122
-					    }, {
-					      "x": 3,
-					      "y": 0.29552020666133955
-					    }, {
-					      "x": 4,
-					      "y": 0.3894183423086505
-					    }, {
-					      "x": 5,
-					      "y": 0.479425538604203
-					    }]
-					}], 
+					type:Object, 
 				},
+
+				maxLineData:{
+					type:Number,
+				},
+
+				minLineData:{
+					type:Number,
+				},
+
+				counter:{
+					type:Number,
+					value:0,
+				},
+
 				barData: {
-					type:Object,
-					value: {
-					  "color": "#ff7f0e",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.09983341664682815
-					    }, {
-					      "x": 2,
-					      "y": 0.19866933079506122
-					    }, {
-					      "x": 3,
-					      "y": 0.29552020666133955
-					    }, {
-					      "x": 4,
-					      "y": 0.3894183423086505
-					    }, {
-					      "x": 5,
-					      "y": 0.479425538604203
-					    }]
-					}, 
+					type:Object, 
 				},
 			},
+
+			ready: function() {
+
+				this.lineData = [{
+					  "color": "#ff7f0e",
+					  "keys" : "graph",
+					  "values": [{
+					      "x": 0,
+					      "y": 0
+					    }, {
+					      "x": 1,
+					      "y": 0.099
+					    }, {
+					      "x": 2,
+					      "y": 0.186
+					    }, {
+					      "x": 3,
+					      "y": 0.095
+					    }, {
+					      "x": 4,
+					      "y": 0.389
+					    }, {
+					      "x": 5,
+					      "y": 0.794
+					    }]
+					}];
+			},
+
+			reset: function() {
+				this.lineData = [];
+				this.barData = [];
+				this.counter = 0;	
+			},
+		
+			addLineData: function(data) {
+
+				var linepoint = {};
+            	linepoint.y = data.netvalue.toFixed(2);
+            	linepoint.x = this.counter++; //new Date(e.detail.date);//
+           		
+				if (this.lineData.length) {	
+					this.lineData[0]["values"].push(linepoint);
 					
-			ready: function(){
-				this.employees1 = [
-				            {"metricName":"Total Return", "metricValue":"44.8%", "metricDescription":"Total Return"},
-							{"metricName":"Average Return", "metricValue":"10.7%", "metricDescription":"Average Return"},
-							{"metricName":"Volatility", "metricValue":"14.7%", "metricDescription":"Volatility"},
-							{"metricName":"Sharpe Ratio", "metricValue":"1.9", "metricDescription":"Sharpe Ratio"},
-							{"metricName":"Information Ratio", "metricValue":"0.98", "metricDescription":"Information Ratio"},
+						this.minLineData = Math.round(Math.min(this.minLineData, 0.98*linepoint.y)/10000)*10000;
+
+						this.maxLineData = Math.round(Math.max(this.maxLineData, 1.02*linepoint.y)/10000)*10000;
+
+
+					if (this.lineData[0]["values"].length % 20 == 0) {
+						
+						//console.log(this.minLineData);
+						//console.log(this.maxLineData);
+
+						this.$$('#lineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+						this.$$('#lineChart').refresh();
+						this.addMetricData(data);
+
+					}
+
+					if (this.lineData[0]["values"].length % 500 == 0) {
+						console.log(this.lineData);
+					}
+
+				} else {
+	
+					this.lineData = [{
+					  "key":"Net Value",
+					  "color": "#ff7f0e",
+					  "values": [linepoint]}];
+
+					this.minLineData = linepoint.y;
+					this.maxLineData = Math.round(1.02 * linepoint.y/10000)*10000;  
+					
+					this.$$('#lineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+					
+					this.$$('#lineChart')._chart.forceX([0,501]);
+					
+				}
+
+			},
+
+			addMetricData: function(data) {
+				this.metrics = [{
+				            		"metricName":"Total Return", 
+				            		"metricValue":data.totalreturn.toFixed(2), 
+				            		"metricDescription":"Total Return"
+				            	},
+								{
+									"metricName":"Annual Return",
+									"metricValue":data.annualreturn.toFixed(2),
+									"metricDescription":"Annual Return",
+								},
+							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2), "metricDescription":"Volatility"},
+							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},
+							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
 							{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
-							{"metricName":"Avg. Drawdown", "metricValue":"4.7%", "metricDescription":"Avg. Drawdown"},
-							{"metricName":"Max Drawdown", "metricValue":"6.8%", "metricDescription":"Max Drawdown"},
+							{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2), "metricDescription":"Avg. Drawdown"},
+							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2), "metricDescription":"Max Drawdown"},
 							{"metricName":"Calmar Ratio", "metricValue":"4.3", "metricDescription":"Calmar Ratio"},
 							{"metricName":"Beta", "metricValue":"0.98", "metricDescription":"Beta"},
 							{"metricName":"Stability", "metricValue":"0.88", "metricDescription":"Stability"},
-							{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
-				            
-				        ];
-					},
-			toggleShow: function(){
-					this.hide = !this.hide;
-			},
-			toggleShow1: function(){
-					this.hide = !this.hide;
+							{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},];
+
 			}
-		});
-			</script>
-			<!--script>
-			var count = 0;
-			var count1 = 1;
-			var k;
-			setTimeout(function(){
-		    var el = document.querySelector('.bar');
-		    console.log('dsaasd');
-		    console.log(el);
-		    var el1 = document.querySelector('.bar1');
-
-		    el.data = [{
-		      "key": "Stream0",
-		      "values": [{
-		        "x": "January",
-		        "y": 45.17657645842991837
-		      }, {
-		        "x": "February",
-		        "y": 67.17056295930152043
-		      }, {
-		        "x": "March",
-		        "y": 68.1673443365488047
-		      }, {
-		        "x": "April",
-		        "y": 46.11723298445616456
-		      }, {
-		        "x": "May",
-		        "y": 24.536952569541941
-		      }, {
-		        "x": "June",
-		        "y": 43.3388194660534718
-		      }, {
-		        "x": "July",
-		        "y": 54.36333876908320444
-		      }, {
-		        "x": "August",
-		        "y": 64.3611814096880023
-		      }, {
-		        "x": "September",
-		        "y": 23.1338671870032077
-		      }, {
-		        "x": "October",
-		        "y": 34.17393665276883485
-		      }, {
-		        "x": "November",
-		        "y": 23.10082735638070002
-		      }, {
-		        "x": "December",
-		        "y": 45.11922403030059807
-		      }]
-		    }, {
-		      "key": "Stream1",
-		      "values": [{
-		        "x": "January",
-		        "y": 1.2743446048854001
-		      }, {
-		        "x": "February",
-		        "y": 0.22290307978708743
-		      }, {
-		        "x": "March",
-		        "y": 0.11314237776897834
-		      }, {
-		        "x": "April",
-		        "y": 0.13269772172547029
-		      }, {
-		        "x": "May",
-		        "y": 0.18174409477004588
-		      }, {
-		        "x": "June",
-		        "y": 1.6019917736992826
-		      }, {
-		        "x": "July",
-		        "y": 1.2818868982445681
-		      }, {
-		        "x": "August",
-		        "y": 1.3534659925389787
-		      }, {
-		        "x": "September",
-		        "y": 0.26568487075373903
-		      }, {
-		        "x": "October",
-		        "y": 0.19123676498431127
-		      }, {
-		        "x": "November",
-		        "y": 0.19111333606020012
-		      }, {
-		        "x": "December",
-		        "y": 0.16994137621985175
-		      }]
-		    }, {
-		      "key": "Stream2",
-		      "values": [{
-		        "x": "January",
-		        "y": 4.56961163175497
-		      }, {
-		        "x": "February",
-		        "y": 0.6716892057759072
-		      }, {
-		        "x": "March",
-		        "y": 0.1281580516020834
-		      }, {
-		        "x": "April",
-		        "y": 0.1961314488771337
-		      }, {
-		        "x": "May",
-		        "y": 0.1849392189636947
-		      }, {
-		        "x": "June",
-		        "y": 0.15946723060339954
-		      }, {
-		        "x": "July",
-		        "y": 0.10531361531095998
-		      }, {
-		        "x": "August",
-		        "y": 0.11177708057017365
-		      }, {
-		        "x": "September",
-		        "y": 0.17739074343946024
-		      }, {
-		        "x": "October",
-		        "y": 0.1669708436171928
-		      }, {
-		        "x": "November",
-		        "y": 0.4557125675037702
-		      }, {
-		        "x": "December",
-		        "y": 1.1755390253517568
-		      }]
-		    }];
-
-		    el1.data = [{
-		        "values": [{
-		            "x": 0,
-		            "y": 0
-		        }, {
-		            "x": 1,
-		            "y": 3
-		        }, {
-		            "x": 2,
-		            "y": 2
-		        }, {
-		            "x": 3,
-		            "y": 5
-		        }],
-		        "key": "Line 1",
-		        "color": "#ff7f0e"
-		    }, {
-		        "values": [{
-		            "x": 0,
-		            "y": 1
-		        }, {
-		            "x": 1,
-		            "y": 4
-		        }, {
-		            "x": 2,
-		            "y": 2
-		        }, {
-		            "x": 3,
-		            "y": 3
-		        }],
-		        "key": "Line 2",
-		        "color": "#2ca02c"
-		    }];
-
-		    el1.xAxisLabels = {
-		        "0": "Label 0",
-		        "1": "Label 1",
-		        "2": "Label 2",
-		        "3": "Label 3",
-		        "4": "Label 4"
-		    }
-
-		    
-    console.log(el);
-},5000);
-  </script-->
-	<!-- <script>
-		var toggle = document.querySelector("paper-toggle-button");
-			toggle.addEventListener('change', function () {
-			  if (this.checked) {
-			  	alert('fsd');
-			    // do something if when checked
-			  } else {
-			  	alert('fsd');
-
-			    // do something if not checked
-			  }
-			}); 
-	</script> -->
-</dom-module>
-
-
-<dom-module id='aq-metric-item'>
-	<style>
-		span {
-			margin-top: 5px;
-			text-align: center;
-		}
-		
-		paper-card{
-			width:100%;
-			border-top: 2px solid teal;
-			color:#333a56;
-		}
-
-		#metric {
-			margin-bottom:5px;
-			font-size: 14px;
-		}
-
-		#metric-value {
-			font-size: 20px;
-			color: #333a56;
-			font-weight: bold;
-		}
-
-    	
-
-     	paper-tooltip {
-	        --paper-tooltip-background: teal; 
-	
-      	}
-
-	</style>
-
-    <style is="custom-style">
-      paper-tooltip.giant {
-        --paper-tooltip: {
-          font-size: 15px;
-        }
-      }
-    </style>
-
-	
-	<template>
-		
-		<div class="vertical">
-
-		<paper-card class="flex" id='metric-card'on-mouseenter='onMouseEnter' on-mouseleave='onMouseLeave'>
-			<div id='cont' class="layout vertical flex">
-				<span id='metric-value'>[[metricValue]]</span>
-				<span id='metric'>[[metricName]]</span>
-			</div>
-		</paper-card>
-
-		<paper-tooltip fit-to-visible-bounds class="giant" for='metric-card' offset="0" position="top">{{metricDesc}}</paper-tooltip>
-	</template>
-
-	<script>
-		Polymer ({
-			is:'aq-metric-item',
-			properties: {
-				metricName:{
-					type:String,
-				},
-				metricValue:{
-					type:String,
-				},
-				metricDesc:{
-					type:String,
-				},
-			},	
-
-			/*onMouseEnter() {
-				this.$.collapse.show();
-			},
-
-			onMouseLeave() {
-				this.$.collapse.hide();
-			},*/
 
 		});
 	</script>
+			
 </dom-module>
 

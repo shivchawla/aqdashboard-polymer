@@ -1,9 +1,13 @@
 <link rel='import' href='../common/aq-dropdown.html'>
 <link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
 <link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 
 <dom-module id='aq-nonprogrammer-constraint-item'>
+	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
 	<style>
 		
 		input {
@@ -67,7 +71,7 @@
 		    <input>
 		    
 		    <input id='secondInput'>	   
-		    <paper-icon-button on-tap='onDelete' class="self-center" icon='icons:cancel'></paper-icon-button>
+		    <paper-icon-button on-tap='onDelete' class="self-center" icon='aq-icons:cancel'></paper-icon-button>
 
 		</div>
 		
@@ -89,12 +93,12 @@
 				'dropdown-changed':'onDropdownChange',
 			},
 
-			ready() {
+			ready: function() {
 				this.operatorOptions = operatorOptions_o;
 				this.constraintOptions = constraintOptions_o;
 			},
 
-			onDropdownChange(e) {
+			onDropdownChange: function(e) {
 				if(e.target.id =='operator-type' && e.detail.index == 4) {
 					this.$.secondInput.style.display='inline';
 				} else {
@@ -102,7 +106,7 @@
 				} 
 			},
 			
-			onDelete(e){
+			onDelete: function(e){
 				e.currentTarget.parentElement.remove();
 			},
 			
@@ -274,7 +278,7 @@
 					<div id="constraintContainer">
 						<div class="layout horizontal">
 							<span class="self-center">Want to add constaints?</span>
-							<paper-icon-button noink class="self-center" on-tap='addConstraints' icon="icons:add"></paper-icon-button>
+							<paper-icon-button noink class="self-center" on-tap='addConstraints' icon="aq-icons:add"></paper-icon-button>
 						</div>
 					</div>
 
@@ -309,12 +313,12 @@
 				'dropdown-changed':'onDropdownChange',
 			},
 
-			ready() {
+			ready: function() {
 				this.optimizerOptions = optimizerOptions;
 				this.weightedPortOptions = weightedPortOptions;
 			},
 
-			addConstraints() {
+			addConstraints: function() {
 				console.log('i am here');
 				var x = document.createElement('aq-nonprogrammer-constraint-item');
 				console.log(x);
@@ -322,7 +326,7 @@
 				Polymer.dom(this.$.constraintContainer).appendChild(x);
 			},
 
-			onDropdownChange(e) {
+			onDropdownChange: function(e) {
 				if(e.target.id =='optType-dd') {
 					this.optimizationType = e.detail.index;
 				} else if (e.target.id =='weightscheme-dd') {

@@ -1,15 +1,14 @@
 
-<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
-
 <dom-module id='aq-editor-edit-sidebar-universe'>
+	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
+
 	<style>
 		#container {
 			color:white;
@@ -75,7 +74,7 @@
     
 
 	</style>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>	
+	<style  include="iron-flex iron-positioning"></style>	
 	<template>
 		
 	<div class="flex" id='container'>
@@ -184,7 +183,7 @@
 				},
 			},
 
-			getselection(selected1, selected2) {
+			getselection: function(selected1, selected2) {
 				if (selected2!=-1) {
 					selected1=-1;
 					return selected2 + 3;
@@ -194,22 +193,22 @@
 				}
 			},	
 
-			onTapSection1() {
+			onTapSection1: function() {
 				this.selected2=-1;
 			},
 
-			onTapSection2() {
+			onTapSection2: function() {
 				this.selected1=-1;
 			},
 
-			addScreener(e) {
+			addScreener: function(e) {
 				console.log(this.selectedItem);
 				this.selectedItem = this.$.submenu.selectedValues[0];
 				console.log(e);
 				//this.fire('screener-pressed',{screener: e.currentTarget.getAttribute('menu-panel')});
 			},
 
-			onSelectItem() {
+			onSelectItem: function() {
 				//this.selectedItem = this.$
 			},
 

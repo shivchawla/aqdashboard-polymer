@@ -1,7 +1,10 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-analyze-compare-item-backtest'>
+
+	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
 
 	<style>
 		#bt-card {
@@ -63,7 +66,7 @@
 		Polymer ({
 			is:'aq-analyze-compare-item-backtest',
 
-			selectCheckBox(e) {
+			selectCheckBox: function(e) {
 				if(e.target.id != 'checkboxContainer') {
 					var x = e.currentTarget.children[1].children[0].checked;
 					e.currentTarget.children[1].children[0].checked = !x; 
@@ -148,7 +151,7 @@
 				},
 			},
 
-			toggle() {
+			toggle: function() {
 				this.$.collapse.toggle();
 			},
 		});
@@ -179,9 +182,9 @@
 	<template>
 
 		<div class="layout horizontal" style="height:60px; width:98%"> 
-		    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
+		    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
 				<div class="flex self-center">Compare Backtests</div>	
-				<paper-icon-button noink class="compareButton self-center" title="Compare" icon="icons:chrome-reader-mode" on-tap="onCompare">
+				<paper-icon-button noink class="compareButton self-center" title="Compare" icon="aq-icons:chrome-reader-mode" on-tap="onCompare">
 				</paper-icon-button>
 		</div>	
 
@@ -234,7 +237,7 @@
 				
 			},
 
-			onCompare() {
+			onCompare: function() {
 				this.router.go('/dashboard/analyze/compare/x');
 			},
 

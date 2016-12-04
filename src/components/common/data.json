@@ -1,0 +1,102 @@
+{
+	"result": [
+		{
+					"Strategy": "Strategy 1",
+					
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 0.82,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		},
+		{
+					"Strategy": "Strategy 2",
+
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 2,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		},
+		
+		{			
+					"Strategy": "Strategy 3",
+
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 0.82,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		},
+		{			
+					"Strategy": "Strategy 4",
+
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 0.82,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		},
+		{			
+					"Strategy": "Strategy 5",
+
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 0.82,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		},
+		{			
+					"Strategy": "Strategy 6",
+
+					"Total_Return1": "14.3%",
+		            "Avg_Return1": "3.4%",
+		            "Avg_Volatility": "5.6%",
+		            "Sharpe_Ratio": 0.82,
+		            "Information_Ratio": "0.5",
+		            "Sortino_Ratio": "1.6",
+		            "Avg_Drawdown": "4.5%",
+		            "Max_Drawdown": "5.6%",
+		            "Calmar_Ratio": "2.4",
+		            "Beta": "0.98",
+		            "Stability": "0.88",
+		            "Avg_Concentration": "0.52"
+		}
+	],
+	"size": 200
+}

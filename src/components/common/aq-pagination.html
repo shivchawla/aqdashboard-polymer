@@ -1,0 +1,85 @@
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
+
+<dom-module id='aq-pagination'>
+	
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		#descriptor{
+			min-width:100px;
+			text-align: center;
+		}
+
+	</style>
+	<template>
+		<div id="container" class="layout horizontal justified">
+			<paper-icon-button noink disabled = "[[!isPreviousPageActive(currentPage)]]" on-tap="onFirstPage" icon="vaadin-icons:angle-double-left">
+			</paper-icon-button>
+
+			<paper-icon-button noink disabled = "[[!isPreviousPageActive(currentPage)]]"  on-tap="onPreviousPage" icon="vaadin-icons:angle-left">
+			</paper-icon-button>
+
+			<div id='descriptor' class="self-center">PAGE [[currentPage]]</div>	
+			
+			<paper-icon-button noink disabled = "[[!isNextPageActive(currentPage, pageCount)]]" on-tap="onNextPage" icon="vaadin-icons:angle-right"></paper-icon-button>
+
+			<paper-icon-button noink disabled = "[[!isNextPageActive(currentPage, pageCount)]]" on-tap="onLastPage" icon="vaadin-icons:angle-double-right">
+			</paper-icon-button>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-pagination',
+
+			properties:{
+				currentPage: {
+					type:Number,
+					value:1,
+					notify:true,
+					readOnly:false,
+				},
+
+				pageCount:{
+					type:Number,
+				},
+
+				perPage: {
+					type:Number,
+				},
+			},
+
+			onFirstPage: function() {
+				this.currentPage = 1;
+			},
+
+			onLastPage: function() {
+				this.currentPage = this.pageCount;
+			},
+
+			onPreviousPage: function() {
+				if (this.currentPage > 1) {
+					this.currentPage--;
+				}
+			},
+
+			onNextPage: function() {
+				if (this.currentPage < this.pageCount) {
+					this.currentPage++;
+				}
+			},
+
+			isNextPageActive(currentPage, pageCount){
+				return currentPage < pageCount;
+			},
+
+			isPreviousPageActive(currentPage){
+				return this.currentPage > 1;
+			},
+
+		})
+	</script>
+</dom-module>

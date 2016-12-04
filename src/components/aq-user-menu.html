@@ -1,107 +1,142 @@
-<link rel='import' href='../../bower_components/paper-menu-button/paper-menu-button.html'>
-<link rel='import' href='../../bower_components/paper-item/paper-item.html'>
-<link rel='import' href='../../bower_components/paper-menu/paper-menu.html'>
-<link rel='import' href='../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../bower_components/paper-button/paper-button.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
 <link rel="import" href="./profile-img.html">
 
 <dom-module id='aq-user-menu'>
-    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+    <style  include="iron-flex iron-flex-alignment">
+    </style>
 
     <style>
-        paper-card {
-            width: 350px;
-            --height: 300px;
-            --paper-card {
-                opacity: 1;
-            };
-        }
-
-        paper-card {
-            opacity: 1.0;
-        }
-
+        
         #profile {
             margin: 10px;
             width: 70px;
             height: 70px;
-            background: url('http://placehold.it/350x150/FFC107/000000');
+            background-image: url("../icons/compare.png");
         }
 
         #userid {
             margin-right: 10px;
             margin-bottom: 10px;
+            color: #333a56;
         }
 
         #name {
             font-weight: bold;
         }
 
+        .button {
+            border-bottom: 1px solid #dfdfdf;
+            color: #333a56;
+            width:100%;
+            --background-color: #e5f1f5;
+        }
+
+        paper-button {
+            font-size: 13px;
+        }
+
+        .dropdown-content {
+            --background-color:#ef5f15;
+            min-width:300px;
+        }
+
+        #top {
+            background-color: #99ced4;--teal;
+            border-bottom: 1px solid #dfdfdf;
+        }
+
+        span {
+            font-size: 13px;
+        }
+
     </style>
 
     <template>
-        <paper-menu-button horizontal-offset=-300 vertical-offset=50>
-            <profile-img letter={{letter}} class="dropdown-trigger"></profile-img>
+        <paper-menu-button id = 'userMenu' on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=50>
+            <profile-img letter="[[letter]]" class="dropdown-trigger"></profile-img>
 
-            <paper-card class="dropdown-content">
-                <div id='' class="class-content layout horizontal">
+            <div class="dropdown-content">
+                <div id='top' class="layout horizontal">
 
                     <div id='profile'></div>
                     <div class="flex"></div>
 
-                    <div id='userid' class="layout vertical end-justified">
-                        <div id='name'>{{firstName}} {{lastName}}</div>
-                        <div id='email'>{{email}}</div>
+                    <div id='userid' class="layout vertical self-end">
+                        <div class="self-end" id='name'><span>[[firstName]]</span><span>&nbsp[[lastName]]</span></div>
+                        <div class="self-end" id='email'><span>[[email]]</span></div>
                     </div>
 
                 </div>
 
-                <div class="card-actions">
-                    <div class="layout vertical">
-                        <div>
-                            <paper-button noink>My Account</paper-button>
+                    <div class="layout vertical">        
+                        <div class="button self-start flex">
+                            <paper-button noink on-tap="onMyAccount">My Account</paper-button>
+                        </div>
+                        
+                        <div class="button self-start">
+                            <paper-button noink on-tap="onInvite">Invite a Friend</paper-button>
                         </div>
 
-                        <div>
-                            <paper-button noink>Invite a Friend</paper-button>
+                        <div class="button self-start">
+                            <paper-button noink on-tap="onFeedback">Send us Feedback</paper-button>
                         </div>
-
-                        <div>
-                            <paper-button noink>Lock Screen</paper-button>
-                        </div>
-
-                        <div>
-                            <paper-button noink>Sign Out</paper-button>
+                        <div class="button self-start">
+                            <paper-button noink on-tap="onSignOut">Sign Out</paper-button>
                         </div>
                     </div>
-                </div>
-            </paper-card>
         </paper-menu-button>
 
     </template>
 
     <script>
         Polymer({
-					is: 'aq-user-menu',
-          properties: {
-            firstName: {
-              type: String,
-              value: ''
+			is: 'aq-user-menu',
+            properties: {
+                firstName: {
+                  type: String,
+                  value: '',
+                },
+
+                lastName: {
+                  type: String,
+                  value: '',
+                },
+
+                letter: String,
+                email:String,
+
             },
-            lastName: {
-              type: String,
-              value: ''
-            }
-          },
-          ready: function() {
-					  	var x = localStorage.getItem('my-app-storage');
-              var user = JSON.parse(x).user;
-              this.firstName = user.firstName;
-              this.lastName = user.lastName;
-              this.email = user.email;
-              this.letter = this.firstName[0];
-					},
-				});
+            ready: function() {
+    		  	var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+                this.firstName = user.firstName;
+                this.lastName = user.lastName;
+                this.email = user.email;
+                this.letter = this.firstName[0]+this.lastName[0];
+	        },
+
+            onMyAccount: function() {
+                this.$.userMenu.close();
+                this.fire('myaccount-action');
+            },
+
+            onInvite: function() {
+                this.$.userMenu.close();
+                this.fire('enter-invite-action');
+            },
+
+            onFeedback: function() {
+                this.$.userMenu.close();
+                this.fire('take-feedback-action');
+            },
+
+            onSignOut: function() {
+                this.$.userMenu.close();
+                this.fire('signout-action');
+            },
+		});
     </script>
 
 </dom-module>

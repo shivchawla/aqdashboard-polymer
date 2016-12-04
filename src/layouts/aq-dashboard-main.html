@@ -1,11 +1,7 @@
-<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
-<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
-<link rel='import' href='../../bower_components/iron-selector/iron-selector.html'>
-<link rel='import' href='../../bower_components/paper-toolbar/paper-toolbar.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-router/app-router.html'>
+
 
 <link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
@@ -23,7 +19,9 @@
 <link rel="import" href='../components/community/aq-community-home-searchbar.html'>
 
 <dom-module id="aq-dashboard-main">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  
+  <style include="iron-flex iron-flex-alignment iron-positioning">
+  </style>
 
   <style>
     :host {
@@ -44,12 +42,7 @@
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       --height:100%;
-    }
-
-    paper-drawer-panel {
-      height:100%;
-      background-color: #EFEFEF;--D9D9D9;--#E0F2F1
-
+      background-color:#f4f9fb;--#f2f8fa;--#eff6f9;
     }
 
   </style>
@@ -66,9 +59,11 @@
           <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
 
           <!--app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route-->
-          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
+          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter="" ></app-route>
 
-          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
+          <app-route path="/dashboard/analyze/*/*" element="aq-analyze-main" bindrouter="" ></app-route>
+
+          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route>
 
           <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
          
@@ -80,8 +75,6 @@
 
           <app-route path="/dashboard/comparebacktests" redirect="/dashboard/analyze/compare"></app-route>
 
-          <app-route path="/dashboard/comparemore" redirect="/dashboard/analyze/more"></app-route>
-
           <app-route path="/dashboard/createstrategy" redirect="/dashboard/editor?create=1"></app-route>
 
           <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
@@ -89,19 +82,13 @@
         </app-router>
         </div>
 
-      <!--/paper-header-panel-->
-
-    
-      <!--/div-->
-    <!--/paper-drawer-panel-->
-
   </template>
 
   <script>
   Polymer({
     is:'aq-dashboard-main',
 
-    attached() {
+    attached: function() {
       this.fire('tabChanged',{tab:1});
     },
 

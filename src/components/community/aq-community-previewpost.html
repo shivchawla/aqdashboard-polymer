@@ -1,8 +1,4 @@
 
-<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
-
-<link rel="import" href="../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
@@ -10,9 +6,11 @@
 
 <link rel="import" href="./aq-community-postdetail-header.html">
 
-<style is="custom-style" include="iron-flex iron-positioning"></style>
-
 <dom-module id="aq-community-previewpost">
+    
+    <style  include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
     <style>
         #previewContainer {
             width:90%; 
@@ -26,24 +24,33 @@
             margin-bottom:10px;
         }
 
-        --max-width:5%"
+        paper-button {
+            border: 1px solid #333a56;
+            height:30px;
+            font-size: 13px;
+        }
+
+        #buttons{
+            margin-bottom: 10px;
+        }
+
     </style>
 
     <template>
   
-        <div class="layout vertical" id="previewContainer">
+        <div class="layout vertical flex" id="previewContainer">
             <div class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised  noink on-tap='goBack'>Edit</paper-button>
-                <paper-button raised  noink>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>
             
-            <aq-community-postdetail-header heading="[[heading]]" category="[[category]]" content="[[content]]"></aq-community-postdetail-header>
+            <aq-community-postdetail-header post-header="[[threadData]]"></aq-community-postdetail-header>
             
-            <div class="layout horizontal">
+            <div id='buttons' class="layout horizontal">
                 <div class="flex"></div>
-                <paper-button raised noink on-tap='goBack'>Edit</paper-button>
-                <paper-button raised noink>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>   
 
         </div>        
@@ -55,22 +62,23 @@
 
         properties :{
           
-          header :{
-            type:String,
-           },
-            category:{
-            type:String,
-           },
-            content:{
-              type:String,
-            },
+          threadData:Object,
 
-          },
+        },
+
+        attached: function() {
+            console.log(this.threadData);
         },
         
-        goBack() {
-          this.router.go("/dashboard/community/create");
+        onEdit: function() {
+          this.fire('edit-clicked');
         },
+
+        onSubmit: function() {
+            this.fire('submit-clicked');
+        },
+
+
       });
     </script>
 

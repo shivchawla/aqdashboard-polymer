@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
@@ -10,58 +11,132 @@
 <link rel="import" href="./aq-help-marked-item.html">
 
 <dom-module id="aq-help-home">
-  <style is="custom-style" include="iron-flex iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
    <style>
     #panel {
       height:100%;
     }
 
     #mainPanel {
-      width: 90%;
       margin: 0 auto;
+      border-right: 1px solid;
       background-color: white;
+      color: #24293d;
+    }
+    
+    .selectableCategories{
+      cursor: pointer;
+    }
+    
+    .selectableCategories:hover{
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .searchCategories{
+      --width: 90%;
+      --margin-left:0%;
+      padding-left:10px;
+      padding-right:10px;
+      background-color: white;
+    }
+
+    #drawerPanel {
+      background-color: #333a56;
+    }
+
+    paper-listbox {
+      background-color: #333a56;
+    }
+    
+    paper-item {
+      --paper-item-min-height:32px;
+      --paper-item: {
+        height:32px;
+        font-size: 16px;
+        color:white;
+      }
+      
+      --paper-item-selected:{
+        font-weight: bold;
+      }
+
+    }
+
+    .Small {
+      padding-left: 20px;
+      font-size:15px;
+     }
+
+    .Mini {
+      padding-left: 30px;
+      font-size:14px;
+    }
+
+     .SMini {
+      padding-left: 40px;
+      font-size:13px;
+      font-style: italic;
+    }
+
+    
+    #autoScrollSpy div {
+        padding-top:20px;
+        padding-bottom: 5px;
+        margin-left: 30px;
+        margin-right:30px;
+        --margin-bottom:40px;
+        --padding: 150px;
+        --border-bottom: 1px solid grey;
+        transition: background 0.2s;
+    }
+
+    #top {
+      padding-top: 300px;
+    }
+
+    #bottom{
+      padding-bottom: 500px;
     }
 
   </style>
  
   <template>
-      <style>
-        #autoScrollSpy div {
-          padding: 150px;
-          border-bottom: 1px solid grey;
-          transition: background 0s;
-        }
-      </style>
 
       <paper-drawer-panel id="drawerPanel" right-drawer>
+
           <paper-header-panel main id="mainPanel" mode="seamed">
+              
+              <div id='top'></div>
+              
               <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
-                <aq-help-marked-item help-text="# Signals
-The basic currency of Reactive programs is the signal. `Signal{T}` represents a time-varying value of type `T`.
+                <template is="dom-repeat" items="{{itemsHelpContent}}">      
+                  <div id='content'> 
+                  
+                  <!--img src="{{item.img_src}}" height="400" width="400"-->
+                  
+                  <aq-help-marked-item help-text = "[[item.text]]">
+                  </aq-help-marked-item></div>
 
-A signal can be created using the `Signal` constructor, and must be given an inital value.
-
-```
-#E.g.
-julia> x = Signal(0)
-Signal{Int64}(0, nactions=0)
-function func()
-  return x
-end```"></aq-help-marked-item>
+                </template>
               </iron-auto-scroll-spy>
-          </paper-header-panel>
 
-          <paper-header-panel drawer mode="seamed">
-              <paper-listbox selected="{{scrollSelected}}">         
-                  <paper-item>Section A</paper-item>
-                  <paper-item>Section B</paper-item>
-                  <paper-item>Section C</paper-item>
-                  <paper-item>Section D</paper-item>
-                  <paper-item>Section E</paper-item>
-                  <paper-item>Section F</paper-item>
-                  <paper-item>Section G</paper-item>
-                  <paper-item>Section H</paper-item>
-                
+              <div id='bottom'></div>
+          </paper-header-panel>
+          
+          <iron-ajax url=""
+            handle-as="json"
+            id="getHelpContentQuery"
+            on-response="onGetHelpContentSuccess"
+            debounce-duration="300">
+          </iron-ajax>
+
+          <paper-header-panel id='drawerPanel' drawer mode="seamed">
+            <paper-input class="searchCategories" label="Search Help" on-keyup="search" id="search_input"></paper-input>
+              <paper-listbox selected="{{scrollSelected}}">   
+                <template is="dom-repeat" items="{{categoriesArray}}">      
+                  <paper-item class$="selectableCategories [[item.Category.size]]">[[item.Category.value]]</paper-item>
+                </template>
               </paper-listbox>
           </paper-header-panel>
 
@@ -74,12 +149,51 @@ end```"></aq-help-marked-item>
     Polymer ({
       is: 'aq-help-home',
 
-      ready() {
-        
-         this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
+      properties:{
+        itemsHelpContent: {
+          type: Object,
+        },
+
+        categoriesArray:{
+          type: Array,
+          value:[],
+        },
       },
 
+      ready: function() {
+         this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
+         this.$.getHelpContentQuery.url = "http://localhost:8080/src/components/help/data_help.json";
+         this.$.getHelpContentQuery.generateRequest();
+      },
+
+      search: function(){
+        var search = this.$$('#search_input').value;
+        search = search.toLowerCase();
+        var parent = this;
+        var categoriesClass = Polymer.dom(this.root).querySelectorAll('.selectableCategories');
+        var text;
+        for(var i=0; i<this.categoriesArray.length;i++){
+          text = parent.categoriesArray[i].Category.value.toLowerCase();
+          if(text.indexOf(search) > -1){
+            categoriesClass[i].style.display="block";
+            categoriesClass[i].style.lineHeight="3";
+          }
+          else{
+            categoriesClass[i].style.display="none";
+          }
+        }
+      },
+
+      onGetHelpContentSuccess: function(e){
+        this.set('itemsHelpContent', e.detail.response.Help);
+        var array = []
+        for (i in e.detail.response.Help){
+          array.push({"Category":e.detail.response.Help[i].header});
+        }
+
+        this.set('categoriesArray', array); 
+
+      }
     });
   </script>
-
 </dom-module>

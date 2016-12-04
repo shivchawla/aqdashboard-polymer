@@ -1,0 +1,316 @@
+
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+
+<dom-module id='aq-analyze-backtest-comparison-item'>	
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>	
+		chart-line {
+			width: 50%;
+			height:30%;
+		}
+
+		chart-bar {
+			width: 50%;
+			height:30%;
+		}
+
+		aq-analyze-home-metric-item {
+			height:50px;
+		}
+
+		paper-icon-button {
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		--color:#188364; 
+		}
+
+		#backButton {
+			margin:auto 0;
+			outline: none !important;
+		}
+
+		.head span {
+			--font-weight: bold;
+			--margin-top: 20px;
+			font-size: 18px;
+		}
+
+		.head {
+			background-color: teal;
+			text-align: center;
+			height: 30px;
+		}
+
+		span {
+			text-align: center;
+			margin-top:15px;
+		}
+
+		.paper_align{
+			position: absolute;
+		    top: 20px;
+		    right: 7px;
+		}
+
+		.pages_select{
+			text-align: -webkit-center;
+			margin: 30px 0 30px 10px;
+		}
+
+		vaadin-grid{
+			--vaadin-grid-header-row-height : 78px;
+			--vaadin-grid-row-cell: blue;
+		}
+
+		#table_details__comparison{
+			overflow: scroll;width: 100%;
+		}
+		
+		
+		.sub_header{
+			display: flex;
+			justify-content: space-between;
+		}
+		
+		.vertical-textGraphs {
+			transform: rotate(270deg);
+			margin-right: -40px;	
+		}
+
+		.horizontal-textGraphs {
+			margin-top: -40px; 
+		}
+
+		#comparison-return {
+			margin-top:0px;
+		}
+
+		paper-tab:hover{
+    		font-weight: bold;
+    		font-size:110%;
+    	}
+
+    	paper-tabs {
+    		--paper-tabs-selection-bar-color: teal;
+    	}
+
+	</style>
+
+	<template>	
+
+		<div class="goBackButton layout horizontal">
+            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+            </paper-icon-button>
+            <p class="self-center">Back to All Backtests</p>
+      	</div>
+		
+		<div id='comparison-return'>
+			<div class="sub_header">
+				<paper-tabs noink selected={{graphType1}}>
+				<template is='dom-if' if="[[lineData]]">
+					<paper-tab>Line Graph</paper-tab>
+					</template>
+					<template is='dom-if' if="[[barData]]">
+					<paper-tab>Bar Graph</paper-tab>
+					</template>
+					<paper-tab>Comparison Table</paper-tab>
+				</paper-tabs>
+			</div>
+			<iron-ajax auto
+				  id="ajaxBarGraph"
+				  url=""
+		          handle-as="json"
+		          on-response="handleResponseBarGraph">
+		          
+		    </iron-ajax>
+			<iron-ajax auto
+				  id="ajaxLineGraph"
+				  url=""
+		          handle-as="json"
+		          on-response="handleResponseLineGraph">
+		          
+		    </iron-ajax>
+		          
+			<iron-pages class="pages_select" selected={{graphType1}}>
+				
+				<template is='dom-if' if="[[lineData]]">			 
+			  		<div class="layout horizontal">
+						<div class="vertical-textGraphs self-center">
+			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
+			  			</div>	
+						<div>
+							<nvd3-line 
+					  			id="chart-line" 
+					  			class="bar1" 
+					  			height=460
+					  			width=900
+					  			show-legend 
+					  			use-interactive-guideline 
+					  			auto-resize 
+					  			no-data="No Data Available!" 
+					  			data=[[lineData]]>
+					  		</nvd3-line>
+					  		<div class="horizontal-textGraphs self-center">
+					  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
+					  		</div>
+				  		</div>
+			  		</div>
+			  	</template>	
+		  		
+		  		<template is='dom-if' if="[[barData]]">	
+		  		<div class="layout horizontal">
+					<div class="vertical-textGraphs self-center">
+		  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
+		  			</div>	
+					
+					<div>
+						<nvd3-multi-bar 
+				  			id="chart-bar" 
+				  			class="bar" 
+				  			height=460
+				  			width=900
+				  			show-legend 
+				  			use-interactive-guideline 
+				  			auto-resize 
+				  			no-data="No Data Available!" 
+				  			data=[[barData]]>
+				  		</nvd3-multi-bar>
+		  				<div class="horizontal-textGraphs self-center">
+				  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
+				  		</div>
+			  		</div>
+		  		</div>
+		  		</template>
+		  		
+		  			<div style="width:100%">
+			  		<vaadin-grid id="table_details__comparison">
+					  <table>
+					    <colgroup class="table_style">
+					      <col name="Strategy Name" sortable/>
+					      <col name="Total Return1" sortable/>
+					      <col name="Avg Return" sortable/>
+					      <col name="Avg Volatility" sortable/>
+					      <col name="Sharpe Ratio" sortable/>
+					      <col name="Information Ratio" sortable/>
+					      <col name="Sortino Ratio" sortable/>
+					      <col name="Avg Drawdown" sortable/>
+					      <col name="Max Drawdown" sortable/>
+					      <col name="Calmar Ratio" sortable/>
+					      <col name="Beta Value" sortable/>
+					      <col name="Stability" sortable/>
+					      <col name="Avg Concentration" sortable/>
+					    </colgroup>
+					  </table>
+					</vaadin-grid>
+					</div>
+	  		</iron-pages>
+		</div>
+		
+		<div id='comparison-risk' class = "layout horizontal flex">
+			<iron-ajax auto url="../common/data.json"
+	          handle-as="json"
+	          on-response="handleResponseGrid"
+	          debounce-duration="300"></iron-ajax>			
+		</div>	
+			
+	</template>
+	<script>
+		Polymer ({
+			is:'aq-analyze-backtest-comparison-item',
+			
+			properties:{
+				graphType1: {
+					type:Number,
+					value:0,
+				},
+				barData: {
+					type: Object,
+				},
+				lineData: {
+					type: Object,
+				},
+				x_lineData:{
+					type: String,
+				},
+				x_barData:{
+					type: String,
+				},
+				y_lineData:{
+					type: String,
+				},
+				y_barData:{
+					type: String,
+				},
+
+				showComparison:Boolean,
+				
+			},
+
+			ready: function(){
+				
+				this.$.ajaxBarGraph.url = "http://localhost:8080/src/components/common/data3.json";      	
+	        	this.$.ajaxLineGraph.url = "http://localhost:8080/src/components/common/data1.json";
+			},
+
+			handleResponseLineGraph: function(e){
+
+				this.set('lineData',e.detail.response);
+			    this.set('x_lineData', e.detail.response[0].x_axis);
+		        this.set('y_lineData', e.detail.response[0].y_axis);
+			},
+
+			handleResponseBarGraph: function(e){
+
+				this.set('barData',e.detail.response);
+				this.set('x_barData', e.detail.response[0].x_axis);
+		        this.set('y_barData', e.detail.response[0].y_axis);
+			},
+
+			goBackAllBacktests: function() {
+	          	this.fire('comparison-off');
+	        },
+
+			handleResponseGrid: function(e){
+				var items =[];
+				var grid = this.$.table_details__comparison;
+
+				console.log(e.detail.response.result.length);
+				for(var i=0; i<e.detail.response.result.length;i++){
+					items.push({
+			            'Strategy Name': e.detail.response.result[i].Strategy,
+
+			            'Total Return1': e.detail.response.result[i].Total_Return1,
+			            'Avg Return': e.detail.response.result[i].Avg_Return1,
+			            'Avg Volatility': e.detail.response.result[i].Avg_Volatility,
+			            'Sharpe Ratio': e.detail.response.result[i].Sharpe_Ratio,
+			            'Information Ratio': e.detail.response.result[i].Information_Ratio,
+			            'Sortino Ratio': e.detail.response.result[i].Sortino_Ratio,
+			            'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
+			            'Max Drawdown': e.detail.response.result[i].Max_Drawdown,
+			            'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
+			            'Beta Value': e.detail.response.result[i].Beta,
+			            'Stability': e.detail.response.result[i].Stability,
+			            'Avg Concentration': e.detail.response.result[i].Avg_Concentration
+
+			        });
+			        
+			        console.log('items');
+				}
+				
+				grid.items = items;
+				grid.frozenColumns = 1;
+
+			}
+		});
+	</script>
+</dom-module>

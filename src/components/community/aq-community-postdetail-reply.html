@@ -1,17 +1,50 @@
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel='import' href='../../icons/aq-iconset.html'>
+
 <link rel="import" href="../aq-markdown-editor.html">
 
 <dom-module id="aq-community-postdetail-reply">
 
-  <template>
-      <div id="replybox" class="flex layout vertical">
+   <style  include="iron-flex iron-flex-alignment iron-positioning">
+   </style>
+   
+  <style>
 
-        <aq-markdown-editor id="editor" placeholder="Write a reply"></aq-markdown-editor>
-        <div class="layout horizontal">
+    #attachButton {
+        margin-bottom: -40px;
+        margin-right:5px;
+    }
+
+    #attachButton paper-button {
+        border:none !important;
+    }
+
+    paper-button {
+        border: 1px solid #333a56;
+        height:30px;
+        font-size: 13px;
+    }
+
+    #buttons{
+        margin-bottom: 10px;
+    }
+
+
+  </style>
+
+  <template>
+      <div id='attachButton' class="layout horizontal flex">
           <div class="flex"></div>
-          <paper-button raised noink>Preview</paper-button>
-          <paper-button raised noink on-tap="postThread">Reply</paper-button>
+          <paper-button class="self-end" raised noink on-tap='attachSelected'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
+      </div>
+        
+      <div id="replybox" class="flex layout vertical">
+        <aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>
+        <div class="layout horizontal" id='buttons'>
+            <div><i>[[error]]</i></div>
+            <div class="flex"></div>
+            <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
+            <paper-button raised noink on-tap="postThread">Reply</paper-button>
         </div>
       </div>
       
@@ -24,7 +57,6 @@
           handle-as="json" 
           on-response="onPostReplyResponse"
           on-error="onPostReplyError" 
-          last-response="{{ajaxResponse}}" 
           debounce-duration="300">
       </iron-ajax>
   </template>
@@ -33,6 +65,15 @@
     Polymer({
       is: 'aq-community-postdetail-reply',
 
+      properties:{
+        
+        header:Object,
+        error: String,
+        threadid: String,
+        threadData: Object,
+
+      },
+      
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
@@ -50,17 +91,15 @@
             return;
           }
           
-          const markdownText = this.$.editor.getContent();
-          
-          if (markdownText.length>0) {
-            this.threadData = {
-                "markdownText": markdownText
-            };
+          if(this.processInput()) {
             this.$.postThreadQuery.generateRequest();
+          } else {
+              this.error = "Cannot post an empty reply. Please create a valid reply.";
           }
+          
       },
 
-      onPostThreadResponse: function(e) {
+      onPostReplyResponse: function(e) {
         var replies = e.detail.response.replies;
         if (replies.length > 0) {
           this.fire('reply-added',{reply:replies[replies.length - 1]});  
@@ -71,9 +110,42 @@
         console.log(e);
       },
 
-      clearEditor() {
+      clearEditor: function() {
         this.$.editor.setContent("");
       },
+
+      processInput: function() {
+          const markdownText = this.$$('#editor').getContent();
+          this.threadData = {
+              "markdownText": markdownText,
+              "user":{"firstName":"Shiv","lastName":"Chawla"},
+              "updatedAt":Date(),
+          };
+
+          if(this.threadData["title"]!="" && 
+              this.threadData["category"]!="" &&
+              this.threadData["markdownText"]!=""
+            ) {
+            this.error = "";
+            return true;
+            
+          } else {
+            
+            return false;
+          }
+      },
+
+      onPreview: function() { 
+          this.preview = this.processInput();
+          if(!this.preview) {
+              this.error = "No preview available for empty reply. Please create a valid reply.";
+          }
+      },
+
+      onEdit: function() {
+          this.preview = false;
+      },
+
 
     });
   </script>
