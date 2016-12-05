@@ -54,7 +54,7 @@
 	
 		#detail-header {
 			margin-top:10px;
-			margin-bottom: 5px;
+			margin-bottom: 20px;
 			margin-left:10px;
 			font-weight: bold;
 		}
@@ -128,6 +128,7 @@
 			      
 			    <template is='dom-if' if="[[barData]]">    
 			  		<nvd3-multi-bar 
+			  			id="barChart" 
 	  				 	height="300" 
 	  				 	class="bar" 
   					 	auto-resize 
@@ -204,7 +205,8 @@
 				},
 
 				barData: {
-					type:Object, 
+					type:Object,
+					value:[], 
 				},
 
 				count:{
@@ -217,6 +219,67 @@
 
 			ready: function() {
 
+
+				this.metrics = [{
+				            		"metricName":"Total Return", 
+				            		"metricValue":"-", 
+				            		"metricDescription":"Total Return"
+				            	},
+								{
+									"metricName":"Annual Return",
+									"metricValue":"-",
+									"metricDescription":"Annual Return",
+								},
+								{
+									"metricName":"Volatility",
+								 	"metricValue":"-", 
+								 	"metricDescription":"Volatility"
+								},
+								{
+									"metricName":"Sharpe Ratio", 
+									"metricValue":"-",
+									"metricDescription":"Sharpe Ratio"
+								},
+								{
+									"metricName":"Information Ratio",
+									"metricValue":"-",
+								 	"metricDescription":"Information Ratio"
+								},
+								{	
+									"metricName":"Sortino Ratio",
+									"metricValue":"-",
+									"metricDescription":"Sortino Ratio"
+								},
+								{	
+									"metricName":"Avg. Drawdown",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Avg. Drawdown"
+						 	 	},
+								{
+									"metricName":"Max Drawdown",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Max Drawdown"
+						 	 	},
+								{	
+									"metricName":"Calmar Ratio",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Calmar Ratio"
+						 	 	},
+								{
+									"metricName":"Beta",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Beta"
+						 	 	},
+								{
+									"metricName":"Stability",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Stability"
+						 	 	},
+								{
+									"metricName":"Avg. Concentration", 
+									"metricValue":"-",
+								 	"metricDescription":"Avg. Concentration"
+							 	},];
 				/*this.lineData = [{
 					  "color": "#ff7f0e",
 					  "keys" : "graph",
@@ -360,20 +423,20 @@
 			addMetricData: function(data) {
 				this.metrics = [{
 				            		"metricName":"Total Return", 
-				            		"metricValue":data.totalreturn.toFixed(2), 
+				            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
 				            		"metricDescription":"Total Return"
 				            	},
 								{
 									"metricName":"Annual Return",
-									"metricValue":data.annualreturn.toFixed(2),
+									"metricValue":data.annualreturn.toFixed(2).toString()+'%',
 									"metricDescription":"Annual Return",
 								},
-							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2), "metricDescription":"Volatility"},
+							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
 							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},
 							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
 							{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
-							{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2), "metricDescription":"Avg. Drawdown"},
-							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2), "metricDescription":"Max Drawdown"},
+							{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
+							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
 							{"metricName":"Calmar Ratio", "metricValue":"4.3", "metricDescription":"Calmar Ratio"},
 							{"metricName":"Beta", "metricValue":"0.98", "metricDescription":"Beta"},
 							{"metricName":"Stability", "metricValue":"0.88", "metricDescription":"Stability"},

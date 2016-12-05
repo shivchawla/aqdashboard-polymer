@@ -81,7 +81,6 @@
 
 <template>
     <iron-ajax
-          auto  
           url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
           method='GET'
           id='getStrategyQuery'
@@ -252,7 +251,8 @@
       },
 
       attached: function() {
-        this.fire('close-menu');
+
+        
       },
 
       listeners: {
@@ -272,14 +272,20 @@
         'backClicked-backtest':'toggleIsRunning',
       },
 
-      ready: function() {
+      attached: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
-          if (user.token) {
+    
+          if (user && user.token && user.token!="") {
             this.header = {
               "aimsquant-token": user.token,
-              "Content-Type": "application/json"};  
+              "Content-Type": "application/json"}; 
+              this.$.getStrategyQuery.generateRequest(); 
+          } else {
+            this.router.go('/user/signin',{lastRequest:'/dashboard/editor/'+this.strategyId});
           }
+
+          this.fire('close-menu');
       },
 
       _narrowChanged: function(newVal, oldVal) {

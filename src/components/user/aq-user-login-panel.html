@@ -286,12 +286,12 @@
           >
         </iron-localstorage-->
 
-          <iron-localstorage
+          <!--iron-localstorage
             id='localStorage'
             name="my-app-storage"
-            value="{{aimsquant}}"
-            on-iron-localstorage-load-empty="initializeDefaultValue">
-        </iron-localstorage>
+            value="{{aimsquant}}">
+            
+        </iron-localstorage-->
 
     </template>
 
@@ -503,7 +503,7 @@
             attached: function() {
 
                 if(this.checkHasToken()) {
-                    console.log("Came Here: But why?");
+                    //console.log("Came Here: But why?");
                     this.router.go('/dashboard');
                     return;
                 }
@@ -541,9 +541,9 @@
             },
             
 
-            initializeDefaultValue: function() {
+            /*initializeDefaultValue: function() {
                 this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
-            },
+            },*/
 
             computeSigninBody: function(email, password) {
                 return {email: email, password: password}
@@ -752,11 +752,17 @@
 
             handleLoginResponse: function(data) {
             
-                this.aimsquant.user = '';    
-                this.set('aimsquant.user', data.detail.response);
+                this.fire('update-token',{user:data.detail.response});
+                ////console.log("User Before: ");
+                ////console.log(localStorage);
+                /*this.set('aimsquant.user', data.detail.response);
                 this.$.localStorage.save();
+                //console.log(this.aimsquant);
+                //console.log("User After: ")
+                //console.log(localStorage);*/
+
                 this.actionSucceeded();
-                this.router.go('/dashboard/home');
+                //this.router.go('/dashboard/home');
             },
 
             handleLoginError: function(data) {
