@@ -117,7 +117,8 @@
           <template is='dom-if' if='[[isRunning]]'>
             <aq-editor-edit-backtest-screen is-running="{{isRunning}}" 
                                             id='backtestScreen'
-                                            narrow="[[narrow]]">
+                                            narrow="[[narrow]]"
+                                            backtest-id ="[[activeBacktestId]]">
             </aq-editor-edit-backtest-screen>
           </template>
 
@@ -246,6 +247,8 @@
 
         runStrategyData:Object,
 
+        activeBacktestId:String,
+
       },
 
       attached: function() {
@@ -280,7 +283,7 @@
       },
 
       _narrowChanged: function(newVal, oldVal) {
-        if (!newVal) {
+        if (!newVal && !this.isRunning) {
           this.$$('#codeEditorPanel').style.display = 'block';
         }
       },
@@ -322,7 +325,7 @@
 
           var x = this.$$('#codeEditorPanel').style.display;
 
-          if(x=='none') {
+          if(x=='none' && !this.isRunning) {
             this.$$('#codeEditorPanel').style.display = 'block';
           } else {
             this.$$('#codeEditorPanel').style.display = 'none';
@@ -377,10 +380,9 @@
         if(this.runSwitch == 1) {
           //reset the run swtch to off
           this.runSwitch = 0;
-
           //now run the saved strategy
           this.$.runStrategyQuery.generateRequest();
-          this.isRunning = true;
+          //this.isRunning = true;
         }
       },
 
@@ -419,14 +421,18 @@
                   "plan": "string"};
 
         this.runSwitch = 1;
-        this.selectedSidebar = 2;
         this.saveStrategy(e);  
       },
 
       onStrategyExecutionResponse: function(data) {
-        console.log("Run: Success");
-        console.log(data);
         
+        //Before execution starts, backtestId handle is sent from the backend
+        console.log(data.detail.response);
+        this.activeBacktestId = data.detail.response._id;
+        this.fire('execute-backtest', {backtestId:this.activeBacktestId});
+        this.isRunning  = true;
+        console.log("Run: Success");
+              
         //This get back the created backtest object with just the settings,
         //HAS no output
       },

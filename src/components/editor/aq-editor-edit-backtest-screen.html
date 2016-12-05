@@ -31,16 +31,17 @@
 
 	      	</div>
 
-	      	<aq-backtest-detail-item id='backtestDisplay'></aq-backtest-detail-item>
+	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active=1 id='backtestDisplay'>
+	      	</aq-backtest-detail-item>
 			
-	      	<web-socket 
+	      	<!--web-socket 
 	      		url="ws://localhost:8000"
 	            id="webSocketConn"
 	            json
 	            on-open="_onOpen"
 	            on-message="_onMessage"
 	            on-error="_onError">
-	    	</web-socket>
+	    	</web-socket-->
 		</div>
 
 	</template>
@@ -61,29 +62,33 @@
 					type:Boolean,
 					value:true,
 				},
+
+				backtestId:String,
 			},
 
 			_isRunningChanged: function(newValue, oldValue) {
 				if (newValue) {
 					this.debounce('start', function() {
 						this.start();
-					}, 2000);	
+					}, 2000);
+
 				} else {
 					this.stop();
 				}
 			},
 
 			start: function() {
-				console.log("Starting Websocket:");	
-        		this.$.webSocketConn.open();
+				//this.$.detailItem.fetchData();
+				//console.log("Starting Websocket:");	
+        		//this.$.webSocketConn.open();
 			},
 
 			stop: function() {
-				console.log("Stopping Websocket");	
-        		this.$.webSocketConn.close();
+				//console.log("Stopping Websocket");	
+        		//this.$.webSocketConn.close();
 			},
 
-			_onOpen: function(e){
+			/*_onOpen: function(e){
 		        console.log("Open");
 		        this.$.backtestDisplay.reset();
 		        this.$.webSocketConn.send("run");
@@ -103,10 +108,11 @@
 
       		_onClose: function(e) {
         		console.log("Close:");
-      		},
+      		},*/
 
 			onBack: function() {
 				this.isRunning = false;
+				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 				//this.fire('backClicked-backtest');
 			},
 

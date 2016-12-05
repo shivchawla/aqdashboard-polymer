@@ -2,6 +2,8 @@
 
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/web-socket/web-socket.html'>
+<!--link rel='import' href='../../bower_components/iron-signals/iron-signals.html'-->
 
 
 <link rel="import" href="../layouts/aq-dashboard-main.html">
@@ -93,6 +95,15 @@
 
       </div>
 
+      <web-socket 
+          url="ws://localhost:3002"
+          id="webSocketConn"
+          json
+          on-open="_onOpen"
+          on-message="_onMessage"
+          on-error="_onError">
+      </web-socket>
+
        <iron-localstorage
           id='localStorage'  
           name="my-app-storage"
@@ -143,6 +154,15 @@
             value:"0px",
           },
 
+          token:{
+            type: String,
+          },
+
+          backtests:{
+            type:Object,
+            value:{},
+          },
+
         },
 
         listeners: {
@@ -159,6 +179,9 @@
             'enter-invite-action':'openInviteDialog',
             'send-invite-action':'sendInvite',
             'myaccount-action':'onMyAccount',
+            'execute-backtest':'requestExecution',
+            'subscribe-data':'onSubscription',
+            'unsubscribe-data':'onUnsubscription',
         },
 
         attached: function() {
@@ -167,9 +190,9 @@
                 if(this.URLcontains('/user')) {
                     this.$$('#router').go('/dashboard');
                 }
-            }
 
-            //debugger;
+                this.$.webSocketConn.open();
+            }
 
             var lastTab;
             var x = localStorage.getItem('my-app-storage');
@@ -216,6 +239,10 @@
             this.hasToken = (user && user.token) ? true : false;  
           } else {
             this.hasToken = false;
+          }
+
+          if (this.hasToken) {
+            this.token = user.token;
           }
 
           //console.log("HasToken: " + this.hasToken);
@@ -304,13 +331,13 @@
 
         _currentTabChanged: function(newTab, oldTab) {        
           
-          console.log(oldTab);
+          //console.log(oldTab);
           
           if (!(oldTab + 1)) {
             return;
           }
 
-          console.log(oldTab);
+          //console.log(oldTab);
           
           this.checkHasToken();
               
@@ -374,6 +401,84 @@
 
         onMyAccount: function() {
           this.$.router.go('/user/myaccount');
+        },
+
+        _onOpen: function(e){
+            console.log("Open");
+            //this.$.backtestDisplay.reset();
+            //this.$.webSocketConn.send("run");
+        },
+
+        _onMessage: function(e) {   
+
+            //console.log(this.backtestId);
+            //console.log(e.detail);
+            var backtestId = this.backtestId;
+
+            this.backtests[backtestId].data.push(e.detail);
+            
+            var bulksent = this.backtests[backtestId].bulksent;
+            var subscription = this.backtests[backtestId].subscription;
+            var alldata = this.backtests[backtestId].data; 
+            
+            if(subscription && !bulksent) {
+              this.fire('iron-signal',{name:'bulk-data', data:alldata});
+              this.backtests[backtestId].bulksent = true;
+            } else if (subscription){
+              this.fire('iron-signal',{name:'point-data', data:e.detail});
+            }
+
+            /*if (e.detail.outputtype == "performance") {
+              //this.$.backtestDisplay.addLineData(e.detail);
+            }*/
+        },
+
+        _onError: function(e) {
+            console.log(e.detail.data);
+            console.log("Error");        
+        },
+
+        _onClose: function(e) {
+            console.log("Close:");
+        },
+
+        requestExecution: function(e) {
+          var backtestId = e.detail.backtestId;
+          this.backtestId = backtestId;
+          //Send message to web socket for execution
+          var msgForWS = {'aimsquant-token': this.token,
+                action: 'exec-backtest',
+                backtest_id: backtestId};
+
+          this.backtestId = backtestId
+          this.backtests[backtestId] = {data:[], subscription:false,bulksent:false};
+          this.$.webSocketConn.send(msgForWS);
+
+        },
+
+        onSubscription: function(e) {
+          console.log("Recording Subscriber");
+          var backtestId = e.detail.backtestId;
+          
+          if(this.backtests[backtestId]) { 
+            //console.log(this.backtests[backtestId]);
+            this.backtests[backtestId].subscription = true;
+          } else {
+            //console.log("Cannot be subscribed. No RT data");
+          }
+          //debugger;
+          //this.fire('iron-signal',{name:'data',data:this.backtests[e.detail.backtestId]});
+        },
+
+        onUnsubscription: function(e) {   
+          console.log("Unsubscribing");
+          
+          var backtestId = e.detail.backtestId; 
+          
+          if(this.backtests[backtestId]) {
+              this.backtests[backtestId].subscription = false;
+              this.backtests[backtestId].bulksent = false;
+          }
         },
 
     });

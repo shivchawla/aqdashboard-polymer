@@ -1,5 +1,4 @@
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
-<link rel="import" href="../../../bower_components/prism-element/prism-highlighter.html">
 <dom-module id="aq-help-marked-item">
 
 	<style>
@@ -37,10 +36,9 @@
 	</style>
 
     <template>  
-    	<!--prism-highlighter></prism-highlighter-->
+    	
 		<marked-element on-marked-render-complete='highlight' markdown="[[helpText]]">
 		    <div class="markdown-html"></div>
-			<!--script type="text/markdown">[[helpText]]```hkfhdshfshskfsfshk```</script-->
 		</marked-element>
 	</template>
 
@@ -56,11 +54,7 @@
 			highlight() {
 				var codeblocks = this.$$('.markdown-html').querySelectorAll('pre code');
 
-				//console.log(codeblocks);
-
 				for (i=0;i<codeblocks.length;i++) {
-            		//hljs.highlightBlock(this.$$('.markdown-html pre code'));
-            		//console.log(codeblocks[i]);
             		hljs.highlightBlock(codeblocks[i]);
         		}
 			},

@@ -18,7 +18,7 @@
             <p class="self-center">Back to All Backtests</p>
       	</div>
 
-      	<aq-backtest-detail-item></aq-backtest-detail-item>
+      	<aq-backtest-detail-item backtest-id="[[backtestId]]"></aq-backtest-detail-item>
 
 	</template>
 	<script>
@@ -32,11 +32,13 @@
 			},
 
 			goBackAllBacktests: function() {
+				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 				this.router.go('/dashboard/analyze/' + this.strategyId);
 			},
 
 			attached: function() {
 				console.log(this.router);
+				console.log(this.backtestId);
 			},
 				
 		});
