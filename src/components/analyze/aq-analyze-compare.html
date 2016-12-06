@@ -1,232 +1,137 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
+<link rel="import" href="../common/aq-backtest-detail-item.html">
+<link rel="import" href="aq-analyze-compare-results.html">
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 
-<dom-module id='aq-analyze-compare-item-backtest'>
-
-	<style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
-
-	<style>
-		#bt-card {
-			margin:10px;
-			margin-left:10px;
-			margin-top:0px !important;
-			width: 98%	
-			--border:1px lighter teal;
-		}
-
-		#bt-card :hover {
-			color:teal;
-			z-index:20;
-			cursor: pointer;
-			size:110%;
-		}
-
-		.metric1 {
-			margin-right: 10px;
-			margin-left:10px;
-			margin-top: 20px;
-			margin-bottom: 5px;
-			font-size:12px;
-		}
-
-		paper-checkbox {
-			height: 20px;
-			width:20px;
-			margin: 5px;
-			--paper-checkbox-checked-color:teal;
-		}
-
-	</style>
-	<template>
-		<paper-card id='bt-card' class="flex" on-tap='selectCheckBox'>
-			<div class="layout horizontal flex" >		
-				<paper-checkbox id='checkbox' noink></paper-checkbox>
-
-				<div class="layout vertical metric1 flex">	
-					<span>01/01/2010-01/01/2016</span>
-					<span>Date Range</span>		
-				</div>
-
-				<div class="layout vertical metric1 flex">	
-					<span>Completed</span>
-					<span>Status</span>	
-				</div>
-
-				<div class="layout vertical metric1 flex">	
-					<span>08/07/2016</span>
-					<span>Created</span>					
-				</div>
-				
-			</div>
-		</paper-card>
-	</template>
-
-	<script>
-		Polymer ({
-			is:'aq-analyze-compare-item-backtest',
-
-			selectCheckBox: function(e) {
-				if(e.target.id != 'checkboxContainer') {
-					var x = e.currentTarget.children[1].children[0].checked;
-					e.currentTarget.children[1].children[0].checked = !x; 
-				}
-			},
-
-		});
-	</script>
-
-
-</dom-module>
-
-
-<dom-module id='aq-analyze-compare-item'>
-	<style>
+<script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 		
-		#st-card {
-			width:100%;
-			margin-top:10px;
-
-		}
-	
-		.metric1 {
-			margin-right: 10px;
-			margin-left:10px;
-			margin-top: 20px;
-			margin-bottom: 5px;
-			font-size:12px;
-		}
-
-	 	#st-card .content :hover{
-			color:teal;
-			z-index:20;
-			cursor:pointer;
-		}
-
-	</style>
-
-	<template>
-		
-		<paper-card id='st-card'>
-			<div class="content layout horizontal flex">		
-				<a href$="" on-click='toggle' class="layout horizontal flex"> 
-				
-					<div class="layout vertical metric1 flex">	
-						<span>Sample Strategy</span>
-						<!--span>Name</span-->
-					</div>
-
-					<div class="layout vertical metric1 flex">	
-						<span>This is the description of Sample strategy</span>
-						<!--span>Description</span-->
-						
-					</div>
-
-					<div class="layout vertical metric1 flex">	
-						<span>5</span>
-						<!--span>#backtests</span-->					
-					</div>
-				</a>
-			</div>
-		
-
-		  	<iron-collapse id='collapse' opened ={{opened}}>
-		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
-		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
-		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
-		  		<aq-analyze-compare-item-backtest></aq-analyze-compare-item-backtest>
-
-			</iron-collapse>	
-		</paper-card>
-	</template>
-
-	<script>
-		Polymer({
-			is:'aq-analyze-compare-item',
-
-			properties:{
-				opened :{
-					type:Boolean,
-					value:false,
-				},
-			},
-
-			toggle: function() {
-				this.$.collapse.toggle();
-			},
-		});
-		
-	</script>
-</dom-module>
-
+<link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 
 <dom-module id='aq-analyze-compare'>
-	<style is="custom-style" include="iron-flex iron-positioning"></style>
 	
-	<style>
-		#header-card {
+	<style include="iron-flex iron-flex-alignment iron-positioning">
+     
+      paper-button {
+        color: white;
+        margin: 10px;
+        background-color: var(--google-blue-700);
+        white-space: nowrap;
+      }
+      button {
+        display: block;
+        line-height: 40px;
+        background-color: transparent;
+        border: none;
+        font-size: 14px;
+        margin: 20px;
+      }
+      .overflowScroll{
+      	overflow: scroll;
+      }
+
+      paper-checkbox {
+      	margin-top: 30px;
+      	margin-left: 9px;
+      }
+
+      paper-card {
 			width:100%;
+			margin-bottom: 20px;			
+		}
+		
+		a {
+			cursor: pointer;
 		}
 
-		#header-card .content {
-			margin:10px;
-		}
-
-		#container {
+		.metric {
+			margin-right: 10px;
 			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			--max-width:200px;
+			font-size:12px;
+			--min-width: 75px;
 		}
 
-	</style>
+		.metric1 {
+			margin-right: 10px;
+			margin-left:10px;
+			margin-top: 20px;
+			margin-bottom: 5px;
+			--width:200px;
+			font-size:12px;
+			max-width: 200px;
+			--min-width:50px;
+		}
+		.g{
+			display: block !important;
+		}
+
+    </style>
 
 	<template>
 
-		<div class="layout horizontal" style="height:60px; width:98%"> 
-		    	<paper-icon-button class="self-center" noink class="deleteButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToCompare"></paper-icon-button>
-				<div class="flex self-center">Compare Backtests</div>	
-				<paper-icon-button noink class="compareButton self-center" title="Compare" icon="aq-icons:chrome-reader-mode" on-tap="onCompare">
-				</paper-icon-button>
-		</div>	
+		
+		<template is="dom-if" if="{{noComparision}}">
+		
+			<paper-drawer-panel right-drawer force-narrow="true">
+			    <div drawer>
+			        <button tabindex="0">Strategy 1</button>
+			        <button tabindex="1">Strategy 2</button>
+			        <button tabindex="2">Strategy 3</button>
+			        <button tabindex="3">Strategy 4</button>
+			        <button tabindex="4">Strategy 5</button>
+			        <button tabindex="5">Strategy 6</button>
+			        <button tabindex="6">Strategy 7</button>
+			        <button tabindex="7">Settings 8</button>
+			        <button tabindex="8" paper-drawer-toggle>Close drawer</button>
+			    </div>
+		  		<div main class="overflowScroll">
+				        <!-- <paper-button class="g" paper-drawer-toggle="" raised="" role="button" tabindex="0" animated="" aria-disabled="false" elevation="1" class="x-scope paper-button-0">tosdggle drawer<paper-ripple class="style-scope paper-button">
+    
 
-		<div id ='container' class="layout vertical">
-			
-			<div style="margin-bottom:10px;" class="flex">List of Strategies/Backtests</div>
+						    <div id="background" class="style-scope paper-ripple" style="opacity: 0.001532;"></div>
+						    <div id="waves" class="style-scope paper-ripple"></div>
+						  </paper-ripple></paper-button> -->
+		  			
+		  			<div>
+		  				<div style="display: flex;justify-content: space-between;">
+		  					<div><h2 style="margin-left: 12px">Backtests for the selected strategy</h2></div>
+			    			<div>
+			    			<paper-icon-button paper-drawer-toggle class="g" style="float: right; margin-top: 12px; margin-right: 12px; background: #cf6766" noink icon="menu" ></paper-icon-button>
+			    				<paper-icon-button style="float: right; margin-top: 12px; margin-right: 12px; background: #cf6766" noink icon="menu" on-tap="goComparision"></paper-icon-button>
 
-			<paper-card id='header-card'>
-				<div class="content layout horizontal flex">		
-					
-					<div class="layout vertical metric1 flex">			
-						<span>Strategy Name</span>
-					</div>
+			    			</div>
 
-					<div class="layout vertical metric1 flex">				
-						<span>Description</span>	
-					</div>
+		  				</div>
+		  				<div style="width: 95%; margin: auto;">
+							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+						</div>
+				
+						
 
-					<!--div class="layout vertical metric1 flex">	
-						<span>Last Updated</span>					
-					</div-->
+		  			</div>
+			        
+		        </div>
+			</paper-drawer-panel>
+		</template>
 
-					<div class="layout vertical metric1 flex">	
-						<span>#Backtests</span>					
-					</div>
-				</div>
-			</paper-card>
-
-			<aq-analyze-compare-item opened=true></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-			<aq-analyze-compare-item></aq-analyze-compare-item>
-		</div>
+		<template is="dom-if" if="{{!noComparision}}">
+			<div style="width: 95%; margin: auto;margin-top: 15px">
+		  			<paper-icon-button style="margin-bottom: 40px" noink icon="vaadin-icons:angle-double-left" on-tap="goBack">
+					</paper-icon-button><span style="font-size: 20px">Back to Stategies</span>
+				<aq-backtest-comparison-item></aq-backtest-comparison-item>
+			</div>
+		</template>
+		
 	</template>
 
 	<script>
@@ -234,12 +139,25 @@
 			is:'aq-analyze-compare',
 			
 			properties : {
-				
+				noComparision:{
+					type: Boolean,
+					value: true
+				}
 			},
+			goBack: function(){
+				this.router.go('/dashboard/analyze/compare');
+			},
+			toggle: function() {
+				this.$.collapse.toggle();
+			},
+			goComparision: function() {
+				this.set('noComparision', false);
+			}
 
-			onCompare: function() {
-				this.router.go('/dashboard/analyze/compare/x');
-			},
+
+			// onCompare: function() {
+			// 	this.router.go('/dashboard/analyze/compare/x');
+			// },
 
 		});
 	</script>
