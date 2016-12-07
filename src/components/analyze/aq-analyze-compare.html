@@ -4,6 +4,7 @@
 <link rel="import" href="../common/aq-backtest-detail-item.html">
 <link rel="import" href="aq-analyze-compare-results.html">
 <link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/paper-toolbar/paper-toolbar.html'>
 
 <script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 		
@@ -67,8 +68,61 @@
 			max-width: 200px;
 			--min-width:50px;
 		}
-		.g{
+
+		.toggleForceDisplay{
 			display: block !important;
+		}
+
+		.drawerClose{
+			padding: 0;
+		    margin: 0;
+		    position: absolute;
+		    width: 100%;
+		    bottom: 0;
+		    background: #333a56;
+		    color: white;
+		    cursor: pointer;
+		}
+
+		.flexLayout{
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.marginLeftParameter{
+			margin-left: 18px;
+		}
+
+		.paperIconLayout{
+			float: right; 
+			margin-top: 12px; 
+			margin-right: 12px; 
+			background: #cf6766;
+		}
+
+		.subHeaderRight{
+			position: absolute; 
+			right: 10px; 
+			display: flex;
+		}
+
+		.bodyContainer{
+			width: 95%; 
+			margin: auto;
+			margin-top: 20px;
+		}
+		.paperIconBack{
+			margin-bottom: 40px;
+			margin-top: 41px;
+		}
+
+		.fontSizeHeader{
+			font-size: 20px;
+		}
+		.strategySelectable:hover{
+			font-weight: bold;
+			background: #abafb0;
+			cursor: pointer;
 		}
 
     </style>
@@ -80,40 +134,41 @@
 		
 			<paper-drawer-panel right-drawer force-narrow="true">
 			    <div drawer>
-			        <button tabindex="0">Strategy 1</button>
-			        <button tabindex="1">Strategy 2</button>
-			        <button tabindex="2">Strategy 3</button>
-			        <button tabindex="3">Strategy 4</button>
-			        <button tabindex="4">Strategy 5</button>
-			        <button tabindex="5">Strategy 6</button>
-			        <button tabindex="6">Strategy 7</button>
-			        <button tabindex="7">Settings 8</button>
-			        <button tabindex="8" paper-drawer-toggle>Close drawer</button>
+              	<paper-listbox selected="{{scrollSelected}}">   
+              		<paper-item class="strategySelectable">Strategy 1</paper-item>
+              		<paper-item class="strategySelectable">Strategy 2</paper-item>
+              		<paper-item class="strategySelectable">Strategy 3</paper-item>
+              		<paper-item class="strategySelectable">Strategy 4</paper-item>
+              		<paper-item class="strategySelectable">Strategy 5</paper-item>
+              		<paper-item class="strategySelectable">Strategy 6</paper-item>
+              		<paper-item class="strategySelectable">Strategy 7</paper-item>
+              		<paper-item class="strategySelectable">Strategy 8</paper-item>
+              	</paper-listbox>
+			        
+			        <button tabindex="8" paper-drawer-toggle class="toggleForceDisplay drawerClose">Close Strategies</button>
 			    </div>
 		  		<div main class="overflowScroll">
-				        <!-- <paper-button class="g" paper-drawer-toggle="" raised="" role="button" tabindex="0" animated="" aria-disabled="false" elevation="1" class="x-scope paper-button-0">tosdggle drawer<paper-ripple class="style-scope paper-button">
-    
-
-						    <div id="background" class="style-scope paper-ripple" style="opacity: 0.001532;"></div>
-						    <div id="waves" class="style-scope paper-ripple"></div>
-						  </paper-ripple></paper-button> -->
-		  			
-		  			<div>
-		  				<div style="display: flex;justify-content: space-between;">
-		  					<div><h2 style="margin-left: 12px">Backtests for the selected strategy</h2></div>
-			    			<div>
-			    			<paper-icon-button paper-drawer-toggle class="g" style="float: right; margin-top: 12px; margin-right: 12px; background: #cf6766" noink icon="menu" ></paper-icon-button>
-			    				<paper-icon-button style="float: right; margin-top: 12px; margin-right: 12px; background: #cf6766" noink icon="menu" on-tap="goComparision"></paper-icon-button>
-
+		  				<paper-toolbar>
+							<div class="flexLayout">
+		  						<div><h2 class="marginLeftParameter">Backtests for the selected strategy</h2></div>
+			    				<div class="subHeaderRight">
+		  							<div><h4>No. Of Backtest Selected: {{countCheckboxChecked}}</h4></div>
+		  							<div class="marginLeftParameter">
+			    				<paper-icon-button paper-drawer-toggle class="toggleForceDisplay paperIconLayout" noink icon="menu" ></paper-icon-button>
+			    				<paper-icon-button class="paperIconLayout" noink icon="menu" on-tap="goComparision"></paper-icon-button>
+			    				</div>
 			    			</div>
 
-		  				</div>
-		  				<div style="width: 95%; margin: auto;">
-							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
-							<aq-analyze-home-backtest-item></aq-analyze-home-backtest-item>
+		  				</div>						
+		  				</paper-toolbar>
+		  			<div>
+		  				<div class="bodyContainer">
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
+							<aq-analyze-home-backtest-item2 on-change="checkboxChecked"></aq-analyze-home-backtest-item2>
 						</div>
 				
 						
@@ -125,10 +180,14 @@
 		</template>
 
 		<template is="dom-if" if="{{!noComparision}}">
-			<div style="width: 95%; margin: auto;margin-top: 15px">
-		  			<paper-icon-button style="margin-bottom: 40px" noink icon="vaadin-icons:angle-double-left" on-tap="goBack">
-					</paper-icon-button><span style="font-size: 20px">Back to Stategies</span>
-				<aq-backtest-comparison-item></aq-backtest-comparison-item>
+			
+		  		<paper-toolbar>
+
+		  			<paper-icon-button noink icon="vaadin-icons:angle-double-left" on-tap="goBack">
+					</paper-icon-button><span class="fontSizeHeader"">Back to Stategies</span>
+				</paper-toolbar>
+			<div class="bodyContainer">
+				<aq-analyze-backtest-comparison-item></aq-analyze-backtest-comparison-item>
 			</div>
 		</template>
 		
@@ -142,6 +201,10 @@
 				noComparision:{
 					type: Boolean,
 					value: true
+				},
+				countCheckboxChecked:{
+					type: Number,
+					value: 0
 				}
 			},
 			goBack: function(){
@@ -150,9 +213,16 @@
 			toggle: function() {
 				this.$.collapse.toggle();
 			},
+			checkboxChecked: function(e){
+				if(e.target.checked){
+					this.set('countCheckboxChecked', ++this.countCheckboxChecked);
+				}
+				else
+					this.set('countCheckboxChecked', --this.countCheckboxChecked);
+			},
 			goComparision: function() {
 				this.set('noComparision', false);
-			}
+			},
 
 
 			// onCompare: function() {
