@@ -13,8 +13,8 @@
 	</style>
   
 	<style> 
-		#lineChart {
-			width:100%;
+		#netValueLineChart {
+			--width:100%;
 			--height:70%;
 		}
 		chart-bar {
@@ -53,7 +53,7 @@
 
 	
 		#detail-header {
-			margin-top:10px;
+			margin-top:0px;
 			margin-bottom: 20px;
 			margin-left:10px;
 			font-weight: bold;
@@ -77,7 +77,7 @@
 		.paper_body {
 			width: 98%;
 		    text-align: -webkit-center;
-		    color:#333a56;
+		    color:#24293d;
 		    border:1px solid teal;
 		    
 		}
@@ -105,28 +105,48 @@
 					<div class="flex"></div>	
 					<div class="toggle_tab">
 						<div>
-							<paper-tabs noink selected={{graphType}}>
-								<paper-tab>Equity</paper-tab>
-								<paper-tab>Returns</paper-tab>
+							<paper-tabs noink selected="{{graphType}}">
+								<paper-tab>Cum. Return</paper-tab>
+								<template is='dom-if' if='[[!active]]'>
+									<!--paper-tab>Net Value</paper-tab-->
+									<paper-tab>Monthly Returns</paper-tab>
+								</template>
 							</paper-tabs>
 						</div>
 					</div>
 				</div>
 				
-				<iron-pages selected={{graphType}}>
-				<template is='dom-if' if="[[lineData]]">
+				<iron-pages selected="{{graphType}}">
+				
+				<!--template is='dom-if' if="[[netValueData]]"-->
+
 					<nvd3-line 
-			  			id="lineChart" 
+			  			id="cumRetLineChart" 
 			  			height=300
 			  			show-legend 
 			  			use-interactive-guideline 
 			  			auto-resize
 			  			no-data="Fetching Data" 
-			  			data=[[lineData]]>
+			  			data="[[cumRetData]]">
 			  		</nvd3-line>
-		  		</template>
+
+			  		<template is='dom-if' if='[[!active]]'>
+					<!--nvd3-line 
+			  			id="netValueLineChart" 
+			  			height=300
+			  			show-legend 
+			  			use-interactive-guideline 
+			  			auto-resize
+			  			no-data="Fetching Data" 
+			  			data="[[netValueData]]">
+			  		</nvd3-line-->
+		  		<!--/template-->
+
+		  		<!--template is='dom-if' if="[[cumRetData]]"-->
+					
+		  		<!--/template-->
 			      
-			    <template is='dom-if' if="[[barData]]">    
+			    <!--template is='dom-if' if="[[barData]]"-->    
 			  		<nvd3-multi-bar 
 			  			id="barChart" 
 	  				 	height="300" 
@@ -135,9 +155,10 @@
 	  				 	show-legend
 	  				 	use-interactive-guideline 
 	  				 	no-data="Fetching Data"
-	  				 	data=[[barData]]>	 	
+	  				 	data="[[barData]]">	 	
 	  				 </nvd3-multi-bar>
-		  		</template>
+	  				 </template>
+		  		<!--/template-->
 	
 		  		</iron-pages>
 			      
@@ -161,6 +182,17 @@
 		</div>
 
 		<iron-signals id='datasignal' on-iron-signal-point-data='onBacktestData' on-iron-signal-bulk-data='onBacktestData'></iron-signals>
+
+		<iron-ajax
+          	url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onGetBacktestSuccess"
+          	on-error="onGetBacktestError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
 			
 	</template>
 	<script>
@@ -175,8 +207,8 @@
 
 				active:{
 					type:Boolean,
-					value:true,
-					//observer:'_isActiveChanged',
+					value:false,
+					observer:'_isActiveChanged',
 				},
 
 				metrics:Object,
@@ -186,17 +218,25 @@
 					value:0,
 				},
 
-				lineData: {
+				netValueData: {
 					type:Object, 
+					value:[],
+				},
+
+				cumRetData:{
+					type:Object,
 					value:[],
 				},
 
 				maxLineData:{
 					type:Number,
+					value:-Infinity,
+
 				},
 
 				minLineData:{
 					type:Number,
+					value: Infinity,
 				},
 
 				counter:{
@@ -214,11 +254,26 @@
 					value:0,
 				},
 
-				backtestId:String
+				backtestId:String,
+
+				backtest:Object,
+				
+				scale:{
+					type:Number,
+					value:1,
+				},
+
 			},
 
-			ready: function() {
+			attached: function() {
 
+				var x = localStorage.getItem('my-app-storage');
+		        var user = JSON.parse(x).user;
+		        if (user.token) {
+		          this.header = {
+		            "aimsquant-token": user.token,
+		            "Content-Type": "application/json"};  
+		        }
 
 				this.metrics = [{
 				            		"metricName":"Total Return", 
@@ -280,50 +335,34 @@
 									"metricValue":"-",
 								 	"metricDescription":"Avg. Concentration"
 							 	},];
-				/*this.lineData = [{
-					  "color": "#ff7f0e",
-					  "keys" : "graph",
-					  "values": [{
-					      "x": 0,
-					      "y": 0
-					    }, {
-					      "x": 1,
-					      "y": 0.099
-					    }, {
-					      "x": 2,
-					      "y": 0.186
-					    }, {
-					      "x": 3,
-					      "y": 0.095
-					    }, {
-					      "x": 4,
-					      "y": 0.389
-					    }, {
-					      "x": 5,
-					      "y": 0.794
-					    }]
-					}];*/
+
+				if(this.active) {
+					this.reset();
+					this.subscribeData();
+				} else {
+					this.reset();
+					this.requestStaticData();
+				}	
 			},
 
-			attached: function() {
-				this.async(this.subscribeData, 2000);
+			_isActiveChanged: function(newVal, oldVal) {
+				if((oldVal + 1) && newVal) {
+					this.reset();
+					this.subscribeData();
+				} 
 			},
 
 			reset: function() {
-				this.lineData = [];
+				this.netValueData = [];
 				this.barData = [];
 				this.counter = 0;
 			},
 
 			subscribeData: function() {
-				console.log("Fetching Data: " + this.backtestId);
 				this.fire('subscribe-data',{backtestId: this.backtestId});
 			},
 
 			onBacktestData: function(e) {
-				//console.log("Point Start");
-				//console.log("In Backtest Screen: Point");
-			
 				var isArray = Array.isArray(e.detail);
 
 				if (isArray) {
@@ -331,90 +370,71 @@
 					return;
 				}
 
-				//console.log("Point Start");
 				if (e.detail.outputtype == "performance") {	
-					//console.log(e.detail);
 					this.addLineData(e.detail);
 				}
-				//console.log("Point End");
 			},
 
 			onBacktestBulkData: function(e) {
-				//console.log("In Backtest Screen: Bulk");
 				
 				var data = e.detail;
-				//console.log(data);
 
 				if(data && data.length > 0) {
-					this.reset();
 					this.addLineBulkData(e.detail);	
-				}	
-
-				/*console.log(this.count);
-				if(this.count++ < 10) {
-					console.log("Again");
-					this.async(this.fetchData,1000);	
-					//this.count++;
-				}*/	
+				}
 			},		
 
 			addLineBulkData: function(data) {
-				console.log(data.length);
-				console.log("Bulk Start");
 				for(i in data) {
 					if (data[i].outputtype=="performance") {
 						this.addLineData(data[i]);
 					}
 				}
+
 				console.log("Bulk End");
 			},
 		
 			addLineData: function(data) {
 
-
 				var linepoint = {};
-            	linepoint.y = data.netvalue.toFixed(2);
+            	linepoint.y = data.totalreturn.toFixed(2);
             	//console.log(linepoint.y)
             	linepoint.x = this.counter++; //new Date(e.detail.date);//
            		
-           		//console.log("Length: " + this.lineData.length);
+           		//console.log("Length: " + this.netValueData.length);
 
-				if (this.lineData.length) {	
-					this.lineData[0]["values"].push(linepoint);
+           		var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(linepoint.y))) - 1);
+
+           		this.scale = Math.max(this.scale, scale);
+
+				if (this.cumRetData.length) {	
+					this.cumRetData[0]["values"].push(linepoint);
 					
-						this.minLineData = Math.round(Math.min(this.minLineData, 0.98*linepoint.y)/10000)*10000;
+						this.minLineData = Math.floor(Math.min(this.minLineData, 0.98*linepoint.y)/this.scale)*this.scale;
 
-						this.maxLineData = Math.round(Math.max(this.maxLineData, 1.02*linepoint.y)/10000)*10000;
+						this.maxLineData = Math.ceil(Math.max(this.maxLineData, 1.02*linepoint.y)/this.scale)*this.scale;
 
-
-					if (this.lineData[0]["values"].length % 20 == 0) {
+					if (this.cumRetData[0]["values"].length % 20 == 0) {
 						
-						//console.log(this.minLineData);
-						//console.log(this.maxLineData);
-
-						this.$$('#lineChart')._chart.forceY([this.minLineData,this.maxLineData]);
-						this.$$('#lineChart').refresh();
+						this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+						this.$$('#cumRetLineChart').refresh();
 						this.addMetricData(data);
 
 					}
 
-					if (this.lineData[0]["values"].length % 500 == 0) {
-						//console.log(this.lineData);
-					}
-
 				} else {
 	
-					this.lineData = [{
-					  "key":"Net Value",
-					  "color": "#ff7f0e",
+					this.cumRetData = [{
+					  "key":"Total Return (%)",
+					  "color": "#0375b4",
 					  "values": [linepoint]}];
 
 					this.minLineData = linepoint.y;
-					this.maxLineData = Math.round(1.02 * linepoint.y/10000)*10000;  
+					this.maxLineData = Math.ceil(1.02 * linepoint.y/this.scale)*this.scale;  
 					
-					this.$$('#lineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+					this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
 					
-					this.$$('#lineChart')._chart.forceX([0,501]);
+					this.$$('#cumRetLineChart')._chart.forceX([0,501]);
 					
 				}
 
@@ -442,7 +462,192 @@
 							{"metricName":"Stability", "metricValue":"0.88", "metricDescription":"Stability"},
 							{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},];
 
-			}
+			},
+
+			requestStaticData: function() {
+				this.$.getBacktestsQuery.generateRequest();
+			},
+
+			onGetBacktestSuccess: function(e){
+				this.set('backtest', e.detail.response);
+				//this.createNetValueChart();
+				this.addMetricData(this.backtest.output.analytics.rolling);
+				this.createCumRetLineChart();
+				this.createMonthlyReturnBarChart();
+
+				//console.log(this.cumRetData);
+				//console.log(this.barData);
+			},
+
+			createNetValueChart: function() {
+				var equityData = this.backtest.output.equity;
+				var keys = Object.keys(equityData);
+				var linePoints = new Array(keys.length);
+				var i = 0;
+				
+				var min = Infinity; 
+				var max = 0;
+				keys.sort()
+      			.forEach(function(v, i) {
+      				linePoints[i++] = {x:v, 
+										y:equityData[v]};
+          			min = Math.min(equityData[v], min)
+          			max = Math.max(equityData[v], max) 
+       			});
+
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(max)) - 2);
+		
+				min = Math.floor(0.98*min/scale)*scale;
+
+				max = Math.ceil(1.02*max/scale)*scale;
+
+				var yAxisLabel = this.getYAxisLabel(max);
+				
+	  			this.push('netValueData', {"key":yAxisLabel,
+				  				"color": "#0375b4",
+					  			"values":linePoints});
+
+	  			
+	  			this.$$('#netValueLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#netValueLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d) {return d3.time.format('%d-%m-%Y')(new Date(d)); });
+
+				this.$$('#netValueLineChart')._chart.yAxis
+  				//.axisLabel(yAxisLabel)
+				.tickFormat(function(d){
+
+					formatMoneyValue = function(number) {
+
+			    		if (number < Math.pow(10,5)) {
+					    	return [number,""];
+					    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
+
+					    	number  = number / Math.pow(10,5); 
+					    	var plural = Math.round(number) > 1 ;
+					    	
+					    	return [number.toFixed(2), (plural ? " Lacs":"Lac")]; 
+					    } else {
+					    	number  = number / Math.pow(10,7); 
+					    	var plural = Math.round(number) > 1 ;
+					    	return [number.toFixed(2), (plural ? " Crores": " Crore")];
+					    }
+
+					};
+
+					formatValue = d3.format(".2f");
+					var x = formatMoneyValue(d);
+					return formatValue(x[0]);
+				});				
+
+				//₨
+				this.$$('#netValueLineChart')._chart.forceY([min,max]);
+					  			
+	  			this.$$('#netValueLineChart').refresh();
+
+			},
+
+			createCumRetLineChart: function() {
+				var equityData = this.backtest.output.totalreturn;
+				var keys = Object.keys(equityData);
+				var linePoints = new Array(keys.length);
+				var i = 0;
+				
+				var min = Infinity; 
+				var max = 0;
+				keys.sort()
+      			.forEach(function(v, i) {
+      				linePoints[i++] = {x:v, 
+										y:equityData[v]};
+          			min = Math.min(equityData[v], min)
+          			max = Math.max(equityData[v], max) 
+       			}); 
+
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(max))) - 1);
+
+  				
+  				min = Math.floor(0.98*min/scale,-1)*scale;
+
+				max = Math.ceil(1.02*max/scale,-1)*scale;
+
+				
+				var yAxisLabel = "Total Return (%)";
+				
+	  			this.push('cumRetData',{"key":yAxisLabel,
+				  					"color": "#0375b4",
+					  				"values":linePoints});
+
+
+
+	  			this.$$('#cumRetLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#cumRetLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d){
+
+					return d3.time.format('%d-%m-%Y')(new Date(d));
+				 });
+
+				this.$$('#cumRetLineChart')._chart.yAxis
+				.ticks(10);
+
+				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
+
+				this.$$('#cumRetLineChart').refresh();
+
+				console.log("Cumret Chart: Exit")
+			},
+
+			createMonthlyReturnBarChart: function() {
+				console.log("Monthly Ret Chart: Enter")
+				var aggregatedReturns = this.backtest.output.returns.monthly;
+		
+				var barPoints = new Array(Object.keys(aggregatedReturns).length);
+				var i = 0;
+
+				for (var key in aggregatedReturns) {
+					barPoints[i++] = {x:key, y:aggregatedReturns[key]};
+				}
+
+				this.push('barData', {"key":"Monthly Returns (%)",
+				  				"color": "#0375b4",
+					  			"values":barPoints}); 
+
+
+	  			this.$$('#barChart')._chart.xAxis
+  				.axisLabel('Year/Month')
+				.tickFormat(function(d) {
+
+					var year = Math.floor(d / 100);
+					var month = d % 100;
+					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+					return monthNames[month - 1] +" "+year.toString();
+
+				});
+
+	  			this.$$('#barChart').refresh();
+			},
+
+			onGetBacktestError: function(e) {
+			},
+
+			getYAxisLabel: function(number){
+				var x = "Net Value" 
+				if (number < Math.pow(10,5)) {
+			    	return x;
+			    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
+
+			    	return x + " (Lacs)";
+			    } else {
+			    	return x +" (Crores)";
+			    }
+
+			    return label(max);
+		    }
 
 		});
 	</script>

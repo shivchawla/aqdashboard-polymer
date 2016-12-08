@@ -95,7 +95,7 @@
     		margin-right: 10px;
     		min-width:25px;
     		max-width:35px;
-    		color: white; --#188364; --#333a56; 
+    		color: white; --#188364; --#24293d; 
     		background-color: #cf6766;
 		}
 
@@ -173,7 +173,7 @@
 			},
 
 			isCompareActive: function(numActiveBacktests) {
-				return numActiveBacktests > 1;
+				return numActiveBacktests > 1 && numActiveBacktests <=5;
 			},
 
 			isDeleteActive: function(numActiveBacktests) {

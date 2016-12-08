@@ -1,6 +1,9 @@
 
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
@@ -11,19 +14,6 @@
 	</style>
 
 	<style>	
-		chart-line {
-			width: 50%;
-			height:30%;
-		}
-
-		chart-bar {
-			width: 50%;
-			height:30%;
-		}
-
-		aq-analyze-home-metric-item {
-			height:50px;
-		}
 
 		paper-icon-button {
 			width:35px;
@@ -37,18 +27,6 @@
 		#backButton {
 			margin:auto 0;
 			outline: none !important;
-		}
-
-		.head span {
-			--font-weight: bold;
-			--margin-top: 20px;
-			font-size: 18px;
-		}
-
-		.head {
-			background-color: teal;
-			text-align: center;
-			height: 30px;
 		}
 
 		span {
@@ -67,7 +45,7 @@
 			margin: 30px 0 30px 10px;
 		}
 
-		vaadin-grid{
+		vaadin-grid {
 			--vaadin-grid-header-row-height : 78px;
 			--vaadin-grid-row-cell: blue;
 		}
@@ -104,10 +82,13 @@
     		--paper-tabs-selection-bar-color: teal;
     	}
 
+    	#cumRetLineChart {
+    		margin-left: -100px;
+    	}
+
 	</style>
 
 	<template>	
-
 		<div class="goBackButton layout horizontal">
             <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
             </paper-icon-button>
@@ -117,200 +98,297 @@
 		<div id='comparison-return'>
 			<div class="sub_header">
 				<paper-tabs noink selected={{graphType1}}>
-				<template is='dom-if' if="[[lineData]]">
-					<paper-tab>Line Graph</paper-tab>
-					</template>
-					<template is='dom-if' if="[[barData]]">
-					<paper-tab>Bar Graph</paper-tab>
-					</template>
-					<paper-tab>Comparison Table</paper-tab>
+					<paper-tab>Total Return</paper-tab>
+					<paper-tab>Monthly Returns</paper-tab>
+					<paper-tab>Risk Metrics</paper-tab>
 				</paper-tabs>
 			</div>
-			<iron-ajax auto
-				  id="ajaxBarGraph"
-				  url=""
-		          handle-as="json"
-		          on-response="handleResponseBarGraph">
-		          
-		    </iron-ajax>
-			<iron-ajax auto
-				  id="ajaxLineGraph"
-				  url=""
-		          handle-as="json"
-		          on-response="handleResponseLineGraph">
-		          
-		    </iron-ajax>
 		          
 			<iron-pages class="pages_select" selected={{graphType1}}>
-				
-				<template is='dom-if' if="[[lineData]]">			 
-			  		<div class="layout horizontal">
-						<div class="vertical-textGraphs self-center">
-			  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
-			  			</div>	
-						<div>
-							<nvd3-line 
-					  			id="chart-line" 
-					  			class="bar1" 
-					  			height=460
-					  			width=900
-					  			show-legend 
-					  			use-interactive-guideline 
-					  			auto-resize 
-					  			no-data="No Data Available!" 
-					  			data=[[lineData]]>
-					  		</nvd3-line>
-					  		<div class="horizontal-textGraphs self-center">
-					  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
-					  		</div>
-				  		</div>
-			  		</div>
-			  	</template>	
-		  		
-		  		<template is='dom-if' if="[[barData]]">	
-		  		<div class="layout horizontal">
-					<div class="vertical-textGraphs self-center">
-		  				<p><strong>{{y_lineData}} &#x2192;</strong></p>
-		  			</div>	
-					
-					<div>
-						<nvd3-multi-bar 
-				  			id="chart-bar" 
-				  			class="bar" 
-				  			height=460
-				  			width=900
-				  			show-legend 
-				  			use-interactive-guideline 
-				  			auto-resize 
-				  			no-data="No Data Available!" 
-				  			data=[[barData]]>
-				  		</nvd3-multi-bar>
-		  				<div class="horizontal-textGraphs self-center">
-				  			<p><strong>{{x_lineData}} &#x2192;</strong></p>
-				  		</div>
-			  		</div>
-		  		</div>
-		  		</template>
-		  		
-		  			<div style="width:100%">
-			  		<vaadin-grid id="table_details__comparison">
+							
+				<nvd3-line 
+		  			id="cumRetLineChart" 
+		  			class="bar1" 
+		  			height=460
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data="[[cumRetData]]">
+		  		</nvd3-line>
+			  	
+  				<nvd3-multi-bar 
+		  			id="monthlyReturnBarChart" 
+		  			class="bar" 
+		  			height=460
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data="[[monthlyReturnData]]">
+		  		</nvd3-multi-bar>
+		  	
+	  			<div style="width:100%">
+			  		<vaadin-grid size="0" id="table_details__comparison">
 					  <table>
 					    <colgroup class="table_style">
-					      <col name="Strategy Name" sortable/>
-					      <col name="Total Return1" sortable/>
-					      <col name="Avg Return" sortable/>
-					      <col name="Avg Volatility" sortable/>
-					      <col name="Sharpe Ratio" sortable/>
-					      <col name="Information Ratio" sortable/>
-					      <col name="Sortino Ratio" sortable/>
-					      <col name="Avg Drawdown" sortable/>
-					      <col name="Max Drawdown" sortable/>
-					      <col name="Calmar Ratio" sortable/>
-					      <col name="Beta Value" sortable/>
-					      <col name="Stability" sortable/>
-					      <col name="Avg Concentration" sortable/>
+				    		<col name="Strategy Name" sortable/>
+					      	<col name="Backtest Name" sortable/>
+					      	<col name="Total Return" sortable/>
+					      	<col name="Annual Return" sortable/>
+					     	 <col name="Volatility" sortable/>
+					      	<col name="Sharpe Ratio" sortable/>
+					      	<!--col name="Information Ratio" sortable/>
+					      	<col name="Sortino Ratio" sortable/>
+					      	<col name="Avg Drawdown" sortable/-->
+					      	<col name="Max Drawdown" sortable/>
+					      	<!--col name="Calmar Ratio" sortable/>
+					      	<col name="Beta Value" sortable/>
+					      	<col name="Stability" sortable/>
+					      	<col name="Avg Concentration" sortable/-->
 					    </colgroup>
 					  </table>
 					</vaadin-grid>
-					</div>
+				</div>
 	  		</iron-pages>
 		</div>
 		
 		<div id='comparison-risk' class = "layout horizontal flex">
-			<iron-ajax auto url="../common/data.json"
-	          handle-as="json"
-	          on-response="handleResponseGrid"
-	          debounce-duration="300"></iron-ajax>			
-		</div>	
+		</div>
+
+		<iron-ajax
+          	url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onGetBacktestSuccess"
+          	on-error="onGetBacktestError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+				
 			
 	</template>
+
 	<script>
 		Polymer ({
 			is:'aq-analyze-backtest-comparison-item',
 			
 			properties:{
+
+				compareItems: {
+					type:Object,
+				},
+
+				active:{
+					type:Boolean,
+					value:false,
+					observer:'_isActiveChanged',
+				},
+
+				backtests:{
+					type:Array,
+					value:[],
+				},
+
+				cumRetData:{
+					type:Array,
+					value:[],
+				},
+
+				monthlyReturnData:{
+					type:Array,
+					value:[],
+				},
+
+				tableData:{
+					type:Array,
+					value:[]
+				},
+
+				counter:{
+					type:Number,
+					value:0,
+				},
+
+				backtestId: String,
+
 				graphType1: {
 					type:Number,
 					value:0,
 				},
-				barData: {
-					type: Object,
-				},
-				lineData: {
-					type: Object,
-				},
-				x_lineData:{
-					type: String,
-				},
-				x_barData:{
-					type: String,
-				},
-				y_lineData:{
-					type: String,
-				},
-				y_barData:{
-					type: String,
-				},
-
-				showComparison:Boolean,
 				
 			},
 
-			ready: function(){
+			ready: function() {
+				var x = localStorage.getItem('my-app-storage');
+		        var user = JSON.parse(x).user;
+		        if (user.token) {
+		          this.header = {
+		            "aimsquant-token": user.token,
+		            "Content-Type": "application/json"};  
+		        }
+			},
+
+			attached: function() {
+				if (this.active){
+					this.doComparison();
+				}
+			},
+
+			_isActiveChanged: function(newVal, oldVal) {
+				if (oldVal+1 && newVal) {
+					this.doComparison();
+				}
+			},
+
+			doComparison: function() {
+				for(var key in this.compareItems) {	
+					if (!this.backtests[key]) {
+						this.backtestId = key;
+						this.$.getBacktestsQuery.generateRequest();
+					} else {
+						this.addBacktestToComparison(this.backtests[key]);
+					}
+				}
+			},
+
+			onGetBacktestSuccess: function(e){
+				var backtest = e.detail.response;
+				this.backtests[backtest._id] = backtest;
+				this.addBacktestToComparison(backtest);
+			},
+			
+			addBacktestToComparison: function(backtest){	
+				this.processLineChartData(backtest);
+				this.processBarChartData(backtest);
+				this.processMetricsData(backtest);
+				this.counter++;
+
+				if (this.counter == Object.keys(this.compareItems).length) {
+					var grid = this.$.table_details__comparison;
+					grid.items = this.tableData;
+					grid.frozenColumns = 2;
+				}
+			},
+
+			processLineChartData: function(data) {
+				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
+				var equityData = data.output.totalreturn;
+				var keys = Object.keys(equityData);
+				var linePoints = new Array(keys.length);
+				var i = 0;
 				
-				this.$.ajaxBarGraph.url = "http://localhost:8080/src/components/common/data3.json";      	
-	        	this.$.ajaxLineGraph.url = "http://localhost:8080/src/components/common/data1.json";
+				var min = Infinity; 
+				var max = 0;
+				keys.sort()
+      			.forEach(function(v, i) {
+      				linePoints[i++] = {x:v, 
+										y:equityData[v]};
+          			min = Math.min(equityData[v], min)
+          			max = Math.max(equityData[v], max) 
+       			}); 
+
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(max))) - 1);
+
+  				min = Math.floor(0.98*min/scale,-1)*scale;
+				max = Math.ceil(1.02*max/scale,-1)*scale;
+
+				var yAxisLabel = "Total Return (%)";
+				
+	  			this.push('cumRetData',{"key":yAxisLabel,
+				  					"color": colors[this.counter],
+					  				"values":linePoints});
+
+	  			this.$$('#cumRetLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#cumRetLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d){
+					return d3.time.format('%d-%m-%Y')(new Date(d));
+				 });
+
+				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
+				this.$$('#cumRetLineChart')._chart.margin().left = 30;
+				this.$$('#cumRetLineChart')._chart.margin().right = 30;
+
+				this.$$('#cumRetLineChart').refresh();	
+
 			},
 
-			handleResponseLineGraph: function(e){
+			processBarChartData: function(data) {
+				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
+				var aggregatedReturns = data.output.returns.monthly;
+		
+				var barPoints = new Array(Object.keys(aggregatedReturns).length);
+				var i = 0;
 
-				this.set('lineData',e.detail.response);
-			    this.set('x_lineData', e.detail.response[0].x_axis);
-		        this.set('y_lineData', e.detail.response[0].y_axis);
+				for (var key in aggregatedReturns) {
+					barPoints[i++] = {x:key, y:aggregatedReturns[key]};
+				}
+
+				this.push('monthlyReturnData',
+								 {"key":"Monthly Returns (%)",
+				  					"color": colors[this.counter],
+					  				"values":barPoints}); 
+
+
+	  			this.$$('#monthlyReturnBarChart')._chart.xAxis
+  				.axisLabel('Year/Month')
+				.tickFormat(function(d) {
+
+					var year = Math.floor(d / 100);
+					var month = d % 100;
+					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", 
+										"Jun", "Jul", "Aug", "Sep", 
+										"Oct", "Nov", "Dec"];
+					return monthNames[month - 1] +" "+year.toString();
+				});
+
+				this.$$('#monthlyReturnBarChart')._chart.margin().left = 30;
+				this.$$('#monthlyReturnBarChart')._chart.margin().right = 30;
+
+
+	  			this.$$('#monthlyReturnBarChart').refresh();
 			},
 
-			handleResponseBarGraph: function(e){
+			processMetricsData: function(data){
+				
+				var metrics = data.output.analytics.rolling;
+				var id = data._id;
+				var strategyId = data.strategy;
+				this.tableData.push({
+		            'Strategy Name': strategyId,
+		            'Backtest Name': id,
+		            'Total Return': metrics.totalreturn,
+		            'Annual Return': metrics.annualreturn,
+		            'Volatility': metrics.annualstandarddeviation,
+		            'Sharpe Ratio': metrics.sharperatio,
+		            //'Information Ratio': metrics.informationratio,
+		            //'Sortino Ratio': analytics.so,
+		            //'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
+		            'Max Drawdown': metrics.maxdrawdown,
+		            //'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
+		            //'Beta': e.detail.response.result[i].Beta,
+		            //'Stability': e.detail.response.result[i].Stability,
+		            //'Avg Concentration': e.detail.response.result[i].Avg_Concentration
 
-				this.set('barData',e.detail.response);
-				this.set('x_barData', e.detail.response[0].x_axis);
-		        this.set('y_barData', e.detail.response[0].y_axis);
+		        });			
+			},
+			
+			resetComparison: function() {
+				this.cumRetData = [];
+				this.monthlyReturnData = [];
+				this.tableData = [];
+				this.counter = 0;
 			},
 
 			goBackAllBacktests: function() {
+				this.resetComparison();
 	          	this.fire('comparison-off');
 	        },
 
-			handleResponseGrid: function(e){
-				var items =[];
-				var grid = this.$.table_details__comparison;
-
-				console.log(e.detail.response.result.length);
-				for(var i=0; i<e.detail.response.result.length;i++){
-					items.push({
-			            'Strategy Name': e.detail.response.result[i].Strategy,
-
-			            'Total Return1': e.detail.response.result[i].Total_Return1,
-			            'Avg Return': e.detail.response.result[i].Avg_Return1,
-			            'Avg Volatility': e.detail.response.result[i].Avg_Volatility,
-			            'Sharpe Ratio': e.detail.response.result[i].Sharpe_Ratio,
-			            'Information Ratio': e.detail.response.result[i].Information_Ratio,
-			            'Sortino Ratio': e.detail.response.result[i].Sortino_Ratio,
-			            'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
-			            'Max Drawdown': e.detail.response.result[i].Max_Drawdown,
-			            'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
-			            'Beta Value': e.detail.response.result[i].Beta,
-			            'Stability': e.detail.response.result[i].Stability,
-			            'Avg Concentration': e.detail.response.result[i].Avg_Concentration
-
-			        });
-			        
-			        console.log('items');
-				}
-				
-				grid.items = items;
-				grid.frozenColumns = 1;
-
-			}
 		});
 	</script>
 </dom-module>
