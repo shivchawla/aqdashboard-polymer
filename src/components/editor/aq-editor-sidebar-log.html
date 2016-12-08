@@ -1,0 +1,189 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+
+<dom-module id='aq-editor-sidebar-log'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>	
+		#logcontainer {
+			background-color: #262626;
+			color:white;
+			height:100%;
+		}	
+
+	</style>
+
+	<template>
+		
+		<div id='logcontainer' class="flex">
+			<template is='dom-repeat' items="{{logs}}">
+				<aq-log-item datetime = "[[item.datetime]]"
+							message = "[[item.message]]"
+							message-type = "[[item.messagetype]]">
+				</aq-log-item>
+			</template>
+		</div>
+
+		<iron-signals on-iron-signal-bulk-data='onMessage' on-iron-signal-point-data='onMessage'></iron-signals>
+			
+	</template>
+
+	<script>
+	
+		Polymer({
+			is:'aq-editor-sidebar-log',
+
+			properties:{
+				logs:{
+					type:Array,
+					value:[],
+				},
+			},
+
+			getTodayDate: function(offset){
+				var today = new Date();
+				today.setDate(today.getDate() - offset);
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; //January is 0!
+				var yyyy = today.getFullYear();
+
+				if(dd<10) {
+				    dd='0'+dd
+				} 
+
+				if(mm<10) {
+				    mm='0'+mm
+				} 
+
+				today = yyyy + '-' + mm + '-' + dd;
+				return today;
+			},
+
+			onMessage: function(e) {
+				var data = e.detail;
+				if (Array.isArray(data)) {
+					var array = [];
+					for (i in data) {
+						if (data[i].outputtype == "log") {
+							this.push(array,data[i]);
+						}
+					}
+
+					this.logs = array;
+				} else if(data.outputtype == "log") {
+					this.push('logs',data);
+				}
+				this.fire('scroll-log');
+				
+			},
+
+		});
+	</script>
+
+</dom-module>
+
+
+<dom-module id='aq-log-item'>
+	
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		p {
+			font-size:11px;
+			color:white;
+			margin-bottom: 0px;
+		}
+
+		.error {
+			color: red;
+			padding-left: 2px;
+		}
+
+		.warning {
+			color: orange;
+			padding-left: 2px;
+		}
+
+		.info {
+			color: green;
+			padding-left: 2px;
+		}
+
+		#item {
+			min-width: 12px;
+			padding-right: 5px;
+		}
+
+	</style>
+
+	<template>
+		<div id='item' class="layout horizontal">
+			
+			<template is='dom-if' if="[[isError(messageType)]]">
+				<p class='error'>[[[toUpperCase(messageType)]]]</p>
+			</template>
+
+			<template is='dom-if' if="[[isWarning(messageType)]]">
+				<p class='warning'>[[[toUpperCase(messageType)]]]</p>
+			</template>
+
+			<template is='dom-if' if="[[isInfo(messageType)]]">
+				<p class='info'>[[[toUpperCase(messageType)]]]</p>
+			</template>
+			<p id='message'>&nbsp&nbsp[[format(datetime)]]&nbsp:&nbsp[[message]]</p>
+		</div>
+		
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-log-item',
+
+			properties:{
+				message:String,
+				messageType:String,
+				datetime:String,
+			},
+
+			isInfo: function(messageType) {
+				//console.log(messageType);
+				return messageType == "info";
+			},
+
+			isWarning: function(messageType) {
+				//console.log(messageType);
+				return messageType == "warning";
+			},
+
+			isError: function(messageType) {
+				//console.log(messageType);
+				return messageType == "error";
+			},
+
+			toUpperCase: function(messageType) {
+				return messageType.toUpperCase();
+			},
+
+			format: function(datetime) {
+				var today = new Date(datetime);
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; //January is 0!
+				var yyyy = today.getFullYear();
+
+				if(dd<10) {
+				    dd='0'+dd
+				} 
+
+				if(mm<10) {
+				    mm='0'+mm
+				} 
+
+				today = dd+'/'+mm+'/'+yyyy;
+				return today;
+			},
+		});
+	</script>
+</dom-module>

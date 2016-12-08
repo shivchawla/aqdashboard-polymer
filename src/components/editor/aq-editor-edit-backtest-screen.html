@@ -7,41 +7,35 @@
 
 
 <dom-module id='aq-editor-edit-backtest-screen'>
-	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	
 	<style>
 		#container {
 			width:97%;
 			margin: 0 auto;
+			height:100%;
 		}
+		aq
+
 	</style>
 
 	<template>
-		<div id='container'>
+		<div id='container' class="flex">
 			<div class="goBackButton layout horizontal">
 	            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="onBack">
 	            </paper-icon-button>
-	            <h3>Back to Strategy</h3>
+	            <h3>Back to Strategy Editor</h3>
 	            <div class="flex"></div>
 	         	
 	         	<template is='dom-if' if='[[narrow]]'>
-	         		<paper-icon-button noink class="toolbarIcon" icon="aq-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
+	         		<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
 	         		</paper-icon-button>
 	         	</template>
 
 	      	</div>
 
-	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active=1 id='backtestDisplay'>
+	      	<aq-backtest-detail-item class="flex" id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
 	      	</aq-backtest-detail-item>
-			
-	      	<!--web-socket 
-	      		url="ws://localhost:8000"
-	            id="webSocketConn"
-	            json
-	            on-open="_onOpen"
-	            on-message="_onMessage"
-	            on-error="_onError">
-	    	</web-socket-->
 		</div>
 
 	</template>
@@ -112,6 +106,7 @@
 
 			onBack: function() {
 				this.isRunning = false;
+				//this.active = !this.active;
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 				//this.fire('backClicked-backtest');
 			},

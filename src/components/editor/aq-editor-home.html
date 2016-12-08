@@ -88,7 +88,7 @@
       #container {
       	margin:0 auto;
       	margin-top: 20px;
-      	color: #333a56;
+      	color: #24293d;
       	width: 95%;
 
       }
@@ -167,7 +167,7 @@
 
 	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
 		    
-		    <div id="actions"></div>
+		    <!--div id="actions"></div-->
 		</div> 
 		
   </template>
@@ -235,8 +235,8 @@
         },        
 
 		listeners: {
-			'mouseover': '_mouseOver',
-			'mouseleave': '_mouseLeave',
+			//'mouseover': '_mouseOver',
+			//'mouseleave': '_mouseLeave',
 			'deleteClicked':'openDeletionDialog',
 			'compareClicked':'openCompareDialog',
 			'previewClicked':'openPreview',
@@ -347,10 +347,20 @@
 			this.router.go('/dashboard')
 		},
 
-	 	goToAnalyze: function() {
-        	var strategyId = this._currentRow.id;
-        	this.router.go('/dashboard/analyze/' + strategyId);
+	 	goToAnalyze: function(e) {
+        
+	 		// if strategy analyzed is called from elementmenu
+        	if(!e.detail.id) {
+    	 		e.detail.id = this._currentRow.id;
+        	}
+        	
+        	//this.router.go('/dashboard/analyze/' + strategyId);
         },
+
+        /*goToAnalyzeFromEditor: function(e) {
+        	var strategyId = e.detail.id;
+        	this.router.go('/dashboard/analyze/' + strategyId);
+        },*/
 
         goToClone: function(e) {
         	var strategyId = this._currentRow.id;

@@ -9,6 +9,7 @@
 <link rel='import' href ="./aq-editor-toolbar.html">
 <link rel='import' href ="./aq-editor-console-window.html">
 <link rel='import' href ="./aq-editor-sidebar-run.html">
+<link rel='import' href ="./aq-editor-sidebar-log.html">
 <!--link rel='import' href ='./aq-editor-edit-nonprogrammer.html'-->
 <link rel='import' href ='./aq-editor-edit-programmer.html'>
 <link rel='import' href ='./aq-editor-edit-backtest-screen.html'>
@@ -39,9 +40,9 @@
 
   paper-toolbar {
       --paper-toolbar-height:40px;
-      --paper-toolbar-color:#333a56;
+      --paper-toolbar-color:#24293d;
       --paper-toolbar-background:#9ecbda;--#c9e2ea;
-       border-bottom: 1px solid #333a56;
+       border-bottom: 1px solid #24293d;
   }
 
   paper-tabs :hover{
@@ -50,7 +51,7 @@
   }
 
   paper-tabs {
-    --paper-tabs-selection-bar-color: #333a56;
+    --paper-tabs-selection-bar-color: #24293d;
     height:80%;
   }
 
@@ -59,12 +60,12 @@
   }
 
   #leftPanel {
-    border-right: 5px solid #333a56;
+    border-right: 5px solid #24293d;
   }
 
   #rightPanel {
     background-color:#f3f9fa;--#f3f4f8;
-    border-left: 5px solid #333a56;
+    border-left: 5px solid #24293d;
     color:#02558b;
   }
 
@@ -93,11 +94,11 @@
 
     <template is='dom-if' if="{{strategy}}">         
         
-      <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='800px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
+      <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
         <paper-header-panel id='leftPanel' main mode="seamed"> 
           
           <template is='dom-if' if='[[!isRunning]]'>
-            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]"> 
+            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]" strategy-id="[[strategyId]]"> 
             </aq-editor-toolbar>
             
             <template is='dom-if' if='{{isProgrammer}}'>
@@ -124,7 +125,7 @@
         </paper-header-panel>
 
         
-        <paper-header-panel id='rightPanel' drawer mode="seamed">
+        <paper-header-panel atTop=false id='rightPanel' drawer mode="seamed">
           <paper-toolbar >
               <paper-tabs selected="{{selectedSidebar}}" noink>
                 <template is="dom-if" if="[[!isRunning]]">
@@ -140,10 +141,10 @@
 
               <div class="flex"></div>
               
-              <template is='dom-if' 
+              <!--template is='dom-if' 
                         if="[[isSelectedSidebarRun(selectedSidebar)]]">
                 <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="aq-icons:play-arrow"></paper-icon-button>
-              </template>
+              </template-->
 
               <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
 
@@ -154,7 +155,8 @@
            
               <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
               <div>This is quick help!!</div>
-              <div style="background-color: black; color:red;">This is log!!</div>
+              
+              <aq-editor-sidebar-log></aq-editor-sidebar-log>
               
               
             </iron-pages>
@@ -270,6 +272,7 @@
         'run-action':'runStrategy',
         'cloneClicked':'cloneStrategy',
         'backClicked-backtest':'toggleIsRunning',
+        'scroll-log':'onScroll',
       },
 
       attached: function() {
@@ -383,12 +386,15 @@
       },
 
       onStrategySavedResponse: function(data) {
+        
+        // Check if save was initiated before RUN
         if(this.runSwitch == 1) {
-          //reset the run swtch to off
+          
+          //reset the run switch to off
           this.runSwitch = 0;
-          //now run the saved strategy
+          
+          // Now run the saved strategy 
           this.$.runStrategyQuery.generateRequest();
-          //this.isRunning = true;
         }
       },
 
@@ -432,15 +438,18 @@
 
       onStrategyExecutionResponse: function(data) {
         
-        //Before execution starts, backtestId handle is sent from the backend
+        //Before execution starts, 
+        //backtestId handle is sent from the backend
         console.log(data.detail.response);
         this.activeBacktestId = data.detail.response._id;
-        this.fire('execute-backtest', {backtestId:this.activeBacktestId});
+        //This backtest object just contains settings and code
+        //BUT has no output
+
+        // Send Execution request via web-sockets 
         this.isRunning  = true;
+        this.fire('execute-backtest', {backtestId:this.activeBacktestId});
+        
         console.log("Run: Success");
-              
-        //This get back the created backtest object with just the settings,
-        //HAS no output
       },
 
       onStrategyExecutionError: function(data) {
@@ -454,15 +463,21 @@
           //let the event propagate
       },
 
-      toggleIsRunning: function() {
-        //this.isRunning = !this.isRunning;
-      },
-
       _isRunningChanged: function() {
+        console.log(this.isRunning);
+        console.log(this.selectedSidebar);
+
         if(!this.isRunning) {
           this.selectedSidebar = 0;
+        } else {
+          this.selectedSidebar = 2;
         }
       },
+
+      onScroll: function() {
+        //console.log(
+        this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight; 
+      }
 
     });
   </script>

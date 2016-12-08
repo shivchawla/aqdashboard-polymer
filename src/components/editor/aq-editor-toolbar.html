@@ -15,7 +15,7 @@
     		margin-right: 10px;
     		min-width:25px;
     		max-width:35px;
-    		color: #333a56;
+    		color: #24293d;
   		}
 
   		paper-icon-button {
@@ -29,7 +29,7 @@
 		  --paper-toolbar-width:100px;
 		  --paper-toolbar-color:teal;
   		  --paper-toolbar-background:#e5f1f5;
-  		  --border-right: 5px solid #333a56;
+  		  --border-right: 5px solid #24293d;
 		}
 
 		#strategyName, #box {
@@ -81,7 +81,7 @@
 		}
 
 		.input-span {
-			color:#333a56;
+			color:#24293d;
 			font-weight: bold;
 			font-size: 14px;
 		}
@@ -107,21 +107,21 @@
 	        	<!--paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button-->
 
 	        	<span class="self-center separator"></span>
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save" on-tap='onSave'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New" on-tap='onCreate'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone" on-tap='onClone'></paper-icon-button>
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save Strategy" on-tap='onSave'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New Strategy" on-tap='onCreate'></paper-icon-button>	
+		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone Strategy" on-tap='onClone'></paper-icon-button>
 		 		
 		 		<span class="self-center separator"></span>
-	
+				
+				<paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:chart" title="Analyze all Backtests" on-tap='onAnalyze'></paper-icon-button>
+
 		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="aq-icons:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
-	        	<template is='dom-if' if="{{isProgrammer}}">
-	        		<template is='dom-if' if='[[narrow]]'>
-		            <div class="flex"></div>
-		            <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
-		            </template>
-		           
+	        	<template is='dom-if' if="[[checkToggleCondition(isProgrammer, narrow)]]">	
+	            	<div class="flex"></div>
+	            	<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
 		        </template>
+
 		        
        		</div> 
 		</paper-toolbar>
@@ -174,8 +174,8 @@
         		this.fire('backClicked');
 			},
 
-			goToAnalyze: function() {
-				this.fire('analyze-clicked');
+			onAnalyze: function() {
+				this.fire('analyzeClicked', {id:this.strategyId});
 			},
 
 			onSave: function() {
@@ -194,7 +194,11 @@
 			onRun: function() {
 				this.strategyName = this.$.strategyName.value;
 				this.fire('run-action',{name:this.strategyName});
-			}
+			},
+
+			checkToggleCondition: function(isProgrammer, narrow) {
+				return isProgrammer && narrow;
+			},
 
 		});
 	</script>
