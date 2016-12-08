@@ -85,6 +85,7 @@
         'create-action':'createStrategy',
         'newClicked':'openNewDialog',
         'cloneClicked':'openCloneDialog',
+        'analyzeClicked':'goToAnalyze',
       },
 
       ready: function() {
@@ -159,6 +160,11 @@
         this.$.strategyCloneDialog.open();
         
       },
+
+      goToAnalyze: function(e) {
+        var strategyId = e.detail.id;
+        this.router.go('/dashboard/analyze/' + strategyId);
+      }
 
     });
   </script>
