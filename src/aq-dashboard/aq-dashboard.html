@@ -34,14 +34,14 @@
       }
 
       .paper-header {
-        position: relative;
+          position: relative;
       }
 
     paper-drawer-panel {
       height:100%;
-      background-color: #EFEFEF;--D9D9D9;--#E0F2F1
-
+      background-color: #EFEFEF;--D9D9D9;--#E0F2F1   
     }
+
     </style>
     
     
@@ -227,12 +227,7 @@
             this.currentTab = lastTab;
         },
 
-        ready: function() { 
-            //localStorage.removeItem('my-app-storage');
-        },
-
         initializeDefaultValue: function() {
-            //console.log("Initializing localStorage");
             if(!localStorage.getItem('my-app-storage')) {
               this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
               this.$.localStorage.save();
@@ -240,8 +235,6 @@
         },
 
         checkHasToken: function() {  
-
-          //console.log("Checking Token");
           var x = localStorage.getItem('my-app-storage');
           if (x) {
             var user = JSON.parse(x).user;
@@ -254,8 +247,6 @@
           if (this.hasToken) {
             this.token = user.token;
           }
-
-          //console.log("HasToken: " + this.hasToken);
           return this.hasToken;
 
           
@@ -341,24 +332,16 @@
 
         _currentTabChanged: function(newTab, oldTab) {        
           
-          ////console.log(oldTab);
-          
           if (!(oldTab + 1)) {
             return;
           }
-
-          ////console.log(oldTab);
           
           this.checkHasToken();
               
           this.showSidebar = (newTab == 1);  
           
-          //console.log(localStorage);
           this.set('aimsquant.lastTab', newTab);
-          
-          //this.$.localStorage.save();
-          //console.log(localStorage);
-          
+            
           path = ['/main', 
                   '/dashboard', 
                   //'/investments', 
@@ -415,42 +398,31 @@
         },
 
         _onOpen: function(e){
-            //console.log("Open");
-            //this.$.backtestDisplay.reset();
-            //this.$.webSocketConn.send("run");
         },
 
         _onMessage: function(e) {   
-
-            ////console.log(this.backtestId);
-            ////console.log(e.detail);
-            var backtestId = this.backtestId;
-
+            var backtestId = e.detail.backtest_id;
+            if (!this.backtests[backtestId]) {
+              return;
+            }
+              
             this.backtests[backtestId].data.push(e.detail);
-            
             var bulksent = this.backtests[backtestId].bulksent;
             var subscription = this.backtests[backtestId].subscription;
-            var alldata = this.backtests[backtestId].data; 
-            
+            var alldata = this.backtests[backtestId].data;    
+                     
             if(subscription && !bulksent) {
               this.fire('iron-signal',{name:'bulk-data', data:alldata});
               this.backtests[backtestId].bulksent = true;
             } else if (subscription){
               this.fire('iron-signal',{name:'point-data', data:e.detail});
             }
-
-            /*if (e.detail.outputtype == "performance") {
-              //this.$.backtestDisplay.addLineData(e.detail);
-            }*/
         },
 
         _onError: function(e) {
-            //console.log(e.detail.data);
-            //console.log("Error");        
         },
 
         _onClose: function(e) {
-            //console.log("Close:");
         },
 
         requestExecution: function(e) {
@@ -468,22 +440,14 @@
         },
 
         onSubscription: function(e) {
-          //console.log("Recording Subscriber");
           var backtestId = e.detail.backtestId;
           
           if(this.backtests[backtestId]) { 
-            ////console.log(this.backtests[backtestId]);
             this.backtests[backtestId].subscription = true;
-          } else {
-            ////console.log("Cannot be subscribed. No RT data");
           }
-          //debugger;
-          //this.fire('iron-signal',{name:'data',data:this.backtests[e.detail.backtestId]});
         },
 
         onUnsubscription: function(e) {   
-          //console.log("Unsubscribing");
-          
           var backtestId = e.detail.backtestId; 
           
           if(this.backtests[backtestId]) {
@@ -499,8 +463,6 @@
             if(lastRequest!='') {
               this.$$('#router').go(lastRequest);
             } else {
-              //console.log("Here");
-              //console.log(this.$$('#router'));
               this.async(this.$$('#router').go('/dashboard'), 1000);
             }
         },
