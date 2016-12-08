@@ -23,7 +23,7 @@
 	        border: 1px solid #9ecbda;
 	        border-top: none;
 	        background-color: #e5f1f5;
-	        color:#02558b;
+	        color:#24293d;--#02558b;
 	      }
 
         .row {
@@ -42,12 +42,11 @@
         }
 
         paper-checkbox {
-	        --paper-checkbox-checked-color: #cf6766;--#333a56; --#99ced4;
+	        --paper-checkbox-checked-color: #cf6766;--#24293d; --#99ced4;
         }
-
 	    
         .row.hover {
-	        background:#bbdae5;--#c9e2ea;--#acd2df;#e5f1f5; ---#e7e8ee; --#b2b6c5; --#afb4c9; --#828bab;--#616b91; --#E0F2F1;
+	        background:#bbdae5;
 	    }
    
         .strategy-name {
@@ -81,12 +80,9 @@
 	        display: none;
         }
 
-        .row .strategy-desc{
-	        --color: #757575;
-	    }
 
 	    .row:hover {
-	    	background-color: #e1f3f9;--#ced8dc;
+	    	background:#bbdae5;
 	    }
 
 	    
@@ -127,7 +123,7 @@
 			},
 
 			goToAnalyze: function() {
-				this.fire('analyzeClicked');//, {id:this.strategyId});
+				this.fire('analyzeClicked',{id:this.strategyId});
 			},
 
 			onCheck: function() {

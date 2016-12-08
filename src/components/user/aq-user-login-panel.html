@@ -17,7 +17,7 @@
             --color:white;
             margin:auto 0;
             z-index: 2;
-            --background-color: #333a56;
+            --background-color: #24293d;
             opacity: 2 !important;
         }
 
@@ -26,10 +26,10 @@
             margin: 0 auto;
             --padding-top: 50px;
             --margin-top: 50px;
-            background-color: #333b56;
+            background-color: #24293d;
             --height:100%;
             --margin-top: -30px;
-            --opacity: 0.5;
+            opacity: 1.0;
         }
 
         .dialog-fields {
@@ -95,7 +95,7 @@
         }
 
         paper-card {
-            --paper-card-header-color:#333a56;
+            --paper-card-header-color:#24293d;
             --paper-card-header:{
                 text-align:center;
             };
@@ -107,19 +107,19 @@
         
         paper-input {
             --paper-input-container-underline-focus:{
-                background-color: #333a56;
+                background-color: #24293d;
             }
         }
 
         gold-email-input {
             --paper-input-container-underline-focus:{
-                background-color: #333a56;
+                background-color: #24293d;
             }
         }
 
         paper-button.signinButton {
             margin-top: 20px !important;
-            background: #333a56;
+            background: #24293d;
             color: white;
             width:200px;
             margin: 0 auto;
@@ -221,17 +221,6 @@
                             on-focus="onConfirmPasswordFocus"
                             on-focusout="onConfirmPasswordFocusOut"
                             invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'></paper-input>
-
-                        <!--paper-checkbox noink checked="{{acceptPolicy}}">
-          </paper-checkbox-->
-                        <!--div id='tclabel'>
-                            <span>By clicking
-                                {{actionButtonLabel}}, you agree to accept
-                                <a href="">Term of Use</a>
-                                and
-                                <a href="">Privacy Policy</a>
-                            </span>
-                        </div-->
                     </template>
                     <iron-ajax 
                         url="http://localhost:3002/api/v2/user" 
@@ -278,20 +267,6 @@
             </paper-card>
 
         </div>
-
-         <!--iron-localstorage
-          id='localStorage'  
-          name="my-app-storage"
-          value="{{aimsquant}}"
-          >
-        </iron-localstorage-->
-
-          <!--iron-localstorage
-            id='localStorage'
-            name="my-app-storage"
-            value="{{aimsquant}}">
-            
-        </iron-localstorage-->
 
     </template>
 

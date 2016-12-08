@@ -21,8 +21,8 @@
     }
 
     #content {
-       border-right: 1px solid #9ecbda;--#e5e5e5; 
-       background-color: #e5f1f5;
+       border-right: 1px solid #e0e0e0;--#5f6ca0;--#24293d;--#9ecbda;--#e5e5e5; 
+       background-color: #f4f9fb;--#e5f1f5;
     }
 
 
@@ -31,21 +31,38 @@
         text-align: left;
         margin-left: 0px !important;
       };
-      --paper-toolbar-background: #333a56;
-      border-bottom: 2px solid #cf6766;
+      --paper-toolbar-background: #24293d;
+      border-bottom: 5px solid #cf6766;
       height:70px;
     }
    
     paper-menu {
       padding-bottom: 0;
-      background-color: #e5f1f5;
+      background-color: #f4f9fb;--#e5f1f5;
       opacity: var(--dark-primary-opacity);
+
+      --paper-menu-focused-item-after :{
+        --background-color:white;
+      }
+
+      --paper-menu-selected-item: {
+        --text-decoration: underline;
+        background-color: #f4f9fb;
+        border: 1px solid #e24e42;;
+      }
+
+      --paper-menu-focused-item: {
+        --text-decoration: underline;
+        background-color: none !important;
+      }
+
     }
 
-     iron-icon{
+    iron-icon{
      --iron-icon-width:20px;
      --iron-icon-height:20px;
-     color:#333a56;
+     --color:#24293d;
+     color:#cf6766 !important;
    }
 
    paper-icon-item {
@@ -57,7 +74,7 @@
       --paper-icon-item: {
         cursor: pointer;
         font-size: 13px;
-        color:#333a56;--white;
+        color:#24293d;--white;
         width:75%;  
         margin: 0 auto;
       }
@@ -66,15 +83,16 @@
     paper-icon-item {
       --paper-item-min-height:35px;
       --paper-item-icon-width:35px;
-      
-      --paper-item-icon: {
-        color: white;
-      }
-
-      --paper-item-selected: {
-        background-color: #9ecbda;
-      }
     }
+
+    paper-icon-item {
+      --paper-item-focused-before:{
+        background-color:white; 
+      }
+      
+    }
+
+   
 
     #navigation {
       margin-top:30px;
@@ -98,6 +116,11 @@
       margin-left:10px;
     }
 
+    #homeIcon{
+      --color:#e24e42;
+    }
+
+
    
   </style>
 
@@ -114,11 +137,11 @@
                     selected="{{menuSelected}}" 
                     attr-for-selected="menu-panel">
           <paper-icon-item id='menu-home' menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
-            <iron-icon item-icon icon="aq-icons:home"></iron-icon>
+            <iron-icon id="homeIcon" item-icon icon="aq-icons:home"></iron-icon>
           </paper-icon-item>
 
           <paper-icon-item id='menu-editor' menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, 'editor')}}">Strategy Builder
-            <iron-icon item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
+            <iron-icon id="editorIcon" item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
           </paper-icon-item>
 
           <!--paper-icon-item id='menu-analyze' menu-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">Analyze
@@ -126,11 +149,11 @@
           </paper-icon-item-->
           
           <paper-icon-item menu-panel="community" on-tap="onSelected" active="{{_isEqual(menuSelected, 'community')}}">Community
-            <iron-icon item-icon icon="vaadin-icons:group"></iron-icon>
+            <iron-icon id="communityIcon" item-icon icon="vaadin-icons:group"></iron-icon>
           </paper-icon-item>
    
           <paper-icon-item menu-panel="help" on-tap="onSelected" active="{{_isEqual(menuSelected,'help')}}">Help
-            <iron-icon item-icon icon="vaadin-icons:book"></iron-icon>
+            <iron-icon id="helpIcon" item-icon icon="vaadin-icons:book"></iron-icon>
           </paper-icon-item>
         </paper-menu>
 
@@ -141,7 +164,7 @@
         <div class='nav-header' style="margin-bottom:15px;"><span >QUICK ACTIONS</span>
         </div>
         <paper-icon-item menu-panel = 'editor' action-panel='createstrategy' on-tap="onAction">Create a Strategy
-          <iron-icon item-icon icon="vaadin-icons:edit"></iron-icon>
+          <iron-icon id="createIcon" item-icon icon="vaadin-icons:edit"></iron-icon>
         </paper-icon-item>
           
         <!--paper-icon-item menu-panel = 'editor'action-panel='comparebacktests' on-tap="onAction">Compare Backtests
@@ -149,15 +172,15 @@
         </paper-icon-item-->
 
         <paper-icon-item menu-panel = 'community' action-panel='createpost' on-tap="onAction">Write a Post
-          <iron-icon item-icon icon="aq-icons:comment"></iron-icon>
+          <iron-icon id="commentIcon" item-icon icon="aq-icons:comment"></iron-icon>
         </paper-icon-item>
         
         <paper-icon-item menu-panel = '' action-panel='sendfeedback' on-tap="onAction">Send us Feedback
-          <iron-icon item-icon icon="aq-icons:feedback"></iron-icon>
+          <iron-icon id="feedbackIcon" item-icon icon="aq-icons:feedback"></iron-icon>
         </paper-icon-item>
 
         <paper-icon-item menu-panel = '' action-panel='invitefriend' on-tap="onAction">Invite a Friend
-          <iron-icon item-icon icon="aq-icons:person-add">
+          <iron-icon id="friendIcon" item-icon icon="aq-icons:person-add">
           </iron-icon>
         </paper-icon-item>
 

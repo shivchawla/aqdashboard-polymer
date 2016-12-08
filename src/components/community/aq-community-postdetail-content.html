@@ -1,7 +1,4 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel="import" href="../../../bower_components/marked-element/marked-element.html">
-<link rel="import" href="../../../bower_components/prism-element/prism-highlighter.html">
-
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../common/aq-backtest-detail-item.html">
 <link rel="import" href="../profile-img.html">
@@ -63,14 +60,9 @@
           </div>
       </div>
 
-      <!--prism-highlighter></prism-highlighter-->
-      <!--marked-element markdown="{{item.markdownText}}">
-        <div class="markdown-html"></div>
-      </marked-element-->
 
       <aq-help-marked-item help-text="{{item.markdownText}}"></aq-help-marked-item>
 
-      <!--aq-backtest-detail-item></aq-backtest-detail-item-->
       
     </div>
 
@@ -87,6 +79,7 @@
         createdAt: String,
         postText: String,
       },
+
       ready: function() {
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
@@ -95,11 +88,7 @@
               "aimsquant-token": user.token,
               "Content-Type": "application/json"};  
           }
-          
-          //hljs.configure({languages:['Markdown','Julia','julia']});
-            /*$('pre code').each(function(i, block) {
-               hljs.highlightBlock(block);
-            });*/          
+                    
       },
 
       getinitials: function(item) {

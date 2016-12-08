@@ -44,13 +44,13 @@
         #container {
             margin:0 auto;
             margin-top: 20px;
-            color: #333a56;
+            color: #24293d;
             width: 90%;
           }
 
 
         #fab {
-            background: #333a56;
+            background: #24293d;
             --float: right;
             position: fixed;
             right: 25px;
@@ -67,8 +67,9 @@
             max-width: 350px;
             font-size: 16px;
             margin-top: 20px;
-            border-bottom: 2px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: teal !important;     
+            border-bottom: 1px solid #e5e5e5;
+            --paper-tabs-selection-bar-color: teal !important;
+            margin-bottom: -10px;  
         }
 
         #allposts {
@@ -78,6 +79,12 @@
         #ifsearch {
           display: none;
         }
+          
+        paper-tab.iron-selected {
+          color: teal;
+        }
+  
+        
 
     </style>
     <template>
@@ -118,10 +125,10 @@
             </div>
 
             <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
-                <paper-tab>Popular</paper-tab>
-                <paper-tab>Newest</paper-tab>
-                <paper-tab>Following</paper-tab>
-                <paper-tab>Personal</paper-tab>
+                <paper-tab id="popular">Popular</paper-tab>
+                <paper-tab id="newest">Newest</paper-tab>
+                <paper-tab id="following">Following</paper-tab>
+                <paper-tab id="personal">Personal</paper-tab>
             </paper-tabs>
 
             <div id='allposts'>
