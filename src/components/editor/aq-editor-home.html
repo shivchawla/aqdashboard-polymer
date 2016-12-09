@@ -380,7 +380,8 @@
         },
 
         goToEditor: function(e) {
-        	var strategyId = this._currentRow.id;
+        	//var strategyId = this._currentRow.id;
+        	var strategyId = e.detail.id;
         	this.router.go('/dashboard/editor/' + strategyId);
         },
 
