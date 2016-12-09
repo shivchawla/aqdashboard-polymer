@@ -100,6 +100,10 @@
 			font-size:20px;
 		}
 
+		#createdAt {
+			width:120px !important;
+		}
+
 
 	</style>
 
@@ -123,7 +127,7 @@
 
 					
 					<div class="layout vertical metric flex">	
-						<span class="bold-span">[[backtest.createdAt]]</span>
+						<span id="createdAt" class="bold-span flex">[[backtest.createdAt]]</span>
 						<span>Created</span>					
 					</div>	
 
@@ -315,7 +319,7 @@
 				this.set('backtest.startDate',this.formatDate(this.backtest.settings.start));
 				this.set('backtest.endDate',this.formatDate(this.backtest.settings.end));
 				this.set('backtest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
-				this.set('backtest.createdAt',this.formatDate(this.backtest.createdAt));
+				this.set('backtest.createdAt', this.formatDateTime(this.backtest.createdAt));
 			},
 
 			formatDate: function(date) {
@@ -335,6 +339,18 @@
 
 				today = dd+'/'+mm+'/'+yyyy;
 				return today;
+			},
+
+			formatDateTime: function(date) {
+				date = new Date(date);	
+			  	var hours = date.getHours();
+			  	var minutes = date.getMinutes();
+			  	var ampm = hours >= 12 ? 'PM' : 'AM';
+			  	hours = hours % 12;
+			  	hours = hours ? hours : 12; // the hour '0' should be '12'
+			  	minutes = minutes < 10 ? '0'+minutes : minutes;
+		  		var strTime = hours + ':' + minutes + ' ' + ampm;
+			  	return  date.getDate()+ "/" + (date.getMonth()+1) + "/" + date.getFullYear() + "  " + strTime;
 			},
 
 			isBacktestActive: function(backtest) {
