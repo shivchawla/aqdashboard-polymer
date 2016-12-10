@@ -42,6 +42,10 @@
       background-color: #EFEFEF;--D9D9D9;--#E0F2F1   
     }
 
+    paper-header-panel {
+      height: 100%;
+    }
+
     </style>
     
     
@@ -111,6 +115,32 @@
           on-iron-localstorage-load-empty="initializeDefaultValue">
         </iron-localstorage>
 
+      <iron-ajax 
+        url="http://localhost:3002/api/v2/user/sendFeedback" 
+        body="{{feedBackData}}" 
+        method='POST' 
+        id='postFeedbackQuery' 
+        headers='{{header}}' 
+        handle-as="json" 
+        on-response="onPostFeedbackResponse"
+        on-error="onPostFeedbackError" 
+        last-response="{{ajaxResponse}}" 
+        debounce-duration="300">
+      </iron-ajax>
+
+      <iron-ajax 
+        url="http://localhost:3002/api/v2/user/sendInvite" 
+        body="{{inviteData}}" 
+        method='POST' 
+        id='sendInviteQuery' 
+        headers='{{header}}' 
+        handle-as="json" 
+        on-response="onSendInviteResponse"
+        on-error="onSendInviteError" 
+        last-response="{{ajaxResponse}}" 
+        debounce-duration="300">
+      </iron-ajax>
+
   </template>
 
   <script>
@@ -163,6 +193,12 @@
             value:{},
           },
 
+          inviteData:Object,
+
+          feedBackData:Object,
+
+          header:Object,
+
         },
 
         listeners: {
@@ -183,6 +219,7 @@
             'subscribe-data':'onSubscription',
             'unsubscribe-data':'onUnsubscription',
             'update-token':'onTokenUpdate',
+            'scroll-top':'scrollToTop',
         },
 
         attached: function() {
@@ -225,13 +262,19 @@
             }
 
             this.currentTab = lastTab;
+
+            if(localStorage.getItem('my-app-storage')) {
+              
+              this.set('aimsquant.community.lastPage', 1);
+              this.$.localStorage.save();
+            }
         },
 
         initializeDefaultValue: function() {
             if(!localStorage.getItem('my-app-storage')) {
               this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
               this.$.localStorage.save();
-            }
+            } 
         },
 
         checkHasToken: function() {  
@@ -383,7 +426,26 @@
         },
 
         sendFeedBack: function(e){
+          this.feedBackData = {"feedback":e.detail.feedback, "subject":e.detail.subject};
 
+          console.log(this.feedBackData);
+
+          if (this.checkHasToken()) {
+            this.header = {
+              "aimsquant-token": this.token,
+              "Content-Type": "application/json"};  
+          }
+          this.$.postFeedbackQuery.generateRequest();
+        },
+
+        onPostFeedbackResponse: function (e) {
+          console.log("Success Posting Feedback");
+          console.log(e.detail.response);
+        },
+
+        onPostFeedbackError: function(e) {
+            console.log("Error Posting Feedback");
+            console.log(e.detail.response);
         },
 
         openInviteDialog: function() {
@@ -391,6 +453,23 @@
         },
 
         sendInvite: function(e) {
+          this.inviteData = {email_list:e.detail.address};
+          if (this.checkHasToken()) {
+            this.header = {
+              "aimsquant-token": this.token,
+              "Content-Type": "application/json"};  
+          }
+          this.$.sendInviteQuery.generateRequest();
+        },
+
+        onSendInviteResponse: function(e) {
+          console.log("Suceess Sending Invite");
+          console.log(e.detail.response);
+        },
+
+        onSendInviteError: function(e) {
+          console.log("Error Sending Invite");
+          console.log(e.detail.response);
         },
 
         onMyAccount: function() {
@@ -465,6 +544,12 @@
             } else {
               this.async(this.$$('#router').go('/dashboard'), 1000);
             }
+        },
+
+        scrollToTop: function() {
+      
+          //this.$.container.scrollHeight;
+              
         },
 
     });
