@@ -1,5 +1,8 @@
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
+<link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
+
 
 <dom-module id='aq-community-home-searchbar'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -31,6 +34,7 @@
 		  min-width: 400px;
 		  margin-left: -5px;
 		  padding-right: 10px;
+		  display: none;
 		}
 
 		#searchbox:focus{
@@ -86,16 +90,45 @@
 
 		}
 
+		.iconButton {
+			outline:1px solid #e5e5e5;
+			width:35px;
+    		height:35px;
+    		--margin-right: 10px;
+    		--min-width:25px;
+    		--max-width:35px;
+    		--color: white; --#188364; --#24293d; 
+    		--background-color: #cf6766;
+		}
+
+
 	</style>
 	
 	<template>
-      		<div id="search" class="wrap flex layout horizontal">
-	    		<aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown>
-    		
+      		<!--div id="search" class="layout vertical"-->
+	    		<!--aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown-->
+    			
+	  			<div id="search" class="layout horizontal">
+	  				
+	  				<div class="layout vertical">
+	  				
+		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-search="onSearch" on-blur='blur'>
 
-	  			<input id="searchbox" placeholder="Search posts" class="flex"
-	         	value="{{searchValue::input}}" type="search" on-search="onSearch">	
-			</div>
+		  				<!--paper-radio-group attr-for-selected="index">
+				         	<template is='dom-repeat' items='{{categories}}'>
+								<paper-radio-button index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
+							</template>
+						</paper-radio-group-->
+					</div>
+
+	         	 	<paper-icon-button id='searchIcon' noink class="iconButton self-center" title="Search" icon="aq-icons:search" on-tap="toggle" raised> 
+                	</paper-icon-button>
+            	</div>
+     	
+
+	         	
+
+			<!--/div-->
 	</template>
 	<script >
 				
@@ -120,15 +153,35 @@
 				},
 			},
 
-			ready: function() {
-				//this.categories = categories;
-			},
-
 			onSearch: function(e) {
 				
-                this.fire('search-action', {text: this.searchValue, category: this.$.category_dd.getSelectedValue()});
+                this.fire('search-action', {text: this.searchValue, category: ""});//this.$.category_dd.getSelectedValue()});
+
+             	if(this.$.searchbox.value=="") {
+                	this.toggle();
+    			}
            
 			},
+
+			toggle: function() {
+              var d = this.$.searchbox.style.display;
+              if (d == "block") {
+                this.$.searchbox.style.display = 'none';
+                this.$.searchIcon.style.display = 'inline';
+              } else {
+                this.$.searchbox.style.display = 'block';
+                this.$.searchIcon.style.display = 'none';
+                this.$.searchbox.focus();
+                this.$.searchbox.value = "";
+              }
+            },
+
+             blur: function() {
+            	if(this.$$('#searchbox').value=="") {
+            		this.$$('#searchbox').style.display = 'none';
+					this.$$('#searchIcon').style.display = 'inline';
+				} 
+            },
 
 		});
 		

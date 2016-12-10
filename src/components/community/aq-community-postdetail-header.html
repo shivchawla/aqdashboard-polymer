@@ -20,6 +20,10 @@
       font-size: 30px;
     }
 
+    #heading span {
+      color:#cf6766;--#c3403f;
+    }
+
     #category {
      font-size: 15px;
      margin-top:5px;
@@ -48,9 +52,10 @@
       margin-right: 15px;
       margin-top:5px;
       outline: 1px solid; 
-      --color: white;
-      --background-color: #cf6766;
+      color: #cf6766; --white;
+      background-color: white; 
     }
+
 
     #header-content {
       margin-top: 30px;
@@ -68,7 +73,7 @@
       <div class="layout horizontal">
         <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
         <div class="flex"></div>
-        <paper-icon-button title="Follow" icon="aq-icons:megafone" on-tap='onFollow'></paper-icon-button>
+        <paper-icon-button title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
       </div>
 
       <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>
