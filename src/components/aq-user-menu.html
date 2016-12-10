@@ -30,7 +30,7 @@
             border-bottom: 1px solid #dfdfdf;
             color: #24293d;
             width:100%;
-            --background-color: #e5f1f5;
+            background-color: #f2fbf7;--#e5f1f5;
         }
 
         paper-button {
@@ -43,13 +43,21 @@
         }
 
         #top {
-            background-color: #99ced4;--teal;
+            background-color: #d0f0e1;--#99ced4;--teal;
             border-bottom: 1px solid #dfdfdf;
         }
 
         span {
             font-size: 13px;
         }
+
+      iron-icon {
+        height:18px;
+        width: 18px;
+        color: #cf6766;--teal;
+        --margin-bottom: -35px;
+        --margin-top:-15px;
+      }
 
     </style>
 
@@ -72,18 +80,24 @@
 
                     <div class="layout vertical">        
                         <div class="button self-start flex">
-                            <paper-button noink on-tap="onMyAccount">My Account</paper-button>
+                            <paper-button noink on-tap="onMyAccount"><iron-icon icon="vaadin-icons:user">
+                                
+                            </iron-icon>&nbsp&nbspMy Account</paper-button>
                         </div>
                         
                         <div class="button self-start">
-                            <paper-button noink on-tap="onInvite">Invite a Friend</paper-button>
+                            <paper-button noink on-tap="onInvite"><iron-icon icon="aq-icons:person-add"></iron-icon>&nbsp&nbspInvite a Friend</paper-button>
                         </div>
 
                         <div class="button self-start">
-                            <paper-button noink on-tap="onFeedback">Send us Feedback</paper-button>
+                            <paper-button noink on-tap="onFeedback"><iron-icon icon="aq-icons:feedback">
+                                
+                            </iron-icon>&nbsp&nbspSend us Feedback</paper-button>
                         </div>
                         <div class="button self-start">
-                            <paper-button noink on-tap="onSignOut">Sign Out</paper-button>
+                            <paper-button noink on-tap="onSignOut"><iron-icon icon="vaadin-icons:sign-out">
+                                
+                            </iron-icon>&nbsp&nbspSign Out</paper-button>
                         </div>
                     </div>
         </paper-menu-button>
