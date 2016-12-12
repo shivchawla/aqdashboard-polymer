@@ -5,6 +5,7 @@
 <link rel="import" href="../aq-markdown-editor.html">
 
 <link rel="import" href="./aq-community-postdetail-header.html">
+<link rel="import" href="./aq-community-postdetail-content.html">
 
 <dom-module id="aq-community-previewpost">
     
@@ -45,7 +46,13 @@
                 <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>
             
-            <aq-community-postdetail-header post-header="[[threadData]]"></aq-community-postdetail-header>
+            <template is='dom-if' if='[[reply]]'>
+                <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
+            </template>
+
+            <template is='dom-if' if='[[!reply]]'>
+                <aq-community-postdetail-header preview=1 post-header="[[threadData]]"></aq-community-postdetail-header>
+            </template>
             
             <div id='buttons' class="layout horizontal">
                 <div class="flex"></div>
@@ -53,7 +60,8 @@
                 <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>   
 
-        </div>        
+        </div> 
+
     </template>
 
     <script>
@@ -64,10 +72,16 @@
           
           threadData:Object,
 
+          reply:{
+            type:Boolean,
+            value:false,
+          },
+
         },
 
         attached: function() {
             console.log(this.threadData);
+            console.log(this.reply);
         },
         
         onEdit: function() {

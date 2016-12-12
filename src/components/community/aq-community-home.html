@@ -45,7 +45,8 @@
             margin:0 auto;
             margin-top: 20px;
             color: #24293d;
-            width: 90%;
+            width: 95%;
+            margin-left: 2%;
             
             overflow-y: scroll;
           }
@@ -77,6 +78,8 @@
         #allposts {
             margin-top: 50px;
             --margin-left:auto;
+            margin-right: 0px;
+            margin-left: 0px;
         }
 
         #ifsearch {
@@ -111,7 +114,7 @@
 
         <div id='container' class="layout vertical">
             
-            <div class="layout horizontal wrap ">
+            <div class="layout horizontal wrap">
               <div id="header">
                 <p> AimsQuant Community</p>
                 <i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>
@@ -120,7 +123,7 @@
               <div class="flex"></div>
   
               <aq-community-home-searchbar id='searchbar' 
-                                      class="self-center">
+                                      class="self-end">
               </aq-community-home-searchbar> 
             
             </div>
@@ -150,7 +153,8 @@
                         author-lastname="{{item.user.lastName}}"
                         author-address="{{item.user.email}}"
                         post-date="{{format(item.createdAt)}}"
-                        total-replies={{item.replies.length}}
+                        total-replies="{{item.replies.length}}"
+                        total-followers = "{{item.followers.length}}"
                         total-views="{{item.views}}"
                         post-category="{{item.category}}"
                         post-content="{{item.markdownText}}">
@@ -163,8 +167,8 @@
             <template is='dom-if' if='[[items]]'>
                 <aq-pagination class="self-center" 
                                 per-page="[[perPage]]"   
-                                page-count="[[pageCount]]"
-                                current-page="{{currentPage}}">
+                                current-page="{{currentPage}}"
+                                total-items="[[totalItems]]">
                                   
                 </aq-pagination>
             </template>
@@ -217,9 +221,8 @@
                   value:10,
                 },
 
-                pageCount: {
+                totalItems: {
                   type:Number,
-                  value:10,
                 },
 
                 aimsquant:Object,
@@ -278,6 +281,7 @@
             onGetAllThreadsResponse: function(data) {
               console.log(data.detail.response);
                 this.items = data.detail.response.threads;
+                this.totalItems = data.detail.response.count;
             },
 
             onGetAllThreadsError: function(data) {

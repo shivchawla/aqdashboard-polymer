@@ -2,6 +2,8 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <link rel="import" href="../aq-markdown-editor.html">
+<link rel="import" href="./aq-community-previewpost.html">
+<link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
 <dom-module id="aq-community-postdetail-reply">
 
@@ -10,13 +12,12 @@
    
   <style>
 
-    #attachButton {
+    #attachButton {    
         margin-bottom: -40px;
-        margin-right:5px;
-    }
-
-    #attachButton paper-button {
+        margin-right: 5px;
+        color:teal;
         border:none !important;
+        z-index: 2;
     }
 
     paper-button {
@@ -27,27 +28,62 @@
 
     #buttons{
         margin-bottom: 10px;
+        margin-top:10px;
+    }
+
+    #errorMessage {
+      color:#c3403f;
+    }
+
+    #attachedMessageDiv {
+        --display: none;
+        color:#c3403f;
+        font-size:14px;
+        height:32px;
+        margin-bottom: 10px;
+    }
+
+    #removeIcon {
+        width:25px;
+        height:25px;
+        display: none;
+        padding:5px;
     }
 
 
   </style>
 
   <template>
-      <div id='attachButton' class="layout horizontal flex">
-          <div class="flex"></div>
-          <paper-button class="self-end" raised noink on-tap='attachSelected'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
-      </div>
+
+      <template is='dom-if' if="[[preview]]">
+          <aq-community-previewpost reply=1 thread-data="[[threadData]]"></aq-community-previewpost>  
+      </template>
+
+      <template is='dom-if' if="[[!preview]]">           
         
-      <div id="replybox" class="flex layout vertical">
-        <aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>
-        <div class="layout horizontal" id='buttons'>
-            <div><i>[[error]]</i></div>
-            <div class="flex"></div>
-            <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
-            <paper-button raised noink on-tap="postThread">Reply</paper-button>
+        <div id="replybox" class="flex layout vertical">
+
+          <div id="attachedMessageDiv" class="layout horizontal self-end">
+              <i class="self-end">[[attachedMessage]]</i>
+              <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="icons:remove-circle"></paper-icon-button>
+          </div>
+
+          <paper-button id='attachButton' class="self-end" raised noink on-tap='onAttach'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
+          
+          <aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>
+          
+          <div class="layout horizontal" id='buttons'>
+              <div id='errorMessage'><i>[[error]]</i></div>
+              <div class="flex"></div>
+              <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
+              <paper-button raised noink on-tap="postThread">Reply</paper-button>
+          </div>
         </div>
-      </div>
-      
+      </template>
+
+      <aq-community-attachbacktest-dialog id='btDialog'>
+        </aq-community-attachbacktest-dialog>  
+             
       <iron-ajax 
           url="http://localhost:3002/api/v2/thread/{{threadid}}" 
           body="{{threadData}}" 
@@ -68,10 +104,28 @@
       properties:{
         
         header:Object,
+        
         error: String,
+        
         threadid: String,
+        
         threadData: Object,
+        
+        attachedMessage:String,
+        
+        attachedBacktestId:String,
+        
+        preview:{
+          type:Boolean,
+          value:false,
+        },
 
+      },
+
+      listeners :{
+        'backtest-attached':'onBacktestAttached',
+        'edit-clicked':'onEdit',
+        'submit-clicked':'postThread',
       },
       
       ready: function() {
@@ -93,6 +147,8 @@
           
           if(this.processInput()) {
             this.$.postThreadQuery.generateRequest();
+            this.onRemoveAttached();
+            this.preview = false;
           } else {
               this.error = "Cannot post an empty reply. Please create a valid reply.";
           }
@@ -100,6 +156,7 @@
       },
 
       onPostReplyResponse: function(e) {
+        console.log(e.detail.response);
         var replies = e.detail.response.replies;
         if (replies.length > 0) {
           this.fire('reply-added',{reply:replies[replies.length - 1]});  
@@ -111,26 +168,25 @@
       },
 
       clearEditor: function() {
-        this.$.editor.setContent("");
+        this.$$('#editor').setContent("");
       },
 
       processInput: function() {
           const markdownText = this.$$('#editor').getContent();
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+
           this.threadData = {
               "markdownText": markdownText,
-              "user":{"firstName":"Shiv","lastName":"Chawla"},
-              "updatedAt":Date(),
+              "user":{"firstName":user.firstName,"lastName":user.lastName},
+              "updatedAt": new Date(),
+              "backtestId":this.attachedBacktestId,
           };
 
-          if(this.threadData["title"]!="" && 
-              this.threadData["category"]!="" &&
-              this.threadData["markdownText"]!=""
-            ) {
-            this.error = "";
-            return true;
-            
+          if(this.threadData["markdownText"]!="") {
+              this.error = "";
+              return true;
           } else {
-            
             return false;
           }
       },
@@ -144,6 +200,22 @@
 
       onEdit: function() {
           this.preview = false;
+      },
+
+      onAttach: function() {
+          this.$.btDialog.open();
+      },
+
+      onBacktestAttached: function(e) {
+          this.attachedBacktestId = e.detail.id;
+          this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
+          this.$$('#removeIcon').style.display = 'inline';
+      },
+
+      onRemoveAttached: function() {
+          this.attachedBacktestId = "";
+          this.attachedMessage = "";
+          this.$$('#removeIcon').style.display = 'none';
       },
 
 

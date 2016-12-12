@@ -10,31 +10,19 @@
   
 	<style>
 
-		#search {
-		  height: 46px;
-		  line-height: 48px;
-		  --max-width:70%;
-		}
-	
 		#searchbox {
 		  height: 46px;
-		  -webkit-appearance: none;
 		  line-height: 46px;
+
 		  border: 0;
 		  margin: 0;
 		  padding-left: 10px;
 		  border: 1px solid #e5e5e5;
 		  @apply(--paper-font-body1);
-		  --font-size: 16px;
 		  font-size:100%;
-		  margin-left:-0px;
-		  --border-left:none !important;
-		  margin-top:1px;
-		  max-width: 520px;
-		  min-width: 400px;
-		  margin-left: -5px;
+		  
+		  width: 600px;
 		  padding-right: 10px;
-		  display: none;
 		}
 
 		#searchbox:focus{
@@ -75,7 +63,7 @@
 	    }
 		
 		#category {
-			width: 50px
+			width: 50px;
 		}
 
 		#category_dd {
@@ -86,19 +74,29 @@
 			--dropdown-font-size:15px;
 			--dropdown-paper-menu-font-size:16px;
 			--dropdown-background-color:#99ced4;
-			--dropdown
-
 		}
 
 		.iconButton {
-			outline:1px solid #e5e5e5;
-			width:35px;
-    		height:35px;
-    		--margin-right: 10px;
+			outline:1px solid teal;
+			width:40px;
+    		height:40px;
+    		margin-right: 10px;
     		--min-width:25px;
     		--max-width:35px;
-    		--color: white; --#188364; --#24293d; 
-    		--background-color: #cf6766;
+    		color: #cf6766; --#188364; --#24293d; 
+    		--background-color: --dsdsd;
+    		--margin:auto 0;
+    		margin-bottom: 40px;
+		}
+
+		paper-radio-button {
+			--paper-radio-button-size: 12px;
+			font-size: 13px;
+			--paper-radio-button-checked-color:teal;
+		}
+
+		#searchdiv {
+			display: none;
 		}
 
 
@@ -110,18 +108,20 @@
     			
 	  			<div id="search" class="layout horizontal">
 	  				
-	  				<div class="layout vertical">
-	  				
-		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-search="onSearch" on-blur='blur'>
+  					<div id="searchdiv" on-blue='blur'>
+		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-search="onSearch">
 
-		  				<!--paper-radio-group attr-for-selected="index">
+		  				<div>
+		  				<paper-radio-group attr-for-selected="index">
 				         	<template is='dom-repeat' items='{{categories}}'>
-								<paper-radio-button index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
+								<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
 							</template>
-						</paper-radio-group-->
+						</paper-radio-group>
+						</div>
 					</div>
 
-	         	 	<paper-icon-button id='searchIcon' noink class="iconButton self-center" title="Search" icon="aq-icons:search" on-tap="toggle" raised> 
+
+	         	 	<paper-icon-button id='searchIcon' noink class="iconButton" title="Search" icon="aq-icons:search" on-tap="toggle" raised> 
                 	</paper-icon-button>
             	</div>
      	
@@ -148,7 +148,7 @@
 
 				categories:{
 					type:Array,
-					value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
+					value: [{value:"All", index:0},{value:"Share your idea",index:1},{value:"Questions and answers",index:2},{value:"News and announcements",index:3}],
 
 				},
 			},
@@ -164,12 +164,12 @@
 			},
 
 			toggle: function() {
-              var d = this.$.searchbox.style.display;
+              var d = this.$.searchdiv.style.display;
               if (d == "block") {
-                this.$.searchbox.style.display = 'none';
+                this.$.searchdiv.style.display = 'none';
                 this.$.searchIcon.style.display = 'inline';
               } else {
-                this.$.searchbox.style.display = 'block';
+                this.$.searchdiv.style.display = 'block';
                 this.$.searchIcon.style.display = 'none';
                 this.$.searchbox.focus();
                 this.$.searchbox.value = "";
@@ -178,7 +178,7 @@
 
              blur: function() {
             	if(this.$$('#searchbox').value=="") {
-            		this.$$('#searchbox').style.display = 'none';
+            		this.$$('#searchdiv').style.display = 'none';
 					this.$$('#searchIcon').style.display = 'inline';
 				} 
             },

@@ -53,17 +53,21 @@
   <template>
     <div id='post-content'>
       <div id='author' class="layout horizontal">
-        <profile-img id='img' letter="[[getinitials(item)]]" class="self-end"></profile-img>
+        <profile-img id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>
          <div id='author-desc' class="layout vertical self-center">
-              <span id="author-name">{{item.user.firstName}} {{item.user.lastName}}
-            <i style="color:teal">on {{format(item.updatedAt)}}</i></span>
+              <span id="author-name">{{postContent.user.firstName}} {{postContent.user.lastName}}
+            <i style="color:teal">on {{format(postContent.updatedAt)}}</i></span>
           </div>
       </div>
 
 
-      <aq-help-marked-item help-text="{{item.markdownText}}"></aq-help-marked-item>
+      <aq-help-marked-item help-text="{{postContent.markdownText}}"></aq-help-marked-item>
 
-      
+      <template is='dom-if' if="[[isValidBacktestId(postContent.backtestId)]]">
+          <aq-backtest-detail-item backtest-id="[[postContent.backtestId]]">
+          </aq-backtest-detail-item>
+      </template>
+
     </div>
 
   </template>
@@ -73,7 +77,7 @@
       is: 'aq-community-postdetail-content',
       properties :{
         url: String,
-        item: Object,
+        postContent: Object,
         threadId: 'threadId',
         author: String,
         createdAt: String,
@@ -97,6 +101,10 @@
 
       format: function(date) {
           return new Date(date).toLocaleTimeString("en-us", options);
+      },
+
+      isValidBacktestId: function(backtestId) {
+        return (backtestId && backtestId!="");
       },
 
 

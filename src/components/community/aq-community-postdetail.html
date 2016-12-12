@@ -63,11 +63,12 @@
             <template is="dom-repeat" 
                       items="{{threadDetails.replies}}"
                       initial-count=5>
-              <aq-community-postdetail-content item="{{item}}"></aq-community-postdetail-content>
+              <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
             </template>
           </div>
           
           <aq-community-postdetail-reply id="replyEditor" threadid="[[threadDetails._id]]"></aq-community-postdetail-reply>
+
         </div>
       </template>
 
@@ -127,7 +128,7 @@
 
         reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
         
-        replyElement.item = reply;
+        replyElement.postContent = reply;
 
         this.$$("#replyContainer").appendChild(replyElement);
         this.$$("#replyEditor").clearEditor();

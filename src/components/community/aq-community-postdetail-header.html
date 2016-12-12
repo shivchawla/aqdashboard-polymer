@@ -54,6 +54,7 @@
       outline: 1px solid; 
       color: #cf6766; --white;
       background-color: white; 
+      outline:1px solid teal;
     }
 
 
@@ -73,10 +74,10 @@
       <div class="layout horizontal">
         <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
         <div class="flex"></div>
-        <paper-icon-button title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
+        <paper-icon-button disabled="[[preview]]" title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
       </div>
 
-      <aq-community-postdetail-content item="[[postHeader]]"></aq-community-postdetail-content>
+      <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
 
     </div>
 
@@ -97,7 +98,13 @@
 
       properties :{
         postHeader: Object,
+        
         header:Object,
+        
+        preview:{
+          type:Boolean,
+          value:false,
+        },
       },
 
       ready: function() {

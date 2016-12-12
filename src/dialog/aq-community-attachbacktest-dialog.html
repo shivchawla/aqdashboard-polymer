@@ -1,0 +1,255 @@
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel='import' href='../../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
+<link rel='import' href='../components/analyze/aq-analyze-home-backtest-item2.html'>
+
+<dom-module id="aq-community-attachbacktest-dialog">
+    
+    <style  include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+       
+        paper-button {
+            --border: 1px solid #24293d;
+            height:30px;
+            font-size: 13px;
+            color: teal;
+        }
+
+        paper-icon-button {
+            color: #c3403f;
+        }
+
+        paper-icon-button:active {
+            padding: 10px;
+        }
+
+        #buttons{
+            margin-bottom: 10px;
+        }
+
+        #container-bt {
+            margin-top: 15px;
+            width:95%;
+            margin: 0 auto;
+        }
+
+        .heading {
+            font-style: italic;
+            font-size:19px;
+            --font-weight: bold;
+            color:#c3403f;
+        }
+
+        paper-dialog{
+            height: 100%;
+            width:850px;
+            border: 2px solid #c3403f;
+        }
+
+        paper-drawer-panel {
+            height: 90%;
+            width: 90%;
+            margin-left: 20px;
+        }
+
+        #strategyPanel {
+            background-color: #f2fbf7;
+            width:250px;
+        }
+
+        paper-item {
+          --paper-item-selected: {
+        
+            background-color: #e3f6ed;--#f4f9fb;
+            border: 1px solid #e24e42;
+            }
+        }
+
+        paper-listbox {
+            background-color: #f2fbf7;
+        }
+
+       
+        #toolbar {
+            --paper-toolbar-height:35px;
+            --paper-toolbar-background: #e3f6ed;
+            margin-bottom: 5px;
+        }
+
+        #btPanel {
+            width:550px;
+        }
+
+    </style>
+
+    <template>
+
+        <paper-dialog with-backdrop=1 id='selectBacktestDialog'>
+            <paper-drawer-panel right-drawer>
+            
+            <paper-header-panel id="btPanel" main mode="seamed">
+                <paper-toolbar id="toolbar">
+                    <p class="heading">Attach a Backtest</p>
+                    <div class="flex"></div>
+                    <paper-icon-button id='attachButton' disabled=[[!isAttachButtonActive(checkedCount)]] noink on-tap='onAttach' icon="aq-icons:attach-file" title="Attach Backtest"></paper-icon-button>
+                    <paper-icon-button  id="menuButton" icon="menu" paper-drawer-toggle title="Toggle Strategies"></paper-icon-button>
+                </paper-toolbar>
+                
+                <div id='container-bt' class="flex">
+                <template is='dom-repeat' items="[[backtests]]">
+                    <aq-analyze-home-backtest-item2 class="self-center" index="[[index]]" backtest="[[item]]">
+                    </aq-analyze-home-backtest-item2>
+                </template>
+                </div>
+                
+            </paper-header-panel>
+
+            <div id="strategyPanel" drawer>
+                <paper-toolbar id="toolbar">
+                    <i class="heading" style="color:#24293d">Select a Strategy</i>
+                </paper-toolbar>
+
+                <paper-listbox selected="{{currentStrategyIndex}}"">
+                    <template is='dom-repeat' items="[[strategies]]">
+                        <paper-item>[[item.name]]</paper-item>
+                    </template>
+                </paper-listbox>
+            </div>
+        </paper-drawer-panel>
+        </paper-dialog>
+
+        <iron-ajax
+            url="http://localhost:3002/api/v2/strategy"
+            method='GET'
+            params="[[searchParam]]"
+            id='getStrategiesQuery'
+            handle-as="json"
+            on-response="onGetStrategiesResponse"
+            on-error="onGetStrategiesError"
+            headers='{{header}}'
+            debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax
+            url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
+            method='GET'
+            id='getBacktestsQuery'
+            handle-as="json"
+            on-response="onGetAllBacktestsForStrategy"
+            on-error="onGetAllBacktestsForStrategyError"
+            headers='{{header}}'
+            debounce-duration="300">
+        </iron-ajax>
+               
+    </template>
+
+    <script>
+      Polymer({
+        is:'aq-community-attachbacktest-dialog',
+
+        properties :{
+
+          strategies:{
+            type:Array,
+            value:[],
+          },
+          
+          backtests:{
+            type:Array,
+          },
+
+          strategId: String,
+          
+          checkedCount:{
+            type:Number,
+            value:0,
+          },
+
+          checkedId: {
+            type:Object,
+            value:{},
+          },
+
+          currentStrategyIndex: {
+            type:Number,
+            value:0,
+            observer:'_strategyChanged',
+          },
+
+        },
+
+        listeners : {
+            'backtestChecked':'onCheckedBacktest',
+        },
+
+        ready: function() {
+            var x = localStorage.getItem('my-app-storage');
+            var user = JSON.parse(x).user;
+            if (user.token) {
+              this.header = {
+                "aimsquant-token": user.token,
+                "Content-Type": "application/json"};  
+            }
+        },
+        
+        onGetStrategiesResponse: function(data) {
+            this.strategies = data.detail.response;
+            this.strategyId = this.strategies[0]._id;
+            this.$.getBacktestsQuery.generateRequest();
+        },
+
+        onGetAllBacktestsForStrategy :function(data) {
+            this.backtests = [];
+            this.backtests = data.detail.response;
+           
+        },
+
+        onCheckedBacktest: function(e) {
+            var checked = e.detail.checked;
+
+            this.checkedId[e.detail.id] = checked;
+
+            if (checked == true) {
+                this.checkedCount += 1;
+            } else {
+                this.checkedCount -= 1;
+            }
+        },
+
+        isAttachButtonActive: function(count) {
+            return count == 1;
+        },
+
+        open: function(){
+            this.$.selectBacktestDialog.open();
+            this.$.getStrategiesQuery.generateRequest();
+        },
+
+        _strategyChanged: function(newVal, oldVal) {
+            if (this.strategies) {
+                if (this.strategies[newVal]) {
+                    this.strategyId = this.strategies[newVal]._id;
+                    this.$.getBacktestsQuery.generateRequest();
+                }
+            }
+        },
+
+        onAttach: function() {
+            var key = "";
+            for (key in this.checkedId) {
+                if(this.checkedId[key]) {
+                    break;
+                }
+            }
+            this.fire('backtest-attached',{id: key});
+            this.$.selectBacktestDialog.close();
+        },
+
+      });
+    </script>
+
+</dom-module>  
