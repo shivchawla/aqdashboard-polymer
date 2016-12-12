@@ -100,7 +100,7 @@
 				<paper-tabs noink selected={{graphType1}}>
 					<paper-tab>Total Return</paper-tab>
 					<paper-tab>Monthly Returns</paper-tab>
-					<paper-tab>Risk Metrics</paper-tab>
+					<!--paper-tab>Risk Metrics</paper-tab-->
 				</paper-tabs>
 			</div>
 		          
@@ -128,7 +128,7 @@
 		  			data="[[monthlyReturnData]]">
 		  		</nvd3-multi-bar>
 		  	
-	  			<div style="width:100%">
+	  			<!--div style="width:100%">
 			  		<vaadin-grid size="0" id="table_details__comparison">
 					  <table>
 					    <colgroup class="table_style">
@@ -141,15 +141,15 @@
 					      	<!--col name="Information Ratio" sortable/>
 					      	<col name="Sortino Ratio" sortable/>
 					      	<col name="Avg Drawdown" sortable/-->
-					      	<col name="Max Drawdown" sortable/>
+					      	<!--col name="Max Drawdown" sortable/-->
 					      	<!--col name="Calmar Ratio" sortable/>
 					      	<col name="Beta Value" sortable/>
 					      	<col name="Stability" sortable/>
 					      	<col name="Avg Concentration" sortable/-->
-					    </colgroup>
+					    <!--/colgroup>
 					  </table>
 					</vaadin-grid>
-				</div>
+				</div-->
 	  		</iron-pages>
 		</div>
 		
@@ -262,14 +262,14 @@
 			addBacktestToComparison: function(backtest){	
 				this.processLineChartData(backtest);
 				this.processBarChartData(backtest);
-				this.processMetricsData(backtest);
+				//this.processMetricsData(backtest);
 				this.counter++;
 
-				if (this.counter == Object.keys(this.compareItems).length) {
+				/*if (this.counter == Object.keys(this.compareItems).length) {
 					var grid = this.$.table_details__comparison;
 					grid.items = this.tableData;
 					grid.frozenColumns = 2;
-				}
+				}*/
 			},
 
 			processLineChartData: function(data) {
@@ -376,7 +376,7 @@
 
 		        });			
 			},
-			
+
 			resetComparison: function() {
 				this.cumRetData = [];
 				this.monthlyReturnData = [];
