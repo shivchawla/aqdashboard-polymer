@@ -84,7 +84,7 @@
 				<p>All Backtests for <i>{{strategyName}}</i></p>
 				<div class="layout horizontal wrap flex around-justified itemcontainer" >
 				<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-					<aq-analyze-home-backtest-item2 index="{{index}}"" backtest="{{item}}"></aq-analyze-home-backtest-item2>
+					<aq-analyze-home-backtest-item2 index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 				</template>
 				<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 					<div class="spacer"></div>
@@ -185,7 +185,7 @@
         			this.router.go('/dashboard/community/create/'+sharebacktestId+"?share=backtest");
         		}*/
 
-    			this.router.go('/dashboard/community/create/'+e.detail.id+"?share=backtest");
+    			this.router.go('/dashboard/community/create/'+e.detail.id);///+"?share=backtest");
 			},
 
 			isBacktestCountOdd: function(backtests) {
