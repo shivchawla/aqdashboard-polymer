@@ -50,6 +50,16 @@
 				perPage: {
 					type:Number,
 				},
+
+				totalItems:{
+					type:Number,
+					observer:'_changeTotalItems',
+				},
+			},
+
+			attached: function() {
+				this.pageCount = Math.ceil(this.totalItems/this.perPage);
+				console.log(this.pageCount); 
 			},
 
 			onFirstPage: function() {
@@ -78,6 +88,12 @@
 
 			isPreviousPageActive(currentPage){
 				return this.currentPage > 1;
+			},
+
+			_changeTotalItems: function(newval, oldval) {
+				if(oldval+1 && newval){
+					this.pageCount = Math.ceil(this.totalItems/this.perPage);
+				}
 			},
 
 		})
