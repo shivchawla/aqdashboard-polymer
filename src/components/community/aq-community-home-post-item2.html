@@ -101,15 +101,21 @@
       font-size:20px;
     }
 
-    .createdAt {
-      width:200px !important;
+    #lastReplyAt {
+      width:280px !important;
 
     }
 
-    #category {
-      font-size: 12px;
+    #category{
+      font-size: 13px;
       margin-bottom: 5px;
+      --font-weight: bold;
+      font-style: italic;
+    }
+
+    #category i{
       color: teal;
+      font-weight: normal;
     }
 
 
@@ -123,7 +129,7 @@
         <div  class="container-int header layout horizontal">
           <div class="layout vertical">
             <a on-tap='goToDetail'>[[topicHeading]]</a>
-            <span id='category'><i>[[postCategory]]</i></span>
+            <span id='category'><i>[[postCategory]]</i> by [[authorFirstname]] [[authorLastname]] on [[postDate]]</span>
           </div>
           <div class="flex"></div>
           <paper-icon-button icon="vaadin-icons:external-link" on-tap='goToDetail' title='View Post'></paper-icon-button>   
@@ -139,21 +145,16 @@
       <div id='action' class="card-actions flex">     
         
         <div class="container-int layout horizontal">
-          <div class="layout vertical metric">  
-            <span class="bold-span">[[authorFirstname]] [[authorLastname]]</span>
-            <span>Created By</span>   
-          </div>
-
           
           <!--div class="layout vertical metric flex"> 
             <span class="createdAt bold-span flex">[[postDate]]</span>
             <span>Created At</span>          
-          </div-->  
+          </div>  
 
           <div class="layout vertical metric flex"> 
-            <span class="createdAt bold-span">[[postDate]]</span>
+            <span class="createdAt bold-span"></span>
             <span>Last Reply At</span>   
-          </div>
+          </div-->
 
           <div class="layout vertical metric flex"> 
             <span class="bold-span">[[totalViews]]</span>
@@ -171,6 +172,12 @@
             <span class="bold-span">[[totalFollowers]]</span>
             <span>Followers</span>             
           </div>
+
+           <div id="lastReplyAt" class="layout vertical metric">  
+            <span class="bold-span">[[getLastReplyDetails(lastreplyAuthor, lastreplyDate)]] </span>
+            <span>Last Reply</span>   
+          </div>
+
 
           <iron-icon icon="vaadin-icons:paper-clip"></iron-icon>
         </div>
@@ -191,6 +198,8 @@
         authorLastname: String,
         authorAddress: String,
         postDate: String,
+        lastreplyAuthor: String,
+        lastreplyDate:String,
         totalReplies: Number,
         totalViews: Number,
         postCategory: String,
@@ -204,6 +213,14 @@
 
       goToDetail: function() {
         this.fire('detail-action',{link:this.topicAddress});
+      },
+
+      getLastReplyDetails: function(lastreplyAuthor, lastreplyDate) {
+        if (lastreplyDate!='' && lastreplyAuthor!='') {
+          return lastreplyAuthor + " on " + lastreplyDate;
+        } else{
+          return '-';
+        }
       },
 
     

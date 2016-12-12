@@ -157,7 +157,9 @@
                         total-followers = "{{item.followers.length}}"
                         total-views="{{item.views}}"
                         post-category="{{item.category}}"
-                        post-content="{{item.markdownText}}">
+                        post-content="{{item.markdownText}}"
+                        lastreply-author="[[getReplyAuthor(item)]]"
+                        lastreply-date="[[getReplyDate(item)]]">
                       </aq-community-home-post-item2>
                   </template>
                 
@@ -341,6 +343,23 @@
 
             onDetail: function(e) {
               this.router.go(e.detail.link);
+            },
+
+            getReplyDate: function(thread) {
+              if (thread.replies.length > 0) {
+                return this.format(thread.replies[thread.replies.length-1].createdAt);
+              } else {
+                return '';
+              }
+            },
+
+            getReplyAuthor: function(thread) {
+               if (thread.replies.length > 0) {
+                var reply = thread.replies[thread.replies.length-1];
+                return reply.user.firstName +" "+ reply.user.lastName;
+              } else {
+                return '';
+              }
             },
 
 
