@@ -141,6 +141,17 @@
         debounce-duration="300">
       </iron-ajax>
 
+      <iron-ajax
+        url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+        method='GET'
+        id='getBacktestQuery'
+        handle-as="json"
+        on-response="onGetBacktestSuccess"
+        on-error="onGetBacktestError"
+        headers='{{header}}'
+        debounce-duration="300">
+        </iron-ajax>
+
   </template>
 
   <script>
@@ -192,6 +203,8 @@
             type:Object,
             value:{},
           },
+
+          backtestId: String,
 
           inviteData:Object,
 
@@ -289,6 +302,9 @@
 
           if (this.hasToken) {
             this.token = user.token;
+            this.header = {
+              "aimsquant-token": this.token,
+              "Content-Type": "application/json"};  
           }
           return this.hasToken;
 
@@ -430,11 +446,11 @@
 
           console.log(this.feedBackData);
 
-          if (this.checkHasToken()) {
+          /*if (this.checkHasToken()) {
             this.header = {
               "aimsquant-token": this.token,
               "Content-Type": "application/json"};  
-          }
+          }*/
           this.$.postFeedbackQuery.generateRequest();
         },
 
@@ -454,11 +470,11 @@
 
         sendInvite: function(e) {
           this.inviteData = {email_list:e.detail.address};
-          if (this.checkHasToken()) {
+          /*if (this.checkHasToken()) {
             this.header = {
               "aimsquant-token": this.token,
               "Content-Type": "application/json"};  
-          }
+          }*/
           this.$.sendInviteQuery.generateRequest();
         },
 
@@ -523,6 +539,7 @@
           
           if(this.backtests[backtestId]) { 
             this.backtests[backtestId].subscription = true;
+            this.async(this.managesubscriptions, 60000);
           }
         },
 
@@ -533,6 +550,8 @@
               this.backtests[backtestId].subscription = false;
               this.backtests[backtestId].bulksent = false;
           }
+
+          
         },
 
         onTokenUpdate: function(e) {
@@ -550,6 +569,28 @@
       
           //this.$.container.scrollHeight;
               
+        },
+
+        managesubscriptions: function(){ 
+          if(Object.keys(this.backtests).length > 0) {
+             for (var key in this.backtests) {
+              this.backtestId = key;
+              this.$.getBacktestQuery.generateRequest();
+             } 
+
+             this.async(this.managesubscriptions, 60000);
+          }
+
+        },
+
+        onGetBacktestSuccess: function(e){
+          var id = e.detail.response._id;
+          var status = e.detail.response.status
+          if (this.backtests[id] && (status == "complete" || status=="exception")) {
+            
+            delete this.backtests[id];
+          } 
+
         },
 
     });
