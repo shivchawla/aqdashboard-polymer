@@ -62,6 +62,13 @@
       margin-top: 30px;
     }
 
+    #followers {
+      font-size:15px;
+      font-style: italic;
+      color: #cf6766;
+      margin-right:10px;
+    }
+
 
   </style>
   <template>
@@ -74,7 +81,11 @@
       <div class="layout horizontal">
         <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
         <div class="flex"></div>
-        <paper-icon-button disabled="[[preview]]" title="Follow" icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
+
+        <template is="dom-if" if="[[hasFollowers(followers)]]">
+          <span id='followers' class="self-end">[[followers.length]] Followers</span>
+        </template>
+        <paper-icon-button  id='followIcon' disabled="[[preview]]" title="[[computeFollowTitle(followers)]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
       </div>
 
       <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
@@ -86,7 +97,9 @@
       method="POST"
       id='follows'
       handle-as="json"
+      on-response="onFollowThreadResponse"
       headers='{{header}}'
+
       debounce-duration="300">
     </iron-ajax>
 
@@ -105,6 +118,15 @@
           type:Boolean,
           value:false,
         },
+
+        followers:{
+          type:Array,
+          value:[],
+        }
+      },
+
+      attached: function() {
+        this.followers = this.postHeader.followers;
       },
 
       ready: function() {
@@ -124,6 +146,35 @@
         }
         
         this.$.follows.generateRequest();
+      },
+
+      hasFollowers: function(followers) {
+        return followers.length > 0;
+      },
+
+      onFollowThreadResponse: function(e) {
+        this.followers = e.detail.response.followers;
+      },
+
+      computeFollowTitle: function(followers){
+        var x = localStorage.getItem('my-app-storage');
+        var userId = JSON.parse(x).user._id;
+
+        if (followers.indexOf(userId) > -1){
+          // Change the icon color too
+          this.$.followIcon.style.color = 'white';
+          this.$.followIcon.style.backgroundColor = '#cf6766';
+          this.$.followIcon.style.outlineColor = '#cf6766';
+          return "UnFollow";
+          //this.$.followIcon
+
+        }
+
+        this.$.followIcon.style.color = '#cf6766';
+        this.$.followIcon.style.backgroundColor = 'white';
+
+        return "Follow";
+
       },
 
     });

@@ -96,6 +96,16 @@
 
       onGetThreadDetailResponse: function(data) {
           this.threadDetails = data.detail.response;
+
+          console.log(data.detail.response);
+          if(this.threadDetails.backtest) {
+            this.threadDetails["backtest_id"] = this.threadDetails.backtest._id;
+          }
+
+          for (i=0;i<this.threadDetails.replies.length;i++){
+              this.threadDetails["replies"][i]["backtest_id"] = this.threadDetails["replies"][i].backtest._id;
+          }
+
       },
 
       onGetThreadDetailError: function(data) {

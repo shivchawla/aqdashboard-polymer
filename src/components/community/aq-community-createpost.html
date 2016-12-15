@@ -156,6 +156,15 @@
             on-error="onPostThreadError" 
             debounce-duration="300">
         </iron-ajax>
+
+        <iron-ajax
+          url="http://localhost:3002/api/v2/thread/[[newThreadId]]/follow"
+          method="POST"
+          id='follows'
+          handle-as="json"
+          headers='{{header}}'
+          debounce-duration="300">
+        </iron-ajax>
     </template>
     <script>
       
@@ -167,7 +176,7 @@
 
                 categories :{
                   type:Array,
-                  value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1},{value:"News and announcements",index:2}],
+                  value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1}],
                 },
 
                 preview:{
@@ -181,11 +190,16 @@
 
                 header:Object,
 
-                attachedBacktestId: String,
+                attachedBacktestId: {
+                  type:String,
+                  value:"",
+                }, 
 
                 attachedMessage: String,
 
                 share: String,
+
+                newThreadId: String,
             },
 
             listeners :{
@@ -219,8 +233,9 @@
             },
             
             onPostThreadResponse: function(data) {
-                var threadId = data.detail.response._id;   
-                this.router.go("/dashboard/community/topics/"+threadId);
+                this.newThreadId = data.detail.response._id;
+                this.$.follows.generateRequest();
+                this.router.go("/dashboard/community/topics/"+this.newThreadId);
             },
 
             onPostThreadError: function(data) {
@@ -261,7 +276,7 @@
                   "markdownText": markdownText,
                   "user":{"firstName":user.firstName,"lastName":user.lastName},
                   "updatedAt": new Date(),
-                  "backtestId":this.attachedBacktestId,
+                  "backtest_id":this.attachedBacktestId,
               };
 
               if(this.threadData["title"]!="" && 
