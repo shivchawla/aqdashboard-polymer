@@ -96,6 +96,11 @@
 
 		paper-icon-button {
 			color:teal;
+			opacity: 0.2;
+		}
+
+		paper-icon-button:hover {
+			opacity: 1.0;
 		}
 
 		p strong {
@@ -236,9 +241,9 @@
 								}]);
 								
 				this.set('processedBacktest.metrics2', [{	
-									"metricName":"Sortino Ratio",
+									"metricName":"Information Ratio",
 									"metricValue":"-",
-									"metricDescription":"Sortino Ratio"
+									"metricDescription":"Information Ratio"
 								},
 								{
 									"metricName":"Max Drawdown",
@@ -250,23 +255,22 @@
 								 	"metricValue":"-",
 							 	 	"metricDescription":"Calmar Ratio"
 						 	 	},
-								/*{
+								{
 									"metricName":"Beta",
 								 	"metricValue":"-",
 							 	 	"metricDescription":"Beta"
-						 	 	},*/
-								{
+						 	 	},
+								/*{
 									"metricName":"Stability",
 								 	"metricValue":"-",
 							 	 	"metricDescription":"Stability"
 						 	 	},
-								/*{
+								{
 									"metricName":"Avg. Concentration", 
 									"metricValue":"-",
 								 	"metricDescription":"Avg. Concentration"
 							 	},*/]);
 				this.processBacktestData();
-
 
 			},
 
@@ -278,25 +282,26 @@
 				var metricsArray1 = [];
 				var metricsArray2 = [];
 
-				var data = this.backtest.output.summary;
-
-				this.set('processedBacktest.metrics1' ,[{
-				            		"metricName":"Total Return", 
-				            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
-				            		"metricDescription":"Total Return"
-				            	},
-								{
-									"metricName":"Annual Return",
-									"metricValue":data.annualreturn.toFixed(2).toString()+'%',
-									"metricDescription":"Annual Return",
-								},
-							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
-							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},]);
-				this.set('processedBacktest.metrics2', [ 
-								{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
-								{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
-								{"metricName":"Calmar Ratio", "metricValue":"4.3", "metricDescription":"Calmar Ratio"},
-								{"metricName":"Stability", "metricValue":"0.88", "metricDescription":"Stability"}]);
+				if (this.backtest.output && this.backtest.output.summary) {
+					var data = this.backtest.output.summary;
+					this.set('processedBacktest.metrics1' ,[{
+			            		"metricName":"Total Return", 
+			            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
+			            		"metricDescription":"Total Return"
+			            	},
+							{
+								"metricName":"Annual Return",
+								"metricValue":data.annualreturn.toFixed(2).toString()+'%',
+								"metricDescription":"Annual Return",
+							},
+						{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
+						{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},]);
+					this.set('processedBacktest.metrics2', [ 
+							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
+							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
+							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio.toFixed(2), "metricDescription":"Calmar Ratio"},
+							{"metricName":"Beta", "metricValue":data.beta.toFixed(2), "metricDescription":"beta"}]);
+				}
 								
 
 				//this.set('metrics1', metricsArray1);
@@ -306,6 +311,7 @@
 				this.set('processedBacktest.endDate',this.formatDate(this.backtest.settings.end));
 				this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
 				this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
+				
 			},
 
 			formatDate: function(date) {
