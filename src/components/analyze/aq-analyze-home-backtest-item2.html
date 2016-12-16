@@ -95,8 +95,8 @@
 		}
 
 		paper-icon-button {
-			color:teal;
-			opacity: 0.2;
+			color:#cf6766;--teal;
+			opacity: 0.4;
 		}
 
 		paper-icon-button:hover {
@@ -123,7 +123,7 @@
 					<div class="flex"></div>
 		          	
 					<template is='dom-if' if="[[detailIcon]]">
-		          		<paper-icon-button  title="Detail" on-tap="onDetail" icon="vaadin-icons:chart"></paper-icon-button>
+		          		<paper-icon-button  title="Detail" on-tap="onDetail" icon="vaadin-icons:line-bar-chart"></paper-icon-button>
 		          	</template>
 
 		          	<template is='dom-if' if="[[shareIcon]]">

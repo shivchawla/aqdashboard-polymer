@@ -75,7 +75,8 @@
 			outline:1px solid teal;
 			padding:5px;
 			width:35px;
-    		margin-right: 10px;
+    		margin-right: 5px;
+    		margin-left: 5px;
     		color: #cf6766;
     		--paper-icon-button-disabled:{
 				color: #cacaca !important;
@@ -92,6 +93,16 @@
 			margin:0px;
 		}
 
+		paper-tooltip.iconTooltip {
+        	--paper-tooltip: {
+          		font-size: 13px;
+          		min-width: 40px;
+          		text-align: center;
+        	}
+
+        	--paper-tooltip-opacity: 1.0;
+			--paper-tooltip-background: teal;
+		}
 		
 	</style>
 	
@@ -107,15 +118,22 @@
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
-	      		<paper-icon-button noink class="iconButton" title="Search" icon="aq-icons:search" on-tap="toggle" raised>	
+	      		<paper-icon-button id= 'searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised>	
+	      		</paper-icon-button>
+      		
+	      		<paper-icon-button id= 'newIcon' noink class="iconButton" icon="aq-icons:add" on-tap="createNew">	
 	      		</paper-icon-button>
 
-	      		<paper-icon-button noink class="iconButton" title="New" icon="aq-icons:add" on-tap="createNew">	
-	      		</paper-icon-button>
-
-	  			<paper-icon-button noink class="iconButton" title="Delete" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
+	  			<paper-icon-button id= 'deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
 	  			</paper-icon-button>
-			</div>      	
+			</div> 
+
+			<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>
+        	
+        	<paper-tooltip for='newIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>New</paper-tooltip>
+        	
+        	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
+        	     	
   		</div>
 
 	</template>
