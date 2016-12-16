@@ -176,7 +176,7 @@
 
                 categories :{
                   type:Array,
-                  value: [{value:"Share your idea",index:0},{value:"Questions and answers",index:1}],
+                  value: [{value:"Share your Idea",index:0},{value:"Questions and Answers",index:1}],
                 },
 
                 preview:{
@@ -266,6 +266,7 @@
             processInput: function() {
               const markdownText = this.$$('#editor').getContent();
               const category = this.$$('#category_dd').getSelectedValue();
+              console.log(category);
               const title = this.$$('#topicInput').value;
               var x = localStorage.getItem('my-app-storage');
               var user = JSON.parse(x).user;
@@ -276,8 +277,12 @@
                   "markdownText": markdownText,
                   "user":{"firstName":user.firstName,"lastName":user.lastName},
                   "updatedAt": new Date(),
-                  "backtest_id":this.attachedBacktestId,
               };
+
+              // Send to backedn only if available. Backend can't handle empty backtestids 
+              if(this.attachedBacktestId && this.attachedBacktestId!="") {
+                this.threadData["backtest_id"] = this.attachedBacktestId;
+              }
 
               if(this.threadData["title"]!="" && 
                   this.threadData["category"]!="" &&

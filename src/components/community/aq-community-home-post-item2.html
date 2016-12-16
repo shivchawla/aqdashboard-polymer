@@ -20,7 +20,7 @@
       --max-width:80%;
       width:80%;
       --border-top:2px solid teal !important;
-      border:1px solid teal;
+      border:1px solid #24293d;--teal;
 
       --paper-card-header-text:{
         font-size:20px;
@@ -60,7 +60,7 @@
     a {
       cursor: pointer;
       text-decoration: none;
-      font-size: 20px;
+      font-size: 18px;
       color: black;
       color:#c3403f;
     }
@@ -102,7 +102,7 @@
     }
 
     #lastReplyAt {
-      width:280px !important;
+      width:300px !important;
 
     }
 
@@ -118,6 +118,29 @@
       font-weight: normal;
     }
 
+    #img {
+      margin-right: 10px;
+    }
+
+    iron-icon {
+      
+      margin-left: 20px;
+      --opacity: 0.8;
+      color:#c3403f;
+      height: 25px;
+      width: 25px;
+      
+    }
+
+    #iconReply {
+      color:#c3403f;
+      height: 25px;
+      width: 25px;
+      padding: 0px;
+      --outline: 1px solid #24293d;
+      --margin-left:10px;
+    }
+
 
   </style>
 
@@ -125,13 +148,23 @@
     <paper-card class="self-center flex">
       
       <div id='content' class="card-content flex">
-        
-        <div  class="container-int header layout horizontal">
+
+        <div  class="container-int header layout horizontal">       
+          <profile-img id='img' class="self-start" letter="[[getInitials(authorFirstname, authorLastname)]]"></profile-img>
+
           <div class="layout vertical">
             <a on-tap='goToDetail'>[[topicHeading]]</a>
             <span id='category'><i>[[postCategory]]</i> by [[authorFirstname]] [[authorLastname]] on [[postDate]]</span>
           </div>
+
           <div class="flex"></div>
+
+           <template is='dom-if' if='[[hasBacktest]]'>
+              <iron-icon class="self-center" icon="vaadin-icons:line-bar-chart"></iron-icon>
+          </template>
+
+          <div class="flex"></div>
+
           <paper-icon-button icon="vaadin-icons:external-link" on-tap='goToDetail' title='View Post'></paper-icon-button>   
         </div>   
       
@@ -156,11 +189,14 @@
             <span>Last Reply At</span>   
           </div-->
 
+
+
           <div class="layout vertical metric flex"> 
             <span class="bold-span">[[totalViews]]</span>
-            <span>Views</span>   
-            
+            <span>Views</span>               
           </div>
+
+         
 
           <div class="layout vertical metric flex"> 
             <span class="bold-span">[[totalReplies]]</span>
@@ -173,13 +209,17 @@
             <span>Followers</span>             
           </div>
 
-           <div id="lastReplyAt" class="layout vertical metric">  
-            <span class="bold-span">[[getLastReplyDetails(lastreplyAuthor, lastreplyDate)]] </span>
-            <span>Last Reply</span>   
+           <div id="lastReplyAt" class="layout horizontal"> 
+            <div  class="layout vertical metric">    
+                <span class="bold-span">[[getLastReplyDetails(lastreplyAuthor, lastreplyDate)]] </span>  
+               <span>Last Reply</span>
+            </div> 
+            <template is='dom-if' if="[[!totalReplies]]">
+                <paper-icon-button class="self-start" id='iconReply' icon="icons:reply" on-tap='goToDetail'></paper-icon-button>
+            </template>  
           </div>
 
-
-          <iron-icon icon="vaadin-icons:paper-clip"></iron-icon>
+         
         </div>
 
       </div>
@@ -205,6 +245,11 @@
         postCategory: String,
         postContent:String,
         totalFollowers:Number,
+        hasBacktest:Boolean
+      },
+
+      attached: function() {
+        console.log(this.hasBacktest);
       },
 
       getInitials(firstName, lastName) {
@@ -219,10 +264,9 @@
         if (lastreplyDate!='' && lastreplyAuthor!='') {
           return lastreplyAuthor + " on " + lastreplyDate;
         } else{
-          return '-';
+          return "No replies yet. Be the first one to reply!!";
         }
       },
-
     
 
     });

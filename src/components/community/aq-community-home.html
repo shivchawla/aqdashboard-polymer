@@ -53,7 +53,7 @@
 
 
         #fab {
-            background: #24293d;
+            background: teal;--#24293d;
             --float: right;
             position: fixed;
             right: 25px;
@@ -71,7 +71,7 @@
             font-size: 16px;
             margin-top: 20px;
             border-bottom: 1px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: teal !important;
+            --paper-tabs-selection-bar-color: #cf6766 !important;
             margin-bottom: -10px;  
         }
 
@@ -87,17 +87,28 @@
         }
           
         paper-tab.iron-selected {
-          color: teal;
+          color: #cf6766;--teal;
         }
+
+        paper-tooltip.iconTooltip {
+          --paper-tooltip: {
+              font-size: 13px;
+              min-width: 40px;
+              text-align: center;
+          }
+
+          --paper-tooltip-opacity: 1.0;
+          --paper-tooltip-background: teal;
+        }
+
 
     </style>
     <template>
 
         <iron-ajax
-            auto
             url="http://localhost:3002/api/v2/thread"
             method='GET'
-            id='threads'
+            id='getAllThreadsQuery'
             params='[[searchParam]]'
             handle-as="json"
             on-response="onGetAllThreadsResponse"
@@ -123,19 +134,19 @@
               <div class="flex"></div>
   
               <aq-community-home-searchbar id='searchbar' 
-                                      class="self-end">
+                                      class="self-end"
+                                      active="[[isSearchActive(searchText)]]"
+                                      search-value="[[searchText]]">
               </aq-community-home-searchbar> 
             
             </div>
-
-          
-            <div id="ifsearch">
+         
+            <template is='dom-if' if='[[isSearchActive(searchText)]]'>
               <p style="font-size: 16px;">Search results for: 
-                <i>"[[searchParam.q]]"</i>
+                <i>"[[searchText]]"</i>
               </p>
-            </div>
-            
-
+            </template>
+          
             <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
                 <paper-tab id="popular">Popular</paper-tab>
                 <paper-tab id="newest">Newest</paper-tab>
@@ -159,7 +170,8 @@
                         post-category="{{item.category}}"
                         post-content="{{item.markdownText}}"
                         lastreply-author="[[getReplyAuthor(item)]]"
-                        lastreply-date="[[getReplyDate(item)]]">
+                        lastreply-date="[[getReplyDate(item)]]"
+                        has-backtest="[[hasBacktest(item)]]">
                       </aq-community-home-post-item2>
                   </template>
                 
@@ -176,7 +188,10 @@
             </template>
         </div>
         
-        <paper-fab id='fab' noik icon="aq-icons:add" title="New Post" on-tap='createPost'></paper-fab>
+        <paper-fab id='fab' noik icon="aq-icons:add" on-tap='createPost'></paper-fab>
+
+        <paper-tooltip for='fab' offset="2" class=' self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
+        
     </template>
     <script>
 
@@ -258,6 +273,8 @@
                   var community = JSON.parse(x).community;
                   if (community) {
                       this.currentPage = community.lastPage;
+                      this.searchText = community.searchText;
+                      this.searchCategory  =community.searchCategory;
                   } else {
                     this.aimsquant.community = {lastPage:1};
                     this.$.localStorage.save();
@@ -303,20 +320,28 @@
 
             onSearch: function(e) {
               
-              if(e.detail.text!="") {
-                this.$$('#ifsearch').style.display = 'block';
-
-              } else {
-                this.$$('#ifsearch').style.display = 'none';
-              }
-              
               this.searchText = e.detail.text;
               this.searchCategory = e.detail.category;
+
+               if(this.aimsquant) {
+                this.aimsquant.community.searchText = this.searchText;
+                this.aimsquant.community.searchCategory = this.searchCategory;
+
+                if (this.searchText=="") {
+                  this.currentPage = 1;
+                  this.aimsquant.community.lastPage = this.currentPage;
+                }
+
+                this.$.localStorage.save();
+              }
+
               this.processparams();
             },
 
             processparams: function() {
               this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+
+              this.$.getAllThreadsQuery.generateRequest();
             },
 
             format: function(date) {
@@ -330,7 +355,7 @@
 
               
               this.fire('scroll-top');
-             
+              
               this.processparams();
             },
 
@@ -360,6 +385,24 @@
               } else {
                 return '';
               }
+            },
+
+            hasBacktest: function(thread) {
+              if (thread.bactest){
+                return true;
+              }
+
+              for(i=0;i<thread.replies.length;i++){
+                if(thread.replies[i].backtest){
+                  return true;
+                }
+              }
+
+              return false;
+            },
+
+            isSearchActive: function(searchText) {
+                return searchText.length > 0;
             },
 
 

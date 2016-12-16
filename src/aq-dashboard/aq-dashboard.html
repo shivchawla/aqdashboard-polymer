@@ -285,7 +285,7 @@
 
         initializeDefaultValue: function() {
             if(!localStorage.getItem('my-app-storage')) {
-              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
+              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:""}, lastTab:0};
               this.$.localStorage.save();
             } 
         },

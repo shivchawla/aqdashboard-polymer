@@ -100,6 +100,17 @@
 			display: none;
 		}
 
+		paper-tooltip.iconTooltip {
+        	--paper-tooltip: {
+          		font-size: 13px;
+          		min-width: 40px;
+          		text-align: center;
+        	}
+
+        	--paper-tooltip-opacity: 1.0;
+			--paper-tooltip-background: teal;
+		}
+
 
 	</style>
 	
@@ -109,11 +120,11 @@
     			
 	  			<div id="search" class="layout horizontal">
 	  				
-  					<div id="searchdiv" on-blue='blur'>
+  					<div id="searchdiv">
 		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-search="onSearch">
 
 		  				<div>
-		  				<paper-radio-group attr-for-selected="index">
+		  				<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">
 				         	<template is='dom-repeat' items='{{categories}}'>
 								<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
 							</template>
@@ -122,12 +133,12 @@
 					</div>
 
 
-	         	 	<paper-icon-button id='searchIcon' noink class="iconButton" title="Search" icon="aq-icons:search" on-tap="toggle" raised> 
+	         	 	<paper-icon-button id='searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised> 
                 	</paper-icon-button>
             	</div>
-     	
 
-	         	
+            	<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>
+       	         	
 
 			<!--/div-->
 	</template>
@@ -138,8 +149,8 @@
 
 			properties: {
 				selectedCategory : {
-						type: String,
-						value: 'Everywhere',
+					type: Number,
+					value: 0,
 				},
 
 				searchValue: {
@@ -147,16 +158,27 @@
 					value:"",
 				},
 
+				active: Boolean,
+
 				categories:{
 					type:Array,
-					value: [{value:"All", index:0},{value:"Share your idea",index:1},{value:"Questions and answers",index:2},{value:"News and announcements",index:3}],
+					value: [{value:"All", index:0},{value:"Share your Idea",index:1},{value:"Questions and Answers",index:2},{value:"News and Announcements",index:3}],
 
 				},
 			},
 
+			attached : function() {
+				if (this.active) {
+				  	this.$.searchdiv.style.display = 'block';
+                	this.$.searchIcon.style.display = 'none';
+                	this.$.searchbox.focus();
+                	this.$.searchbox.value = this.searchValue;
+				}
+			},
+
 			onSearch: function(e) {
 				
-                this.fire('search-action', {text: this.searchValue, category: ""});//this.$.category_dd.getSelectedValue()});
+                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory > 0 ? this.categories[this.selectedCategory].value : ""});
 
              	if(this.$.searchbox.value=="") {
                 	this.toggle();

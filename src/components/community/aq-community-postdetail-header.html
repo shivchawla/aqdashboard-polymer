@@ -69,6 +69,18 @@
       margin-right:10px;
     }
 
+    paper-tooltip.iconTooltip {
+          --paper-tooltip: {
+              font-size: 13px;
+              min-width: 40px;
+              text-align: center;
+          }
+
+          --paper-tooltip-opacity: 1.0;
+      --paper-tooltip-background: teal;
+    }
+
+
 
   </style>
   <template>
@@ -85,12 +97,15 @@
         <template is="dom-if" if="[[hasFollowers(followers)]]">
           <span id='followers' class="self-end">[[followers.length]] Followers</span>
         </template>
-        <paper-icon-button  id='followIcon' disabled="[[preview]]" title="[[computeFollowTitle(followers)]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
+        <paper-icon-button  id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
       </div>
 
       <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
 
     </div>
+
+    <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
+      
 
     <iron-ajax
       url="http://localhost:3002/api/v2/thread/[[postHeader._id]]/follow"
@@ -126,7 +141,9 @@
       },
 
       attached: function() {
-        this.followers = this.postHeader.followers;
+        if (this.postHeader.followers) {
+          this.followers = this.postHeader.followers;
+        }
       },
 
       ready: function() {
