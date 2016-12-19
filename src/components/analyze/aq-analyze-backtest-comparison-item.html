@@ -274,13 +274,13 @@
 
 			processLineChartData: function(data) {
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
-				var equityData = data.output.totalreturn;
+				var equityData = data.output.totalreturn.algorithm;
 				var keys = Object.keys(equityData);
 				var linePoints = new Array(keys.length);
 				var i = 0;
 				
 				var min = Infinity; 
-				var max = 0;
+				var max = -Infinity;
 				keys.sort()
       			.forEach(function(v, i) {
       				linePoints[i++] = {x:v, 
@@ -289,7 +289,7 @@
           			max = Math.max(equityData[v], max) 
        			}); 
 
-  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(max))) - 1);
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
 
   				min = Math.floor(0.98*min/scale,-1)*scale;
 				max = Math.ceil(1.02*max/scale,-1)*scale;
@@ -319,14 +319,26 @@
 
 			processBarChartData: function(data) {
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
-				var aggregatedReturns = data.output.returns.monthly;
+				var aggregatedReturns = data.output.returns.monthly.algorithm;
 		
 				var barPoints = new Array(Object.keys(aggregatedReturns).length);
+
+				var min = Infinity; 
+				var max = -Infinity;
+
 				var i = 0;
 
 				for (var key in aggregatedReturns) {
 					barPoints[i++] = {x:key, y:aggregatedReturns[key]};
+					min = Math.min(aggregatedReturns[key], min)
+          			max = Math.max(aggregatedReturns[key], max)
 				}
+
+				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+
+  				min = Math.floor(0.98*min/scale,-1)*scale;
+				max = Math.ceil(1.02*max/scale,-1)*scale;
+
 
 				this.push('monthlyReturnData',
 								 {"key":"Monthly Returns (%)",
@@ -346,6 +358,7 @@
 					return monthNames[month - 1] +" "+year.toString();
 				});
 
+				this.$$('#monthlyReturnBarChart')._chart.forceY([min,max]);
 				this.$$('#monthlyReturnBarChart')._chart.margin().left = 30;
 				this.$$('#monthlyReturnBarChart')._chart.margin().right = 30;
 
