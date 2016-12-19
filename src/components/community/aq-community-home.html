@@ -71,7 +71,7 @@
             font-size: 16px;
             margin-top: 20px;
             border-bottom: 1px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: #cf6766 !important;
+            --paper-tabs-selection-bar-color: #cf6766; !important;
             margin-bottom: -10px;  
         }
 
@@ -87,7 +87,7 @@
         }
           
         paper-tab.iron-selected {
-          color: #cf6766;--teal;
+          color: #cf6766; --teal;
         }
 
         paper-tooltip.iconTooltip {
@@ -250,8 +250,6 @@
             listeners :{
               'search-action':'onSearch',
               'view-action':'onView',
-              'detail-action':'onDetail',
-
             },
 
             ready: function() {
@@ -366,10 +364,7 @@
               }
             },
 
-            onDetail: function(e) {
-              this.router.go(e.detail.link);
-            },
-
+            
             getReplyDate: function(thread) {
               if (thread.replies.length > 0) {
                 return this.format(thread.replies[thread.replies.length-1].createdAt);

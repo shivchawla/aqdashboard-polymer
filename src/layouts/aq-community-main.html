@@ -9,8 +9,7 @@
 
 <dom-module id="aq-community-main">
   <style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
-   <style>
-  </style>
+
   <template>
      <app-router id="communityrouter" trailingSlash="ignore">
         <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
@@ -44,10 +43,18 @@
         },
 
       },
-      
-      ready: function() {
-        
+
+      listeners:{
+        'postdetail-action':'onDetail',
       },
+    
+
+      onDetail: function(e) {
+          e.stopPropagation();
+          e.preventDefault()
+          this.router.go(e.detail.link);
+      },
+
 
     });
   </script>

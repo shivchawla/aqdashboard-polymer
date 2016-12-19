@@ -54,7 +54,7 @@
     #action {
       height: 40px;
       background-color: #f2fbf7;
-      border-top: 1px solid #c3403f;
+      border-top: 1px solid #cc6666;
     }
 
     a {
@@ -62,7 +62,7 @@
       text-decoration: none;
       font-size: 18px;
       color: black;
-      color:#c3403f;
+      color:#cc6666;
     }
 
     a:hover {
@@ -126,14 +126,14 @@
       
       margin-left: 20px;
       --opacity: 0.8;
-      color:#c3403f;
+      color:#cc6666;
       height: 25px;
       width: 25px;
       
     }
 
     #iconReply {
-      color:#c3403f;
+      color:#cc6666;
       height: 25px;
       width: 25px;
       padding: 0px;
@@ -257,7 +257,7 @@
       },
 
       goToDetail: function() {
-        this.fire('detail-action',{link:this.topicAddress});
+        this.fire('postdetail-action',{link:this.topicAddress});
       },
 
       getLastReplyDetails: function(lastreplyAuthor, lastreplyDate) {

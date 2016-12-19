@@ -47,7 +47,7 @@
         --dropdown-background-color: #f2fbf7;
         --dropdown-color: teal;
         
-        --dropdown-item-border: 1px solid #c3403f;
+        --dropdown-item-border: 1px solid #cc6666;
 
       }
 
@@ -58,10 +58,12 @@
         }
 
       paper-button {
-        border: 1px solid #24293d;
+        border: 1px solid teal;#24293d;
         height:30px;
         font-size: 13px;
-        color:teal;
+        color: teal; --white;
+        background-color: white;
+        border-radius: 5px;
 
       }
 
@@ -70,6 +72,9 @@
         top:195px;
         right:65px;
         z-index: 2;
+        background-color: white !important;
+        color: teal !important;
+        border: none !important;
       }
 
       #attachButton{
@@ -82,12 +87,12 @@
       }
 
       #errorMessage {
-        color:#c3403f;
+        color:#cc6666;
       }
 
       #attachedMessageDiv {
         display: none;
-        color:#c3403f;
+        color:#cc6666;
         font-size:14px;
       }
 
@@ -122,7 +127,6 @@
                 <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="icons:remove-circle"></paper-icon-button>
               </div>
             </div>
-
 
             <paper-button id='attachButton' raised noink on-tap='onAttachRequest'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
             
@@ -171,6 +175,7 @@
 
         Polymer({
             is: 'aq-community-createpost',
+
             properties: {
                 threadData: Object,
 
@@ -209,9 +214,7 @@
             },
 
             attached: function() {
-              if(this.attachedBacktestId) {
-                this.fire('backtest-attached',{id:this.attachedBacktestId});
-              }
+              this.async(this.handleAttachedBacktest, 500);
             },
 
             ready: function() { 
@@ -239,18 +242,24 @@
             },
 
             onPostThreadError: function(data) {
-                console.log(data);
+                //console.log(data);
             },
                        
             onAttachRequest: function() {
-                console.log("here");
                 this.$.btDialog.open(); 
             },
 
             onBacktestAttached: function(e) {
                 this.attachedBacktestId = e.detail.id;
-                this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
-                this.$$('#attachedMessageDiv').style.display = 'block';
+                this.handleAttachedBacktest();
+            },
+
+            handleAttachedBacktest: function() {
+                
+              if(this.attachedBacktestId && this.attachedBacktestId!="") {
+                  this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
+                  this.$$('#attachedMessageDiv').style.display = 'block';
+              }
             },
 
             onRemoveAttached: function() {
@@ -266,7 +275,7 @@
             processInput: function() {
               const markdownText = this.$$('#editor').getContent();
               const category = this.$$('#category_dd').getSelectedValue();
-              console.log(category);
+             
               const title = this.$$('#topicInput').value;
               var x = localStorage.getItem('my-app-storage');
               var user = JSON.parse(x).user;

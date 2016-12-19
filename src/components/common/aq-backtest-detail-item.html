@@ -376,11 +376,8 @@
 
 			_isActiveChanged: function(newVal, oldVal) {
 				if((oldVal + 1) && newVal) {
-					
-					console.log("Came Here");
 					this.reset();
 					this.async(this.subscribeData, 1000);
-
 				} 
 			},
 
@@ -432,7 +429,7 @@
 			addRealTimeData: function(data) {
 				var legends = ["Strategy (%)", "Benchmark (%)"]
 				var types = ["totalreturn","totalreturn_benchmark"];
-				var colors = ["#c3403f","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 
 				var typecount = 0;
 				var ct = this.counter++;
@@ -585,7 +582,7 @@
 				var yAxisLabel = this.getYAxisLabel(max);
 				
 	  			this.push('netValueData', {"key":yAxisLabel,
-				  				"color": "#c3403f",
+				  				"color": "#cc6666",
 					  			"values":linePoints});
 
 	  			
@@ -632,7 +629,7 @@
 
 			createCumRetLineChart: function() {
 				
-				var colors = ["#c3403f","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
 				var legend = ["Strategy (%)", "Benchmark (%)"];
 				var min = Infinity; 
@@ -684,7 +681,7 @@
 
 			createMonthlyReturnBarChart: function() {
 				
-				var colors = ["#c3403f","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
 				var legend = ["Strategy (%)", "Benchmark (%)"];
 				var min = Infinity; 
@@ -735,7 +732,7 @@
 
 			createTrackVarLineChart: function() {
 
-				var colors = ["#c3403f","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 
 				var min = Infinity; 
 				var max = -Infinity;

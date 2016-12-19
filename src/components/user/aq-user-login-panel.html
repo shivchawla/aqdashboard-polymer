@@ -7,6 +7,7 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
+
 <dom-module id="aq-user-login-panel">
     <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
@@ -26,7 +27,7 @@
             margin: 0 auto;
             --padding-top: 50px;
             --margin-top: 50px;
-            background-color: #24293d;
+            background-color: #f4f9f7;
             --height:100%;
             --margin-top: -30px;
             opacity: 1.0;
@@ -45,7 +46,7 @@
 
         .forgot-password {
             padding-top: 0.75em;
-            font-size: x-small;
+            font-size: small;
         }
 
         .input-fields {
@@ -72,7 +73,7 @@
         }
 
         .actionFailed {
-            --color: red;
+            color: #cc6666;
             padding: 0.75em 0 0;
             margin: 0 auto;
             margin-bottom: 10px;
@@ -94,11 +95,17 @@
 
         }
 
+        a {
+            color: #0375b4;
+        }
+
         paper-card {
-            --paper-card-header-color:#24293d;
+            --paper-card-header-color:teal;--#24293d;
             --paper-card-header:{
                 text-align:center;
             };
+
+            border: 2px solid teal;
         }
 
         paper-card {
@@ -107,28 +114,30 @@
         
         paper-input {
             --paper-input-container-underline-focus:{
-                background-color: #24293d;
+                background-color: teal;--#24293d;
             }
         }
 
         gold-email-input {
             --paper-input-container-underline-focus:{
-                background-color: #24293d;
+                background-color: teal;--#24293d;
             }
         }
 
         paper-button.signinButton {
             margin-top: 20px !important;
-            background: #24293d;
-            color: white;
+            background: white;teal;--#24293d;
+            color: #cc6666;--white;
             width:200px;
             margin: 0 auto;
-
+            border-radius: 20px;
+            border: 1px solid teal;
+            font-weight: bold;
         }
 
         #signoutMessage {
             margin-bottom: -50px;
-            color:white;
+            color:teal;
         }
 
     }
@@ -251,6 +260,17 @@
                       debounce-duration="300">
                     </iron-ajax>
 
+                    <iron-ajax
+                      url="http://localhost:3002/api/v2/user/forgotpassword"
+                      params="{{forgotPasswordParams}}"
+                      method='GET'
+                      id='forgotPasswordQuery'
+                      handle-as="json"
+                      on-response="handleForgotPasswordResponse"
+                      on-error="handleForgotPasswordError"
+                      headers='{"Content-Type": "application/json"}'
+                      debounce-duration="300">
+                    </iron-ajax>
                    
                     <paper-button raised class="signinButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
                     </paper-button>
@@ -276,7 +296,8 @@
             signin: 'signin',
             signup: 'signup',
             forgotPassword: 'forgotPassword',
-            signout:'signout'
+            signout:'signout',
+            welcome:'welcome',
         };
 
         Polymer({
@@ -398,13 +419,19 @@
 
                 signinBody: {
                     type: Object,
-                    computed: 'computeSigninBody(userEmail, password)'
+                    computed: 'computeSigninBody(userEmail, password)',
                 },
 
                 signupBody: {
                     type: Object,
-                    computed: 'computeSignupBody(firstName, lastName, userEmail, password)'
+                    computed: 'computeSignupBody(firstName, lastName, userEmail, password)',
                 },
+
+                forgotPasswordParams:{
+                    type:Object,
+                    computed:'computeForgotPasswordParams(userEmail)',
+                },
+
                 actionFailedMessage:{
                     type:String,
                     value:'',
@@ -528,6 +555,10 @@
                 return {email: email, password: password, firstName: firstName, lastName: lastName}
             },
 
+            computeForgotPasswordParams: function(userEmail) {
+                return {email: userEmail};
+            },
+
             isSigninMode: function(displayMode) {
                 var test = displayMode || this.displayMode;
                 return displayMode == displayModes.signin;
@@ -574,13 +605,17 @@
 
             },
 
-            clearErrorMessages: function() {
+            clearFields: function() {
                 this.userEmail = '';
                 this.password = '';
                 this.confirmPassword = '';
                 this.firstName = '';
                 this.lastName = '';
                 this.acceptPolicy = true;
+            },
+
+            clearErrorMessages: function() {
+                this.clearFields();
                 this.actionFailedMessage = '';
                 this.passwordErrorMessage = '';
                 this.confirmPasswordErrorMessage = '';
@@ -749,6 +784,28 @@
                 this.setDisplayMode(displayModes.signin);
             },
 
+            handleSignupResponse: function(e) {
+                console.log(e.detail.response);
+            },
+
+            handleSignupError: function(e) {
+                console.log(e.detail.response);
+                this.actionFailed("Email address already registered!! Sign up with a different email.");
+
+                this.clearFields();
+            },
+
+            handleForgotPasswordResponse: function(e) {
+                console.log("Forgot Password: Success");
+                console.log(e.detail.response);
+
+            },
+
+            handleForgotPasswordError: function(e) {
+                console.log("Forgot Password: Error");
+                console.log(e.detail.response);
+            },
+
             onInvokeAction: function() {
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
@@ -774,8 +831,11 @@
                         break;
                     case displayModes.signup:
                         this.async(this.$.signup.generateRequest());
+                          this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
                         break;
                     case displayModes.forgotPassword:
+                        this.async(this.$.forgotPasswordQuery.generateRequest());
+                         this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displaymode)

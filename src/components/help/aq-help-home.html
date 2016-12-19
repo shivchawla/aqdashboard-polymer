@@ -99,6 +99,12 @@
       padding-bottom: 450px;
     }
 
+    img {
+      margin: auto 0;
+      max-height:650px;
+
+    }
+
   </style>
  
   <template>
@@ -111,12 +117,17 @@
               
               <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
                 <template is="dom-repeat" items="{{itemsHelpContent}}">      
-                  <div id='content'> 
-                  
-                  <!--img src="{{item.img_src}}" height="400" width="400"-->
+                  <div id='content' class="layout vertical"> 
                   
                   <aq-help-marked-item help-text = "[[item.text]]">
-                  </aq-help-marked-item></div>
+                  </aq-help-marked-item>
+
+                  <template is='dom-if' if='[[item.img_src]]'>
+                    <img class="self-center" src="{{item.img_src}}">
+                  </template>
+                  
+                  </div>
+
 
                 </template>
               </iron-auto-scroll-spy>

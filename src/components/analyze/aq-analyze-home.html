@@ -172,20 +172,7 @@
 			},
 
 			goToShare: function(e) {
-				/*var sharebacktestId = "";
-				for (key in this.checkedItems) {
-	        		for (i in this.backtests) {		
-	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
-	        				sharebacktestId = this.backtests[i]._id;
-	        			}
-	        		}
-	    		}
-
-	    		if (sharebacktestId != "") {
-        			this.router.go('/dashboard/community/create/'+sharebacktestId+"?share=backtest");
-        		}*/
-
-    			this.router.go('/dashboard/community/create/'+e.detail.id);///+"?share=backtest");
+    			this.router.go('/dashboard/community/create/'+e.detail.id);
 			},
 
 			isBacktestCountOdd: function(backtests) {
