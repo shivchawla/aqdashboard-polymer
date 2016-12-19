@@ -1,0 +1,85 @@
+
+<dom-module id='aq-authentication-message'>
+	
+	<style include="iron-flex iron-flex-alignment iron-positioning"></style>
+
+	<style>
+
+		#container {
+			margin-left: 20px;		
+		}
+
+		h3 {
+			color:teal;
+		}
+
+		#p1 {
+			color:#24293d;
+			
+		}
+
+		#header {
+			font-size: 24px;
+			color: teal;
+			
+			margin-bottom: 5px;
+		}
+
+		i {
+			color:#cc6666;
+		}
+
+		paper-button {
+			width:10%;
+			background-color: white;
+			border: 1px solid teal;
+			color: #cc6666;
+			border-radius: 20px;
+			min-width: 100px;
+		}
+
+	</style>
+
+	<template>
+		<div class="layout vertical fit" style="background-color: #f4f9f7;">
+			
+			<div id = 'container'> 
+				<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
+					<p id='header'class="self-start">We are here to help you!!</p>
+					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>
+					<paper-button on-tap='goToLogin'>Go Back</paper-button>
+				</template>
+
+				<template is='dom-if' if='[[isModeActivation(mode)]]'>
+					<p id='header' class="self-start">You are just one step away to test your great ideas!!</p>
+					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
+					<paper-button on-tap='goToLogin'>Go Back</paper-button>
+				</template>
+			</div>
+		</div>
+	</template>
+	
+	<script>
+		Polymer({
+			is: 'aq-authentication-message',
+
+			properties:{
+				emailId:String,
+				mode:String,
+				name:String,
+			},
+
+			isModeForgotPassword: function(mode) {
+				return mode=="forgotpassword";
+			},
+
+			isModeActivation: function(mode) {
+				return mode=="activation";
+			},
+
+			goToLogin: function() {
+				this.router.go('/user/signin');
+			},
+		});
+	</script>
+</dom-module>

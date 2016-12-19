@@ -8,6 +8,7 @@
 
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
+<link rel="import" href="../components/user/aq-authentication-message.html">
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
@@ -65,11 +66,13 @@
                
               <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
 
+              <app-route path="/user/authentication/:mode" element="aq-authentication-message" bindrouter="" onurlchange=""></app-route>
+
               <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
-            
+
+              
               <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
-             
               <app-route path="/about" redirect="/about/home"></app-route>
 
               <app-route path="/about/:section" element="aq-aboutpage" bindrouter=""></app-route>
@@ -83,8 +86,6 @@
               <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
 
               <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
-
-              <!--app-route path="*" redirect ="/main"></app-route-->
 
             </app-router>
 
@@ -250,7 +251,6 @@
             
             if (x) {
               lastTab = JSON.parse(x).lastTab;
-              ////console.log("lastTab:" + lastTab);
             }
 
             if (lastTab == 1) {
@@ -285,7 +285,7 @@
 
         initializeDefaultValue: function() {
             if(!localStorage.getItem('my-app-storage')) {
-              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:""}, lastTab:0};
+              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
               this.$.localStorage.save();
             } 
         },
@@ -443,14 +443,6 @@
 
         sendFeedBack: function(e){
           this.feedBackData = {"feedback":e.detail.feedback, "subject":e.detail.subject};
-
-          console.log(this.feedBackData);
-
-          /*if (this.checkHasToken()) {
-            this.header = {
-              "aimsquant-token": this.token,
-              "Content-Type": "application/json"};  
-          }*/
           this.$.postFeedbackQuery.generateRequest();
         },
 
@@ -470,11 +462,6 @@
 
         sendInvite: function(e) {
           this.inviteData = {email_list:e.detail.address};
-          /*if (this.checkHasToken()) {
-            this.header = {
-              "aimsquant-token": this.token,
-              "Content-Type": "application/json"};  
-          }*/
           this.$.sendInviteQuery.generateRequest();
         },
 
