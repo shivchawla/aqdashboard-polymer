@@ -37,7 +37,7 @@
     
       <iron-ajax
           auto
-          url="http://localhost:3002/api/v2/thread/{{threadid}}"
+          url="http://localhost:3002/api/v2/thread/{{threadId}}"
           method='GET'
           id='getThreadQuery'
           handle-as="json"
@@ -46,6 +46,17 @@
           headers='{{header}}'
           debounce-duration="300">
       </iron-ajax>
+
+       <iron-ajax
+          auto
+          url="http://localhost:3002/api/v2/thread/[[threadId]]/view"
+          method="POST"
+          id='views'
+          handle-as="json"
+          headers='{{header}}'
+          debounce-duration="300">
+      </iron-ajax>
+
 
       <template is="dom-if" if="{{threadDetails}}">
         <div id='container'>
@@ -67,7 +78,7 @@
             </template>
           </div>
           
-          <aq-community-postdetail-reply id="replyEditor" threadid="[[threadDetails._id]]"></aq-community-postdetail-reply>
+          <aq-community-postdetail-reply id="replyEditor" thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
 
         </div>
       </template>
@@ -79,7 +90,7 @@
       is: 'aq-community-postdetail',
       properties: {
         
-        threadid: String,
+        threadId: String,
         
         header: Object,
 
@@ -95,17 +106,8 @@
       },
 
       onGetThreadDetailResponse: function(data) {
-          this.threadDetails = data.detail.response;
-
           console.log(data.detail.response);
-          if(this.threadDetails.backtest) {
-            this.threadDetails["backtest_id"] = this.threadDetails.backtest._id;
-          }
-
-          for (i=0;i<this.threadDetails.replies.length;i++){
-              this.threadDetails["replies"][i]["backtest_id"] = this.threadDetails["replies"][i].backtest._id;
-          }
-
+          this.threadDetails = data.detail.response;
       },
 
       onGetThreadDetailError: function(data) {
@@ -122,6 +124,10 @@
           }
 
           this.user = user;
+      },
+
+      attached: function() {
+        //this.async(this.$.views.generateRequest(), 200);
       },
 
       goBack: function() {

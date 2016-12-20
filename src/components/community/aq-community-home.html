@@ -71,7 +71,7 @@
             font-size: 16px;
             margin-top: 20px;
             border-bottom: 1px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: #cf6766; !important;
+            --paper-tabs-selection-bar-color: #c3403f; !important;
             margin-bottom: -10px;  
         }
 
@@ -206,7 +206,7 @@
             properties: {
                 selected: {
                     type: String,
-                    value: 0
+                    value: 0,
                 },
 
                 items: {
@@ -229,7 +229,7 @@
 
                 currentPage: {
                   type:Number,
-                  value:1,
+                  //value:1,
                   observer: '_currentPageChanged',
                 },
 
@@ -244,6 +244,16 @@
 
                 aimsquant:Object,
                 header:Object,
+
+                personal:{
+                  type:Boolean,
+                  computed: 'isSelected(selected, 3)'
+                },
+
+                following:{
+                  type:Boolean,
+                  computed: 'isSelected(selected, 2)'
+                }
 
             },
 
@@ -261,7 +271,7 @@
                     "Content-Type": "application/json"};  
                 }
 
-                this.orderby = "views";
+                //this.orderby = "views";
                  
             },
 
@@ -270,43 +280,44 @@
               if (x) {
                   var community = JSON.parse(x).community;
                   if (community) {
-                      this.currentPage = community.lastPage;
                       this.searchText = community.searchText;
-                      this.searchCategory  =community.searchCategory;
-                  } else {
-                    this.aimsquant.community = {lastPage:1};
-                    this.$.localStorage.save();
-                  }
-              }                  
+                      this.searchCategory  = community.searchCategory;
+                      this.oldselected = community.searchTab;
+                      this.selected = community.searchTab;
+                      this.currentPage = community.lastPage;
+                  } 
+              }
+
+              this.isAttached = true;                  
             },
 
-          
-            isPersonalSelected: function() {
-                return this.selected == 3;
+            isSelected: function(selected, selection) {
+              return selected == selection;
             },
 
             onActivateTab: function() {
-                if (this.selected == 1) {
-                  this.orderby = 'createdAt';
-                } else {
-                  this.orderby = 'views';
-                }
+              
+                if(this.selected != this.oldselected) {
+                  this.oldselected = this.selected;
 
-                this.processparams();
+                  if(this.currentPage == 1) {
+                    this.processparams();
+                  } else {
+                    this.currentPage = 1;
+                  }
+                }
             },
 
             onGetAllThreadsResponse: function(data) {
-              console.log(data.detail.response);
                 this.items = data.detail.response.threads;
                 this.totalItems = data.detail.response.count;
             },
 
             onGetAllThreadsError: function(data) {
-                //console.log(data);         
             },
 
             createPost: function() {
-                this.saveCurrentPage();
+                this.updateCommunityState();
 
                 if (!this.header) {
                   this.router.go('/user/signin', {lastRequest:'/dashboard/community/create'});
@@ -321,23 +332,32 @@
               this.searchText = e.detail.text;
               this.searchCategory = e.detail.category;
 
-               if(this.aimsquant) {
-                this.aimsquant.community.searchText = this.searchText;
-                this.aimsquant.community.searchCategory = this.searchCategory;
-
-                if (this.searchText=="") {
+              if (this.searchText=="") {
                   this.currentPage = 1;
-                  this.aimsquant.community.lastPage = this.currentPage;
-                }
-
-                this.$.localStorage.save();
               }
-
+            
               this.processparams();
             },
 
+            isFollowing: function() {
+              return this.selected == 2;
+            },
+
+            isPersonal: function() {
+              return this.selected == 3;
+            },
+
             processparams: function() {
-              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonalSelected(), "category": this.searchCategory};
+              
+              if (this.selected == 0) {
+                  this.orderby = 'views';
+                } else {
+                  this.orderby = 'createdAt';
+                }
+
+              this.updateCommunityState();
+              
+              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": this.searchCategory};
 
               this.$.getAllThreadsQuery.generateRequest();
             },
@@ -347,24 +367,26 @@
             },
 
             _currentPageChanged: function(newPage, oldPage) {       
-              if (newPage !=oldPage) {
-                this.saveCurrentPage();
-              }
-
-              
-              this.fire('scroll-top');
-              
-              this.processparams();
+                this.processparams(); 
             },
 
-            saveCurrentPage: function() {
+            updateCommunityState: function() {
               if(this.aimsquant) {
-                this.aimsquant.community.lastPage = this.currentPage;
+                  this.aimsquant.community.searchText = this.searchText;
+                  this.aimsquant.community.searchCategory = this.searchCategory;
+                  this.aimsquant.community.lastPage = this.currentPage;
+                  this.aimsquant.community.searchTab = this.selected;
+                  this.$.localStorage.save();
+              }
+            },
+
+            /*saveCurrentPage: function(currentPage) {
+              if(this.aimsquant) {
+                this.aimsquant.community.lastPage = currentPage;
                 this.$.localStorage.save();
               }
-            },
+            },*/
 
-            
             getReplyDate: function(thread) {
               if (thread.replies.length > 0) {
                 return this.format(thread.replies[thread.replies.length-1].createdAt);
@@ -383,12 +405,12 @@
             },
 
             hasBacktest: function(thread) {
-              if (thread.bactest){
+              if (thread.backtestId){
                 return true;
               }
 
               for(i=0;i<thread.replies.length;i++){
-                if(thread.replies[i].backtest){
+                if(thread.replies[i].backtestId){
                   return true;
                 }
               }

@@ -40,8 +40,26 @@
       right:0;
     }
 
+
+    .title p {
+      font-size: 24px;
+    }
+
+    .title #quant{
+      color: #cc6666;
+    }
+
+    #logo {
+      content: url(../../images/Logo.png);
+      height:40px;
+      width:57px;
+      --background-color: #f2fbf7;
+      margin:auto 0;
+    }
+
+
     paper-tabs {
-      --paper-tabs-selection-bar-color:teal;--;white;
+      --paper-tabs-selection-bar-color:#c3403f;
     }
    
   </style>
@@ -52,7 +70,11 @@
         <template is="dom-if" if="{{showmenu}}">
           <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
           <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
-          <div class="title">AimsQuant</div>
+          
+          <div class="title layout horizontal">
+            <p>Aims</p><p id='quant'>Quant</p>
+            <div id='logo'></div>
+          </div>
         </template>
 
         <div class="flex"></div>

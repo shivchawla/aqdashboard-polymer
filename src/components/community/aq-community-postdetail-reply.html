@@ -85,7 +85,7 @@
         </aq-community-attachbacktest-dialog>  
              
       <iron-ajax 
-          url="http://localhost:3002/api/v2/thread/{{threadid}}" 
+          url="http://localhost:3002/api/v2/thread/{{threadId}}" 
           body="{{threadData}}" 
           method='POST' 
           id='postThreadQuery' 
@@ -107,7 +107,7 @@
         
         error: String,
         
-        threadid: String,
+        threadId: String,
         
         threadData: Object,
         
@@ -141,7 +141,7 @@
       postThread: function() {
 
           if (!this.header) {
-            this.router.go('user/signin',{lastRequest:('/dashboard/community/topics/[[threadid]]')});
+            this.router.go('user/signin',{lastRequest:('/dashboard/community/topics/[[threadId]]')});
             return;
           }
           

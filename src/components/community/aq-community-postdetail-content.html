@@ -63,8 +63,8 @@
 
       <aq-help-marked-item help-text="{{postContent.markdownText}}"></aq-help-marked-item>
 
-      <template is='dom-if' if="[[isValidBacktestId(postContent.backtest_id)]]">
-          <aq-backtest-detail-item backtest-id="[[postContent.backtest_id]]">
+      <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
+          <aq-backtest-detail-item backtest-id="[[getBacktestId(postContent)]]">
           </aq-backtest-detail-item>
       </template>
 
@@ -98,8 +98,17 @@
           return new Date(date).toLocaleTimeString("en-us", options);
       },
 
-      isValidBacktestId: function(backtestId) {
-        return (backtestId && backtestId!="");
+      isValidBacktestId: function(postContent) {
+         return this.getBacktestId(postContent) ? true : false;
+      },
+
+      getBacktestId: function(postContent) {
+        //Backward compatibility 
+        if (postContent["backtest"]) {
+          return postContent["backtest"];
+        } else {
+          return postContent.backtestId;
+        }
       },
 
 

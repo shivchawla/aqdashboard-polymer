@@ -126,6 +126,24 @@
     }
 
 
+     .title p {
+      font-size: 24px;
+    }
+    
+    .title #quant{
+      color: #cc6666;
+    }
+
+    #logo {
+      content: url(../../images/Logo.png);
+      height:40px;
+      width:57px;
+      --background-color: #f2fbf7;
+      margin:auto 0;
+    }
+
+
+
    
   </style>
 
@@ -133,7 +151,11 @@
     <paper-header-panel mode="seamed" class='sidenav fit'>
       <paper-toolbar>
         <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button>
-        <div class="title">AimsQuant</div>
+        <div class="title layout horizontal">
+          <!--div id='logo'></div-->
+          <p>Aims</p>
+          <p id='quant'>Quant</p>
+        </div>
       </paper-toolbar>
       
       <div id = 'content' class="fit">
