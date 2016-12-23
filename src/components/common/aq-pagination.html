@@ -81,11 +81,11 @@
 				}
 			},
 
-			isNextPageActive(currentPage, pageCount){
+			isNextPageActive: function(currentPage, pageCount){
 				return currentPage < pageCount;
 			},
 
-			isPreviousPageActive(currentPage){
+			isPreviousPageActive: function(currentPage){
 				return this.currentPage > 1;
 			},
 

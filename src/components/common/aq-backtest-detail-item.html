@@ -81,6 +81,9 @@
 
 		.flex_container{
 			display: flex;
+			display: -webkit-flex; /* Safari */
+            -webkit-flex-wrap: wrap; 
+            flex-wrap: wrap;
 		}
 		
 		paper-tabs {
@@ -195,7 +198,7 @@
 		<iron-signals id='datasignal' on-iron-signal-point-data='onBacktestData' on-iron-signal-bulk-data='onBacktestData'></iron-signals>
 
 		<iron-ajax
-          	url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+          	url="[[computeGetBacktestUrl(backtestId)]]"
      	 	method='GET'
           	id='getBacktestsQuery'
           	handle-as="json"
@@ -284,7 +287,15 @@
 					value:1,
 				},
 
+				header: Object,
+
+				APIEndPoint:String,
+
 			},
+
+			ready: function() {
+				 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+				},
 
 			attached: function() {
 
@@ -308,6 +319,11 @@
 					//this.$$('#barChart').refresh();
 					this.requestStaticData();
 				}	
+			},
+
+			computeGetBacktestUrl: function(backtestId) {
+				console.log(this.APIEndPoint+'/backtest/'+backtestId);
+				return this.APIEndPoint+'/backtest/'+backtestId;
 			},
 
 			resetMetrics: function() {
@@ -541,6 +557,7 @@
 			},
 
 			onGetBacktestSuccess: function(e){
+				console.log(e.detail.response);
 				this.set('backtest', e.detail.response);
 				
 				if(this.backtest.output.analytics.rolling) {

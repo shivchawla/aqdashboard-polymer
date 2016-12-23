@@ -1,0 +1,43 @@
+
+<dom-module id='aq-onsignup'>
+	
+	<style include="iron-flex iron-flex-alignment iron-positioning"></style>
+
+	<style>
+
+		#container {
+			--color:#24293d;
+		}
+
+		h3 {
+			color:teal;
+		}
+
+		#p1 {
+			color:#24293d;
+		}
+
+		#p2 {
+			color:#cc6666;
+		}
+
+	</style>
+
+	<template>
+		<div class="layout vertical flex" id='container'>
+			<h3 class="self-center"> Cheers!</h3>
+			<p id='p1' class="self-center">We've sent an email to [[emailId]].</p>
+			<p id='p2' class="self-center">Click the confirmation link in the email and start testing your investment ideas in no time.</p>
+		</div>
+	</template>
+	
+	<script>
+		Polymer({
+			is: 'aq-onsignup',
+
+			properties:{
+				emailId:String,
+			},
+		});
+	</script>
+</dom-module>

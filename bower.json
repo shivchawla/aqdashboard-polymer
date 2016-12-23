@@ -64,6 +64,7 @@
     "simplemde": "^1.11.2",
     "vaadin-icons": "^2.0.0",
     "vaadin-grid": "^1.1.1",
-    "web-socket": "*"
+    "web-socket": "*",
+    "iron-meta": "PolymerElements/iron-meta#^1.1.2"
   }
 }

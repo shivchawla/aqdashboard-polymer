@@ -37,7 +37,7 @@
     
       <iron-ajax
           auto
-          url="http://localhost:3002/api/v2/thread/{{threadId}}"
+          url="[[computeGetThreadUrl(threadId)]]"
           method='GET'
           id='getThreadQuery'
           handle-as="json"
@@ -49,7 +49,7 @@
 
        <iron-ajax
           auto
-          url="http://localhost:3002/api/v2/thread/[[threadId]]/view"
+          url="[[computePostViewUrl(threadId)]]"
           method="POST"
           id='views'
           handle-as="json"
@@ -98,6 +98,8 @@
 
         threadDetails:Object,
 
+        APIEndPoint: String,
+
       },
 
       listeners :{
@@ -124,10 +126,20 @@
           }
 
           this.user = user;
+
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
       },
 
       attached: function() {
         //this.async(this.$.views.generateRequest(), 200);
+      },
+
+      computeGetThreadUrl: function(threadId){
+        return this.APIEndPoint + '/thread/' + threadId;
+      },
+
+      computePostViewUrl: function(threadId){
+        return this.APIEndPoint+'/thread/'+threadId+'/view';
       },
 
       goBack: function() {

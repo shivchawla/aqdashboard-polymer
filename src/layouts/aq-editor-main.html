@@ -3,6 +3,7 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-router/app-router.html'>
 
+
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/editor/aq-editor-home.html">
 <link rel="import" href="../components/editor/aq-editor-edit.html">
@@ -10,7 +11,7 @@
 
 
 <dom-module id="aq-editor-main">
-  <style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
+  <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
    <style>
     #panel {
       height:100%;
@@ -36,7 +37,7 @@
 
       <template is='dom-if' if='{{hasToken}}'>
           <iron-ajax 
-            url="http://localhost:3002/api/v2/strategy" 
+            url="[[APIEndPoint]]/strategy" 
             body="[[strategyData]]" 
             method='POST' 
             id='postStrategyQuery' 
@@ -79,6 +80,8 @@
 
         strategyData:Object,
 
+        APIEndPoint:String,
+
       },
 
       listeners :{
@@ -99,6 +102,7 @@
         }
 
         this.hasToken = (user.token && user.token!="") ? true : false;
+        this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
       },
 
 

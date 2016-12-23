@@ -20,7 +20,7 @@
     #mainPanel {
       margin: 0 auto;
       border-right: 1px solid;
-      background-color: white;
+      background-color: #f3fbf7;
       color: #24293d;
     }
     
@@ -135,7 +135,7 @@
               <div id='bottom'></div>
           </paper-header-panel>
           
-          <iron-ajax url=""
+          <iron-ajax url="../../../resources/help/data_help.json"
             handle-as="json"
             id="getHelpContentQuery"
             on-response="onGetHelpContentSuccess"
@@ -173,7 +173,6 @@
 
       ready: function() {
          this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
-         this.$.getHelpContentQuery.url = "http://localhost:8080/src/components/help/data_help.json";
          this.$.getHelpContentQuery.generateRequest();
       },
 

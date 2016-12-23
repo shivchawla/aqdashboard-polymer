@@ -1,5 +1,5 @@
 
-<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<!--link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html"-->
 <link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
 <link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
@@ -157,7 +157,7 @@
 		</div>
 
 		<iron-ajax
-          	url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+          	url="[[computeGetBacktestUrl(backtestId)]]"
      	 	method='GET'
           	id='getBacktestsQuery'
           	handle-as="json"
@@ -217,6 +217,10 @@
 					type:Number,
 					value:0,
 				},
+
+				header: Object,
+
+				APIEndPoint:String,
 				
 			},
 
@@ -228,6 +232,9 @@
 		            "aimsquant-token": user.token,
 		            "Content-Type": "application/json"};  
 		        }
+
+	           	this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+
 			},
 
 			attached: function() {
@@ -240,6 +247,10 @@
 				if (oldVal+1 && newVal) {
 					this.doComparison();
 				}
+			},
+
+			computeGetBacktestUrl: function(backtestId) {
+				return this.APIEndPoint + '/backtest/' + backtestId;
 			},
 
 			doComparison: function() {

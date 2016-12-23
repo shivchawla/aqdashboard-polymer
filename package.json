@@ -14,5 +14,14 @@
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/aimsquant/aqdashboard#readme"
+  "homepage": "https://bitbucket.org/aimsquant/aqdashboard#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-crisper": "^1.1.0",
+    "gulp-html-minifier": "^0.1.8",
+    "gulp-uglify": "^2.0.0",
+    "gulp-vulcanize": "^6.1.0",
+    "polymer-build": "^0.5.1",
+    "pump": "^1.0.2"
+  }
 }

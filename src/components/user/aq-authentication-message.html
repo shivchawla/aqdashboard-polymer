@@ -55,6 +55,13 @@
 					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
 					<paper-button on-tap='goToLogin'>Go Back</paper-button>
 				</template>
+
+
+				<template is='dom-if' if='[[isModeReset(mode)]]'>
+					<p id='header' class="self-start">Great!! You're password has been reset.</p>
+					
+					<paper-button on-tap='goToLogin'>Go Back</paper-button>
+				</template>
 			</div>
 		</div>
 	</template>
@@ -75,6 +82,10 @@
 
 			isModeActivation: function(mode) {
 				return mode=="activation";
+			},
+
+			isModeReset: function(mode) {
+				return mode=="reset";
 			},
 
 			goToLogin: function() {

@@ -7,7 +7,7 @@
 
 
 <dom-module id='aq-nonprogrammer-constraint-item'>
-	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
 		
 		input {
@@ -334,11 +334,11 @@
 				}
 			},
 
-			isReverseVolatility(weightScheme) {
+			isReverseVolatility: function(weightScheme) {
 				return weightScheme == 4;
 			},
 
-			isNormalizedMomentum(weightScheme) {
+			isNormalizedMomentum: function(weightScheme) {
 				return weightScheme == 5;
 			},
 

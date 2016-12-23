@@ -106,7 +106,7 @@
     <template>
 
         <iron-ajax
-            url="http://localhost:3002/api/v2/thread"
+            url="[[APIEndPoint]]/thread"
             method='GET'
             id='getAllThreadsQuery'
             params='[[searchParam]]'
@@ -253,7 +253,9 @@
                 following:{
                   type:Boolean,
                   computed: 'isSelected(selected, 2)'
-                }
+                },
+
+                APIEndPoint:String,
 
             },
 
@@ -270,6 +272,8 @@
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"};  
                 }
+
+                this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
 
                 //this.orderby = "views";
                  

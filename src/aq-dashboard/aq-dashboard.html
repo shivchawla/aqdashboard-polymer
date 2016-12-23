@@ -3,9 +3,9 @@
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/web-socket/web-socket.html'>
-<!--link rel='import' href='../../bower_components/iron-signals/iron-signals.html'-->
+<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
-
+<link rel='import' href="../../resources/aq-environment.html">
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
 <link rel="import" href="../components/user/aq-authentication-message.html">
@@ -58,7 +58,7 @@
             <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
                 
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
-              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" showMenu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
             <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
             
@@ -81,11 +81,11 @@
 
               <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
 
-              <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter=""></app-route>
+              <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
 
-              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
 
-              <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
+              <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
 
             </app-router>
 
@@ -101,7 +101,7 @@
       </div>
 
       <web-socket 
-          url="ws://localhost:3002"
+          url="[[WSEndPoint]]"
           id="webSocketConn"
           json
           on-open="_onOpen"
@@ -117,7 +117,7 @@
         </iron-localstorage>
 
       <iron-ajax 
-        url="http://localhost:3002/api/v2/user/sendFeedback" 
+        url="[[APIEndPoint]]/user/sendFeedback" 
         body="{{feedBackData}}" 
         method='POST' 
         id='postFeedbackQuery' 
@@ -130,7 +130,7 @@
       </iron-ajax>
 
       <iron-ajax 
-        url="http://localhost:3002/api/v2/user/sendInvite" 
+        url="[[APIEndPoint]]/user/sendInvite" 
         body="{{inviteData}}" 
         method='POST' 
         id='sendInviteQuery' 
@@ -143,7 +143,7 @@
       </iron-ajax>
 
       <iron-ajax
-        url="http://localhost:3002/api/v2/backtest/[[backtestId]]"
+        url="computeGetBacktesturl(APIEndPoint, backtestId)"
         method='GET'
         id='getBacktestQuery'
         handle-as="json"
@@ -168,7 +168,7 @@
 
           showSidebar:{
             type:Boolean,
-            value:true,
+            value:false,
           },
 
           view: {
@@ -213,6 +213,10 @@
 
           header:Object,
 
+          APIEndPoint:String,
+
+          WSEndPoint:String,
+
         },
 
         listeners: {
@@ -237,6 +241,9 @@
         },
 
         attached: function() {
+
+            this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            this.WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
 
             if(this.checkHasToken()) {
                 if(this.URLcontains('/user')) {
@@ -281,6 +288,10 @@
               this.set('aimsquant.community.lastPage', 1);
               this.$.localStorage.save();
             }
+        },
+
+        computeGetBacktesturl: function(APIEndPoint, backtestId) {
+          return APIEndPoint+'/backtest/'+backtestId;
         },
 
         initializeDefaultValue: function() {
@@ -384,6 +395,7 @@
           if (this.URLcontains(path[tab])) {
             return;
           } else {
+            console.log("Here");
             this.$$('#router').go(path[tab]);
           }
           
@@ -406,16 +418,18 @@
                   //'/investments', 
                   '/about',
                   '/user/signin',
-                  '/user/signup'];
+                  '/user/signup',
+                  '/user/resetPassword'];
 
           if (this.currentTab == 1) {
             this.drawerWidth ="200px;"
             this.view = 'home';
           }
 
-          if (this.URLcontains(path[newTab])) {
+          if (this.URLcontains(path[newTab]) || this.URLcontains(path[5]) ) {
             return;
           } else {
+            console.log("or Here");
             this.$$('#router').go(path[newTab]);
           }
           

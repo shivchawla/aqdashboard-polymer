@@ -1,8 +1,8 @@
-<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel='import' href='../../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel='import' href='../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
 <link rel='import' href='../components/analyze/aq-analyze-home-backtest-item2.html'>
 
 <dom-module id="aq-community-attachbacktest-dialog">
@@ -123,9 +123,8 @@
         </paper-dialog>
 
         <iron-ajax
-            url="http://localhost:3002/api/v2/strategy"
+            url="[[APIEndPoint]]/strategy"
             method='GET'
-            params="[[searchParam]]"
             id='getStrategiesQuery'
             handle-as="json"
             on-response="onGetStrategiesResponse"
@@ -135,7 +134,7 @@
         </iron-ajax>
 
         <iron-ajax
-            url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
+            url="[[computeGetBacktestsUrl(strategyId)]]"
             method='GET'
             id='getBacktestsQuery'
             handle-as="json"
@@ -162,7 +161,7 @@
             type:Array,
           },
 
-          strategId: String,
+          strategyId: String,
           
           checkedCount:{
             type:Number,
@@ -180,6 +179,8 @@
             observer:'_strategyChanged',
           },
 
+          APIEndPoint: String,
+
         },
 
         listeners : {
@@ -194,6 +195,11 @@
                 "aimsquant-token": user.token,
                 "Content-Type": "application/json"};  
             }
+            this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+        },
+
+        computeGetBacktestsUrl: function(strategyId) {
+            return this.APIEndPoint+'/strategy/'+strategyId+'/backtests';
         },
         
         onGetStrategiesResponse: function(data) {

@@ -108,13 +108,12 @@
       
 
     <iron-ajax
-      url="http://localhost:3002/api/v2/thread/[[postHeader._id]]/follow"
+      url="[[computeFollowPostUrl(APIEndPoint, postHeader._id)]]"
       method="POST"
       id='follows'
       handle-as="json"
       on-response="onFollowThreadResponse"
       headers='{{header}}'
-
       debounce-duration="300">
     </iron-ajax>
 
@@ -137,7 +136,9 @@
         followers:{
           type:Array,
           value:[],
-        }
+        },
+
+        APIEndPoint:String,
       },
 
       attached: function() {
@@ -154,6 +155,11 @@
               "aimsquant-token": user.token,
               "Content-Type": "application/json"};  
           }
+ 
+      },
+
+      computeFollowPostUrl: function(APIEndPoint, threadId) {
+        return APIEndPoint+'/thread/'+ threadId+'/follow';
       },
 
       onFollow: function() {
@@ -162,6 +168,8 @@
           return;
         }
         
+        this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+         
         this.$.follows.generateRequest();
       },
 

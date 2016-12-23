@@ -7,7 +7,7 @@
 
 
 <dom-module id='aq-nonprogrammer-indicator-item'>
-	<style  include="iron-flex iron-flex-alignment  iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
 		input {
 			margin:10px;
@@ -121,7 +121,7 @@
 				},
 
 				horizon:{
-					type: String
+					type: String,
 				},
 			},
 
@@ -259,12 +259,12 @@
 				}
 			},
 
-			isReverseVolatility(weightScheme) {
+			isReverseVolatility: function(weightScheme) {
 				//console.log(weightScheme);
 				return weightScheme == 4;
 			},
 
-			isNormalizedMomentum(weightScheme) {
+			isNormalizedMomentum: function(weightScheme) {
 				return weightScheme == 5;
 			},
 

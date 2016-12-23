@@ -28,9 +28,10 @@
             --padding-top: 50px;
             --margin-top: 50px;
             background-color: #f4f9f7;
-            --height:100%;
+            height:100%;
             --margin-top: -30px;
             opacity: 1.0;
+
         }
 
         .dialog-fields {
@@ -140,6 +141,27 @@
             color:teal;
         }
 
+       #logo {
+          content: url(../../../resources/images/Logo-bg.png);
+          height:80px;
+          width:114px;
+          --background-color: #f2fbf7;
+
+         
+        }
+
+        #tagline {
+            font-size: 18px;
+            color: teal;
+            margin-top:-20px;
+        }
+
+        #logoContainer {
+            padding-top:60px;
+            margin-bottom:
+        }
+
+       
     }
 
     </style>
@@ -147,7 +169,13 @@
     <template>
         <div id='containerr' class="layout vertical fit">
             
-            <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>            
+            <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
+            
+            <div id='logoContainer' class="layout vertical">
+                <div class="self-center" id='logo'></div>            
+                <div id='tagline' class="self-center"><p>Invest in your Ideas</p></div> 
+            </div>
+
             <paper-card class="self-center" heading="{{aRsrc.headerText}}">
 
                 <div class="dialog-fields" class="layout vertical">
@@ -162,7 +190,7 @@
                             error-message="{{firstNameErrorMessage}}"
                             type="text"
                             on-focus='onUserFirstNameFocus'
-                            on-focusout='onUserFirstNameFocusOut'
+                            on-blur='onUserFirstNameFocusOut'
                             no-label-float
                             required
                             max-length=15
@@ -177,7 +205,7 @@
                             error-message="{{lastNameErrorMessage}}"
                             type="text"
                             on-focus='onUserLastNameFocus'
-                            on-focusout='onUserLastNameFocusOut'
+                            on-blur='onUserLastNameFocusOut'
                             no-label-float
                             required
                             max-length=15
@@ -186,19 +214,21 @@
 
                     </template>
 
-                    <gold-email-input
-                        id='userEmailInput'
-                        class='input-fields'
-                        auto-complete='on'
-                        label="{{aRsrc.userEmailFieldLabel}}"
-                        value="{{userEmail}}"
-                        error-message="{{userEmailErrorMessage}}"
-                        no-label-float
-                        required
-                        on-focus='onUserEmailFocus'
-                        on-focusout='onUserEmailFocusOut'
-                        invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
-                    </gold-email-input>
+                    <template is='dom-if' if=[[!isResetPasswordMode(displayMode)]]>
+                        <gold-email-input
+                            id='userEmailInput'
+                            class='input-fields'
+                            auto-complete='on'
+                            label="{{aRsrc.userEmailFieldLabel}}"
+                            value="{{userEmail}}"
+                            error-message="{{userEmailErrorMessage}}"
+                            no-label-float
+                            required
+                            on-focus='onUserEmailFocus'
+                            on-blur='onUserEmailFocusOut'
+                            invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
+                        </gold-email-input>
+                    </template>
 
                     <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">
                         <paper-input
@@ -211,13 +241,31 @@
                             minLength=8
                             no-label-float
                             required
-                            on-focusout="onPasswordFocusOut"
+                            on-blur="onPasswordFocusOut"
                             on-focus="onPasswordFocus"
                             invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
                         </paper-input>
                     </template>
 
-                    <template is="dom-if" if="{{isSignupMode(displayMode)}}">
+                    <!--template is='dom-if' if="{{isResetPasswordMode(displayMode)}}">
+                  
+                        <paper-input
+                            id='newPasswordInput'
+                            class='input-fields'
+                            label="{{aRsrc.newPasswordFieldLabel}}"
+                            value="{{newPassword}}"
+                            error-message="{{newPasswordErrorMessage}}"
+                            type="password"
+                            minLength=8
+                            no-label-float
+                            required
+                            on-blur="onNewPasswordFocusOut"
+                            on-focus="onNewPasswordFocus"
+                            invalid='{{!isNewPasswordValid(newPassword,newPasswordInFocus)}}'>
+                        </paper-input>
+                    </template-->
+
+                    <template is="dom-if" if="{{isSignupOrResetMode(displayMode)}}">
                         <paper-input
                             id='confirmPasswordInput'
                             class='input-fields'
@@ -228,11 +276,11 @@
                             no-label-float
                             required
                             on-focus="onConfirmPasswordFocus"
-                            on-focusout="onConfirmPasswordFocusOut"
+                            on-blur="onConfirmPasswordFocusOut"
                             invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'></paper-input>
                     </template>
                     <iron-ajax 
-                        url="http://localhost:3002/api/v2/user" 
+                        url="[[APIEndPoint]]/user" 
                         body="{{signupBody}}" 
                         method='POST' 
                         id='signup' 
@@ -249,7 +297,7 @@
 
                     </template>
                     <iron-ajax
-                      url="http://localhost:3002/api/v2/user/login"
+                      url="[[APIEndPoint]]/user/login"
                       body="{{signinBody}}"
                       method='POST'
                       id='login'
@@ -261,13 +309,25 @@
                     </iron-ajax>
 
                     <iron-ajax
-                      url="http://localhost:3002/api/v2/user/forgotpassword"
+                      url="[[APIEndPoint]]/user/forgotpassword"
                       params="{{forgotPasswordParams}}"
                       method='GET'
                       id='forgotPasswordQuery'
                       handle-as="json"
                       on-response="handleForgotPasswordResponse"
                       on-error="handleForgotPasswordError"
+                      headers='{"Content-Type": "application/json"}'
+                      debounce-duration="300">
+                    </iron-ajax>
+
+                    <iron-ajax
+                      url="[[APIEndPoint]]/user/resetpasswordcall"
+                      body="{{resetPasswordParams}}"
+                      method='POST'
+                      id='resetPasswordQuery'
+                      handle-as="json"
+                      on-response="handleResetPasswordResponse"
+                      on-error="handleResetPasswordError"
                       headers='{"Content-Type": "application/json"}'
                       debounce-duration="300">
                     </iron-ajax>
@@ -286,6 +346,8 @@
             
             </paper-card>
 
+            <div class="flex"></div>
+
         </div>
 
     </template>
@@ -297,7 +359,7 @@
             signup: 'signup',
             forgotPassword: 'forgotPassword',
             signout:'signout',
-            welcome:'welcome',
+            resetPassword:'resetPassword',
         };
 
         Polymer({
@@ -361,6 +423,7 @@
                     value: false
                 },
 
+            
                 confirmPasswordInFocus: {
                     type: Boolean,
                     value: false
@@ -392,6 +455,7 @@
                     value: ""
                 },
 
+                
                 confirmPasswordErrorMessage: {
                     type: String,
                     value: ""
@@ -432,6 +496,11 @@
                     computed:'computeForgotPasswordParams(userEmail)',
                 },
 
+                resetPasswordParams:{
+                    type:Object,
+                    computed:'computeResetPasswordParams(password, confirmPassword, resetcode)'
+                },
+
                 actionFailedMessage:{
                     type:String,
                     value:'',
@@ -442,6 +511,11 @@
                     value:{},
                     notify:true,
                 },
+
+                aRsrc: Object,
+
+                resetcode: String,
+                APIEndPoint:String,
             },
 
             /**
@@ -499,7 +573,23 @@
                     actionButtonLabel: "Send Request",
                     actionButtonInProgressLabel: "Sending...",
                     actionButtonSuccessLabel: "Success! Please check your inbox."
-                }
+                },
+
+                resetPassword: {
+                    headerText: "Reset Password",
+                    footerText: "Back to Sign in? ",
+                    footerLinkText: "Log in here",
+                    userEmailFieldLabel: "Account Email Address",
+                    userEmailErrorMessage: "Please enter a valid email",
+                    passwordFieldLabel: "Password",
+                    passwordErrorMessage: "Minimum 8 characters",
+                    confirmPasswordFieldLabel: "Confirm Password",
+                    confirmPasswordErrorMessage: "Passwords don't match",
+                    actionButtonLabel: "Send Request",
+                    actionButtonInProgressLabel: "Sending...",
+                    
+                },
+
             },
 
             attached: function() {
@@ -513,7 +603,8 @@
                 if (this.displayMode != displayModes.signin && 
                     this.displayMode != displayModes.signup &&
                     this.displayMode != displayModes.forgotPassword &&
-                    this.displayMode != displayModes.signout) {
+                    this.displayMode != displayModes.signout && 
+                    this.displayMode != displayModes.resetPassword) {
                     
                     this.displayMode = displayModes.signin;
                 }
@@ -530,6 +621,8 @@
                 } else if (this.displayMode == displayModes.signin) {
                     this.fire('tabChanged',{tab:4})
                 } 
+
+                this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
 
             checkHasToken: function() {
@@ -559,19 +652,33 @@
                 return {email: userEmail};
             },
 
+            computeResetPasswordParams: function(password, newPassword, resetcode) {
+                return {code:resetcode, password:password, newpassword:newPassword};
+            },
+
             isSigninMode: function(displayMode) {
-                var test = displayMode || this.displayMode;
+                
                 return displayMode == displayModes.signin;
             },
 
             isSignupMode: function(displayMode) {
-                var test = displayMode || this.displayMode;
+               
                 return displayMode == displayModes.signup;
             },
 
+            isSignupOrResetMode: function(displayMode) {
+                
+                return displayMode == displayModes.signup || displayMode == displayModes.resetPassword;
+            },
+
             isForgotPasswordMode: function(displayMode) {
-                var test = displayMode || this.displayMode;
+                
                 return displayMode == displayModes.forgotPassword;
+            },
+
+            isResetPasswordMode: function(displayMode) {
+                
+                return displayMode == displayModes.resetPassword;
             },
 
             onFooterLinkTap: function(e) {
@@ -587,6 +694,9 @@
                         //this.setDisplayMode(displayModes.signin);
                         break;
                     case displayModes.forgotPassword:
+                        this.setDisplayMode(displayModes.signin);
+                        break;
+                    case displayModes.resetPassword:
                         this.setDisplayMode(displayModes.signin);
                         break;
                     default:
@@ -618,6 +728,7 @@
                 this.clearFields();
                 this.actionFailedMessage = '';
                 this.passwordErrorMessage = '';
+                this.newPasswordErrorMessage = '';
                 this.confirmPasswordErrorMessage = '';
                 this.userEmailErrorMessage = '';
                 this.firstNameErrorMessage='';
@@ -643,23 +754,32 @@
                 return passwordInFocus | password == '' | this.passwordValid;
             },
 
+            isNewPasswordValid: function(newPassword, newPasswordInFocus) {
+                return newPasswordInFocus | newPassword == '' | this.newPasswordValid;
+            },
+
             isUserEmailValid: function(userEmail, userEmailInFocus) {
                 return userEmailInFocus | userEmail == '' | this.userEmailValid;
             },
 
             updateMessageStrings: function() {
                 this.aRsrc = this.rsrc[this.displayMode];
+                this.headerText = this.aRsrc.headerText;
                 this.actionButtonLabel = this.aRsrc.actionButtonLabel;
                 this.confirmPasswordErrorMessage = this.aRsrc.confirmPasswordErrorMessage;
                 this.userEmailErrorMessage = this.aRsrc.userEmailErrorMessage;
                 this.passwordErrorMessage = this.aRsrc.passwordErrorMessage;
                 this.firstNameErrorMessage = this.aRsrc.firstNameErrorMessage;
                 this.lastNameErrorMessage = this.aRsrc.lastNameErrorMessage;
+                this.newPasswordErrorMessage = this.aRsrc.newPasswordErrorMessage;
 
             },
 
             updateValidity: function() {
-                this.$$('#userEmailInput').invalid = false;
+
+                if (this.displayMode !=displayModes.resetPassword) {
+                    this.$$('#userEmailInput').invalid = false;
+                }
 
                 if (this.displayMode != displayModes.forgotPassword) {
                     this.$$('#passwordInput').invalid = false
@@ -674,6 +794,13 @@
                         this.$$('#confirmPasswordInput').invalid = false;
                     }
                 }
+
+                if (this.displayMode != displayModes.resetPassword) {
+                     if (this.$$('#confirmPasswordInput')) {
+                        this.$$('#confirmPasswordInput').invalid = false;
+                    }
+                }
+
             },
 
             onUserLastNameFocusOut: function() {
@@ -713,12 +840,28 @@
                 this.confimPassworValid = this.confirmPassword != ''
                     ? this.checkPasswordsMatch()
                     : true;
+
                 this.passwordInFocus = false;
             },
 
             onPasswordFocus: function() {
                 this.actionFailedMessage = '';
                 this.passwordInFocus = true;
+            },
+
+            onNewPasswordFocusOut: function() {
+                //this.actionFailedMessage = '';
+                this.newPasswordValid = this.$$('#newPasswordInput').validate();
+                
+                this.newPasswordValid = this.password != ''
+                    ? (!this.checkPasswordsMatch())
+                    : true;
+                this.newPasswordInFocus = false;
+            },
+
+            onNewPasswordFocus: function() {
+                this.actionFailedMessage = '';
+                this.newPasswordInFocus = true;
             },
 
             onConfirmPasswordFocusOut: function() {
@@ -735,7 +878,9 @@
             },
 
             checkPasswordsMatch: function() {
-                if (this.displayMode === displayModes.signup) {
+                if (this.displayMode == displayModes.signup) {
+                    return this.password == this.confirmPassword;
+                } else if (this.displayMode == displayModes.resetPassword) {
                     return this.password == this.confirmPassword;
                 } else {
                     return true;
@@ -744,7 +889,11 @@
 
             checkvalidity: function(firstNameValid, lastNameValid, userEmailValid, passwordValid, confirmPasswordValid, acceptPolicy, displayMode) {
 
-                var valid = userEmailValid;
+                var valid = true;
+
+                if (displayMode != displayModes.resetPassword) {
+                    valid &= userEmailValid;
+                }
 
                 if (displayMode === displayModes.signin) {
                     valid &= passwordValid;
@@ -755,6 +904,11 @@
                     valid &= lastNameValid & this.lastName != '';
                     valid &= confirmPasswordValid & this.confirmPassword == this.password;
                     valid &= acceptPolicy;
+                }
+
+                if (displayMode == displayModes.resetPassword) {
+                    valid &= passwordValid;
+                    valid &= confirmPasswordValid & this.confirmPassword == this.password;
                 }
 
                 return valid;
@@ -806,11 +960,25 @@
                 console.log(e.detail.response);
             },
 
+            handleResetPasswordResponse: function(e) {
+                //console.log("Reset Password: Success");
+                //console.log(e.detail.response);
+                this.router.go('/user/authentication/reset');
+            },
+
+            handleResetPasswordError: function(e) {
+                console.log("Reset Password: Error");
+                console.log(e.detail.response);
+            },
+
             onInvokeAction: function() {
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
 
-                    this.$$('#userEmailInput').invalid = !this.userEmailValid;
+                    console.log("Not valid");
+                    if (this.displayMode != displayModes.resetPassword) {
+                        this.$$('#userEmailInput').invalid = !this.userEmailValid;
+                    }
 
                     if (this.displayMode != displayModes.forgotPassword) {
                         this.$$('#passwordInput').invalid = !this.passwordValid;
@@ -822,6 +990,11 @@
                         this.$$('#confirmPasswordInput').invalid = !this.confirmPasswordValid
                     }
 
+                    if (this.displayMode == displayModes.resetPassword) {
+                        this.$$('#confirmPasswordInput').invalid = !this.confirmPasswordValid
+                    }
+
+
                     return;
                 }
 
@@ -831,11 +1004,16 @@
                         break;
                     case displayModes.signup:
                         this.async(this.$.signup.generateRequest());
-                          this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
+                        this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
                         break;
                     case displayModes.forgotPassword:
                         this.async(this.$.forgotPasswordQuery.generateRequest());
                          this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
+                        break;
+
+                    case displayModes.resetPassword:
+                        console.log("resetting request");
+                        this.async(this.$.resetPasswordQuery.generateRequest());
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displaymode)

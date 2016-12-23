@@ -16,7 +16,7 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-editor-edit">
-  <style  include="iron-flex iron-flex-alignment  iron-positioning">
+  <style  include="iron-flex iron-flex-alignment iron-positioning">
   </style> 
 
 <style>
@@ -82,7 +82,7 @@
 
 <template>
     <iron-ajax
-          url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
+          url="[[computeGetStrategyUrl(strategyId)]]"
           method='GET'
           id='getStrategyQuery'
           handle-as="json"
@@ -91,29 +91,27 @@
           headers='{{header}}'
           debounce-duration="300">
     </iron-ajax>  
-
-    <template is='dom-if' if="{{strategy}}">         
-        
-      <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
+     
+    <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
         <paper-header-panel id='leftPanel' main mode="seamed"> 
           
           <template is='dom-if' if='[[!isRunning]]'>
             <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]" strategy-id="[[strategyId]]"> 
             </aq-editor-toolbar>
+          </template>  
             
-            <template is='dom-if' if='{{isProgrammer}}'>
+            <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
               <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
             </template>
              
-            <!--template is='dom-if' if='{{!isProgrammer}}'>
+            <template is='dom-if' if='{{!isProgrammer}}'>
               <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
-            </template-->
+            </template>
                  
-            <iron-collapse id='collapse'>
+            <!--iron-collapse id='collapse'>
               <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
-            </iron-collapse>
-          </template>
-
+            </iron-collapse-->
+    
           <template is='dom-if' if='[[isRunning]]'>
             <aq-editor-edit-backtest-screen is-running="{{isRunning}}" 
                                             id='backtestScreen'
@@ -158,16 +156,13 @@
               
               <aq-editor-sidebar-log></aq-editor-sidebar-log>
               
-              
             </iron-pages>
         
         </paper-header-panel>
         
                       
-      </template>
-
       <iron-ajax 
-        url="http://localhost:3002/api/v2/strategy/[[strategyId]]" 
+        url="[[computePutStrategyUrl(strategyId)]]" 
         body="{{putStrategyData}}" 
         method='PUT' 
         id='saveStrategyQuery' 
@@ -180,7 +175,7 @@
     </iron-ajax>
 
     <iron-ajax 
-        url="http://localhost:3002/api/v2/strategy/[[strategyId]]/exec" 
+        url="[[computePostStrategyExecutionUrl(strategyId)]]"
         body="{{runStrategyData}}" 
         method='POST' 
         id='runStrategyQuery' 
@@ -250,11 +245,8 @@
 
         activeBacktestId:String,
 
-      },
+        APIEndPoint:String,
 
-      attached: function() {
-
-        
       },
 
       listeners: {
@@ -275,7 +267,12 @@
         'scroll-log':'onScroll',
       },
 
+      ready: function() {
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+      },
+
       attached: function() {
+       
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
     
@@ -291,9 +288,21 @@
           this.fire('close-menu');
       },
 
+      computeGetStrategyUrl: function(strategyId) {
+        return this.APIEndPoint+'/strategy/'+strategyId;
+      },
+
+      computePutStrategyUrl: function(strategyId) {
+        return this.APIEndPoint +'/strategy/' + strategyId;
+      },
+
+      computePostStrategyExecutionUrl: function(strategyId) {
+        return this.APIEndPoint + '/strategy/'+ strategyId+'/exec'; 
+      },
+
       _narrowChanged: function(newVal, oldVal) {
         if (!newVal && !this.isRunning) {
-          this.$$('#codeEditorPanel').style.display = 'block';
+          //this.$$('#codeEditorPanel').style.display = 'block';
         }
       },
 
@@ -334,11 +343,11 @@
 
           var x = this.$$('#codeEditorPanel').style.display;
 
-          if(x=='none' && !this.isRunning) {
+          /*if(x=='none' && !this.isRunning) {
             this.$$('#codeEditorPanel').style.display = 'block';
           } else {
             this.$$('#codeEditorPanel').style.display = 'none';
-          }
+          }*/
 
         } else if (this.showSideBar && !this.narrow) {
           this.closeDrawer();
@@ -476,7 +485,12 @@
 
       onScroll: function() {
         this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight; 
-      }
+      },
+
+      showProgrammerWindow: function(isRunning, isProgrammer) {
+        console.log(!isRunning && isProgrammer);
+        return !isRunning && isProgrammer;
+      },
 
     });
   </script>

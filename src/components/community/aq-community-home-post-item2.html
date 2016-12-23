@@ -3,9 +3,9 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel='import' href='../profile-img.html'>
 <link rel="import" href="../help/aq-help-marked-item.html">
+<link rel="import" href="../../icons/aq-iconset.html">
 
 
 <dom-module id="aq-community-home-post-item2">
@@ -154,7 +154,7 @@
 
           <div class="layout vertical">
             <a on-tap='goToDetail'>[[topicHeading]]</a>
-            <span id='category'><i>[[postCategory]]</i> by [[authorFirstname]] [[authorLastname]] on [[postDate]]</span>
+            <span id='category'><i>[[postCategory]]</i> by [[getAuthorFullName(authorFirstname, authorLastname)]]</span><span on [[postDate]]</span>
           </div>
 
           <div class="flex"></div>
@@ -215,7 +215,7 @@
                <span>Last Reply</span>
             </div> 
             <template is='dom-if' if="[[!totalReplies]]">
-                <paper-icon-button class="self-start" id='iconReply' icon="icons:reply" on-tap='goToDetail'></paper-icon-button>
+                <paper-icon-button class="self-start" id='iconReply' icon="aq-icons:reply" on-tap='goToDetail'></paper-icon-button>
             </template>  
           </div>
 
@@ -249,7 +249,7 @@
         hasBacktest:Boolean
       },
 
-      getInitials(firstName, lastName) {
+      getInitials: function(firstName, lastName) {
         return firstName.charAt(0) + lastName.charAt(0);
       },
 
@@ -263,6 +263,10 @@
         } else{
           return "No replies yet. Be the first one to reply!!";
         }
+      },
+
+      getAuthorFullName: function(authorFirstname, authorLastname){
+        return authorFirstname+' '+ authorLastname;
       },
     
 

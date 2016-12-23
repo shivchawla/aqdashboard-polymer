@@ -85,7 +85,7 @@
         </aq-community-attachbacktest-dialog>  
              
       <iron-ajax 
-          url="http://localhost:3002/api/v2/thread/{{threadId}}" 
+          url="[[APIEndPoint]]/thread/{{threadId}}" 
           body="{{threadData}}" 
           method='POST' 
           id='postThreadQuery' 
@@ -120,6 +120,8 @@
           value:false,
         },
 
+        APIEndPoint:String,
+
       },
 
       listeners :{
@@ -135,7 +137,9 @@
             this.header = {
               "aimsquant-token": user.token,
               "Content-Type": "application/json"};  
-          }        
+          }   
+
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;     
       },
 
       postThread: function() {
@@ -180,8 +184,11 @@
               "markdownText": markdownText,
               "user":{"firstName":user.firstName,"lastName":user.lastName},
               "updatedAt": new Date(),
-              "backtest_id":this.attachedBacktestId,
           };
+
+          if(this.attachedBacktestId && this.attachedBacktestId!="") {
+            this.threadData["backtestId"] = this.attachedBacktestId;
+          }
 
           if(this.threadData["markdownText"]!="") {
               this.error = "";

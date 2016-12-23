@@ -123,7 +123,7 @@
 					<div class="flex"></div>
 		          	
 					<template is='dom-if' if="[[detailIcon]]">
-		          		<paper-icon-button  title="Detail" on-tap="onDetail" icon="vaadin-icons:line-bar-chart"></paper-icon-button>
+		          		<paper-icon-button  title="Detail" on-tap="onBacktestDetail" icon="vaadin-icons:line-bar-chart"></paper-icon-button>
 		          	</template>
 
 		          	<template is='dom-if' if="[[shareIcon]]">
@@ -353,7 +353,7 @@
 				this.fire('backtestChecked',{id:this.backtest._id, checked:this.$.checkbox.checked})
 			},
 
-			onDetail: function() {
+			onBacktestDetail: function() {
 				this.fire('detail-action',{id:this.backtest._id});
 			},
 

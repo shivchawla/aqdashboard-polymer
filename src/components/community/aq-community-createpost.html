@@ -7,10 +7,8 @@
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
 <link rel='import' href='../common/aq-dropdown.html'>
-<link rel='import' href='../analyze/aq-analyze-home-backtest-item.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
-
-
+clear
 <dom-module id="aq-community-createpost">
     <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
     
@@ -150,7 +148,7 @@
         </template>
 
         <iron-ajax 
-            url="http://localhost:3002/api/v2/thread" 
+            url="[[APIEndPoint]]/thread" 
             body="{{threadData}}" 
             method='POST' 
             id='thread' 
@@ -162,7 +160,7 @@
         </iron-ajax>
 
         <iron-ajax
-          url="http://localhost:3002/api/v2/thread/[[newThreadId]]/follow"
+          url="[[computeFollowPostUrl(newThreadId)]]"
           method="POST"
           id='follows'
           handle-as="json"
@@ -205,6 +203,8 @@
                 share: String,
 
                 newThreadId: String,
+
+                APIEndPoint: String,
             },
 
             listeners :{
@@ -225,6 +225,11 @@
                     "aimsquant-token": user.token,
                     "Content-Type": "application/json"};  
                 }
+                this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            },
+
+            computeFollowPostUrl: function(threadId) {
+              return this.APIEndPoint+'/thread/'+threadId+'/follow';
             },
 
             postThread: function() {

@@ -3,6 +3,7 @@
 		{
 			"Category": "Section A"
 		},
+
 		{
 			"Category": "Section B"
 		},
@@ -23,6 +24,9 @@
 		},
 		{
 			"Category": "Section H"
+		},
+		{
+			"Category": "Section AA"
 		}
 	],
 	"size": 200

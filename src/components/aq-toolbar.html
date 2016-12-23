@@ -8,9 +8,8 @@
 <link rel="import" href="./aq-user-menu.html">
 <link rel='import' href='../icons/aq-iconset.html'>
 
-
 <dom-module id="aq-toolbar">
-  <style  include="iron-flex iron-flex-alignment  iron-positioning">  
+  <style  include="iron-flex iron-flex-alignment iron-positioning">  
   </style>
   
   <style>
@@ -23,13 +22,13 @@
   }
   
   paper-toolbar{
-      border-bottom: 3px solid #cc6666;
+      border-bottom: 1px solid teal;--#cc6666;
       height:70px;
       color:teal;
   }
   
   paper-toolbar {
-      --paper-toolbar-background:#f2fbf7;
+      --paper-toolbar-background:white;--#f2fbf7;
       
       --opacity:var(--dark-primary-opacity);
       --border-bottom: 1px solid #e0e0e0;
@@ -50,9 +49,9 @@
     }
 
     #logo {
-      content: url(../../images/Logo.png);
-      height:40px;
-      width:57px;
+      content: url(../../../resources/images/Logo.png);
+      height:30px;
+      width:42px;
       --background-color: #f2fbf7;
       margin:auto 0;
     }
@@ -67,16 +66,19 @@
   <template>
 
       <paper-toolbar>
-        <template is="dom-if" if="{{showmenu}}">
-          <template is ='dom-if' if="{{computeShowMenu(hasToken, currentTab)}}">
-          <paper-icon-button noink icon="icons:menu" on-tap="toggleMenu"></paper-icon-button></template>
+
+          <template is ='dom-if' if="[[computeShowMenu(showMenu, currentTab)]]">
+            <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
+          </template>
           
-          <div class="title layout horizontal">
+          <template is ='dom-if' if="[[showMenu]]"> 
+            <div class="title layout horizontal">
             <p>Aims</p><p id='quant'>Quant</p>
             <div id='logo'></div>
-          </div>
-        </template>
-
+            </div>
+          </template>
+          
+        
         <div class="flex"></div>
         <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
           <paper-tab>HOME</paper-tab>
@@ -103,7 +105,7 @@
       is:'aq-toolbar',
 
       properties: {
-        showmenu: {
+        showMenu: {
           type:Boolean,
           value:true,
         },
@@ -127,8 +129,8 @@
         this.fire('open-menu');
       },
 
-      computeShowMenu: function(hasHeader, currentTab) {
-        return currentTab == 1;
+      computeShowMenu: function(showMenu, currentTab) {
+        return showMenu && currentTab == 1;
       },
 
     });

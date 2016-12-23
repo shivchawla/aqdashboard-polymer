@@ -46,7 +46,7 @@
 
 	<template>
 		<iron-ajax	
-          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]"
+          	url="[[computeGetStrategyUrl(APIEndPoint, strategyId)]]"
      	 	method='GET'
           	id='getStrategyQuery'
           	handle-as="json"
@@ -56,7 +56,7 @@
           	debounce-duration="300">
         </iron-ajax>
 		<iron-ajax
-          	url="http://localhost:3002/api/v2/strategy/[[strategyId]]/backtests"
+          	url="[[computeGetAllBacktestsUrl(APIEndPoint, strategyId)]]"
      	 	method='GET'
           	id='getBacktestsQuery'
           	handle-as="json"
@@ -67,7 +67,7 @@
         </iron-ajax>
 		
 		<iron-ajax
-          	url="http://localhost:3002/api/v2/backtest/[[deleteId]]"
+          	url="[[computeDeleteBacktestUrl(APIEndPoint, deleteId)]]"
      	 	method='DELETE'
           	id='deleteBacktestQuery'
           	handle-as="json"
@@ -140,6 +140,8 @@
 					value:false,
 				},
 
+				APIEndPoint:String, 
+
     		}, 
     		
 			listeners: {
@@ -161,6 +163,19 @@
 		            "aimsquant-token": user.token,
 		            "Content-Type": "application/json"};  
 		        }
+		        this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+	      	},
+
+	      	computeGetStrategyUrl: function(APIEndPoint, strategyId) {
+	      		return APIEndPoint+'/strategy/'+strategyId;
+	      	},
+
+	      	computeDeleteBacktestUrl: function(APIEndPoint, deleteId){
+	      		return APIEndPoint+'/backtest/'+deleteId;
+	      	},
+
+	      	computeGetAllBacktestsUrl: function(APIEndPoint, strategyId){
+	      		return APIEndPoint+'/strategy/'+strategyId+'/backtests';
 	      	},
 
 	      	attached: function() {
@@ -255,7 +270,8 @@
 	        },
 
 	        onDetail: function(e) {  
-	        	console.log(this.router);    	
+	        	//console.log(this.router);
+	        	e.stopPropagation();    	
 	        	this.router.go('/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id);
 	        },
 
