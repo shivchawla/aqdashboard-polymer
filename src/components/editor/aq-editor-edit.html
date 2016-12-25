@@ -16,6 +16,9 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-editor-edit">
+  
+<template>
+
   <style  include="iron-flex iron-flex-alignment iron-positioning">
   </style> 
 
@@ -80,7 +83,6 @@
 
 <style  include="iron-flex iron-positioning"></style>
 
-<template>
     <iron-ajax
           url="[[computeGetStrategyUrl(strategyId)]]"
           method='GET'

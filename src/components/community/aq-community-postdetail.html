@@ -1,5 +1,7 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
@@ -48,7 +50,6 @@
       </iron-ajax>
 
        <iron-ajax
-          auto
           url="[[computePostViewUrl(threadId)]]"
           method="POST"
           id='views'
@@ -57,12 +58,11 @@
           debounce-duration="300">
       </iron-ajax>
 
-
       <template is="dom-if" if="{{threadDetails}}">
         <div id='container'>
           
           <div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBack"></paper-icon-button>
+            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-click="goBack"></paper-icon-button>
             <div class="flex"><p>Back to Community</p></div>
           </div>
           
@@ -88,17 +88,29 @@
   <script>
     Polymer ({
       is: 'aq-community-postdetail',
+
       properties: {
         
-        threadId: String,
+        threadId:{
+          type:String,
+          value:"",
+        },
         
-        header: Object,
+        header: {
+          type:Object,
+        },
 
-        user:Object,
+        user: {
+          type: Object, 
+        },
 
-        threadDetails:Object,
+        threadDetails: {
+          type: Object,
+        },
 
-        APIEndPoint: String,
+        APIEndPoint: {
+          type: String,
+        },
 
       },
 
@@ -108,6 +120,7 @@
       },
 
       onGetThreadDetailResponse: function(data) {
+          console.log("Twenty times");
           console.log(data.detail.response);
           this.threadDetails = data.detail.response;
       },
@@ -117,6 +130,8 @@
       },
 
       ready: function() {
+          console.log("Ready");
+
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
           if (user.token) {
@@ -128,10 +143,13 @@
           this.user = user;
 
           this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+
+          //this.$.getThreadQuery.generateRequest();
+          //this.$.views.generateRequest();
+
       },
 
-      attached: function() {
-        //this.async(this.$.views.generateRequest(), 200);
+      attached: function() {  
       },
 
       computeGetThreadUrl: function(threadId){
@@ -143,6 +161,7 @@
       },
 
       goBack: function() {
+          console.log("back");
           this.router.go('/dashboard/community');
       },
 

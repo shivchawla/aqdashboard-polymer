@@ -2,252 +2,252 @@
 	"Help": [
 		{
 			"header": {"value":"Introduction","size":"Normal"},
-			"img_srcw1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_srcw1":"../../resources/src/components/help/help.jpg",
 			"text": "## Introduction\nAimsQuant brings you an easy to use platform to research your investment ideas. This platform will help in finding patterns in the stock market and testing variety of investment ideas. \n #### The *backtester* is written in [Julia](http://www.julialang.org)."
 			
 		},
 		{
 			"header": {"value":"What is Backtesting","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 
 			"text": "## What is Backtesting?\n*Backtesting* is the process of testing a trading strategy or an investment strategy, by estimating the performance of a strategy or model if it had been employed during a past period.\nIt helps in analyzing the profitability along with risk and return characteristics of a strategy over an appropriate period of time. It is a widely used industry practice where trading strategies are thoroughly tested before allocating actual money. This makes it an integral part of developing an automated trading system."
 		},
 		{
 			"header": {"value":"Research Platform","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 
 			"text": "## Research Platform\nThis platform helps in screening investment models and trading strategies for Indian markets. The platform facilitates daily data for Indian equity markets starting 2007. The platform is currently geared towards slightly tech savvy audience but the choice of language, *Julia*, helps in building great investment ideas in very little time.\nThe platform displays the backtest performance as it runs (*realtime*) and on successful completion, a broad set of analytics are displayed to discover more about the profitability and overall performance of the strategy. There are no constraints in using the platform and you can run unlimited number of backtests as you test and improve your investment strategy."
 		},
 		{
 			"header": {"value":"Data","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "## Data\nCurrently, the platform only supports daily price data for Indian equity markets starting from a year 2007.  The daily data is adjusted for corporate actions like splits and dividend distributions. The backtester uses *exact* data for rebalancing the portfolio and adequately adjusts the portfolio and orders for any splits and dividends. However, *adjusted*  (for corporate actions) data is made available for historical analysis and finding patterns with technical analysis.\nIn the API section below, there is a list of functions which can be used to fetch price data from the data stores. \n\nWe understand that just the price data is not sufficient to create consistently profitable investment strategies so we are working with data vendors to quickly bring you adequate fundamental data. Also, we plan to add more history and higher frequency data as we evolve and grow.\n#### Summary\n* Only Equity data for Indian markets from 2007\n* Daily Frequency Only\n* Corporate actions adjusted data for analysis\n* Actual data (true close prices) to rebalance the portfolio"
 		},
 			
 		{
 			"header": {"value":"How to use the platform?","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 
 			"text": "## How to use the platform?\nThe platform is very easy to use. Once you complete this quick tutorial, you will be ready to write complex investment ideas.\nThe platform has two major panels. *Code Editor* and *Settings Panel*. "
 		},
 		{
 			"header": {"value":"Code Editor","size":"Small"},
-			"img_src":"http://localhost:8080/images/editor/editor.png",
+			"img_src":"../../resources/images/editor/editor.png",
 
 			"text": "* ### Code Editor\nThe platform provides a *code editor* to write investment strategies. A user writes a *Julia*  script in the code editor detailing the logic of the trading strategy. The user is required to create two necessary functions for a successful backtest."
 		},
 
 		{
 			"header": {"value":"Editor Toolbar","size":"Small"},
-			"img_src":"http://localhost:8080/images/editor/toolbar.png",
+			"img_src":"../../resources/images/editor/toolbar.png",
 
 			"text": "* ### Editor Toolbar\n The toolbar provides quick functionalities to create, edit and save the strategy. A backest can be launched by pressing the play button and user can visualize  history of all the backtests by pressing the chart icon. Below is a descriptive picture of the editor toolbar"
 		},
 
 		{
 			"header": {"value":"Settings Panel","size":"Small"},
-			"img_src":"http://localhost:8080/images/editor/settings.png",
+			"img_src":"../../resources/images/editor/settings.png",
 
 			"text": "* ### Settings Panel\nThe panel on the right of code editor is called Settings Panel. The settings panel helps in easy selection of basic parameters of the trading strategy. Basic parameters like *start and end dates* of the backtester, *initial capital *of the strategy along with some advanced parameters like *commission and slippage models* and a static *universe* can be selected from the settings panel.\n\n **However, the parameters will be overwritten if redefined via the code editor in initialize().*"
 		},
 
 		{
 			"header": {"value":"User Defined Functions","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 
 			"text": "* ### User Defined Functions\nThese two functions are building blocks of every investment strategy.\n\n 1.* initialize()* : Initalizes basic parameters of the strategy like backtesting period, initial cash and various other settings.\n```\nfunction initialize(state::AlgorithmState)\n\tsetstartdate(\"01/01/2015\") \n\tsetenddate(\"24/12/2015\") \n\tsetcash(100000) \n\tsetuniverse([\"CNX_ENERGY\",\"CNX_BANK\"]) \n\t.... \nend```\n2.* ondata()* : This function is called every time stamp or start of rebalancing period and details the logic of the investment strategy.\n```\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\t# Get universe\n\tuniverse = getuniverse()\n\t# Get number of stocks in the universe\n\tnstocks = length(universe)\n\t# Allocate equal wealth to stock in the universe\n\tfor stock in universe\n\t\tsetholdinginpct(stock, 1.0/nstocks)\n\tend\nend\n```\n"
 		},
 
 		{
 			"header": {"value":"Algorithm State and Data","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 
 			"text": "* ### Algorithm State and Data\n Above in the user defined functions, two objects are passed to convey strategy information to the user. These two entities help in inspecting the latest data for the securities in the universe as well data about the strategy in general.\n\n\t* AlgorithmState: This object can be used to inspect the account, portfolio positions and portfolio metrics. It also exposes rolling performance of last 252 days along with total returns of the algorithm.\n\n It can also be used to set persistent user defined parameters.\n\n Below is an example that inspects the total cash in the account and adjusts a uniform portfolio to keep cash at a 5% of total portfolio value.\n```\n# Use of Algorithm State\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\t# Keep cash at 5% of the portfolio.\n\tcash  = state.account.cash\n\tnetvalue = state.account.netvalue\n\t# Check if cash is less than 5% of the portfolio value\n\tif(cash < 0.05*netvalue)\n\t\t# Get universe\n\t\tuniverse = getuniverse()\n\t\t# Allocate 95% of total wealth to stocks in the universe\n\t\tnstocks = length(universe)\n\t\tfor stock in universe\n\t\t\tsetholdinginpct(stock, 0.95/nstocks)\n\t\tend\n\tend\nend\n```\n Another example that sets user defined parameters in initialize() and uses it in ondata().\n```\nfunction initialize(state::AlgorithmState)\n\t# Set maximum leverage\n\tstate[\"maxLeverage\"] = 0.75\n\tsetuniverse([\"CNX_NIFTY\"])\nend\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\tpos = state.portfolio[\"CNX_NIFTY\"]\n\tposValuePct = pos.quantity*pos.lastprice/state.account.netvalue\n\n\t# Check if leverage exceeds maximum leverage\n\tif(posValuePct > state[\"maxLeverage\"])\n\t\tsetholdinginpct(\"CNX_NIFTY\", state[\"maxLeverage\"])\n\tend\nend```\n"
 		},
 
 		{
 			"header": {"value":"API","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "## API\nThe API is divided into five major categories."
 		},
 		{
 			"header": {"value":"Objects in Trading Script","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "### I. Objects in Trading Script \nThere are several entities that naturally become a part of the trading or investment strategy.\nThis section details the objects that are directly available to the user for inspection. The entities listed here are *read-only* and any modifications to the entities is not reflected back to the trading strategy. The entities can ONLY be modified via API functions."
 		},
 		{
 			"header": {"value":"Security","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Security**\nSecurity represents a trading instrument on an exchange. In the platform, a security can be uniquely identified by it's *symbol* which is a combination of string ticker and an integer identifier.\n\n\tSecurity is a building block of an instrument universe in a trading strategy. In the platform, it is used pervasively used to fetch prices, place orders and learn about positions in the portfolio.\n\n\tCurrently, only equity (\"EQ\") type securities are supported on the platform. \n```\n# Security Symbol : Combination of string ticker and an integer identifier\ntype SecuritySymbol\n\tid::Int64\n\tticker::String\nend\n```\n```\n# Security Object\ntype Security\n\tsymbol::SecuritySymbol\n\tname::String\n\texchange::String\n\tcountry::String\n\tsecuritytype::String\n\tstartdate::DateTime\n\tenddate::DateTime\nend\n```\nThe name, exchange, country and security type identifies the name of the security, exchange on which the security trades/traded, country of the security and type of instrument respectively.\n\n\tDEFAULT exchange is National Stock Exchange of India (identified by code \"NSE\")\n\n\tDEFAULT country is India (identified by code \"IN\")\n\n\tDEFAULT security type is Equity (identified by code \"EQ\")\n\n\t*All of the security based functions accept **Security**, **SecuritySymbol** or a **string ticker** as a valid input*.\n\n\t*In case, just a **string ticker** is provided to a security based function, above defaults are assumed to identify the security in the AimsQuant datastores.*"
 		},
 
 		{
 			"header": {"value":"Universe","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Universe**\nThis represents a collection of securities.  It tracks all the securities available in a trading strategy at all times. A security should only be stored and accessed from this collection to make any changes to the trading strategy."
 		},
 
 		{
 			"header": {"value":"Order","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Order**\nIt is an instruction sent to a broker to enter, exit or change a position. It helps in modifying the quantity of shares held in an instrument.\n\n\tTo increase the quantity in instrument A from 100 shares to 200 shares, a ***BUY*** order is placed for 100 shares.  Similarly, in order to *reduce* the quantity in an instrument, a ***SELL*** order is placed. A SELL order of 50 shares aims to reduce the quantity by 50 shares.\n```\n# Order Object\ntype Order\n\tid::UInt64\n\tsecuritysymbol::SecuritySymbol\n\tquantity::Int64 \n\tremainingquantity::Int64\n\tprice::Float64\n\tordertype::OrderType\n\tdatetime::DateTime \n\torderstatus::OrderStatus \n\ttag::String\nend\n```\nEvery order is identified by a unique integer identifier inside AimsQuant platform. The user can inquire about the order status by inspecting the fields mentioned. In addition to *remainingquantity*, a quick look into *orderstatus* tells the current stage of the order cycle."
 		},
 		{
 			"header": {"value":"Order Status","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **List of OrderStatus**:\n\n 1. #### *Filled*: When the order is complete. In this case, the *remaining quantity* of the order becomes 0.\n 2. #### *PartiallyFilled* : When the order is not complete yet but *remaining quantity* is less than the original *quantity*.\n 3. #### *Pending* : When order is submitted but remainigng quantity is same as original quantity.\n #### *As order quantities are signed (negative for SELL and positve for BUY), \"**less**\" or \"**greater**\" should be considered in terms of absolute values only!*"
 		},
 		{
 			"header": {"value":"Order Types","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **List of OrderType**: *\n 1. #### *MarketOnOpen* : Order is executed at the open price of the next day.\n 2. #### *MarketOnClose* : Order is executed at close price of next day.\n 3. ####  *Close* : Order is executed at close of the next period. As the platform only supports daily data, this order type is same as * **MarketOnClose** *. This is also the DEFAULT order type on the platform."
 		},
 		{
 			"header": {"value":"Position","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* ####  **Position**\nA position tracks the value invested in an instrument.  Position typically consists of *underlying security*, *quantity of shares* and *average price* to accumulate the quantity along with various other metrics. This is another fundamental block of any trading strategy. A trading strategy changes the position in an instrument based on various inputs.\n\n To *increase the position* in an instrument, one places a BUY order and to *decrease the position*, a SELL order is required.\n```\n# Position Object\ntype Position\n\tsecuritysymbol::SecuritySymbol\n\tquantity::Int64\n\taverageprice::Float64\n\ttotalfees::Float64\n\tlastprice::Float64\n\tlasttradepnl::Float64\n\trealizedpnl::Float64 \n\ttotaltradedvolume::Float64\nend\n```\nIn addition to tracking the quantity and average price, it tracks the amount of fees to accumulate the position along with any realized and unrealized profit/loss in the position. It also tracks the total volume transacted."
 		},	
 		{
 			"header": {"value":"Portfolio","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Portfolio**\nThis represents a *collection of Positions*. It tracks the positions at any given time in the trading strategy and is used to compute various important metrics of a trading strategy. Any change in Position is reflected in the portfolio and related metrics.\n```\n# Portfolio Object: All positions and aggregated metrics\ntype Portfolio\n\tpositions::Dict{SecuritySymbol, Position}\n\tmetrics::PortfolioMetrics\nend```"
 		},
 		{
 			"header": {"value":"Portfolio Metrics","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Portfolio Metrics**\n Encapsulates various types to exposures and security counts to monitor the portfolio. All the exposures are defined below.\n```\n# Aggregated portfolio metrics\ntype PortfolioMetrics\n\tnetexposure::Float64\n\tgrossexposure::Float64\n\tshortexposure::Float64\n\tlongexposure::Float64\n\tshortcount::Int\n\tlongcount::Int\nend\n```\n##### Net Exposure: Sum of all holdings in the portfolio\n##### Gross Exposure: Sum of absolute of holdings in the portfolio\n##### Short Exposure: Sum of all short holdings in the portfolio\n##### Long Exposure: Sum of all *long* holdings in the portfolio\n##### *where Holdings =  Position Quantity  x  Last Price of Position* \n##### Short Count: Number of Position where Holdings are *negative*\n##### Long Count: Number of Position where Holdings are *positive*"
 		},
 		{
 			"header": {"value":"Account","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **Account**\nAlong with *available cash*, it tracks various other metrics like netvalue and leverage which are important to check the behaviour and well functioning of the trading strategy.\n```\n# Account type\ntype Account\n\tcash::Float64\n\tnetvalue::Float64\n\tleverage::Float64\nend\n```\n#### Net Value: Net Exposure of Portfolio + *cash*\n#### Leverage: (Gross Expsoure of Portfolio + cash ) / Net Value\n"
 		},
 
 		{
 			"header": {"value":"AlgorithmState","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### **AlgorithmState**\n This is a very useful entity as it encasulates Portfolio, Account, Performance along with a parameter dictionary. The user can use this object to directly inspect the various encapsulated entities. In addition, the parameter dictionary can be used to add parameters persistent in a strategy.\n```\n# AlgorithmState type\ntype AlgorithmState\n\taccount::Account\n\tportfolio::Portfolio\n\tperformance::Performance\n\tparams::Dict{String, Any}\nend\n```"
 		},
 
 		{
 			"header": {"value":"Trading Environment","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "### II. Trading Environment\n This section details the function to initialize the trading strategy. Most of the function described here can only be called from *initialize()* function."
 		},
 		{
 			"header": {"value":"Set Dates","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* #### Set Dates\na. Set Startdate: *Function to set start date of the backtest*\n```\n# API function to set start date of the backtest\nsetstartdate(date::Date)\nsetstartdate(date::String, format::String = \"dd/mm/yyyy\")\n```\nb. Set Enddate: *Function to set end date of the backtest *\n```\n# API function to set end date of the backtest\nsetenddate(date::Date)\nsetenddate(date::String, format::String = \"dd/mm/yyyy\")\n```"
 		},
 		{
 			"header": {"value":"Cancel Policy","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Set Cancel Policy : *Function to set the cancel policy of the backtest*\n```\n# API function to set cancel policy\nsetcancelpolicy(cancelpolicy::CancelPolicy)\nsetcancelpolicy(cancelpolicy::String)\n```\nThere are two cancel policies supported by the backtester \n##### 1. GTC (Good Till Canceled) :  In this cancel policy, a pending order stays active unless it's canceled by the user.\n##### 2. EOD (End of Day) : In this cancel policy, all pending orders are closed just before the market close. This is the DEFAULT cancel policy of the backtester \n```\n# Example: Set the cancel policy to be Good Till Canceled\nfunction initialize()\n\tsetcancelpolicy(CancelPolicy(GTC))\n\t#OR\n\tsetcancelpolicy(\"GTC\")\nend\n```"
 		},
 		{
 			"header": {"value":"Commission","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Set Commission : *Function to set the commission model of the backtest*\n```\n# API function to set commission model and value\nsetcommission(commission::Tuple{CommissionModel, Float64})\nsetcommission(commission::Tuple{String,Float64})\n```\nThere are two commission models supported by the backtester. It is called `CommissionModel` in the backtester\n##### 1. PerTrade: In this model, a fix percentage of the order value is charged as commision. If the order value is Rs. 10,000 and commission is 0.1% , then total commission for order is Rs. 10. This is the DEFAULT commission model in the backtester.\n##### 2. PerShare: In this model, a fix value per share is charged as commision. If an order consists of 300 shares and commission is 1 Paise per share, then total commission for order is Rs 3\n```\nfunction initialize()\n\t# Example: Set commission to \"PerShare\" / 5 paise per share \n\tsetcommission((CommissionModel(PerShare), 0.05))\n\t#OR\n\tsetcommission((\"PerShare\", 0.05))\nend\n```"
 		},
 		{
 			"header": {"value":"Slippage","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Set Slippage : *Function to set the slippage model of the backtest* \n\n\tWhat is *Slippage*? - Slippage is the difference between the trade execution price and the price where the strategy signaled the entry and exit for a trade (expected price)\n```\n# API function to set slippage model and value\nsetslippage(slippage::Tuple{SlippageModel,Float64})\nsetslippage(slippage::Tuple{String,Float64})\n```\nThere are two slippage models supported by the backtester. It is called `SlippageModel` in the backtester\n##### 1. Fixed: In this model, the difference between the model price an the execution price is a fixed value. If slippage is 0.50 and a buy order is placed at a expected price of Rs. 50, the execution price is Rs. 50.50\n##### 2. Variable: In this model, the difference between the model price an the execution price is a percentage value of expected price. If slippage is 0.2% and a buy order is placed at a expected price of Rs. 50, the execution price is Rs. 51.00. This is the DEFAULT slippage model in the backtester.\n```\nfunction initialize()\n\t# Example: Set slippage model to \"Fixed\" / 50 paise \n\tsetslippage((SlippageModel(Fixed), 0.50))\n\t#OR\n\tsetslippage((\"Fixed\", 0.50))\nend\n```"
 		},
 		{
 			"header": {"value":"Order Execution","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "### III. Order Execution\nThis section details the functions available to place orders and adjust position value depending on strategy logic."
 		},
 		{
 			"header": {"value":"Place Order","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": " * Place Order : *Function to send order to a brokerage for execution*\n```\n# Functions to place order\n# There are several different variety of place order functions\nplaceorder(order::Order)\nplaceorder(ticker::String, quantity::Int)\nplaceorder(security::Security, quantity::Int)\nplaceorder(symbol::SecuritySymbol, quantity::Int)\n```\n#### Using  above function, an order can be placed for a security, a security symbol, or just the string ticker. In case of string ticker, a security is searched in datastores (assuming defaults for exchange/country/security type)"
 		},
 		{
 			"header": {"value":"Set Holdings","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Set Holding:\n These set of functions are useful when the backtester aims to modify the position directly without doing necessary calculation. These functions calls *Place Order* functions under the hood.\n\n\t There are three major set of function to directly adjust the holding of an instrument based on a target. If *target holding* is different from the current holding, a BUY or SELL order is automatically generated to match the difference."
 		},
 		{
 			"header": {"value":"setholdingpct","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": ">* *setholdingpct: Function to set the holding in terms of percentage value*\n\n>>```\n# To modify the holdings to 20% of the portfolio, \n# pass 0.2 as the target value\nsetholdingpct('XYZ', 0.2)```\n##### In the above example, if the actual holdings are less than 20%, an BUY order is automatically placed under the hood to adjust the holding percentage.\n```\n# List of all functions to set holdings in percentage\nsetholdingpct(ticker::String, target::Float64)\nsetholdingpct(symbol::SecuritySymbol, target::Float64)\nsetholdingpct(security::Security, target::Float64)```"
 		},
 		{
 			"header": {"value":"setholdingvalue","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": ">* *setholdingvalue: Function to set the holding in terms of monetary value*\n\n>> ##### This function is useful when an exact amount of money is to be invested in an instrument.\n ```\n# To invest Rs. 20,000 in an instrument \nsetholdingvalue('XYZ', 20000)```\n##### If the current holding is worth Rs. 10,000, it will automatically generate a BUY order worth Rs. 10,000 more under to hood to match the total value.\n##### In case, the holding is more than Rs. 20,000,  a SELL order would be generated to reduce the position to the correct amount.\n```\n# List of all functions to set holdings in exact value\nsetholdingvalue(ticker::String, target::Float64)\nsetholdingvalue(symbol::SecuritySymbol, target::Float64)\nsetholdingvalue(security::Security, target::Float64)\n```"
 		},
 		{
 			"header": {"value":"setholdingshares","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": ">* *setholdingshares: Function to set the holdings in terms of number of shares*\n\n>>```\n# List of all functions to set holdings in shares\nsetholdingshares(ticker::String, target::Int)\nsetholdingshares(symbol::SecuritySymbol, target::Int)\nsetholdingshares(security::Security, target::Int)```"
 		},
 		{
 			"header": {"value":"Set Holding Examples","size":"SMini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text":">> Some examples below:\n\n>> It uses functions from universe API to convert stock ticker into a valid symbol or security. See Universe API for more details.\n```\n# Examples: Invest 5% of the portfolio in TATAMOTORS\nsetholdingpct('TATAMOTORS', 0.05)\n# Invest Rs. 30,000 in TATAMOTORS\nsetholdingvalue(symbol('TATAMOTORS'), 30000)\n# Invest worth 200 shares in TATAMOTORS\nsetholdingshares(security('TATAMOTORS'), 200) \n```"
 
 		},
 		{
 			"header": {"value":"Liquidate","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Liquidate Holdings\n\n> These set of functions are useful when the backtester quickly wants to completely square off a position. The functionality can be achieved with other listed functions but the *names* of these functions helps in better legibility of a trading strategy.\n```\n# List of all functions to liquidate a holding\n# Liquidates an instrument \nliquidate(ticker::String)\nliquidate(symbol::SecuritySymbol)\nliquidate(security::Security)\n# Liquidates all the holdings in a portfolio\nliquidateportfolio()\n```"
 		},
 		{
 			"header": {"value":"Miscellaneous Order Function","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Miscellaneous functions: \n\n> 1. Order Cancellation: Functions to cancel order by security or cancel all orders\n\n> 2. Retrieve Order: Functions to retrieve open orders by security or all open orders in a trading strategy\n```\n# List of all functions to cancel/retrieve orders\n# Retrieve order \ngetopenorders()\n# Cancel orders\n# Cancel order by security\ncancelopenorders(ticker::String)\ncancelopenorders(symbol::SecuritySymbol)\ncancelopenorders(security::Security)\n# Cancel all open orders across all securities\ncancelopenorders()\n```"
 		},
 		{
 			"header": {"value":"History and Universe API","size":"Small"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "### IV. History and Universe API\nThis section details the functions related to instrument universe and  history API"
 		},
 		{
 			"header": {"value":"Universe API","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "* Universe API\n\n> 1. Add Universe: *Functions to add a security to the universe*\n```\n# Functions to ADD security or collection of securities to already \n# existing universe\nadduniverse(ticker::String)\nadduniverse(tickers::Vector{String})```\n> 2. Set Universe: *Functions to set the universe to set collection of securities*\n```\n# Functions to SET a security or collection of securities as the new universe\nsetuniverse(ticker::String)\nsetuniverse(tickers::Vector{String})```\n> 3. Get Universe: *Function to retrieve the security collection in the trading strategy*\n```\n# Function to GET the universe\ngetuniverse()\n```"
 		},
 		{
 			"header": {"value":"History/Data API","size":"Mini"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": " * History/Data API\n\n> This API helps in retrieving *price history* for an instrument or collection of instruments. This will make a backbone for a lot of price history based investment strategies like Momentum, Extreme Reversal, Mean Reversion amongst other. \n\n>We will soon add a lot of commonly used metrics to prevent unnecessary or redundant calculations in the trading strategy.\n```\n# Function to get price-history of stock \nhistory(tickers::Vector{String}, datatype::String, frequency::Symbol, horizon::Int)\nhistory(ticker, datatype::String, frequency::Symbol, horizon::Int)\n```\n##### 1. The above function returns data frame where columns names as tickers and row index as dates\n##### 2. Currently, the function only supports ':Daily' frequency data.\n##### 3. Supports 5 different datatypes, ['Open', 'High', 'Low', 'Close','Volume'].\n##### 4. All the data is ADJUSTED for corporate actions. "
 		},
 		{
 			"header": {"value":"Feedback","size":"Normal"},
-			"img_src1":"http://localhost:8080/src/components/help/help.jpg",
+			"img_src1":"../../resources/src/components/help/help.jpg",
 			
 			"text": "## Feedback \n#### We encourage you to use the platform and help us in improving the platform. Please share your feedback with us. You can post in the community or send us a private message via [Send us Feedback](#/dashboard/feedback). Happy Backtesting!!!"
 		}

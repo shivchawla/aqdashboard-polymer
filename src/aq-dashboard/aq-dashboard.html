@@ -60,17 +60,21 @@
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-            <app-router id="router" class="flex" mode="hash" trailingSlash="ignore">
+            <app-router id="router" mode="hash" trailingSlash="ignore">
             
+
+              <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
+
+              <app-route path="/dashboard/**" element="aq-dashboard-main" bindrouter="" onUrlChange="noop"></app-route>
+
               <app-route path="/" redirect="/main"></app-route>
                
-              <app-route path="/user" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+              <app-route path="/user" redirect="/user/signin"></app-route>
 
-              <app-route path="/user/authentication/:mode" element="aq-authentication-message" bindrouter="" onurlchange=""></app-route>
+              <app-route path="/user/authentication/:mode" element="aq-authentication-message" bindrouter="" onUrlChange=""></app-route>
 
-              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onurlchange=""></app-route>
+              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onUrlChange="reload"></app-route>
 
-              
               <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
 
               <app-route path="/about" redirect="/about/home"></app-route>
@@ -79,13 +83,10 @@
 
               <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
 
-              <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
+              <!--app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
 
-              <app-route path="/dashboard/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
+              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route-->
 
-              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
-
-              <app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route>
 
             </app-router>
 
@@ -240,11 +241,13 @@
             'scroll-top':'scrollToTop',
         },
 
+
+        ready : function() {
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+          this.WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+        },   
+
         attached: function() {
-
-            this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-            this.WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-
             if(this.checkHasToken()) {
                 if(this.URLcontains('/user')) {
                     this.$$('#router').go('/dashboard');

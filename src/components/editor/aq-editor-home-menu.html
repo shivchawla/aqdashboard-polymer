@@ -182,8 +182,10 @@
 			checkForKeys: function(e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
-                    this.$$('#search').style.display = 'none';
-					this.$$('#menu-icons').style.display = 'inline';
+                    this.$$('#searchbox').value="";
+                    this.blur();
+                } else if (e.keyCode === 13) {
+                	this.search();
                 } 
             },
 
@@ -191,6 +193,7 @@
             	if(this.$$('#searchbox').value=="") {
             		this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
+					this.search();
 				} 
             },
 

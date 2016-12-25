@@ -142,12 +142,11 @@
         }
 
        #logo {
-          content: url(../../../resources/images/Logo-bg.png);
-          height:80px;
+          background: url(../../../resources/images/Logo-bg.png);
+          background-size:cover;
+          height:90px;
           width:114px;
-          --background-color: #f2fbf7;
-
-         
+          --background-color: #f2fbf7;     
         }
 
         #tagline {
@@ -569,6 +568,7 @@
                     footerText: "Back to Sign in? ",
                     footerLinkText: " Log in here",
                     //lede: "Request a temporary password",
+                    userEmailErrorMessage: "Please enter a valid email",
                     userEmailFieldLabel: "Account Email Address",
                     actionButtonLabel: "Send Request",
                     actionButtonInProgressLabel: "Sending...",
@@ -932,14 +932,17 @@
             handleLoginError: function(data) {
                 this.clearErrorMessages();
                 this.actionFailed("Incorrect Username/Password");
+                this.$$('.signinButton').disabled = false;
             },
 
             handleSignup: function(data) {
                 this.setDisplayMode(displayModes.signin);
+                this.$$('.signinButton').disabled = false;
             },
 
             handleSignupResponse: function(e) {
                 console.log(e.detail.response);
+                this.$$('.signinButton').disabled = false;
             },
 
             handleSignupError: function(e) {
@@ -947,31 +950,37 @@
                 this.actionFailed("Email address already registered!! Sign up with a different email.");
 
                 this.clearFields();
+                this.$$('.signinButton').disabled = false;
             },
 
             handleForgotPasswordResponse: function(e) {
                 console.log("Forgot Password: Success");
                 console.log(e.detail.response);
+                this.$$('.signinButton').disabled = false;
 
             },
 
             handleForgotPasswordError: function(e) {
                 console.log("Forgot Password: Error");
                 console.log(e.detail.response);
+                this.$$('.signinButton').disabled = false;
             },
 
             handleResetPasswordResponse: function(e) {
                 //console.log("Reset Password: Success");
                 //console.log(e.detail.response);
                 this.router.go('/user/authentication/reset');
+                this.$$('.signinButton').disabled = false;
             },
 
             handleResetPasswordError: function(e) {
                 console.log("Reset Password: Error");
                 console.log(e.detail.response);
+                this.$$('.signinButton').disabled = false;
             },
 
             onInvokeAction: function() {
+
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
 
@@ -998,22 +1007,24 @@
                     return;
                 }
 
+                this.$$('.signinButton').disabled = true;
+
                 switch (this.displayMode) {
                     case displayModes.signin:
-                        this.async(this.$.login.generateRequest());
+                        this.$.login.generateRequest();
                         break;
                     case displayModes.signup:
-                        this.async(this.$.signup.generateRequest());
+                        this.$.signup.generateRequest();
                         this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
                         break;
                     case displayModes.forgotPassword:
-                        this.async(this.$.forgotPasswordQuery.generateRequest());
+                        this.$.forgotPasswordQuery.generateRequest();
                          this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
                         break;
 
                     case displayModes.resetPassword:
                         console.log("resetting request");
-                        this.async(this.$.resetPasswordQuery.generateRequest());
+                        this.$.resetPasswordQuery.generateRequest();
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displaymode)

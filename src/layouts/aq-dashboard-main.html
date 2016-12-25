@@ -16,8 +16,6 @@
 <link rel="import" href='../components/aq-aboutpage.html'>
 <link rel="import" href='../components/aq-investmentpage.html'>
 
-<link rel="import" href='../components/community/aq-community-home-searchbar.html'>
-
 <dom-module id="aq-dashboard-main">
   
   <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -42,7 +40,7 @@
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       --height:100%;
-      background-color:#f2fbf7;--#f4f9f7;--#f5f8f7;--#f3faf7;--#f4f9fb;--#f2f8fa;--#eff6f9;
+      background-color:#f2fbf7;
     }
 
   </style>
@@ -50,26 +48,26 @@
   <template>
         
         <div id="content" class="fit">
-        <app-router id="dashboard-router" mode="hash" trailingSlash="ignore">
+        <app-router mode="hash" trailingSlash="ignore">
 
           <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
 
-          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
+          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
           
-          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter="" onUrlChange=""></app-route>
+          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
 
           <!--app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route-->
-          <app-route path="/dashboard/analyze/*" element="aq-analyze-main" bindrouter="" onurlchange="updateModel"></app-route>
+          <app-route path="/dashboard/analyze/**" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
 
-          <app-route path="/dashboard/analyze/*/*" element="aq-analyze-main" bindrouter="" onurlchange="updateModel"></app-route>
+          <!--app-route path="/dashboard/analyze/" element="aq-analyze-main" bindrouter="" onurlchange="updateModel"></app-route-->
 
-          <app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route>
+          <!--app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route-->
 
-          <app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route>
+          <!--app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route-->
          
-          <app-route path="/dashboard/community/*" element="aq-community-main" bindrouter=""></app-route>
+          <app-route path="/dashboard/community/**" element="aq-community-main" bindrouter="" onUrlUpdate="noop"></app-route>
 
-          <app-route path="/dashboard/community/*/*" element="aq-community-main" bindrouter=""></app-route>
+          <!--app-route path="/dashboard/community/*/*" element="aq-community-main" bindrouter=""></app-route-->
 
           <app-route path="/dashboard/createpost" redirect="/dashboard/community/create"></app-route>
 

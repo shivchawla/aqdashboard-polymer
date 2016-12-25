@@ -30,7 +30,7 @@
 		}
 
 		paper-button {
-			width:10%;
+			width:15%;
 			background-color: white;
 			border: 1px solid teal;
 			color: #cc6666;
@@ -43,7 +43,7 @@
 	<template>
 		<div class="layout vertical fit" style="background-color: #f4f9f7;">
 			
-			<div id = 'container'> 
+			<div id = 'container' class="self-center"> 
 				<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
 					<p id='header'class="self-start">We are here to help you!!</p>
 					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>

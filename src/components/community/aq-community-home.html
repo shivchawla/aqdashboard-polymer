@@ -3,6 +3,8 @@
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item2.html">
@@ -42,14 +44,15 @@
         }
 
         #container {
-            margin:0 auto;
-            margin-top: 20px;
-            color: #24293d;
-            width: 95%;
-            margin-left: 2%;
-            
-            overflow-y: scroll;
-          }
+          margin:0 auto;
+          margin-top: 20px;
+          color: #24293d;
+          width: 95%;
+          margin-left: 2%;
+          
+          overflow-y: scroll;
+          height: 100%;
+        }
 
 
         #fab {
@@ -58,7 +61,6 @@
             position: fixed;
             right: 25px;
             bottom: 30px;
-
         }
 
         paper-tab:hover {
@@ -117,13 +119,13 @@
             debounce-duration="300">
         </iron-ajax>
 
-        <iron-localstorage
+        <!--iron-localstorage
           id = "localStorage"
           name = "my-app-storage" 
           value = "{{aimsquant}}">
-        </iron-localstorage>
+        </iron-localstorage-->
 
-        <div id='container' class="layout vertical">
+        <div id='container' class="layout vertical flex">
             
             <div class="layout horizontal wrap">
               <div id="header">
@@ -154,43 +156,28 @@
                 <paper-tab id="personal">Personal</paper-tab>
             </paper-tabs>
 
-            <div id='allposts'>
-                  <template is="dom-repeat" items="{{items}}" initial-count=10>
-                      <aq-community-home-post-item2
-                        topic-address="/dashboard/community/topics/{{item._id}}"
-                        item-id = "{{item._id}}"
-                        topic-heading="{{item.title}}"
-                        author-firstname="{{item.user.firstName}}"
-                        author-lastname="{{item.user.lastName}}"
-                        author-address="{{item.user.email}}"
-                        post-date="{{format(item.createdAt)}}"
-                        total-replies="{{item.replies.length}}"
-                        total-followers = "{{item.followers.length}}"
-                        total-views="{{item.views}}"
-                        post-category="{{item.category}}"
-                        post-content="{{item.markdownText}}"
-                        lastreply-author="[[getReplyAuthor(item)]]"
-                        lastreply-date="[[getReplyDate(item)]]"
-                        has-backtest="[[hasBacktest(item)]]">
-                      </aq-community-home-post-item2>
-                  </template>
-                
+            <div clas="layout vertical" id='allposts'>
+                <template is="dom-repeat" items="{{threads}}">
+                    <aq-community-home-post-item2 thread="[[item]]">
+                    </aq-community-home-post-item2>
+                </template>
             </div>
 
             <div class="flex"></div>
-            <template is='dom-if' if='[[items]]'>
+
+            <template is='dom-if' if='[[hasThreads(threads)]]'>
                 <aq-pagination class="self-center" 
                                 per-page="[[perPage]]"   
                                 current-page="{{currentPage}}"
-                                total-items="[[totalItems]]">
-                                  
+                                total-threads="[[totalThreads]]">
                 </aq-pagination>
             </template>
+        
         </div>
         
-        <paper-fab id='fab' noik icon="aq-icons:add" on-tap='createPost'></paper-fab>
+        <paper-fab id='fab' noink icon="aq-icons:add" on-tap='createPost'></paper-fab>
 
-        <paper-tooltip for='fab' offset="2" class=' self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
+        <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
         
     </template>
     <script>
@@ -209,7 +196,7 @@
                     value: 0,
                 },
 
-                items: {
+                threads: {
                     type: Object,
                 },
 
@@ -238,7 +225,7 @@
                   value:10,
                 },
 
-                totalItems: {
+                totalThreads: {
                   type:Number,
                 },
 
@@ -280,6 +267,7 @@
             },
 
             attached: function() {
+              console.log("2");
               var x = localStorage.getItem('my-app-storage');
               if (x) {
                   var community = JSON.parse(x).community;
@@ -290,9 +278,7 @@
                       this.selected = community.searchTab;
                       this.currentPage = community.lastPage;
                   } 
-              }
-
-              this.isAttached = true;                  
+              }               
             },
 
             isSelected: function(selected, selection) {
@@ -313,8 +299,8 @@
             },
 
             onGetAllThreadsResponse: function(data) {
-                this.items = data.detail.response.threads;
-                this.totalItems = data.detail.response.count;
+                this.threads = data.detail.response.threads;
+                this.totalThreads = data.detail.response.count;
             },
 
             onGetAllThreadsError: function(data) {
@@ -366,10 +352,6 @@
               this.$.getAllThreadsQuery.generateRequest();
             },
 
-            format: function(date) {
-              return new Date(date).toLocaleTimeString("en-us", options);
-            },
-
             _currentPageChanged: function(newPage, oldPage) {       
                 this.processparams(); 
             },
@@ -391,39 +373,14 @@
               }
             },*/
 
-            getReplyDate: function(thread) {
-              if (thread.replies.length > 0) {
-                return this.format(thread.replies[thread.replies.length-1].createdAt);
-              } else {
-                return '';
-              }
-            },
-
-            getReplyAuthor: function(thread) {
-               if (thread.replies.length > 0) {
-                var reply = thread.replies[thread.replies.length-1];
-                return reply.user.firstName +" "+ reply.user.lastName;
-              } else {
-                return '';
-              }
-            },
-
-            hasBacktest: function(thread) {
-              if (thread.backtestId){
-                return true;
-              }
-
-              for(i=0;i<thread.replies.length;i++){
-                if(thread.replies[i].backtestId){
-                  return true;
-                }
-              }
-
-              return false;
-            },
+           
 
             isSearchActive: function(searchText) {
                 return searchText.length > 0;
+            },
+
+            hasThreads: function(threads) {
+              return threads.length > 0;
             },
 
 

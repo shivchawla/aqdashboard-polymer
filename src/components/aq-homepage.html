@@ -19,10 +19,12 @@
         height:100%;
 	    }
 
-      #ideas {
+       #ideas{
         width:25px;
         height:25px;
-        content: url(../../../resources/images/ideas/ideas2.png);
+        background: url(../../../resources/images/ideas/ideas2.png);
+        background-size: cover;
+        overflow: none;
       }
 
     	#headerTagline {
@@ -105,21 +107,20 @@
 
       #section-describe-code {
         padding-top:50px;
-        --margin-bottom: 100px;
-        --height:600px;
         color: teal;
         background-color:#f6fcfa;
-        height:100%;
-        min-height: 640px;
-
+        height:90%;
+        min-height: 580px;
       }
 
       #codeContainer {
         width:420px;
         height:310px;
-        content: url(../../../resources/images/code.png);
+        background: url(../../../resources/images/code.png);
+        background-size: cover;
         --opacity: 0.7;
       }
+
 
       #section-describe-backtest {
         --padding-top:50px;
@@ -153,25 +154,28 @@
       }
 
       #anGraphDivision {
-        background-image: url(../../../resources/images/analyze.png);
+        background: url(../../../resources/images/analyze.png);
+        background-size: cover;
         height: 200px;
         width:388px;
         --margin-left: 20px;
       }
 
       #section-describe-community {
-        padding-top:50px;
+        ==padding-top:50px;
         --margin-bottom: 100px;
         --height:600px;
         color:teal;
         background-color:#f6fcfa;
-        height:90%;
+        height:100%;
+        
       }
 
       #communityDiv{
         height: 190px;
         width:400px;
-        background-image: url(../../../resources/images/Ideas/shareideas.jpg);
+        background: url(../../../resources/images/Ideas/shareideas.jpg);
+        background-size: cover;
         --opacity: 2.0;
       }
       
@@ -209,7 +213,8 @@
     	#section-advantages {
     		padding-top:50px;
     		--margin-bottom: 100px;
-    		height:600px;
+    		height:100%;
+        min-height:600px;
     		color:teal;
     		background-color:#f6fcfa;
     	}
@@ -292,9 +297,9 @@
             </div>  
           </div>
 
-          <!--div class="flex"></div-->
+          <div class="flex"></div>
           <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageThree'></paper-icon-button>
-          
+         
       </div>
 
       <div id="section-describe-backtest" class="layout vertical"> 
@@ -452,6 +457,10 @@
 
     Polymer({
   		is: 'aq-homepage',
+
+      ready: function() {
+        this.$$('#section-home').scrollIntoView(true);
+      },
 		
   		onJoin: function() {
   			this.router.go('/user/signin');

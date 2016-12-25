@@ -6,19 +6,17 @@
 <link rel="import" href="../components/community/aq-community-postdetail.html">
 <link rel="import" href="../components/community/aq-community-createpost.html">
 
-
 <dom-module id="aq-community-main">
-  <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 
   <template>
-     <app-router id="communityrouter" trailingSlash="ignore">
-        <app-route path="/dashboard/community" element='aq-community-home' bindrouter="" updateUrlChange=""></app-route>
+     <app-router mode="hash" trailingSlash="ignore">
+        <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
         
-        <app-route path="/dashboard/community/topics/:threadId" element='aq-community-postdetail' bindrouter=""></app-route>
-
         <app-route path="/dashboard/community/create" element='aq-community-createpost' bindrouter=""></app-route>
 
         <app-route path="/dashboard/community/create/:attachedBacktestId" element='aq-community-createpost' bindrouter=""></app-route>
+
+        <app-route path="/dashboard/community/:threadId" element='aq-community-postdetail' bindrouter="" onUrlUpdate="noop"></app-route>
        
      </app-router>
   </template>
@@ -27,32 +25,15 @@
     Polymer ({
       is: 'aq-community-main',
 
-      properties : {
-        hasViews: {
-          type: Boolean,
-          value: true,
-        },
-
-        narrow:{
-          type:Boolean,
-        },
-
-        showmenu:{
-          type:Boolean,
-          value:false,
-        },
-
-      },
-
       listeners:{
         'postdetail-action':'onDetail',
       },
-    
 
       onDetail: function(e) {
-          e.stopPropagation();
-          e.preventDefault()
-          this.router.go(e.detail.link);
+        e.stopPropagation();
+        e.preventDefault();
+        console.log("Opening");
+        this.router.go('/dashboard/community/585e5d206d66e018ac82897e');
       },
 
 
