@@ -17,14 +17,12 @@
         font-weight: 500;
         font-size: 14px;
       }
-
     }
 
     #content {
        border-right: 1px solid #e0e0e0;--#5f6ca0;--#24293d;--#9ecbda;--#e5e5e5; 
        background-color: #f2fbf7;--#f4f9fb;--#e5f1f5;
     }
-
 
     paper-toolbar {
       --paper-toolbar-title: {
@@ -125,9 +123,12 @@
       --color:#e24e42;
     }
 
+    .title p {
+        font-size: 24px;
+    }
 
-     .title p {
-      font-size: 24px;
+    .title:hover {
+        cursor: pointer;
     }
     
     .title #quant{
@@ -151,7 +152,7 @@
     <paper-header-panel mode="seamed" class='sidenav fit'>
       <paper-toolbar>
         <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
-        <div class="title layout horizontal">
+        <div on-tap='goToHome' class="title layout horizontal">
           <!--div id='logo'></div-->
           <p>Aims</p>
           <p id='quant'>Quant</p>
@@ -260,6 +261,11 @@
         return;
       } 
     },
+
+    goToHome: function() {
+        this.fire('rt-changed',{route: '/main'});
+    },
+
 
   });
   </script>

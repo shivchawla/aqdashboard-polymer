@@ -161,13 +161,15 @@
 				active:{
 					type: Boolean,
 					value: false,
-					observer:'_activeChanged',
+					//observer:'_activeChanged',
 				},
 
 				routeData:Object,
 				subroute:Object,
 
     		}, 
+
+    		observers:['_activeChanged(active, subroute)'],
     		
 			listeners: {
 				'backClicked':'goToEditor',
@@ -247,7 +249,7 @@
         	},
 
 	        openDeleteDialog: function() {
-	        	this.$.deleteDialog.open();
+	        	this.$$('#deleteDialog').open();
 	        },
 
 	        onDeletion: function(e) {
@@ -301,9 +303,9 @@
 	        	return active && !this.hasTail(subroute);
 	        },
 
-	        _activeChanged: function(nAct, oAct) {
+	        _activeChanged: function(active, subroute) {
 	        	console.log("Here I Come");
-	        	if(nAct && !this.hasTail(this.subroute)) {
+	        	if(active && !this.hasTail(subroute)) {
 	        		this.strategyId = this.routeData.strategyId;
 	        		if(this.$.authItem.checkHasToken()) {
 		        		this.header = this.$.authItem.getHeader();

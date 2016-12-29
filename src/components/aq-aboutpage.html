@@ -5,7 +5,7 @@
 
 <dom-module id="aq-aboutpage">
 
-    <style include="iron-flex iron-flex-alignment"></style>
+    <style include="iron-flex iron-positioning iron-flex-alignment"></style>
 
     <style>
 
@@ -22,20 +22,52 @@
         position: relative;
       }
 
+      #container-bg {
+        background-color: #f6fcfa;
+        height: 100%;
+        --padding-top: 100px;
+      }
+
+      paper-tabs {
+        margin-left: 20%;
+        margin-right:10%;
+        width:50%;
+        margin-bottom: 20px;
+        margin-top:100px;
+      }
+
+      paper-tab {
+        max-width:10%;
+        color:teal;
+        font-size: 16px;
+      }
+
+      paper-tabs {
+        --paper-tabs-selection-bar-color: teal;
+      }
+
     </style>
 
     <template>
 
         <app-location route="{{route}}"></app-location>
 
-         <app-route
+        <app-route
             route="{{route}}"
             pattern="/about/:section"
             data="{{routeData}}">
         </app-route>
 
-            <div style="background-color: #f6fcfa">
+            <div id='container-bg' class="layout vertical fit">
+            
+            <paper-tabs noink selected="{{selected}}">
+              <paper-tab>Home</paper-tab>
+              <paper-tab>People</paper-tab>
+              <paper-tab>Careers</paper-tab>
+              <paper-tab>Contact</paper-tab>
+            </paper-tabs>
 
+            <iron-pages selected="{{selected}}">
             <aq-section id='section_home' 
                         class="self-center" header="Invest in your Ideas" 
                         paragraph="We believe that in ever expanding financial markets it is important to systematically scrutinize investment ideas and separate real investment signals from noise. At AimsQuant, we are building an easy to use web platform to systematically research investment ideas."
@@ -63,9 +95,11 @@
                         link= "mailto:connect@aimsquant.com?Subject=Connect%20With%20AimsQuant"
                         link-text="connect@aimsquant.com">
             </aq-section>
+            </iron-pages>
 
-            
+            <div class="flex"></div>
             <footer><p>© 2016 AimsQuant</p></footer>
+
           </div>  
     
   </template>
@@ -83,17 +117,20 @@
       },
 
       _sectionChanged: function(nSect, oSect) {
-
-        //console.log(nSect);
-       // console.log(oSect);
-        var section ="home";
-        if(this.routeData.section) {
-          var section = this.routeData.section;
-        }
+          if(nSect) {
+              var dict =  {"home":0,"people":1, "careers":2, "contact":3};
+              console.log(dict[nSect.section]);
+              if(dict[nSect.section]) {
+                  this.selected = dict[nSect.section];
+              } else {
+                  this.selected = 0;
+              }
+          }
         
-        console.log(this.$$('#section_' + section));
+      },
 
-        this.$$('#section_' + section).scrollIntoView(true);
+      attached: function(){
+        this.selected = 0;
       },
 
     });
@@ -111,7 +148,8 @@
   <style>
     #container {
       color:#24293d;
-      height: 640px;
+      --height: 100%;
+      --min-height: 640px;
       margin-left: 20%;
       margin-right:10%;
       background-color: #f6fcfa;
@@ -147,7 +185,6 @@
   </style>
  
   <template>
-      
       <div id='container' class="layout horizontal">
           <div class="self-center">
               <div class="layout vertical">

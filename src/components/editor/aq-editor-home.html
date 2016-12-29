@@ -1,6 +1,8 @@
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
@@ -510,7 +512,7 @@
     },
 
     _activeChanged: function(active, subroute, queryParams) {
-      console.log("Here in Editor home Active");
+      console.log("Here in Editor home:"+ active);
       if(active && !this.hasTail(subroute)) {
         console.log(this.queryParams);
         

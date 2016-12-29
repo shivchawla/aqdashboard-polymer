@@ -4,6 +4,8 @@
 <link rel='import' href='../../bower_components/paper-button/paper-button.html'>
 <link rel='import' href='../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href='../../bower_components/vaadin-icons/vaadin-icons.html'>
+<link rel='import' href='../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../bower_components/app-route/app-location.html'>
 
 <link rel='import' href='../icons/aq-iconset.html'>
 
@@ -111,7 +113,8 @@
         color: teal;
         background-color:#f6fcfa;
         height:100%;
-        min-height: 580px;
+        --min-height: 580px;
+        min-height:640px;
       }
 
       #codeContainer {
@@ -122,7 +125,6 @@
         --opacity: 0.7;
       }
 
-
       #section-describe-backtest {
         --padding-top:50px;
         --margin-bottom: 100px;
@@ -131,7 +133,6 @@
         background-color:#f6fcfa;
         height:100%;
         min-height: 640px;
-        
       }
 
       #backtestDiv {
@@ -141,7 +142,6 @@
         margin-left: 20px;
         max-height: 200px;
       }
-
 
       #analysisDiv {
         margin-right:20px;
@@ -169,7 +169,7 @@
         color:teal;
         background-color:#f6fcfa;
         height:100%;
-        
+        min-height:640px;
       }
 
       #communityDiv{
@@ -215,7 +215,7 @@
     		padding-top:50px;
     		--margin-bottom: 100px;
     		height:100%;
-        min-height:600px;
+        min-height:690px;
     		color:teal;
     		background-color:#f6fcfa;
     	}
@@ -260,7 +260,14 @@
     </style>
 
     <template>
-	     
+        <app-location route="{{route}}" ></app-location>
+        
+        <app-route
+            route="{{route}}"
+            pattern="/main"
+            active="{{active}}">
+        </app-route>
+        
     		<div id="section-home" class="layout vertical">
               <div class="flex"></div>
   	      	  <div class="layout horizontal self-center">
@@ -276,7 +283,6 @@
   	      	<!--i class="self-center" style="color:#0375b4;">Bringing the tools of professionals to everyone</i-->
   	      	<paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
     		</div>
-
 
         <div id="section-describe-code" class="layout vertical flex">
             <div class="layout horizontal around-justified wrap">
@@ -439,7 +445,7 @@
 
     			<paper-button style="margin-top:40px;" class="button3 self-center" on-tap='onJoin' noink> Start Now
     			</paper-button>
-        		
+        	<div class="flex"></div>	
   	    </div>
        
       

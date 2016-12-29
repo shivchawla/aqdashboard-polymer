@@ -45,6 +45,10 @@
       font-size: 24px;
     }
 
+    .title:hover {
+      cursor: pointer;
+    }
+
     .title #quant{
       color: #cc6666;
     }
@@ -74,7 +78,7 @@
           </template>
           
           <template is ='dom-if' if="[[showMenu]]"> 
-            <div class="title layout horizontal">
+            <div on-tap='goToHome' class="title layout horizontal">
             <p>Aims</p><p id='quant'>Quant</p>
             <div id='logo'></div>
             </div>
@@ -133,6 +137,10 @@
 
       computeShowMenu: function(showMenu, currentTab) {
         return showMenu && currentTab == 1;
+      },
+
+      goToHome: function() {
+        this.fire('rt-changed',{route:'/main'});
       },
 
     });
