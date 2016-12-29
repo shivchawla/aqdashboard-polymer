@@ -100,7 +100,7 @@
 					<p>All Backtests for <i>{{strategyName}}</i></p>
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-						<aq-analyze-home-backtest-item2 index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 					</template>
 					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 						<div class="spacer"></div>
@@ -306,6 +306,7 @@
 	        _activeChanged: function(active, subroute) {
 	        	console.log("Here I Come");
 	        	if(active && !this.hasTail(subroute)) {
+	        		this.resetView();
 	        		this.strategyId = this.routeData.strategyId;
 	        		if(this.$.authItem.checkHasToken()) {
 		        		this.header = this.$.authItem.getHeader();
@@ -315,6 +316,13 @@
 	        		}	
         		}
 	        },
+
+	        resetView: function() {
+	        	this.showComparison = false;
+	        	this.checkedCount = 0;
+	        	this.checkedItems = {};
+	        	this.backtests = [];
+	        }
 
     	});
     </script>
