@@ -2,7 +2,6 @@
 
 <dom-module id='aq-check-authentication'>
 	<template>
-		<iron-localstorage name="{{my-app-storage}}" id="localStorage"></iron-localstorage>
 	</template>
 	<script>
 		Polymer({
@@ -35,11 +34,6 @@
 				if(this.hasToken) {
 					return this.user;
 				}
-			},
-
-			resetToken: function() {
-				this.$.localStorage.value["user"] = null;
-				this.$.localStorage.save();
 			},
 
 	       	checkHasToken: function() {  

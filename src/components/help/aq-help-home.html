@@ -116,7 +116,6 @@
       <app-route
           route="{{route}}"
           pattern="/dashboard/help"
-          data="{{routeData}}"
           active="{{active}}">
       </app-route>  
 
@@ -221,7 +220,7 @@
 
       _activeChanged: function(nAct, oAct) {
         if(nAct){
-          console.log("help: "+this.active);
+          console.log("help: "+ this.active);
           
           this.$.getHelpContentQuery.generateRequest();
         }

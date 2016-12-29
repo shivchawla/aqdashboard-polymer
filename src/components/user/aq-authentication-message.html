@@ -46,7 +46,6 @@
   		<app-route
             route="{{route}}"
             pattern="/dashboard/authentication/:mode"
-            data="{{routeData}}"
             active="{{active}}">
       	</app-route>  
 
@@ -85,16 +84,7 @@
 				emailId:String,
 				mode:String,
 				name:String,
-				active:{
-					type:Boolean,
-					observer:'_activeChanged',
-				},
-			},
-
-			_activeChanged: function() {
-				if(this.active) {
-
-				}
+				active:Boolean,
 			},
 
 			isModeForgotPassword: function(mode) {

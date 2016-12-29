@@ -224,6 +224,10 @@
         type: Boolean,
       },
 
+      routeData:Object,
+      queryParams:Object,
+      subroute:Object,
+
 		},
 
     observers:['_activeChanged(active, subroute, queryParams)'],
@@ -505,7 +509,7 @@
       return active && !this.hasTail(subroute);
     },
 
-    _activeChanged: function(active, subroute) {
+    _activeChanged: function(active, subroute, queryParams) {
       console.log("Here in Editor home Active");
       if(active && !this.hasTail(subroute)) {
         console.log(this.queryParams);

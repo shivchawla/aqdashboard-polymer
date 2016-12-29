@@ -64,9 +64,12 @@
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-                <aq-homepage></aq-homepage>
-                <aq-dashboard-main></aq-dashboard-main>
-                <aq-aboutpage></aq-aboutpage>
+                <iron-pages selected="{{currentTab}}">
+                  <aq-homepage></aq-homepage>
+                  <aq-dashboard-main></aq-dashboard-main>
+                  <aq-aboutpage></aq-aboutpage>
+                </iron-pages>
+                
                 <aq-user-login-panel></aq-user-login-panel>                    
                 <aq-authentication-message></aq-authentication-message>
                 
@@ -196,15 +199,6 @@
 
         },
 
-        /*computeSelected: function(str) {
-          //console.log(str);
-          if (str=="user") {
-            return 0;
-          } else if (str=="dashboard"){
-            return 1;
-          }
-        },*/
-
         listeners: {
             'open-menu': 'openMenu',
             'close-menu':'closeMenu',
@@ -212,7 +206,6 @@
             'change-view-action':'viewChangedOnAction',
             'loginClicked':'gotoSignin',
             'signupClicked':'gotoSignup',
-            'tabChanged':'changeTab',
             'signout-action':'onSignOut',
             'take-feedback-action':'openFeedbackDialog',
             'send-feedback-action':'sendFeedBack',
@@ -306,9 +299,7 @@
 
         viewChanged: function(newMenu) {
           this.view = newMenu.detail.menu; 
-          //console.log("Hola");
           this.fire('rt-changed',{route:'/dashboard/' + this.view});
-          //this.$.router.go('/dashboard/' + this.view);
           
           if(this.narrow){
             this.$.drawerpanel.closeDrawer();
@@ -322,9 +313,7 @@
             this.openInviteDialog();
           } else {
             this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
-            ////console.log("Hola2");
             this.fire('rt-changed',{route:'/dashboard/' + newAction.detail.action});
-            //this.$.router.go('/dashboard/' + newAction.detail.action);
           }
 
           if(this.narrow){
@@ -345,39 +334,12 @@
           }
         },
 
-        /*changeTab: function(e) {
-          //this.$.authItem.checkHasToken();
-         //this.showSidebar = (e.detail.tab == 1);
-          tab = e.detail.tab;
-          if (tab == this.currentTab) {
-            return
-          }
-
-          //this.currentTab = tab;
-          console.log("path: "+ tab);
-          path = ['/main', 
-                  '/dashboard', 
-                  //'/investments', 
-                  '/about',
-                  '/user/signin',
-                  '/user/signup'];
-
-          if (this.URLcontains(path[tab])) {
-            return;
-          } else {
-            this.fire('rt-changed',{route:path[tab]});
-          }
-          
-        },*/
-
          _currentTabChanged: function(newTab, oldTab) {        
           
           if (!(oldTab + 1)) {
             return;
           }
           
-          //console.log("old tab:" + oldTab);
-          //console.log("new tab:" + newTab);
           this.$.authItem.checkHasToken();
               
           this.showSidebar = (newTab == 1);  
@@ -388,10 +350,8 @@
 
           this.set('aimsquant.lastTab', newTab);
           
-          console.log("here gandu");  
           path = ['/main', 
                   '/dashboard', 
-                  //'/investments', 
                   '/about',
                   '/user/signin',
                   '/user/signup',
@@ -403,7 +363,6 @@
             this.view = 'home';
           }
 
-
           if ((this.URLcontains(path[5]) || this.URLcontains(path[6])) && newTab==3) {
               return;
           }
@@ -411,9 +370,7 @@
           if (this.URLcontains(path[newTab])) {
             return;
           } else {
-            console.log("or Here");
             this.fire('rt-changed',{route:path[newTab]});
-            //this.$$('#router').go(path[newTab]);
           }
           
         },
@@ -427,14 +384,7 @@
           this.$.localStorage.save(); 
           
           this.hasToken = this.$.authItem.checkHasToken();
-          //console.log(this.hasToken);
-          /*if(!this.checkHasToken()) {
-            this.currentTab = 3;
-          
-          }*/
-          ////console.log("Sign out");
           this.fire('rt-changed',{route:'/user/signout'});
-          //this.$.router.go('/user/signout');
         },
 
         openFeedbackDialog: function() {
@@ -447,13 +397,9 @@
         },
 
         onPostFeedbackResponse: function (e) {
-          ////console.log("Success Posting Feedback");
-          ////console.log(e.detail.response);
         },
 
         onPostFeedbackError: function(e) {
-            ////console.log("Error Posting Feedback");
-            ////console.log(e.detail.response);
         },
 
         openInviteDialog: function() {
@@ -466,18 +412,13 @@
         },
 
         onSendInviteResponse: function(e) {
-          ////console.log("Suceess Sending Invite");
-          ////console.log(e.detail.response);
         },
 
         onSendInviteError: function(e) {
-          ////console.log("Error Sending Invite");
-          ////console.log(e.detail.response);
         },
 
         onMyAccount: function() {
           this.fire('rt-changed',{route:'/user/myaccount'});
-          //this.$.router.go('/user/myaccount');
         },
 
         _onOpen: function(e){
@@ -504,8 +445,6 @@
         },
 
         _onError: function(e) {
-            console.log("WS Error");
-            console.log(e);
         },
 
         _onClose: function(e) {
@@ -553,31 +492,23 @@
 
         onTokenUpdate: function(e) {
 
-            ////console.log("Toke Update");
-            ////console.log(e.detail);
             this.set('aimsquant.user',e.detail.user);
             this.$.localStorage.save();
 
             this.hasToken = this.$.authItem.checkHasToken();
             
-            //this.updateHeader(e.detail.user);
             
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
             
             if(lastRequest!='') {
-              //this.$$('#router').go(lastRequest);
               this.fire('rt-changed',{route:lastRequest});
             } else {
-              //this.async(this.$$('#router').go('/dashboard'), 1000);
-              ////console.log("To dashboard");
               this.async(function(){this.fire('rt-changed',{route:'/dashboard'})}, 1000);
             }
         },
 
         scrollToTop: function() {
       
-          //this.$.container.scrollHeight;
-              
         },
 
         managesubscriptions: function(){ 
@@ -627,7 +558,6 @@
                   '/user/resetPassword',
                   '/user/signout'];
 
-
           for(i=0;i<pathArray.length;i++){
             if(this.URLcontains(pathArray[i])){
               ctab = i;
@@ -638,7 +568,6 @@
           if(ctab==6 || ctab ==5) {
             ctab = 3;
           }
-
 
           this.currentTab = ctab;
         },

@@ -44,7 +44,6 @@
           handle-as="json" 
           on-response="onStrategyCreationResponse" 
           on-error="onStrategyCreationError" 
-          last-response="{{ajaxResponse}}" 
           debounce-duration="300">
       </iron-ajax>
 
@@ -76,11 +75,7 @@
 
         strategyData:Object,
 
-        APIEndPoint:String,
-
-        active:{
-          type:Boolean,
-        },
+        header:Object,
 
       },
 
@@ -101,19 +96,6 @@
         console.log("Editor main is Removed");
       },  
 
-      ready: function() {
-
-        /*var x = localStorage.getItem('my-app-storage');
-        var user = JSON.parse(x).user;
-        if (user.token) {
-          this.header = {
-            "aimsquant-token": user.token,
-            "Content-Type": "application/json"};  
-        }*/
-
-        //this.hasToken = (user.token && user.token!="") ? true : false;
-        this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-      },
 
       isEqual: function(view1, view2) {
         return view1==view2;
@@ -142,7 +124,6 @@
 
       openNewDialog: function() {   
         if(!this.$.authItem.checkHasToken()) {
-          //localStorage.setItem('lastRequest',{path:'/dashboard/createstrategy'});
           this.fire('rt-changed',{route:'/user/signin'});
           return;
         } 

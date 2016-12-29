@@ -1,5 +1,7 @@
 
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
 
 <dom-module id="aq-aboutpage">
 
@@ -25,11 +27,6 @@
     <template>
 
         <app-location route="{{route}}"></app-location>
-        <app-route
-            route="{{route}}"
-            pattern="/about"
-            active="{{active}}">
-        </app-route>
 
          <app-route
             route="{{route}}"
@@ -37,7 +34,6 @@
             data="{{routeData}}">
         </app-route>
 
-        <template is='dom-if' if='{{active}}'>
             <div style="background-color: #f6fcfa">
 
             <aq-section id='section_home' 
@@ -71,7 +67,6 @@
             
             <footer><p>© 2016 AimsQuant</p></footer>
           </div>  
-      </template>
     
   </template>
 
@@ -81,45 +76,25 @@
   		is: 'aq-aboutpage',
 
       properties: {
-          section: {
-              type: String,  
-              //value:"home",
-              //observer:'_sectionChanged',
+          routeData: {
+              type: Object,  
+              observer:'_sectionChanged',
           },
       },
 
-      observers:['_activeChanged(active, routeData)', '_sectionChanged(active, section)'],
+      _sectionChanged: function(nSect, oSect) {
 
-      _activeChanged: function(active, routeData) {        
-        console.log("About Page: " + active);
-        console.log(this.routeData.section);
-        if (active) {
-          if(this.routeData.section) {
-            this.section = this.routeData.section;
-          } else {
-            console.log("hahahaha");
-            this.section = 'home';
-          }
+        //console.log(nSect);
+       // console.log(oSect);
+        var section ="home";
+        if(this.routeData.section) {
+          var section = this.routeData.section;
         }
-
-        //this.fire('tabChanged',{tab:2});     
         
-      },
+        console.log(this.$$('#section_' + section));
 
-      _sectionChanged: function(active, section) {
-          if (active) {
-            console.log(section);
-            console.log(this.$$('#section_' + section));
-            if(this.$$('#section_' + section)) {
-              //this.$$('#section_' + section).scrollIntoView(true);
-            } 
-          }
+        this.$$('#section_' + section).scrollIntoView(true);
       },
-
-      attached: function() {
-        console.log("attached");
-         //this.$$('#section_home').scrollIntoView(true);
-      }
 
     });
 
@@ -139,7 +114,7 @@
       height: 640px;
       margin-left: 20%;
       margin-right:10%;
-      background-color: #f6fcfa
+      background-color: #f6fcfa;
     }
 
     p {

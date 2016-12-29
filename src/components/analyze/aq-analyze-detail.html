@@ -40,20 +40,24 @@
 
 				active:{
 					type:Boolean,
-					observer: '_isActiveChanged',
+					//observer: '_isActiveChanged',
 				},
 
+				routeData:Object,
+
 			},
+
+			observers:['_activeChanged(active, routeData)'],
 
 			goBackAllBacktests: function() {
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 				this.fire('rt-changed',{route:'/dashboard/analyze/' + this.strategyId});
 			},
 
-			_isActiveChanged: function(nAct, oAct) {
-				if (nAct) {
-					this.strategyId = this.routeData.strategyId;
-					this.backtestId = this.routeData.backtestId;
+			_activeChanged: function(active, routeData) {
+				if (active && routeData) {
+					this.strategyId = routeData.strategyId;
+					this.backtestId = routeData.backtestId;
 				}
 			}
 

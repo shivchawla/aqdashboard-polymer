@@ -516,6 +516,8 @@
 
                 resetcode: String,
                 APIEndPoint:String,
+                active: Boolean,
+                routeData:Object,
 
             },
 
@@ -598,7 +600,7 @@
 
             attached: function() {
 
-                this.displayMode = this.routeData.displayMode;
+                //this.displayMode = this.routeData.displayMode;
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
 

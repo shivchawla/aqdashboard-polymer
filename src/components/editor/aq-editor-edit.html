@@ -91,7 +91,6 @@
             route="{{route}}"
             pattern="/dashboard/editor/:strategyId"
             data="{{routeData}}"
-            tail="{{subroute}}"
             active="{{active}}">
       </app-route>  
 
@@ -146,9 +145,9 @@
                   <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
                 </template>
                  
-                <template is='dom-if' if='{{!isProgrammer}}'>
+                <!--template is='dom-if' if='{{!isProgrammer}}'>
                   <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
-                </template>
+                </template-->
                      
                 <!--iron-collapse id='collapse'>
                   <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
@@ -268,7 +267,9 @@
             type:Boolean,
             value:false,
             observer:'_activeChanged',
-          }
+          },
+
+          routeData: Object,
 
         },
 
