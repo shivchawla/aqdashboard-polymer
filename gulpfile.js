@@ -10,8 +10,8 @@ gulp.task('vulcanize', function () {
         .pipe(vulcanize({
             abspath: '',
             //excludes: ['bower_components/nvd3-elements/','bower_components/juicy-ace-editor/','bower_components/simplemde/','bower_components/webcomponentsjs/','bower_components/polymer/'],
-            excludes: ['bower_components/vaadin-icons/'],
-            stripExcludes: false,
+            excludes: ['bower_components/iron-iconset-svg/','bower_components/iron-icon/','bower_components/iron-meta/', 'bower_components/vaadin-icons/','bower_components/webcomponentsjs/','bower_components/polymer/'],
+            stripExclude: ['bower_components/iron-iconset-svg/','bower_components/iron-icon/','bower_components/iron-meta/','bower_components/vaadin-icons/','bower_components/webcomponentsjs/','bower_components/polymer/'],
             //inlineScripts:true,
             //inlineCss:true,
             stripComments:true,
@@ -31,7 +31,7 @@ gulp.task('compress', ['vulcanize'], function (cb) {
   );
 });
 
-gulp.task('copy',['vulcanize'], function() {
+gulp.task('copy',['compress'], function() {
     gulp.src('resources/**/*')
       .pipe(gulp.dest('build/resources'));
 
@@ -40,6 +40,9 @@ gulp.task('copy',['vulcanize'], function() {
 
     gulp.src('index.html')
       .pipe(gulp.dest('build'));
+
+    gulp.src('bower.json')
+      .pipe(gulp.dest('build'));  
 });
 
 gulp.task('default',['copy']);  

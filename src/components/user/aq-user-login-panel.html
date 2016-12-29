@@ -693,12 +693,10 @@
                 e.stopPropagation();
                 switch (this.displayMode) {
                     case displayModes.signin:
-                        this.fire('tabChanged',{tab:4});
-                        //this.setDisplayMode(displayModes.signup);
+                        this.fire('rt-changed',{route:'/user/signup'});
                         break;
                     case displayModes.signup:
-                        this.fire('tabChanged',{tab:3});
-                        //this.setDisplayMode(displayModes.signin);
+                        this.fire('rt-changed',{route:'/user/signin'});
                         break;
                     case displayModes.forgotPassword:
                         this.setDisplayMode(displayModes.signin);
