@@ -4,8 +4,11 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../../../bower_components/iron-meta/iron-meta.html'>
+<link rel='import' href='../../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
-
+<link rel='import' href ="../common/aq-check-authentication.html">
 <link rel='import' href ="./aq-editor-toolbar.html">
 <link rel='import' href ="./aq-editor-console-window.html">
 <link rel='import' href ="./aq-editor-sidebar-run.html">
@@ -17,484 +20,515 @@
 
 <dom-module id="aq-editor-edit">
   
-<template>
+  <template>
 
-  <style  include="iron-flex iron-flex-alignment iron-positioning">
-  </style> 
+    <style  include="iron-flex iron-flex-alignment iron-positioning">
+    </style> 
 
-<style>
+    <style>
 
-  paper-icon-button {
-    width:35px;
-    height:35px;
-  }
-
-  #consoleWindow {
-    position: absolute;
-    bottom:1%;
-    height:89%;
-    width:97%; 
-    left:0px;
-    --border:1px solid;
-    left:2%;
-    --min-width: 5%;
-    background-color: white;
-  }
-
-  paper-toolbar {
-      --paper-toolbar-height:40px;
-      --paper-toolbar-color:#24293d;
-      --paper-toolbar-background:#cbefde;--#9ecbda;--#c9e2ea;
-       border-bottom: 1px solid #24293d;
-  }
-
-  paper-tabs :hover{
-    font-weight: bold;
-    font-size:110%;
-  }
-
-  paper-tabs {
-    --paper-tabs-selection-bar-color: #24293d;
-    height:80%;
-  }
-
-  paper-tab {
-    --height:30px;
-  }
-
-  #leftPanel {
-    border-right: 1px solid #24293d;
-  }
-
-  #rightPanel {
-    background-color:#f2fbf7;--#f3f9fa;--#f3f4f8;
-    border-left: 5px solid #24293d;
-    color:#02558b;
-  }
-
-  .toolbarPlayIcon {
-       border:1px solid;
-       padding:0px;
-       height:23px;
-       width:23px;
+    paper-icon-button {
+      width:35px;
+      height:35px;
     }
-    
-</style>
 
-<style  include="iron-flex iron-positioning"></style>
+    #consoleWindow {
+      position: absolute;
+      bottom:1%;
+      height:89%;
+      width:97%; 
+      left:0px;
+      --border:1px solid;
+      left:2%;
+      --min-width: 5%;
+      background-color: white;
+    }
 
-    <iron-ajax
-          url="[[computeGetStrategyUrl(strategyId)]]"
-          method='GET'
-          id='getStrategyQuery'
-          handle-as="json"
-          on-response="onGetStrategyResponse"
-          on-error="onGetStrategyError"
-          headers='{{header}}'
+    paper-toolbar {
+        --paper-toolbar-height:40px;
+        --paper-toolbar-color:#24293d;
+        --paper-toolbar-background:#cbefde;--#9ecbda;--#c9e2ea;
+         border-bottom: 1px solid #24293d;
+    }
+
+    paper-tabs :hover{
+      font-weight: bold;
+      font-size:110%;
+    }
+
+    paper-tabs {
+      --paper-tabs-selection-bar-color: #24293d;
+      height:80%;
+    }
+
+    paper-tab {
+      --height:30px;
+    }
+
+    #leftPanel {
+      border-right: 1px solid #24293d;
+    }
+
+    #rightPanel {
+      background-color:#f2fbf7;--#f3f9fa;--#f3f4f8;
+      border-left: 5px solid #24293d;
+      color:#02558b;
+    }
+
+    .toolbarPlayIcon {
+         border:1px solid;
+         padding:0px;
+         height:23px;
+         width:23px;
+      }
+      
+  </style>
+
+  <style  include="iron-flex iron-positioning"></style>
+      <aq-check-authentication id='authItem'></aq-check-authentication>
+      <app-location route="{{route}}"></app-location>
+      <app-route
+            route="{{route}}"
+            pattern="/dashboard/editor/:strategyId"
+            data="{{routeData}}"
+            tail="{{subroute}}"
+            active="{{active}}">
+      </app-route>  
+
+      <iron-ajax
+            url="[[computeGetStrategyUrl(strategyId)]]"
+            method='GET'
+            id='getStrategyQuery'
+            handle-as="json"
+            on-response="onGetStrategyResponse"
+            on-error="onGetStrategyError"
+            headers='{{header}}'
+            debounce-duration="300">
+      </iron-ajax> 
+
+       <iron-ajax 
+          url="[[computePutStrategyUrl(strategyId)]]" 
+          body="{{putStrategyData}}" 
+          method='PUT' 
+          id='saveStrategyQuery' 
+          headers='{{header}}' 
+          handle-as="json" 
+          on-response="onStrategySavedResponse"
+          on-error="onStrategySavedResponseError"  
+          last-response="{{ajaxResponse}}" 
           debounce-duration="300">
-    </iron-ajax>  
-     
-    <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
-        <paper-header-panel id='leftPanel' main mode="seamed"> 
-          
-          <template is='dom-if' if='[[!isRunning]]'>
-            <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]" strategy-id="[[strategyId]]"> 
-            </aq-editor-toolbar>
-          </template>  
-            
-            <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
-              <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
-            </template>
-             
-            <template is='dom-if' if='{{!isProgrammer}}'>
-              <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
-            </template>
-                 
-            <!--iron-collapse id='collapse'>
-              <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
-            </iron-collapse-->
-    
-          <template is='dom-if' if='[[isRunning]]'>
-            <aq-editor-edit-backtest-screen is-running="{{isRunning}}" 
-                                            id='backtestScreen'
-                                            narrow="[[narrow]]"
-                                            backtest-id ="[[activeBacktestId]]">
-            </aq-editor-edit-backtest-screen>
-          </template>
+      </iron-ajax>
 
-        </paper-header-panel>
-
-        
-        <paper-header-panel atTop=false id='rightPanel' drawer mode="seamed">
-          <paper-toolbar >
-              <paper-tabs selected="{{selectedSidebar}}" noink>
-                <template is="dom-if" if="[[!isRunning]]">
-                <paper-tab>Run</paper-tab>
-                <paper-tab>Quick Help</paper-tab>
-                </template>
-                
-                <template is="dom-if" if="[[isRunning]]">
-                  <paper-tab>Log</paper-tab>
-                </template>
-              
-              </paper-tabs>
-
-              <div class="flex"></div>
-              
-              <!--template is='dom-if' 
-                        if="[[isSelectedSidebarRun(selectedSidebar)]]">
-                <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="aq-icons:play-arrow"></paper-icon-button>
-              </template-->
-
-              <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
-
-
-          </paper-toolbar>
-
-            <iron-pages selected="{{selectedSidebar}}">
-           
-              <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
-              <div>This is quick help!!</div>
-              
-              <aq-editor-sidebar-log></aq-editor-sidebar-log>
-              
-            </iron-pages>
-        
-        </paper-header-panel>
-        
-                      
       <iron-ajax 
-        url="[[computePutStrategyUrl(strategyId)]]" 
-        body="{{putStrategyData}}" 
-        method='PUT' 
-        id='saveStrategyQuery' 
-        headers='{{header}}' 
-        handle-as="json" 
-        on-response="onStrategySavedResponse"
-        on-error="onStrategySavedResponseError"  
-        last-response="{{ajaxResponse}}" 
-        debounce-duration="300">
-    </iron-ajax>
+          url="[[computePostStrategyExecutionUrl(strategyId)]]"
+          body="{{runStrategyData}}" 
+          method='POST' 
+          id='runStrategyQuery' 
+          headers='{{header}}' 
+          handle-as="json" 
+          on-response="onStrategyExecutionResponse"
+          on-error="onStrategyExecutionError" 
+          last-response="{{ajaxResponse}}" 
+          debounce-duration="300">
+      </iron-ajax>
 
-    <iron-ajax 
-        url="[[computePostStrategyExecutionUrl(strategyId)]]"
-        body="{{runStrategyData}}" 
-        method='POST' 
-        id='runStrategyQuery' 
-        headers='{{header}}' 
-        handle-as="json" 
-        on-response="onStrategyExecutionResponse"
-        on-error="onStrategyExecutionError" 
-        last-response="{{ajaxResponse}}" 
-        debounce-duration="300">
-    </iron-ajax>
-
-  </template>
-
-  <script>
-    Polymer({
-      is:'aq-editor-edit',
-
-      properties :{
-        showSideBar: {
-          type:Boolean,
-          value:true,
-        },
-
-        narrow:{
-          type:Boolean,
-          observer:'_narrowChanged',
-        },
-
-        selectedSidebar:{
-          type:Number,
-          value:0,
-        },
-
-        sideBarOpen:{
-          type:Boolean,
-          value:true,
-        },
-
-        isProgrammer:{
-          type:Boolean,
-          value:true,
-        },
-
-        strategyId: String,
-
-        strategy: Object,
-        
-        runSwitch:{
-          type: Number,
-          value: 0,
-        },
-
-        isRunning: {
-          type: Boolean,
-          value: false,
-          observer:'_isRunningChanged',
-        },
-
-        counter:{
-          type:Number,
-          value:0,
-        },
-
-        putStrategyData:Object,
-
-        runStrategyData:Object,
-
-        activeBacktestId:String,
-
-        APIEndPoint:String,
-
-      },
-
-      listeners: {
-        'close-all':'closeAll',
-        'toggle-drawer':'toggleDrawer',
-        'toggle-console':'toggleConsole',
-        'close-console':'closeConsole',
-        'selected-items-changed':'rowSelected',
-        'toggle-design':'designChanged',
-        'backClicked':'goToHome',
-        //'analyze-clicked':'goToAnalyze',
-        'open-drawer':'openDrawer',
-        'close-drawer':'closeDrawer',
-        'save-action':'saveStrategy',
-        'run-action':'runStrategy',
-        'cloneClicked':'cloneStrategy',
-        'backClicked-backtest':'toggleIsRunning',
-        'scroll-log':'onScroll',
-      },
-
-      ready: function() {
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-      },
-
-      attached: function() {
+      <template is='dom-if' if='{{active}}'> 
        
-          var x = localStorage.getItem('my-app-storage');
-          var user = JSON.parse(x).user;
-    
-          if (user && user.token && user.token!="") {
-            this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"}; 
-              this.$.getStrategyQuery.generateRequest(); 
-          } else {
-            this.router.go('/user/signin',{lastRequest:'/dashboard/editor/'+this.strategyId});
+        <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
+            <paper-header-panel id='leftPanel' main mode="seamed"> 
+              
+              <template is='dom-if' if='[[!isRunning]]'>
+                <aq-editor-toolbar id ='editorToolbar' is-programmer={{isProgrammer}} class="paper-header" strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]" narrow="[[narrow]]" strategy-id="[[strategyId]]"> 
+                </aq-editor-toolbar>
+              </template>  
+                
+                <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
+                  <aq-editor-edit-programmer code="[[strategy.code]]" id='codeEditorPanel'></aq-editor-edit-programmer> 
+                </template>
+                 
+                <template is='dom-if' if='{{!isProgrammer}}'>
+                  <aq-editor-edit-nonprogrammer strategy={{strategy}} id='editorPanel'></aq-editor-edit-nonprogrammer> 
+                </template>
+                     
+                <!--iron-collapse id='collapse'>
+                  <aq-editor-console-window id="consoleWindow" class="collapse-content"></aq-editor-console-window>
+                </iron-collapse-->
+        
+              <template is='dom-if' if='[[isRunning]]'>
+                <aq-editor-edit-backtest-screen is-running="{{isRunning}}" 
+                                                id='backtestScreen'
+                                                narrow="[[narrow]]"
+                                                backtest-id ="[[activeBacktestId]]">
+                </aq-editor-edit-backtest-screen>
+              </template>
+
+            </paper-header-panel>
+
+            
+            <paper-header-panel atTop=false id='rightPanel' drawer mode="seamed">
+              <paper-toolbar >
+                  <paper-tabs selected="{{selectedSidebar}}" noink>
+                    <template is="dom-if" if="[[!isRunning]]">
+                    <paper-tab>Run</paper-tab>
+                    <paper-tab>Quick Help</paper-tab>
+                    </template>
+                    
+                    <template is="dom-if" if="[[isRunning]]">
+                      <paper-tab>Log</paper-tab>
+                    </template>
+                  
+                  </paper-tabs>
+
+                  <div class="flex"></div>
+                  
+                  <!--template is='dom-if' 
+                            if="[[isSelectedSidebarRun(selectedSidebar)]]">
+                    <paper-icon-button id='runButton' noink title="Run Backtest" on-tap='runStrategyFromPanel' class="toolbarPlayIcon" icon="aq-icons:play-arrow"></paper-icon-button>
+                  </template-->
+
+                  <paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Right" on-tap="toggleDrawer"></paper-icon-button>
+
+
+              </paper-toolbar>
+
+                <iron-pages selected="{{selectedSidebar}}">
+               
+                  <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
+                  <div>This is quick help!!</div>
+                  
+                  <aq-editor-sidebar-log></aq-editor-sidebar-log>
+                  
+                </iron-pages>
+            
+            </paper-header-panel>
+        </paper-drawer-panel>
+      </template>
+
+    </template>
+
+    <script>
+      Polymer({
+        is:'aq-editor-edit',
+
+        properties :{
+          showSideBar: {
+            type:Boolean,
+            value:true,
+          },
+
+          narrow:{
+            type:Boolean,
+            observer:'_narrowChanged',
+          },
+
+          selectedSidebar:{
+            type:Number,
+            value:0,
+          },
+
+          sideBarOpen:{
+            type:Boolean,
+            value:true,
+          },
+
+          isProgrammer:{
+            type:Boolean,
+            value:true,
+          },
+
+          strategyId: {
+            type: String,
+          },
+
+          strategy: Object,
+          
+          runSwitch:{
+            type: Number,
+            value: 0,
+          },
+
+          isRunning: {
+            type: Boolean,
+            value: false,
+            observer:'_isRunningChanged',
+          },
+
+          counter:{
+            type:Number,
+            value:0,
+          },
+
+          putStrategyData:Object,
+
+          runStrategyData:Object,
+
+          activeBacktestId:String,
+
+          active: {
+            type:Boolean,
+            value:false,
+            observer:'_activeChanged',
           }
 
-          this.fire('close-menu');
-      },
+        },
 
-      computeGetStrategyUrl: function(strategyId) {
-        return this.APIEndPoint+'/strategy/'+strategyId;
-      },
+        listeners: {
+          'close-all':'closeAll',
+          'toggle-drawer':'toggleDrawer',
+          'toggle-console':'toggleConsole',
+          'close-console':'closeConsole',
+          'selected-items-changed':'rowSelected',
+          'toggle-design':'designChanged',
+          'backClicked':'goToHome',
+          //'analyze-clicked':'goToAnalyze',
+          'open-drawer':'openDrawer',
+          'close-drawer':'closeDrawer',
+          'save-action':'saveStrategy',
+          'run-action':'runStrategy',
+          'cloneClicked':'cloneStrategy',
+          'backClicked-backtest':'toggleIsRunning',
+          'scroll-log':'onScroll',
+        },
 
-      computePutStrategyUrl: function(strategyId) {
-        return this.APIEndPoint +'/strategy/' + strategyId;
-      },
-
-      computePostStrategyExecutionUrl: function(strategyId) {
-        return this.APIEndPoint + '/strategy/'+ strategyId+'/exec'; 
-      },
-
-      _narrowChanged: function(newVal, oldVal) {
-        if (!newVal && !this.isRunning) {
-          //this.$$('#codeEditorPanel').style.display = 'block';
-        }
-      },
-
-      computeDrawerWidth: function(isProgrammer, isRunning) {
-        if (isProgrammer && isRunning) {
-          return "360px";
-        } else if (isProgrammer){
-          return "560px";
-        } else {
-          return "0px";
-        }
-      },
-
-      toggleConsole: function() {
-        this.$.collapse.toggle();
-      },
-
-      openConsole: function() {
-        if (this.$.collapse.opened == false) {
-          this.$.collapse.toggle();
-        }
-      },
-
-      closeConsole: function() {
-       if (this.$.collapse.opened == true) {
-          this.$.collapse.toggle();
-        }
-      },
-
-      closeAll: function() {
-        this.$$('#codeEditorPanel').closeDrawer();
-        this.closeConsole();
-      },
-
-      toggleDrawer: function() { 
-        if(this.showSideBar && this.narrow) {
-          this.$$('#drawerpanel').togglePanel();
-
-          var x = this.$$('#codeEditorPanel').style.display;
-
-          /*if(x=='none' && !this.isRunning) {
-            this.$$('#codeEditorPanel').style.display = 'block';
-          } else {
-            this.$$('#codeEditorPanel').style.display = 'none';
-          }*/
-
-        } else if (this.showSideBar && !this.narrow) {
-          this.closeDrawer();
-        } else {
-          this.openDrawer();
-        }
-
-      },
-
-      openDrawer: function() { 
-        this.$$('#drawerpanel').openDrawer();
-        this.showSideBar = true;
-      },
-
-      closeDrawer: function() {
-        this.$$('#drawerpanel').closeDrawer();
-  
-        if (this.showSideBar && !this.narrow) {
-          this.showSideBar = false;
-        }
-      }, 
-
-      isSelectedSidebarRun: function(selectedSidebar) {
-        return selectedSidebar == 0;
-      },
-
-      designChanged: function() {
-        this.isProgrammer = !this.isProgrammer;
-      },
-
-      goToAnalyze: function() {
-        this.router.go('/dashboard/analyze?strategyName=Sample Strategy');
-      },
-
-      goToHome: function() {
-        this.router.go('/dashboard/editor');
-      },
-
-      onGetStrategyResponse: function(data) {
-        this.strategy = data.detail.response;
-      },
-
-      onGetStrategyError: function(data) {
-        console.log(data);
-      },
-
-      onStrategySavedResponse: function(data) {
-        
-        // Check if save was initiated before RUN
-        if(this.runSwitch == 1) {
-          
-          //reset the run switch to off
-          this.runSwitch = 0;
-          
-          // Now run the saved strategy 
-          this.$.runStrategyQuery.generateRequest();
-        }
-      },
-
-      onStrategySavedError: function(data) {
-        console.log("Error Saving");
-        console.log(data);
-      },
-
-      runStrategyFromPanel: function() {
-        this.$$('#editorToolbar').onRun();
-      },
-
-      saveStrategy: function(e) {
-        this.putStrategyData = {
-            "name":e.detail.name,
-            "description": this.strategy.description,
-            "language":this.strategy.language,
-            "type": this.strategy.type,
-            "code": this.$$('#codeEditorPanel').getCodeContent(),
-        };
+        /*attached: function() {
+         
+            var x = localStorage.getItem('my-app-storage');
+            var user = JSON.parse(x).user;
       
-        this.$.saveStrategyQuery.generateRequest();
-      },
+            if (user && user.token && user.token!="") {
+              this.header = {
+                "aimsquant-token": user.token,
+                "Content-Type": "application/json"}; 
+            } else {
+              this.fire('rt-changed', {route:'/user/signin'});
+            }
 
-      runStrategy: function(e) {
-         console.log("Going to Run:");
+            this.fire('close-menu');
+            this.$.getStrategyQuery.generateRequest();
+        },*/
 
-         //Get settings from the sidebar
-         var strategySettings = this.$$('#runSidebar').getSettings();
+        computeGetStrategyUrl: function(strategyId) {
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          console.log(this.APIEndPoint+'/strategy/'+strategyId);
+          return this.APIEndPoint+'/strategy/'+strategyId;
+        },
 
-        // first save the strategy
-        this.runStrategyData = {  
-                  "start": "2015-11-07T03:41:47.262Z",
-                  "end": "2016-11-07T03:41:47.262Z",
-                  "capital": 1000000,
-                  "plan": "string"};
+        computePutStrategyUrl: function(strategyId) {
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          return this.APIEndPoint +'/strategy/' + strategyId;
+        },
 
-        this.runSwitch = 1;
-        this.saveStrategy(e);  
-      },
+        computePostStrategyExecutionUrl: function(strategyId) {
+          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          return this.APIEndPoint + '/strategy/'+ strategyId+'/exec'; 
+        },
 
-      onStrategyExecutionResponse: function(data) {
-        
-        //Before execution starts, 
-        //backtestId handle is sent from the backend
-        console.log(data.detail.response);
-        this.activeBacktestId = data.detail.response._id;
-        //This backtest object just contains settings and code
-        //BUT has no output
+        _narrowChanged: function(newVal, oldVal) {
+          if (!newVal && !this.isRunning) {
+            //this.$$('#codeEditorPanel').style.display = 'block';
+          }
+        },
 
-        // Send Execution request via web-sockets 
-        this.isRunning  = true;
-        this.fire('execute-backtest', {backtestId:this.activeBacktestId});
-        
-        console.log("Run: Success");
-      },
+        computeDrawerWidth: function(isProgrammer, isRunning) {
+          if (isProgrammer && isRunning) {
+            return "360px";
+          } else if (isProgrammer){
+            return "560px";
+          } else {
+            return "0px";
+          }
+        },
 
-      onStrategyExecutionError: function(data) {
-        console.log(data);
-        //This get back the created backtest object with just the settings,
-        //HAS no output
-      },
+        toggleConsole: function() {
+          this.$.collapse.toggle();
+        },
 
-      cloneStrategy: function(e) {
-          e.detail.strategy = this.strategy;
-          //let the event propagate
-      },
+        openConsole: function() {
+          if (this.$.collapse.opened == false) {
+            this.$.collapse.toggle();
+          }
+        },
 
-      _isRunningChanged: function() {
-        console.log(this.isRunning);
-        console.log(this.selectedSidebar);
+        closeConsole: function() {
+         if (this.$.collapse.opened == true) {
+            this.$.collapse.toggle();
+          }
+        },
 
-        if(!this.isRunning) {
-          this.selectedSidebar = 0;
-        } else {
-          this.selectedSidebar = 2;
+        closeAll: function() {
+          this.$$('#codeEditorPanel').closeDrawer();
+          this.closeConsole();
+        },
+
+        toggleDrawer: function() { 
+          if(this.showSideBar && this.narrow) {
+            this.$$('#drawerpanel').togglePanel();
+
+            var x = this.$$('#codeEditorPanel').style.display;
+
+            /*if(x=='none' && !this.isRunning) {
+              this.$$('#codeEditorPanel').style.display = 'block';
+            } else {
+              this.$$('#codeEditorPanel').style.display = 'none';
+            }*/
+
+          } else if (this.showSideBar && !this.narrow) {
+            this.closeDrawer();
+          } else {
+            this.openDrawer();
+          }
+
+        },
+
+        openDrawer: function() { 
+          this.$$('#drawerpanel').openDrawer();
+          this.showSideBar = true;
+        },
+
+        closeDrawer: function() {
+          this.$$('#drawerpanel').closeDrawer();
+    
+          if (this.showSideBar && !this.narrow) {
+            this.showSideBar = false;
+          }
+        }, 
+
+        isSelectedSidebarRun: function(selectedSidebar) {
+          return selectedSidebar == 0;
+        },
+
+        designChanged: function() {
+          this.isProgrammer = !this.isProgrammer;
+        },
+
+        goToAnalyze: function() {
+          this.fire('rt-changed',{route:'/dashboard/analyze?strategyName=Sample Strategy'});
+        },
+
+        goToHome: function() {
+          this.fire('rt-changed',{route:'/dashboard/editor'});
+        },
+
+        onGetStrategyResponse: function(data) {
+          console.log(data.detail.response);
+          this.strategy = data.detail.response;
+        },
+
+        onGetStrategyError: function(data) {
+          console.log(data);
+        },
+
+        onStrategySavedResponse: function(data) {
+          
+          // Check if save was initiated before RUN
+          if(this.runSwitch == 1) {
+            
+            //reset the run switch to off
+            this.runSwitch = 0;
+            
+            // Now run the saved strategy 
+            //this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            this.$.runStrategyQuery.generateRequest();
+          }
+        },
+
+        onStrategySavedError: function(data) {
+          console.log("Error Saving");
+          console.log(data);
+        },
+
+        runStrategyFromPanel: function() {
+          this.$$('#editorToolbar').onRun();
+        },
+
+        saveStrategy: function(e) {
+          this.putStrategyData = {
+              "name":e.detail.name,
+              "description": this.strategy.description,
+              "language":this.strategy.language,
+              "type": this.strategy.type,
+              "code": this.$$('#codeEditorPanel').getCodeContent(),
+          };
+         
+          //this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+          this.$.saveStrategyQuery.generateRequest();
+        },
+
+        runStrategy: function(e) {
+           console.log("Going to Run:");
+
+           //Get settings from the sidebar
+           var strategySettings = this.$$('#runSidebar').getSettings();
+
+          // first save the strategy
+          this.runStrategyData = {  
+                    "start": "2015-11-07T03:41:47.262Z",
+                    "end": "2016-11-07T03:41:47.262Z",
+                    "capital": 1000000,
+                    "plan": "string"};
+
+          this.runSwitch = 1;
+          this.saveStrategy(e);  
+        },
+
+        onStrategyExecutionResponse: function(data) {
+          
+          //Before execution starts, 
+          //backtestId handle is sent from the backend
+          console.log(data.detail.response);
+          this.activeBacktestId = data.detail.response._id;
+          //This backtest object just contains settings and code
+          //BUT has no output
+
+          // Send Execution request via web-sockets 
+          this.isRunning  = true;
+          this.fire('execute-backtest', {backtestId:this.activeBacktestId});
+          
+          console.log("Run: Success");
+        },
+
+        onStrategyExecutionError: function(data) {
+          console.log(data);
+          //This get back the created backtest object with just the settings,
+          //HAS no output
+        },
+
+        cloneStrategy: function(e) {
+            e.detail.strategy = this.strategy;
+            //let the event propagate
+        },
+
+        _isRunningChanged: function() {
+          console.log(this.isRunning);
+          console.log(this.selectedSidebar);
+
+          if(!this.isRunning) {
+            this.selectedSidebar = 0;
+          } else {
+            this.selectedSidebar = 2;
+          }
+        },
+
+        onScroll: function() {
+          this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight; 
+        },
+
+        showProgrammerWindow: function(isRunning, isProgrammer) {
+          console.log(!isRunning && isProgrammer);
+          return !isRunning && isProgrammer;
+        },
+
+        _activeChanged: function(nId, oId) {
+          if(nId) {
+            this.strategyId = this.routeData.strategyId;
+            if(this.$.authItem.checkHasToken()) {
+              this.header = this.$.authItem.getHeader();
+              this.$.getStrategyQuery.generateRequest(); 
+            }
+          }
         }
-      },
 
-      onScroll: function() {
-        this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight; 
-      },
-
-      showProgrammerWindow: function(isRunning, isProgrammer) {
-        console.log(!isRunning && isProgrammer);
-        return !isRunning && isProgrammer;
-      },
-
-    });
-  </script>
+      });
+    </script>
 
 </dom-module>  

@@ -1,3 +1,6 @@
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
@@ -7,6 +10,8 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
+
+<link rel="import" href="../common/aq-check-authentication.html">
 
 <dom-module id="aq-user-login-panel">
     <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -146,7 +151,6 @@
           background-size:cover;
           height:90px;
           width:114px;
-          --background-color: #f2fbf7;     
         }
 
         #tagline {
@@ -159,195 +163,191 @@
             padding-top:60px;
             margin-bottom:
         }
-
-       
     }
 
     </style>
 
     <template>
-        <div id='containerr' class="layout vertical fit">
-            
-            <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
-            
-            <div id='logoContainer' class="layout vertical">
-                <div class="self-center" id='logo'></div>            
-                <div id='tagline' class="self-center"><p>Invest in your Ideas</p></div> 
-            </div>
 
-            <paper-card class="self-center" heading="{{aRsrc.headerText}}">
+        <app-location route="{{route}}"></app-location>
+        <app-route
+            route="{{route}}"
+            pattern="/user/:displayMode"
+            data="{{routeData}}"
+            active="{{active}}">
+        </app-route>
 
-                <div class="dialog-fields" class="layout vertical">
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+        
+        <iron-ajax 
+            url="[[APIEndPoint]]/user" 
+            body="{{signupBody}}" 
+            method='POST' 
+            id='signup' 
+            handle-as="json" 
+            on-response="handleSignupResponse"
+            on-error="handleSignupError"
+            headers='{"Content-Type": "application/json"}' debounce-duration="300">  
+        </iron-ajax>
 
-                    <template is="dom-if" if="{{isSignupMode(displayMode)}}">
+        <iron-ajax
+          url="[[APIEndPoint]]/user/login"
+          body="{{signinBody}}"
+          method='POST'
+          id='login'
+          handle-as="json"
+          on-response="handleLoginResponse"
+          on-error="handleLoginError"
+          headers='{"Content-Type": "application/json"}'
+          debounce-duration="300">
+        </iron-ajax>
 
-                        <paper-input
-                            id='firstNameInput'
-                            class='input-fields'
-                            label="{{aRsrc.firstNameFieldLabel}}"
-                            value="{{firstName}}"
-                            error-message="{{firstNameErrorMessage}}"
-                            type="text"
-                            on-focus='onUserFirstNameFocus'
-                            on-blur='onUserFirstNameFocusOut'
-                            no-label-float
-                            required
-                            max-length=15
-                            invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'>  
-                        </paper-input>
+        <iron-ajax
+          url="[[APIEndPoint]]/user/forgotpassword"
+          params="{{forgotPasswordParams}}"
+          method='GET'
+          id='forgotPasswordQuery'
+          handle-as="json"
+          on-response="handleForgotPasswordResponse"
+          on-error="handleForgotPasswordError"
+          headers='{"Content-Type": "application/json"}'
+          debounce-duration="300">
+        </iron-ajax>
 
-                        <paper-input
-                            id='lastNameInput'
-                            class='input-fields'
-                            label="{{aRsrc.lastNameFieldLabel}}"
-                            value="{{lastName}}"
-                            error-message="{{lastNameErrorMessage}}"
-                            type="text"
-                            on-focus='onUserLastNameFocus'
-                            on-blur='onUserLastNameFocusOut'
-                            no-label-float
-                            required
-                            max-length=15
-                            invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'>
-                        </paper-input>
+        <iron-ajax
+          url="[[APIEndPoint]]/user/resetpasswordcall"
+          body="{{resetPasswordParams}}"
+          method='POST'
+          id='resetPasswordQuery'
+          handle-as="json"
+          on-response="handleResetPasswordResponse"
+          on-error="handleResetPasswordError"
+          headers='{"Content-Type": "application/json"}'
+          debounce-duration="300">
+        </iron-ajax>
 
-                    </template>
-
-                    <template is='dom-if' if=[[!isResetPasswordMode(displayMode)]]>
-                        <gold-email-input
-                            id='userEmailInput'
-                            class='input-fields'
-                            auto-complete='on'
-                            label="{{aRsrc.userEmailFieldLabel}}"
-                            value="{{userEmail}}"
-                            error-message="{{userEmailErrorMessage}}"
-                            no-label-float
-                            required
-                            on-focus='onUserEmailFocus'
-                            on-blur='onUserEmailFocusOut'
-                            invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
-                        </gold-email-input>
-                    </template>
-
-                    <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">
-                        <paper-input
-                            id='passwordInput'
-                            class='input-fields'
-                            label="{{aRsrc.passwordFieldLabel}}"
-                            value="{{password}}"
-                            error-message="{{passwordErrorMessage}}"
-                            type="password"
-                            minLength=8
-                            no-label-float
-                            required
-                            on-blur="onPasswordFocusOut"
-                            on-focus="onPasswordFocus"
-                            invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
-                        </paper-input>
-                    </template>
-
-                    <!--template is='dom-if' if="{{isResetPasswordMode(displayMode)}}">
-                  
-                        <paper-input
-                            id='newPasswordInput'
-                            class='input-fields'
-                            label="{{aRsrc.newPasswordFieldLabel}}"
-                            value="{{newPassword}}"
-                            error-message="{{newPasswordErrorMessage}}"
-                            type="password"
-                            minLength=8
-                            no-label-float
-                            required
-                            on-blur="onNewPasswordFocusOut"
-                            on-focus="onNewPasswordFocus"
-                            invalid='{{!isNewPasswordValid(newPassword,newPasswordInFocus)}}'>
-                        </paper-input>
-                    </template-->
-
-                    <template is="dom-if" if="{{isSignupOrResetMode(displayMode)}}">
-                        <paper-input
-                            id='confirmPasswordInput'
-                            class='input-fields'
-                            label="{{aRsrc.confirmPasswordFieldLabel}}"
-                            value="{{confirmPassword}}"
-                            error-message="{{confirmPasswordErrorMessage}}"
-                            type="password"
-                            no-label-float
-                            required
-                            on-focus="onConfirmPasswordFocus"
-                            on-blur="onConfirmPasswordFocusOut"
-                            invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'></paper-input>
-                    </template>
-                    <iron-ajax 
-                        url="[[APIEndPoint]]/user" 
-                        body="{{signupBody}}" 
-                        method='POST' 
-                        id='signup' 
-                        handle-as="json" 
-                        on-response="handleSignupResponse"
-                        on-error="handleSignupError"
-                        headers='{"Content-Type": "application/json"}' debounce-duration="300">  
-                        </iron-ajax>
-                    <template is="dom-if" if="{{isSigninMode(displayMode)}}">
-                        <div class="forgot-password">{{aRsrc.resetPasswordText}}
-                            <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
-                            </a>
-                        </div>
-
-                    </template>
-                    <iron-ajax
-                      url="[[APIEndPoint]]/user/login"
-                      body="{{signinBody}}"
-                      method='POST'
-                      id='login'
-                      handle-as="json"
-                      on-response="handleLoginResponse"
-                      on-error="handleLoginError"
-                      headers='{"Content-Type": "application/json"}'
-                      debounce-duration="300">
-                    </iron-ajax>
-
-                    <iron-ajax
-                      url="[[APIEndPoint]]/user/forgotpassword"
-                      params="{{forgotPasswordParams}}"
-                      method='GET'
-                      id='forgotPasswordQuery'
-                      handle-as="json"
-                      on-response="handleForgotPasswordResponse"
-                      on-error="handleForgotPasswordError"
-                      headers='{"Content-Type": "application/json"}'
-                      debounce-duration="300">
-                    </iron-ajax>
-
-                    <iron-ajax
-                      url="[[APIEndPoint]]/user/resetpasswordcall"
-                      body="{{resetPasswordParams}}"
-                      method='POST'
-                      id='resetPasswordQuery'
-                      handle-as="json"
-                      on-response="handleResetPasswordResponse"
-                      on-error="handleResetPasswordError"
-                      headers='{"Content-Type": "application/json"}'
-                      debounce-duration="300">
-                    </iron-ajax>
-                   
-                    <paper-button raised class="signinButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
-                    </paper-button>
-
+        <template is='dom-if' if='{{active}}'>
+            <div id='containerr' class="layout vertical fit">
+                
+                <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
+                
+                <div id='logoContainer' class="layout vertical">
+                    <div class="self-center" id='logo'></div>            
+                    <div id='tagline' class="self-center"><p>Invest in your Ideas</p></div> 
                 </div>
-            
-            <div class="footer center-justified horizontal layout">{{aRsrc.footerText}}
-                <a href="javascript:void(0);" on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
-                </a>
+
+                <paper-card class="self-center" heading="{{aRsrc.headerText}}">
+
+                    <div class="dialog-fields" class="layout vertical">
+
+                        <template is="dom-if" if="{{isSignupMode(displayMode)}}">
+
+                            <paper-input
+                                id='firstNameInput'
+                                class='input-fields'
+                                label="{{aRsrc.firstNameFieldLabel}}"
+                                value="{{firstName}}"
+                                error-message="{{firstNameErrorMessage}}"
+                                type="text"
+                                on-focus='onUserFirstNameFocus'
+                                on-blur='onUserFirstNameFocusOut'
+                                no-label-float
+                                required
+                                max-length=15
+                                invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'>  
+                            </paper-input>
+
+                            <paper-input
+                                id='lastNameInput'
+                                class='input-fields'
+                                label="{{aRsrc.lastNameFieldLabel}}"
+                                value="{{lastName}}"
+                                error-message="{{lastNameErrorMessage}}"
+                                type="text"
+                                on-focus='onUserLastNameFocus'
+                                on-blur='onUserLastNameFocusOut'
+                                no-label-float
+                                required
+                                max-length=15
+                                invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'>
+                            </paper-input>
+
+                        </template>
+
+                        <template is='dom-if' if=[[!isResetPasswordMode(displayMode)]]>
+                            <gold-email-input
+                                id='userEmailInput'
+                                class='input-fields'
+                                auto-complete='on'
+                                label="{{aRsrc.userEmailFieldLabel}}"
+                                value="{{userEmail}}"
+                                error-message="{{userEmailErrorMessage}}"
+                                no-label-float
+                                required
+                                on-focus='onUserEmailFocus'
+                                on-blur='onUserEmailFocusOut'
+                                invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
+                            </gold-email-input>
+                        </template>
+
+                        <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">
+                            <paper-input
+                                id='passwordInput'
+                                class='input-fields'
+                                label="{{aRsrc.passwordFieldLabel}}"
+                                value="{{password}}"
+                                error-message="{{passwordErrorMessage}}"
+                                type="password"
+                                minLength=8
+                                no-label-float
+                                required
+                                on-blur="onPasswordFocusOut"
+                                on-focus="onPasswordFocus"
+                                invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
+                            </paper-input>
+                        </template>
+
+                        <template is="dom-if" if="{{isSignupOrResetMode(displayMode)}}">
+                            <paper-input
+                                id='confirmPasswordInput'
+                                class='input-fields'
+                                label="{{aRsrc.confirmPasswordFieldLabel}}"
+                                value="{{confirmPassword}}"
+                                error-message="{{confirmPasswordErrorMessage}}"
+                                type="password"
+                                no-label-float
+                                required
+                                on-focus="onConfirmPasswordFocus"
+                                on-blur="onConfirmPasswordFocusOut"
+                                invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'></paper-input>
+                        </template>
+
+                        <template is="dom-if" if="{{isSigninMode(displayMode)}}">
+                            <div class="forgot-password">{{aRsrc.resetPasswordText}}
+                                <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
+                                </a>
+                            </div>
+
+                        </template>
+
+                        <paper-button raised class="signinButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
+                        </paper-button>
+
+                    </div>
+                
+                <div class="footer center-justified horizontal layout">{{aRsrc.footerText}}
+                    <a href="javascript:void(0);" on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
+                    </a>
+                </div>
+
+                <div class='actionFailed self-center'>[[actionFailedMessage]]</div>
+                
+                </paper-card>
+
+                <div class="flex"></div>
+
             </div>
-
-            <div class='actionFailed self-center'>[[actionFailedMessage]]</div>
-            
-            </paper-card>
-
-            <div class="flex"></div>
-
-        </div>
+        </template>
 
     </template>
 
@@ -472,7 +472,8 @@
 
                 displayMode: {
                     type: String,
-                    value: ""
+                    value: "signin",
+                    //observer:'_displayModeChanged',
                 },
 
                 acceptPolicy: {
@@ -515,7 +516,10 @@
 
                 resetcode: String,
                 APIEndPoint:String,
+
             },
+
+            observers:['_activeChanged(active, routeData)'],
 
             /**
            * Resource strings. If you do I18N this will make sense. If not, just run with it :~)
@@ -594,35 +598,41 @@
 
             attached: function() {
 
-                if(this.checkHasToken()) {
-                    //console.log("Came Here: But why?");
-                    this.router.go('/dashboard');
-                    return;
-                }
-
-                if (this.displayMode != displayModes.signin && 
-                    this.displayMode != displayModes.signup &&
-                    this.displayMode != displayModes.forgotPassword &&
-                    this.displayMode != displayModes.signout && 
-                    this.displayMode != displayModes.resetPassword) {
-                    
-                    this.displayMode = displayModes.signin;
-                }
-
-                if (this.displayMode == displayModes.signout) {
-                    this.signoutMessage = "Successfully signed out!!"
-                    this.displayMode = displayModes.signin;
-                } 
-
-                this.updateMessageStrings(); 
-
-                if (this.displayMode == displayModes.signin) {
-                    this.fire('tabChanged',{tab:3})
-                } else if (this.displayMode == displayModes.signin) {
-                    this.fire('tabChanged',{tab:4})
-                } 
-
+                this.displayMode = this.routeData.displayMode;
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            },
+
+            _activeChanged: function(active, routeData) {
+                //console.log(active);
+                //console.log(routeData);
+                if (active && routeData && routeData.displayMode) {
+                    this.displayMode = this.routeData.displayMode;
+                    if(this.$.authItem.checkHasToken()) {
+                        //console.log("Came Here: But why?");
+                        //this.router.go('/dashboard');
+                        console.log("from here jjajajj")
+                        this.fire('rt-changed',{route:'/dashboard'});
+                        //return;
+                    }
+
+                    console.log("Here while in user-panel: " + this.displayMode);
+                    if (this.displayMode != displayModes.signin && 
+                        this.displayMode != displayModes.signup &&
+                        this.displayMode != displayModes.forgotPassword &&
+                        this.displayMode != displayModes.signout && 
+                        this.displayMode != displayModes.resetPassword) {
+                        
+                        this.displayMode = displayModes.signin;
+                        this.signoutMessage = "";
+                    }
+
+                    if (this.displayMode == displayModes.signout) {
+                        this.signoutMessage = "Successfully signed out!!";
+                        this.displayMode = displayModes.signin;
+                    } 
+
+                    this.updateMessageStrings(); 
+                }
             },
 
             checkHasToken: function() {
@@ -634,11 +644,6 @@
 
                 return false;
             },
-            
-
-            /*initializeDefaultValue: function() {
-                this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1}, lastTab:0};
-            },*/
 
             computeSigninBody: function(email, password) {
                 return {email: email, password: password}
@@ -926,6 +931,7 @@
                 //console.log(localStorage);*/
 
                 this.actionSucceeded();
+                this.$$('.signinButton').disabled = false;
                 //this.router.go('/dashboard/home');
             },
 
@@ -969,7 +975,7 @@
             handleResetPasswordResponse: function(e) {
                 //console.log("Reset Password: Success");
                 //console.log(e.detail.response);
-                this.router.go('/user/authentication/reset');
+                //this.router.go('/user/authentication/reset');
                 this.$$('.signinButton').disabled = false;
             },
 
@@ -1015,11 +1021,11 @@
                         break;
                     case displayModes.signup:
                         this.$.signup.generateRequest();
-                        this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
+                        //this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
                         break;
                     case displayModes.forgotPassword:
                         this.$.forgotPasswordQuery.generateRequest();
-                         this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
+                         //this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
                         break;
 
                     case displayModes.resetPassword:

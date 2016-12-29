@@ -1,7 +1,7 @@
 <link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../bower_components/app-router/app-router.html'>
-
+<link rel='import' href='../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../bower_components/app-route/app-location.html'>
 
 <link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
@@ -48,37 +48,11 @@
   <template>
         
         <div id="content" class="fit">
-        <app-router mode="hash" trailingSlash="ignore">
-
-          <app-route path="/dashboard/home" element="aq-home-main" bindrouter=""></app-route>
-
-          <app-route path="/dashboard/editor" element="aq-editor-main" bindrouter=""></app-route>
-          
-          <app-route path="/dashboard/editor/*" element="aq-editor-main" bindrouter=""></app-route>
-
-          <!--app-route path="/dashboard/analyze" element="aq-analyze-main" bindrouter=""></app-route-->
-          <app-route path="/dashboard/analyze/**" element="aq-analyze-main" bindrouter="" onUrlChange="updateModel"></app-route>
-
-          <!--app-route path="/dashboard/analyze/" element="aq-analyze-main" bindrouter="" onurlchange="updateModel"></app-route-->
-
-          <!--app-route path="/dashboard/analyze/compare/*" element="aq-analyze-main" bindrouter=""></app-route-->
-
-          <!--app-route path="/dashboard/community" element="aq-community-main" bindrouter=""></app-route-->
-         
-          <app-route path="/dashboard/community/**" element="aq-community-main" bindrouter="" onUrlUpdate="noop"></app-route>
-
-          <!--app-route path="/dashboard/community/*/*" element="aq-community-main" bindrouter=""></app-route-->
-
-          <app-route path="/dashboard/createpost" redirect="/dashboard/community/create"></app-route>
-
-          <app-route path="/dashboard/comparebacktests" redirect="/dashboard/analyze/compare"></app-route>
-
-          <app-route path="/dashboard/createstrategy" redirect="/dashboard/editor?create=1"></app-route>
-
-          <app-route path="/dashboard/help" element="aq-help-main" bindrouter=""></app-route>
-
-        </app-router>
-        </div>
+          <aq-editor-main></aq-editor-main>
+          <aq-analyze-main></aq-analyze-main>
+          <aq-community-main></aq-community-main>
+          <aq-help-main></aq-help-main>
+          <aq-home-main></aq-home-main>
 
   </template>
 

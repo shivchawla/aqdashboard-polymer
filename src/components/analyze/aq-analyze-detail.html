@@ -11,30 +11,53 @@
 	</style>
 
 	<template>
-		
-		<div class="goBackButton layout horizontal">
-            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
-            </paper-icon-button>
-            <p class="self-center">Back to All Backtests</p>
-      	</div>
+	 	<app-location route="{{route}}"></app-location>
+	    <app-route
+	        route="{{route}}"
+	        pattern="/dashboard/analyze/:strategyId/:backtestId"
+	        data="{{routeData}}"
+	        active="{{active}}">
+	    </app-route>
 
-      	<aq-backtest-detail-item backtest-id="[[backtestId]]"></aq-backtest-detail-item>
+	    <template is='dom-if' if='{{active}}'>
+			<div class="goBackButton layout horizontal">
+	            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+	            </paper-icon-button>
+	            <p class="self-center">Back to All Backtests</p>
+	      	</div>
 
+	      	<aq-backtest-detail-item backtest-id="[[backtestId]]"></aq-backtest-detail-item>
+      	</template>
 	</template>
+
 	<script>
 		Polymer ({
 			is:'aq-analyze-detail',
 			
 			properties:{
 				strategyId:String,
-
 				backtestId:String,
+
+				active:{
+					type:Boolean,
+					observer: '_isActiveChanged',
+				},
+
 			},
 
 			goBackAllBacktests: function() {
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
-				this.router.go('/dashboard/analyze/' + this.strategyId);
+				this.fire('rt-changed',{route:'/dashboard/analyze/' + this.strategyId});
 			},
+
+			_isActiveChanged: function(nAct, oAct) {
+				if (nAct) {
+					this.strategyId = this.routeData.strategyId;
+					this.backtestId = this.routeData.backtestId;
+				}
+			}
+
+
 				
 		});
 	</script>

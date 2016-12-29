@@ -1,0 +1,71 @@
+<link rel='import' href='../../../bower_components/iron-localstorage/iron-localstorage.html'>
+
+<dom-module id='aq-check-authentication'>
+	<template>
+		<iron-localstorage name="{{my-app-storage}}" id="localStorage"></iron-localstorage>
+	</template>
+	<script>
+		Polymer({
+			is:'aq-check-authentication',
+
+			properties: {
+				hasToken: Boolean,
+				header: Object,
+				user:Object,
+				token:String,
+			},
+
+			getToken: function() {
+				if(this.hasToken) {
+					return this.token;
+				}
+
+				return "";
+			},
+
+			getHeader: function() {
+				if (this.hasToken) {
+					return this.header;
+				}
+
+				return null;
+			},
+
+			getUser: function() {
+				if(this.hasToken) {
+					return this.user;
+				}
+			},
+
+			resetToken: function() {
+				this.$.localStorage.value["user"] = null;
+				this.$.localStorage.save();
+			},
+
+	       	checkHasToken: function() {  
+	      		var x = localStorage.getItem('my-app-storage');
+	      		var user = '';
+		      	if (x) {
+		        	user = JSON.parse(x).user;
+		        	this.hasToken = (user && user.token) ? true : false;  
+		      	} 
+
+		      	if (this.hasToken) {
+			        this.token = user.token;
+			        this.header = {
+			          "aimsquant-token": this.token,
+			          "Content-Type": "application/json"}; 
+			          this.user = user;
+		      	}
+		      
+		      	return this.hasToken;
+		      
+		    },
+
+		    onLocalStorageChange: function(e) {
+		    	console.log("hello: Change in local storage") 
+		    	console.log(e);
+		    },
+		})
+	</script>
+</dom-module>

@@ -1,9 +1,10 @@
 <link rel='import' href='../../bower_components/vaadin-icons/vaadin-icons.html'>
 
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../bower_components/app-router/app-router.html'>
+<link rel='import' href='../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../bower_components/app-route/app-location.html'>
 
-
+<link rel="import" href="../components/common/aq-check-authentication.html">
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/editor/aq-editor-home.html">
 <link rel="import" href="../components/editor/aq-editor-edit.html">
@@ -18,10 +19,10 @@
     }
   </style>
   <template>
-     <app-router mode="hash" trailingSlash="ignore">
-        <app-route path="/dashboard/editor" element='aq-editor-home' bindrouter=""></app-route>
-        <app-route path="/dashboard/editor/:strategyId" element='aq-editor-edit' bindrouter=""></app-route>
-     </app-router>
+    <aq-check-authentication id='authItem'></aq-check-authentication>
+    
+    <aq-editor-home></aq-editor-home>
+    <aq-editor-edit></aq-editor-edit>
 
      <aq-editor-strategy-input-dialog id="strategyCreateDialog" 
                                      header="Create Strategy">
@@ -34,21 +35,18 @@
                                        strategy-desc="[[strategyData.desc]]">
       </aq-editor-strategy-input-dialog>  
 
-
-      <template is='dom-if' if='{{hasToken}}'>
-          <iron-ajax 
-            url="[[APIEndPoint]]/strategy" 
-            body="[[strategyData]]" 
-            method='POST' 
-            id='postStrategyQuery' 
-            headers='{{header}}' 
-            handle-as="json" 
-            on-response="onStrategyCreationResponse" 
-            on-error="onStrategyCreationError" 
-            last-response="{{ajaxResponse}}" 
-            debounce-duration="300">
-          </iron-ajax>
-      </template>
+      <iron-ajax 
+          url=""
+          body="[[strategyData]]" 
+          method='POST' 
+          id='postStrategyQuery' 
+          headers='{{header}}' 
+          handle-as="json" 
+          on-response="onStrategyCreationResponse" 
+          on-error="onStrategyCreationError" 
+          last-response="{{ajaxResponse}}" 
+          debounce-duration="300">
+      </iron-ajax>
 
   </template>
 
@@ -76,11 +74,13 @@
           value:'main',
         },
 
-        hasToken:Boolean,
-
         strategyData:Object,
 
         APIEndPoint:String,
+
+        active:{
+          type:Boolean,
+        },
 
       },
 
@@ -91,47 +91,59 @@
         'analyzeClicked':'goToAnalyze',
       },
 
+      attached: function() {
+          console.log("Editor main is attached");
+          //console.log(this.subroute);
+          //console.log(this.subrouteData.strategyId);
+      },
+
+      detached: function() {
+        console.log("Editor main is Removed");
+      },  
+
       ready: function() {
 
-        var x = localStorage.getItem('my-app-storage');
+        /*var x = localStorage.getItem('my-app-storage');
         var user = JSON.parse(x).user;
         if (user.token) {
           this.header = {
             "aimsquant-token": user.token,
             "Content-Type": "application/json"};  
-        }
+        }*/
 
-        this.hasToken = (user.token && user.token!="") ? true : false;
+        //this.hasToken = (user.token && user.token!="") ? true : false;
         this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
       },
-
 
       isEqual: function(view1, view2) {
         return view1==view2;
       },
 
-      createStrategy: function(e) {  
-        //Update names after permission to create
+      createStrategy: function(e) {
+        
         this.strategyData["name"] = e.detail.name;
         this.strategyData["description"] = e.detail.description;
+
+        this.header = this.$.authItem.getHeader();
+        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+        this.$$('#postStrategyQuery').url = APIEndPoint+'/strategy'; 
         this.$$('#postStrategyQuery').generateRequest();
       },
 
       onStrategyCreationResponse: function(data) {
           //check for error
           var strategyId = data.detail.response._id
-          this.router.go('/dashboard/editor/'+ strategyId)
+          this.fire('rt-changed', {route:'/dashboard/editor/'+ strategyId});
       },
 
       onStrategyCreationError: function(data) {
-          console.log(data);
+          //console.log(data);
       },
 
       openNewDialog: function() {   
-
-        if(!this.hasToken) {
-          localStorage.setItem('lastRequest',{path:'/dashboard/createstrategy'});
-          this.router.go('/user/signin');
+        if(!this.$.authItem.checkHasToken()) {
+          //localStorage.setItem('lastRequest',{path:'/dashboard/createstrategy'});
+          this.fire('rt-changed',{route:'/user/signin'});
           return;
         } 
 
@@ -149,7 +161,7 @@
       openCloneDialog: function(e) {
 
         if(!this.header) {
-          this.router.go('/user/signin');
+          this.fire('rt-changed',{route:'/user/signin'});
         }
         
         strategy  = e.detail.strategy;
@@ -167,7 +179,34 @@
 
       goToAnalyze: function(e) {
         var strategyId = e.detail.id;
-        this.router.go('/dashboard/analyze/' + strategyId);
+        this.fire('rt-changed',{route:'/dashboard/analyze/' + strategyId});
+      },
+
+      hasTail: function(tail) {
+        //console.log("checking tail");
+        //console.log(tail);
+        if (tail && tail.path) {
+          return tail.path.length > 0;
+        }
+
+        return false;
+      },
+
+      computeCreate: function(params) {
+        //console.log(params);
+        if (params && params.create) {
+          return 1;
+        } else {
+          return 0;
+        }
+      },
+
+
+      isEditorHomeActive: function(active, tail) {
+        console.log("Checking if editor home is active");
+        console.log("Result: "+ (active && !this.hasTail(tail)));
+        return active && !this.hasTail(tail);
+
       }
 
     });

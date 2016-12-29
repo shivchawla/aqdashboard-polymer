@@ -3,6 +3,8 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel='import' href='../../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 
@@ -109,50 +111,61 @@
  
   <template>
 
-      <paper-drawer-panel id="drawerPanel" right-drawer>
+      <app-location route="{{route}}"></app-location>
 
-          <paper-header-panel main id="mainPanel" mode="seamed">
-              
-              <div id='top'></div>
-              
-              <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
-                <template is="dom-repeat" items="{{itemsHelpContent}}">      
-                  <div id='content' class="layout vertical"> 
-                  
-                  <aq-help-marked-item help-text = "[[item.text]]">
-                  </aq-help-marked-item>
+      <app-route
+          route="{{route}}"
+          pattern="/dashboard/help"
+          data="{{routeData}}"
+          active="{{active}}">
+      </app-route>  
 
-                  <template is='dom-if' if='[[item.img_src]]'>
-                    <img class="self-center" src="{{item.img_src}}">
+      <iron-ajax url="../../../resources/help/data_help.json"
+        handle-as="json"
+        id="getHelpContentQuery"
+        on-response="onGetHelpContentSuccess"
+        debounce-duration="300">
+      </iron-ajax>
+
+      <template is='dom-if' if='{{active}}'>
+        <paper-drawer-panel id="drawerPanel" right-drawer>
+
+            <paper-header-panel id='mainPanel' mode="seamed" main>
+                
+                <div id='top'></div>
+                
+                <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
+                  <template is="dom-repeat" items="{{itemsHelpContent}}">      
+                    <div id='content' class="layout vertical"> 
+                    
+                    <aq-help-marked-item help-text = "[[item.text]]">
+                    </aq-help-marked-item>
+
+                    <template is='dom-if' if='[[item.img_src]]'>
+                      <img class="self-center" src="{{item.img_src}}">
+                    </template>
+                    
+                    </div>
+
+
                   </template>
-                  
-                  </div>
+                </iron-auto-scroll-spy>
+
+                <div id='bottom'></div>
+            </paper-header-panel>
+
+            <paper-header-panel id='drawerPanel' drawer mode="seamed">
+              <paper-input class="searchCategories" label="Search Help" on-keyup="search" id="search_input"></paper-input>
+                <paper-listbox selected="{{scrollSelected}}">   
+                  <template is="dom-repeat" items="{{categoriesArray}}">      
+                    <paper-item class$="selectableCategories [[item.Category.size]]">[[item.Category.value]]</paper-item>
+                  </template>
+                </paper-listbox>
+            </paper-header-panel>
 
 
-                </template>
-              </iron-auto-scroll-spy>
-
-              <div id='bottom'></div>
-          </paper-header-panel>
-          
-          <iron-ajax url="../../../resources/help/data_help.json"
-            handle-as="json"
-            id="getHelpContentQuery"
-            on-response="onGetHelpContentSuccess"
-            debounce-duration="300">
-          </iron-ajax>
-
-          <paper-header-panel id='drawerPanel' drawer mode="seamed">
-            <paper-input class="searchCategories" label="Search Help" on-keyup="search" id="search_input"></paper-input>
-              <paper-listbox selected="{{scrollSelected}}">   
-                <template is="dom-repeat" items="{{categoriesArray}}">      
-                  <paper-item class$="selectableCategories [[item.Category.size]]">[[item.Category.value]]</paper-item>
-                </template>
-              </paper-listbox>
-          </paper-header-panel>
-
-
-      </paper-drawer-panel>
+        </paper-drawer-panel>
+      </template>
 
   </template>
 
@@ -169,11 +182,12 @@
           type: Array,
           value:[],
         },
-      },
 
-      ready: function() {
-         this.$$('#autoScrollSpy').scrollTarget = this.$.mainPanel.scroller;
-         this.$.getHelpContentQuery.generateRequest();
+        active: {
+          type: Boolean,
+          observer: '_activeChanged',
+        },
+
       },
 
       search: function(){
@@ -202,8 +216,19 @@
         }
 
         this.set('categoriesArray', array); 
+        this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+      },
 
+      _activeChanged: function(nAct, oAct) {
+        if(nAct){
+          console.log("help: "+this.active);
+          
+          this.$.getHelpContentQuery.generateRequest();
+        }
       }
+
+
+
     });
   </script>
 </dom-module>

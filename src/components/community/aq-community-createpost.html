@@ -2,6 +2,8 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel="import" href="../aq-markdown-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
@@ -103,50 +105,17 @@
 
     </style>
 
+  
+
     <template>
-        <template is='dom-if' if="[[preview]]">
-          <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>  
-        </template>
 
-        <aq-community-attachbacktest-dialog id='btDialog'>
-        </aq-community-attachbacktest-dialog>  
-       
-        <template is='dom-if' if="[[!preview]]">
-        <div id='container' class="layout vertical flex">
-            <div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBack"></paper-icon-button>
-            <div class="flex"><h4>Back to Community</h4></div>
-          </div>
-          
-            <div class="layout horizontal">
-              <p class="flex">Create a Post</p>
-              
-              <div id="attachedMessageDiv" class="layout horizontal self-end">
-                <i class="self-end">[[attachedMessage]]</i>
-                <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="icons:remove-circle"></paper-icon-button>
-              </div>
-            </div>
+        <app-location route="{{route}}"></app-location>
 
-            <paper-button id='attachButton' raised noink on-tap='onAttachRequest'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
-            
-            <div class="layout horizontal">
-                <aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>
-                <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
-            </div>
-            
-            <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
-
-            <div id='buttons' class="layout horizontal">
-                <div id='errorMessage'><i>[[error]]</i></div>
-                <div class="flex"></div>
-                <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
-
-                <paper-button raised noink on-tap="postThread">Submit</paper-button>
-            </div>
-
-        </div>
-
-        </template>
+        <app-route
+            route="{{route}}"
+            pattern="/dashboard/community/create"
+            active="{{active}}">
+        </app-route>
 
         <iron-ajax 
             url="[[APIEndPoint]]/thread" 
@@ -168,6 +137,55 @@
           headers='{{header}}'
           debounce-duration="300">
         </iron-ajax>
+        
+
+        <template is='dom-if' if='{{active}}'>
+
+            <template is='dom-if' if="[[preview]]">
+              <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>  
+            </template>
+
+            <aq-community-attachbacktest-dialog id='btDialog'>
+            </aq-community-attachbacktest-dialog>  
+           
+            <template is='dom-if' if="[[!preview]]">
+                <div id='container' class="layout vertical flex">
+                    <div class="goBackButton layout horizontal">
+                    <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBack"></paper-icon-button>
+                    <div class="flex"><h4>Back to Community</h4></div>
+                  </div>
+                  
+                    <div class="layout horizontal">
+                      <p class="flex">Create a Post</p>
+                      
+                      <div id="attachedMessageDiv" class="layout horizontal self-end">
+                        <i class="self-end">[[attachedMessage]]</i>
+                        <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="icons:remove-circle"></paper-icon-button>
+                      </div>
+                    </div>
+
+                    <paper-button id='attachButton' raised noink on-tap='onAttachRequest'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
+                    
+                    <div class="layout horizontal">
+                        <aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>
+                        <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
+                    </div>
+                    
+                    <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
+
+                    <div id='buttons' class="layout horizontal">
+                        <div id='errorMessage'><i>[[error]]</i></div>
+                        <div class="flex"></div>
+                        <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
+
+                        <paper-button raised noink on-tap="postThread">Submit</paper-button>
+                    </div>
+
+                </div>
+
+            </template>
+        </template>
+        
     </template>
     <script>
       
@@ -197,6 +215,7 @@
                 attachedBacktestId: {
                   type:String,
                   value:"",
+                  observer:'_attachedBacktestIdChanged',
                 }, 
 
                 attachedMessage: String,
@@ -215,7 +234,6 @@
             },
 
             attached: function() {
-              this.async(this.handleAttachedBacktest, 500);
             },
 
             ready: function() { 
@@ -244,7 +262,7 @@
             onPostThreadResponse: function(data) {
                 this.newThreadId = data.detail.response._id;
                 this.$.follows.generateRequest();
-                this.router.go("/dashboard/community/topics/"+this.newThreadId);
+                this.fire('rt-changed', {route:"/dashboard/community/topics/"+this.newThreadId});
             },
 
             onPostThreadError: function(data) {
@@ -275,7 +293,7 @@
             },
 
             goBack: function() {
-                this.router.go('/dashboard/community');
+                this.fire('rt-changed',{route: '/dashboard/community'});
             },
 
             processInput: function() {
@@ -320,6 +338,13 @@
             onEdit: function() {
               this.preview = false;
             },
+
+            _attachedBacktestIdChanged: function(nId, oId) {
+              if(nId) {
+                  this.async(this.handleAttachedBacktest, 500);
+
+              }
+            }
 
 
 

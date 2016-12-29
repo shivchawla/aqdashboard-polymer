@@ -8,6 +8,7 @@
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
+<link rel='import' href='./aq-check-authentication.html'>
 
 <dom-module id='aq-backtest-detail-item'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -101,6 +102,8 @@
 	</style>
 
 	<template>
+		<aq-check-authentication id='authItem'></aq-check-authentication>
+		
 			<paper-card class="flex detail layout vertical paper_body">
 				<div id='detail-header' class="layout horizontal">
 					<span class="self-center">Equity Curve</span>
@@ -279,7 +282,10 @@
 					value:0,
 				},
 
-				backtestId:String,
+				backtestId: {
+					type:String,
+					observer: '_backtestIdChanged',
+				},
 
 				backtest:Object,
 				
@@ -294,21 +300,21 @@
 
 			},
 
-			ready: function() {
+			/*ready: function() {
 				 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-				},
+				},*/
 
 			attached: function() {
 
-				var x = localStorage.getItem('my-app-storage');
+				/*var x = localStorage.getItem('my-app-storage');
 		        var user = JSON.parse(x).user;
 		        if (user.token) {
 		          this.header = {
 		            "aimsquant-token": user.token,
 		            "Content-Type": "application/json"};  
-		        }
+		        }*/
 
-				if(this.active) {
+				/*if(this.active) {
 					this.reset();
 					//this.$$('#cumRetLineChart').refresh();
 					//this.$$('#trackVarLineChart').refresh();
@@ -319,12 +325,12 @@
 					//this.$$('#trackVarLineChart').refresh();
 					//this.$$('#barChart').refresh();
 					this.requestStaticData();
-				}	
+				}*/	
 			},
 
 			computeGetBacktestUrl: function(backtestId) {
-				console.log(this.APIEndPoint+'/backtest/'+backtestId);
-				return this.APIEndPoint+'/backtest/'+backtestId;
+				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+				return APIEndPoint+'/backtest/'+backtestId;
 			},
 
 			resetMetrics: function() {
@@ -554,7 +560,10 @@
 			},
 
 			requestStaticData: function() {
-				this.$.getBacktestsQuery.generateRequest();
+				if(this.backtestId && this.$.authItem.checkHasToken()) {
+					this.header = this.$.authItem.getHeader();
+					this.$.getBacktestsQuery.generateRequest();
+				}
 			},
 
 			onGetBacktestSuccess: function(e){
@@ -833,7 +842,17 @@
 		    	return trackVarData.length > 0;
 		    },
 
-
+		    _backtestIdChanged: function(nId, oId) {
+		    	if(nId && this.isAttached) {
+		    		if(this.active) {
+						this.reset();
+						this.subscribeData();
+					} else {
+						this.reset();
+						this.requestStaticData();
+					}	
+		    	}
+		    }
 
 		});
 	</script>

@@ -1,5 +1,9 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../bower_components/app-router/app-router.html'>
+<link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../bower_components/app-route/app-location.html'>
+<link rel='import' href='../../bower_components/app-route/app-route-converter.html'>
 
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/community/aq-community-home.html">
@@ -9,33 +13,80 @@
 <dom-module id="aq-community-main">
 
   <template>
-     <app-router mode="hash" trailingSlash="ignore">
-        <app-route path="/dashboard/community" element='aq-community-home' bindrouter=""></app-route>
-        
-        <app-route path="/dashboard/community/create" element='aq-community-createpost' bindrouter=""></app-route>
 
-        <app-route path="/dashboard/community/create/:attachedBacktestId" element='aq-community-createpost' bindrouter=""></app-route>
+    <aq-community-home></aq-community-home>
+    <aq-community-postdetail></aq-community-postdetail>
+    <aq-community-createpost></aq-community-createpost>
 
-        <app-route path="/dashboard/community/:threadId" element='aq-community-postdetail' bindrouter="" onUrlUpdate="noop"></app-route>
-       
-     </app-router>
   </template>
 
   <script>
     Polymer ({
       is: 'aq-community-main',
 
+      properties:{
+        subrouteData:{
+          type:Object,
+          //observer:'_subrouteDataChanged',
+        },
+      },
+
       listeners:{
         'postdetail-action':'onDetail',
       },
 
-      onDetail: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        console.log("Opening");
-        this.router.go('/dashboard/community/585e5d206d66e018ac82897e');
+      attached: function() {
+        //console.log(this.routeData);
+        
+        //console.log(this.subroute);
+       // console.log(this.path);
+        //console.log(this.queryParams);
+        //console.log(this.newroute);
+       // console.log(this.subrouteData);
       },
 
+      isObjectEmpty: function(routeData) {
+        
+        if(routeData) {
+          return !(Object.keys(routeData).length > 0);
+        }
+
+        //console.log("Wohooooo");
+        return true;
+      },
+
+      hasTail: function(tail) {
+          if (tail && tail.path) {
+            return tail.path.length > 0;
+          }
+
+          return false;
+      },
+
+      _routeDataChanged: function(e) {
+
+      },
+
+      _subrouteDataChanged: function(e) {
+        //console.log("subrouteData changed");
+        //console.log(e);
+      },
+
+      getBacktestId: function(backtestId){
+        if (backtestId) {
+          return backtestId;
+        }
+
+        return "";
+      },
+
+      hasRouteData: function(routeData) {
+        return !this.isObjectEmpty(routeData);
+      },
+
+      isCommunityHomeActive: function(active, tail) {
+          return active && !this.hasTail(tail);
+      },
 
     });
   </script>

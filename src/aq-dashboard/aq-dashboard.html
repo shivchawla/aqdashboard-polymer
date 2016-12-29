@@ -1,4 +1,6 @@
-<link rel="import" href="../../bower_components/app-router/app-router.html">
+<!--link rel="import" href="../../bower_components/app-router/app-router.html"-->
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
 
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
@@ -9,6 +11,7 @@
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
 <link rel="import" href="../components/user/aq-authentication-message.html">
+<link rel="import" href='../components/common/aq-check-authentication.html'>
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
@@ -51,7 +54,8 @@
     
     
     <template>
-  
+      <aq-check-authentication id='authItem'></aq-check-authentication>
+
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
@@ -60,36 +64,12 @@
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-            <app-router id="router" mode="hash" trailingSlash="ignore">
-            
-
-              <app-route path="/dashboard" redirect="/dashboard/home"></app-route>
-
-              <app-route path="/dashboard/**" element="aq-dashboard-main" bindrouter="" onUrlChange="noop"></app-route>
-
-              <app-route path="/" redirect="/main"></app-route>
-               
-              <app-route path="/user" redirect="/user/signin"></app-route>
-
-              <app-route path="/user/authentication/:mode" element="aq-authentication-message" bindrouter="" onUrlChange=""></app-route>
-
-              <app-route path="/user/:displayMode" element="aq-user-login-panel" bindrouter="" onUrlChange="reload"></app-route>
-
-              <app-route path="/main" element="aq-homepage" bindrouter=""></app-route>
-
-              <app-route path="/about" redirect="/about/home"></app-route>
-
-              <app-route path="/about/:section" element="aq-aboutpage" bindrouter=""></app-route>
-
-              <app-route path="/investments" element="aq-investmentpage" bindrouter=""></app-route>
-
-              <!--app-route path="/dashboard/*/*/*" element="aq-dashboard-main" bindrouter=""></app-route>
-
-              <app-route path="/dashboard/*/*" element="aq-dashboard-main" bindrouter="" onurlchange="updateModel"></app-route-->
-
-
-            </app-router>
-
+                <aq-homepage></aq-homepage>
+                <aq-dashboard-main></aq-dashboard-main>
+                <aq-aboutpage></aq-aboutpage>
+                <aq-user-login-panel></aq-user-login-panel>                    
+                <aq-authentication-message></aq-authentication-message>
+                
           </paper-header-panel>
         </paper-drawer-panel>
 
@@ -197,10 +177,6 @@
             value:"0px",
           },
 
-          token:{
-            type: String,
-          },
-
           backtests:{
             type:Object,
             value:{},
@@ -219,6 +195,15 @@
           WSEndPoint:String,
 
         },
+
+        /*computeSelected: function(str) {
+          //console.log(str);
+          if (str=="user") {
+            return 0;
+          } else if (str=="dashboard"){
+            return 1;
+          }
+        },*/
 
         listeners: {
             'open-menu': 'openMenu',
@@ -239,6 +224,7 @@
             'unsubscribe-data':'onUnsubscription',
             'update-token':'onTokenUpdate',
             'scroll-top':'scrollToTop',
+            'rt-changed':'goToRoute',
         },
 
 
@@ -248,9 +234,15 @@
         },   
 
         attached: function() {
-            if(this.checkHasToken()) {
+
+            //this.listen(window, 'hashchange', '_hashChanged');
+            this.listen(window, 'popstate', '_urlChanged');
+
+            if(this.$.authItem.checkHasToken()) {
                 if(this.URLcontains('/user')) {
-                    this.$$('#router').go('/dashboard');
+                    this.fire('rt-changed',{route:'/dashboard'});
+
+                    //this.$$('#router').go('/dashboard');
                 }
 
                 this.$.webSocketConn.open();
@@ -267,7 +259,7 @@
                 var path = ['home','editor','community','analyze','help'];
 
                 for (i in path) {
-                    var c = document.URL.match('/dashboard/' + path[i]) ? true : false;
+                    var c = window.location.pathname.match('/dashboard/' + path[i]) ? true : false;
                 
                     if (c && this.view != path[i]) {  
                       
@@ -285,15 +277,11 @@
             }
 
             this.currentTab = lastTab;
-
-            if(localStorage.getItem('my-app-storage')) {
-              
-              this.set('aimsquant.community.lastPage', 1);
-              this.$.localStorage.save();
-            }
+            this.hasToken = this.$.authItem.checkHasToken();
         },
 
-        computeGetBacktesturl: function(APIEndPoint, backtestId) {
+        computeGetBacktesturl: function(backtestId) {
+          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
           return APIEndPoint+'/backtest/'+backtestId;
         },
 
@@ -302,27 +290,6 @@
               this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
               this.$.localStorage.save();
             } 
-        },
-
-        checkHasToken: function() {  
-          var x = localStorage.getItem('my-app-storage');
-          if (x) {
-            var user = JSON.parse(x).user;
-
-            this.hasToken = (user && user.token) ? true : false;  
-          } else {
-            this.hasToken = false;
-          }
-
-          if (this.hasToken) {
-            this.token = user.token;
-            this.header = {
-              "aimsquant-token": this.token,
-              "Content-Type": "application/json"};  
-          }
-          return this.hasToken;
-
-          
         },
 
         computeShowMenu: function(narrow, showSidebar) {
@@ -339,7 +306,9 @@
 
         viewChanged: function(newMenu) {
           this.view = newMenu.detail.menu; 
-          this.$.router.go('/dashboard/' + this.view);
+          //console.log("Hola");
+          this.fire('rt-changed',{route:'/dashboard/' + this.view});
+          //this.$.router.go('/dashboard/' + this.view);
           
           if(this.narrow){
             this.$.drawerpanel.closeDrawer();
@@ -353,7 +322,9 @@
             this.openInviteDialog();
           } else {
             this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
-            this.$.router.go('/dashboard/' + newAction.detail.action);
+            ////console.log("Hola2");
+            this.fire('rt-changed',{route:'/dashboard/' + newAction.detail.action});
+            //this.$.router.go('/dashboard/' + newAction.detail.action);
           }
 
           if(this.narrow){
@@ -374,14 +345,16 @@
           }
         },
 
-        changeTab: function(e) {
-          this.checkHasToken();
-          this.showSidebar = (e.detail.tab == 1);
+        /*changeTab: function(e) {
+          //this.$.authItem.checkHasToken();
+         //this.showSidebar = (e.detail.tab == 1);
           tab = e.detail.tab;
           if (tab == this.currentTab) {
             return
           }
 
+          //this.currentTab = tab;
+          console.log("path: "+ tab);
           path = ['/main', 
                   '/dashboard', 
                   //'/investments', 
@@ -389,69 +362,79 @@
                   '/user/signin',
                   '/user/signup'];
 
-          this.currentTab = tab;
-
-          if (this.currentTab == 1) {
-            this.drawerWidth ="200px;"
-          }
-
           if (this.URLcontains(path[tab])) {
             return;
           } else {
-            console.log("Here");
-            this.$$('#router').go(path[tab]);
+            this.fire('rt-changed',{route:path[tab]});
           }
           
-        },
+        },*/
 
-        _currentTabChanged: function(newTab, oldTab) {        
+         _currentTabChanged: function(newTab, oldTab) {        
           
           if (!(oldTab + 1)) {
             return;
           }
           
-          this.checkHasToken();
+          //console.log("old tab:" + oldTab);
+          //console.log("new tab:" + newTab);
+          this.$.authItem.checkHasToken();
               
           this.showSidebar = (newTab == 1);  
           
+          if (this.currentTab == 1) {
+            this.drawerWidth ="200px;"
+          }
+
           this.set('aimsquant.lastTab', newTab);
-            
+          
+          console.log("here gandu");  
           path = ['/main', 
                   '/dashboard', 
                   //'/investments', 
                   '/about',
                   '/user/signin',
                   '/user/signup',
-                  '/user/resetPassword'];
+                  '/user/resetPassword',
+                  '/user/signout'];
 
           if (this.currentTab == 1) {
             this.drawerWidth ="200px;"
             this.view = 'home';
           }
 
-          if (this.URLcontains(path[newTab]) || this.URLcontains(path[5]) ) {
+
+          if ((this.URLcontains(path[5]) || this.URLcontains(path[6])) && newTab==3) {
+              return;
+          }
+
+          if (this.URLcontains(path[newTab])) {
             return;
           } else {
             console.log("or Here");
-            this.$$('#router').go(path[newTab]);
+            this.fire('rt-changed',{route:path[newTab]});
+            //this.$$('#router').go(path[newTab]);
           }
           
         },
 
         URLcontains: function(path) {
-          return (document.URL.match(path)) ? true : false;
+          return (window.location.pathname.match(path)) ? true : false;
         },
 
         onSignOut: function() {
           this.set('aimsquant.user','');
           this.$.localStorage.save(); 
           
-          if(!this.checkHasToken()) {
+          this.hasToken = this.$.authItem.checkHasToken();
+          //console.log(this.hasToken);
+          /*if(!this.checkHasToken()) {
             this.currentTab = 3;
           
-          }
-          
-          this.$.router.go('/user/signout');
+          }*/
+          ////console.log("Sign out");
+          this.fire('rt-changed',{route:'/user/signout'});
+          //this.$.router.go('/user/signout');
         },
 
         openFeedbackDialog: function() {
@@ -464,13 +447,13 @@
         },
 
         onPostFeedbackResponse: function (e) {
-          console.log("Success Posting Feedback");
-          console.log(e.detail.response);
+          ////console.log("Success Posting Feedback");
+          ////console.log(e.detail.response);
         },
 
         onPostFeedbackError: function(e) {
-            console.log("Error Posting Feedback");
-            console.log(e.detail.response);
+            ////console.log("Error Posting Feedback");
+            ////console.log(e.detail.response);
         },
 
         openInviteDialog: function() {
@@ -483,20 +466,22 @@
         },
 
         onSendInviteResponse: function(e) {
-          console.log("Suceess Sending Invite");
-          console.log(e.detail.response);
+          ////console.log("Suceess Sending Invite");
+          ////console.log(e.detail.response);
         },
 
         onSendInviteError: function(e) {
-          console.log("Error Sending Invite");
-          console.log(e.detail.response);
+          ////console.log("Error Sending Invite");
+          ////console.log(e.detail.response);
         },
 
         onMyAccount: function() {
-          this.$.router.go('/user/myaccount');
+          this.fire('rt-changed',{route:'/user/myaccount'});
+          //this.$.router.go('/user/myaccount');
         },
 
         _onOpen: function(e){
+
         },
 
         _onMessage: function(e) {   
@@ -519,6 +504,8 @@
         },
 
         _onError: function(e) {
+            console.log("WS Error");
+            console.log(e);
         },
 
         _onClose: function(e) {
@@ -528,7 +515,7 @@
           var backtestId = e.detail.backtestId;
           this.backtestId = backtestId;
           //Send message to web socket for execution
-          var msgForWS = {'aimsquant-token': this.token,
+          var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
                 action: 'exec-backtest',
                 backtest_id: backtestId};
 
@@ -558,14 +545,32 @@
           
         },
 
+        updateHeader: function(user) {
+          this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};
+        },
+
         onTokenUpdate: function(e) {
+
+            ////console.log("Toke Update");
+            ////console.log(e.detail);
             this.set('aimsquant.user',e.detail.user);
             this.$.localStorage.save();
+
+            this.hasToken = this.$.authItem.checkHasToken();
+            
+            //this.updateHeader(e.detail.user);
+            
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
+            
             if(lastRequest!='') {
-              this.$$('#router').go(lastRequest);
+              //this.$$('#router').go(lastRequest);
+              this.fire('rt-changed',{route:lastRequest});
             } else {
-              this.async(this.$$('#router').go('/dashboard'), 1000);
+              //this.async(this.$$('#router').go('/dashboard'), 1000);
+              ////console.log("To dashboard");
+              this.async(function(){this.fire('rt-changed',{route:'/dashboard'})}, 1000);
             }
         },
 
@@ -595,6 +600,61 @@
             delete this.backtests[id];
           } 
 
+        },
+
+
+        goToRoute: function(e) {
+            var route = this.redirect(e.detail.route);
+            window.history.pushState({}, null, route);
+            window.dispatchEvent(new CustomEvent('location-changed'));
+            this.changeTabOnURL();
+        },
+
+        _urlChanged: function(e) {
+          
+          this.changeTabOnURL();
+        },
+
+        changeTabOnURL: function() {
+
+          var pathname = window.location.pathname;
+          var ctab=0;
+          var pathArray = ['/main', 
+                  '/dashboard', 
+                  '/about',
+                  '/user/signin',
+                  '/user/signup',
+                  '/user/resetPassword',
+                  '/user/signout'];
+
+
+          for(i=0;i<pathArray.length;i++){
+            if(this.URLcontains(pathArray[i])){
+              ctab = i;
+              break;
+            }
+          }
+
+          if(ctab==6 || ctab ==5) {
+            ctab = 3;
+          }
+
+
+          this.currentTab = ctab;
+        },
+
+        redirect: function(route) {
+          switch(route) {
+            case "/dashboard/createstrategy":
+              return '/dashboard/editor?create=1';
+              break;
+            case "/dashboard/createpost":
+              return "/dashboard/community/create"
+              break;
+            default:
+              return route;
+              break 
+          }
         },
 
     });

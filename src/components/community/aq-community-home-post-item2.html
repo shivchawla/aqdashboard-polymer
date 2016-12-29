@@ -103,7 +103,7 @@
     }
 
     #lastReplyAt {
-      width:300px !important;
+      width:320px !important;
 
     }
 
@@ -153,7 +153,7 @@
           <profile-img id='img' class="self-start" letter="[[getInitials(thread.user.firstName, thread.user.lastName)]]"></profile-img>
 
           <div class="layout vertical">
-            <div id='topicHeading'><a href$='#/dashboard/community/[[thread._id]]'>[[thread.title]]</a></div>
+            <div id='topicHeading' on-click='goToDetail'>[[thread.title]]</div>
             <span id='category'><i>[[thread.category]]</i> by [[getAuthorFullName(thread.user.firstName, thread.user.lastName)]] on [[format(thread.createdAt)]]</span>
           </div>
 
@@ -231,7 +231,7 @@
 
       goToDetail: function() {
         console.log("Firing");
-        this.fire('postdetail-action',{link:'/dashboard/community/' + this.thread._id});
+        this.fire('rt-changed',{route:'/dashboard/community/topics/' + this.thread._id});
       },
 
       getLastReplyDetails: function(thread) {

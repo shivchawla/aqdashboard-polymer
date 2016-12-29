@@ -103,7 +103,7 @@
 
            	<div id="buttons">
 
-  				<paper-button noink dialog-dismiss>Cancel</paper-button>
+  				<paper-button noink on-tap='onCancel'>Cancel</paper-button>
     			<paper-button noink on-tap='onSubmit'>OK</paper-button>
   			</div>
 		 	
@@ -127,11 +127,18 @@
 					this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
 					this.$.createStrategyModalDialog.close();
 				}
-			
+
+        this.fire('rt-changed',{route:'/dashboard/editor'});
 			},
+
+      onCancel: function() {
+        this.$.createStrategyModalDialog.close();
+        this.fire('rt-changed',{route:'/dashboard/editor'});
+      },  
 
 			open: function() {
 				this.$.createStrategyModalDialog.open();
+
 			},
 
 		});

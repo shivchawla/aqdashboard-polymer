@@ -1,5 +1,5 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../bower_components/app-router/app-router.html'>
+<link rel='import' href='../../bower_components/app-route/app-route.html'>
 
 <link rel="import" href="../components/analyze/aq-analyze-home.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare.html">
@@ -16,20 +16,19 @@
     }
   </style>
   <template>
-    <app-router mode="hash" trailingSlash="ignore">
-        
-        <!--app-route path="/dashboard/analyze/*" element='aq-analyze-home' bindrouter=""></app-route-->
 
-        <app-route path="/dashboard/analyze/compare" element='aq-analyze-compare' bindrouter=""></app-route>
-      
-        <app-route path="/dashboard/analyze/compare/x" element='aq-analyze-compare-results' bindrouter=""></app-route>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/dashboard/analyze/"
+        active="{{active}}">
+    </app-route>
 
-        <app-route path="/dashboard/analyze/:strategyId" element='aq-analyze-home' bindrouter=""></app-route>
+    <template is='dom-if' if='{{active}}'>
+        <aq-analyze-home></aq-analyze-home>
+        <aq-analyze-detail></aq-analyze-detail>   
+    </template>
 
-        <app-route path="/dashboard/analyze/:strategyId/:backtestId" element='aq-analyze-detail' bindrouter=""></app-route>
-
-
-    </app-router>
   </template>
 
   <script>
@@ -50,6 +49,22 @@
           type:Boolean,
           value:false,
         },
+
+        active: Boolean,
+      },
+
+      hasTail: function(tail) {
+        console.log("checking tail");
+        console.log(tail);
+        if (tail && tail.path) {
+          return tail.path.length > 0;
+        }
+
+        return false;
+      },
+
+      isAnalyzeHomeActive: function(active, tail) {
+        return active && !this.hasTail(tail);
       },
 
     });

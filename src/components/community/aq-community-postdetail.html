@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../../../bower_components/app-route/app-route.html'>
+<link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -22,6 +24,7 @@
       margin: 0 auto;
       margin-top: 10px;
       color: #24293d;
+      height:100%;
     }
 
     .goBackButton {
@@ -36,9 +39,18 @@
   </style>
 
   <template>
-    
-      <iron-ajax
-          auto
+      <aq-check-authentication id='authItem'></aq-check-authentication>
+      
+      <app-location route="{{route}}"></app-location>
+
+      <app-route
+          route="{{route}}"
+          pattern="/dashboard/community/topics/:threadId"
+          data="{{routeData}}"
+          active="{{active}}">
+      </app-route>
+
+      <iron-ajax      
           url="[[computeGetThreadUrl(threadId)]]"
           method='GET'
           id='getThreadQuery'
@@ -58,29 +70,31 @@
           debounce-duration="300">
       </iron-ajax>
 
-      <template is="dom-if" if="{{threadDetails}}">
-        <div id='container'>
-          
-          <div class="goBackButton layout horizontal">
-            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-click="goBack"></paper-icon-button>
-            <div class="flex"><p>Back to Community</p></div>
-          </div>
-          
-          <aq-community-postdetail-header
-            post-header='{{threadDetails}}'>
-          </aq-community-postdetail-header>
-          
-          <div id="replyContainer">
-            <template is="dom-repeat" 
-                      items="{{threadDetails.replies}}"
-                      initial-count=5>
-              <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
-            </template>
-          </div>
-          
-          <aq-community-postdetail-reply id="replyEditor" thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
+      <template is="dom-if" if="{{active}}">
+          <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
+              <div id='container'>
+                
+                <div class="goBackButton layout horizontal">
+                  <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-click="goBack"></paper-icon-button>
+                  <div class="flex"><p>Back to Community</p></div>
+                </div>
+                
+                <aq-community-postdetail-header
+                  post-header='{{threadDetails}}'>
+                </aq-community-postdetail-header>
+                
+                <div id="replyContainer">
+                    <template is="dom-repeat" 
+                              items="{{threadDetails.replies}}"
+                              initial-count=5>
+                      <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
+                    </template>
+                </div>
+                
+                <aq-community-postdetail-reply id="replyEditor" thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
 
-        </div>
+              </div>
+          </template>
       </template>
 
   </template>
@@ -93,7 +107,6 @@
         
         threadId:{
           type:String,
-          value:"",
         },
         
         header: {
@@ -108,8 +121,9 @@
           type: Object,
         },
 
-        APIEndPoint: {
-          type: String,
+        active:{
+          type: Boolean,
+          observer:'_activeChanged',
         },
 
       },
@@ -120,49 +134,31 @@
       },
 
       onGetThreadDetailResponse: function(data) {
-          console.log("Twenty times");
-          console.log(data.detail.response);
-          this.threadDetails = data.detail.response;
+          //console.log(data.detail.response);
+          this.set('threadDetails', data.detail.response);
       },
 
       onGetThreadDetailError: function(data) {
           console.log(data);
       },
 
-      ready: function() {
-          console.log("Ready");
-
-          var x = localStorage.getItem('my-app-storage');
-          var user = JSON.parse(x).user;
-          if (user.token) {
-            this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"};  
-          }
-
-          this.user = user;
-
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-
-          //this.$.getThreadQuery.generateRequest();
-          //this.$.views.generateRequest();
-
-      },
-
       attached: function() {  
+          //this.$.views.generateRequest();
+          //this.$.getThreadQuery.generateRequest();
       },
 
       computeGetThreadUrl: function(threadId){
-        return this.APIEndPoint + '/thread/' + threadId;
+        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+        return APIEndPoint + '/thread/' + threadId;
       },
 
       computePostViewUrl: function(threadId){
-        return this.APIEndPoint+'/thread/'+threadId+'/view';
+        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+        return APIEndPoint+'/thread/'+threadId+'/view';
       },
 
       goBack: function() {
-          console.log("back");
-          this.router.go('/dashboard/community');
+          this.fire('rt-changed',{route:'/dashboard/community'});
       },
 
       addReply: function(e) {
@@ -170,16 +166,41 @@
         var reply = e.detail.reply;
         var replyElement = document.createElement('aq-community-postdetail-content');
         
-        //var x = localStorage.getItem('my-app-storage');
-        //var user = JSON.parse(x).user;
-
         reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
         
         replyElement.postContent = reply;
 
         this.$$("#replyContainer").appendChild(replyElement);
         this.$$("#replyEditor").clearEditor();
-      }
+      },
+
+      hasThreadDetail: function(detail) {
+          console.log("thread");
+          console.log(detail);
+          if (detail) {
+            return Object.keys(detail).length > 0;
+          }
+
+          return false;
+      },
+
+      _activeChanged: function(nAct, oAct) {
+          console.log("Post detail:"+nAct);
+          if(nAct) {
+              this.threadId = this.routeData.threadId;
+              if(this.$.authItem.checkHasToken()) {
+                this.user = this.$.authItem.getUser();
+                this.header = this.$.authItem.getHeader();
+                this.$.views.generateRequest();
+                this.$.getThreadQuery.generateRequest();  
+              }
+          } else {
+              this.user = {};
+              this.header = {};
+              this.threadDetails = {};
+          } 
+      },
+
 
     });
 

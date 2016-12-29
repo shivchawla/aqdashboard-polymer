@@ -41,29 +41,40 @@
 	</style>
 
 	<template>
-		<div class="layout vertical fit" style="background-color: #f4f9f7;">
-			
-			<div id = 'container' class="self-center"> 
-				<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
-					<p id='header'class="self-start">We are here to help you!!</p>
-					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>
-					<paper-button on-tap='goToLogin'>Go Back</paper-button>
-				</template>
 
-				<template is='dom-if' if='[[isModeActivation(mode)]]'>
-					<p id='header' class="self-start">You are just one step away to test your great ideas!!</p>
-					<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
-					<paper-button on-tap='goToLogin'>Go Back</paper-button>
-				</template>
+      	<app-location route="{{route}}"></app-location>
+  		<app-route
+            route="{{route}}"
+            pattern="/dashboard/authentication/:mode"
+            data="{{routeData}}"
+            active="{{active}}">
+      	</app-route>  
+
+      	<template is='dom-if' if='{{active}}'>
+			<div class="layout vertical fit" style="background-color: #f4f9f7;">
+				
+				<div id = 'container' class="self-center"> 
+					<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
+						<p id='header'class="self-start">We are here to help you!!</p>
+						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>
+						<paper-button on-tap='goToLogin'>Go Back</paper-button>
+					</template>
+
+					<template is='dom-if' if='[[isModeActivation(mode)]]'>
+						<p id='header' class="self-start">You are just one step away to test your great ideas!!</p>
+						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
+						<paper-button on-tap='goToLogin'>Go Back</paper-button>
+					</template>
 
 
-				<template is='dom-if' if='[[isModeReset(mode)]]'>
-					<p id='header' class="self-start">Great!! You're password has been reset.</p>
-					
-					<paper-button on-tap='goToLogin'>Go Back</paper-button>
-				</template>
+					<template is='dom-if' if='[[isModeReset(mode)]]'>
+						<p id='header' class="self-start">Great!! You're password has been reset.</p>
+						
+						<paper-button on-tap='goToLogin'>Go Back</paper-button>
+					</template>
+				</div>
 			</div>
-		</div>
+		</template>
 	</template>
 	
 	<script>
@@ -74,6 +85,16 @@
 				emailId:String,
 				mode:String,
 				name:String,
+				active:{
+					type:Boolean,
+					observer:'_activeChanged',
+				},
+			},
+
+			_activeChanged: function() {
+				if(this.active) {
+
+				}
 			},
 
 			isModeForgotPassword: function(mode) {
