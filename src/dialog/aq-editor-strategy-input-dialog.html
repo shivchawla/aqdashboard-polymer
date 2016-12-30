@@ -71,7 +71,7 @@
 	    <paper-dialog id='createStrategyModalDialog' with-backdrop>
 	    	<div class="layout horizontal">
           		<div class="flex"></div>
-          		<iron-icon icon="aq-icons:add"></iron-icon>
+          		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
         	</div>
 
 	    	<h2>[[header]]</h2>
@@ -125,21 +125,34 @@
 			onSubmit: function() {
 				if(this.$.strategyNameInput.validate() && this.$.strategyDesc.validate()){
 					this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
+          this.reset();
 					this.$.createStrategyModalDialog.close();
 				}
-
-        //this.fire('rt-changed',{route:'/dashboard/editor'});
 			},
 
+      reset: function() {
+        this.strategyName = "";
+        this.strategyDesc = "";
+      },
+
       onCancel: function() {
+        this.reset();
         this.$.createStrategyModalDialog.close();
         //this.fire('rt-changed',{route:'/dashboard/editor'});
       },  
 
-			open: function() {
+			open: function(type) {
 				this.$.createStrategyModalDialog.open();
 
 			},
+
+      computeIconType: function(header) {
+        if (header.match("Create")) {
+          return "aq-icons:add";
+        } else {
+          return "aq-icons:content-copy";
+        }
+      }
 
 		});
 		

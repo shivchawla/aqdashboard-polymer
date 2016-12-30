@@ -430,7 +430,7 @@
 
             _activeChanged: function(active, subroute) {
                 console.log("Community Home Active: " + active);
-                if(active && !this.hasTail(this.subroute)) {
+                if(active && !this.hasTail(subroute)) {
                     console.log("Processing");
                     this.processparams();   
                 } else {

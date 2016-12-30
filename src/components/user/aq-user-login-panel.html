@@ -633,8 +633,14 @@
                         this.displayMode = displayModes.signin;
                     } 
 
-                    this.updateMessageStrings(); 
+                    this.resetView();    
                 }
+            },
+
+            resetView: function() {
+                this.clearFields();
+                this.clearErrorMessages();
+                this.updateMessageStrings();
             },
 
             checkHasToken: function() {

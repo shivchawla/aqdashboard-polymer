@@ -264,13 +264,14 @@
 
           active: {
             type:Boolean,
-            value:false,
-            observer:'_activeChanged',
+            //observer:'_activeChanged',
           },
 
           routeData: Object,
 
         },
+
+        observers:['_activeChanged(active, routeData)'],
 
         listeners: {
           'close-all':'closeAll',
@@ -518,13 +519,15 @@
           return !isRunning && isProgrammer;
         },
 
-        _activeChanged: function(nId, oId) {
-          if(nId) {
-            this.strategyId = this.routeData.strategyId;
+        _activeChanged: function(active, routeData) {
+          if(active && routeData) {
+            this.strategyId = routeData.strategyId;
             if(this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
               this.$.getStrategyQuery.generateRequest(); 
             }
+          } else {
+            this.strategyId = "";
           }
         }
 

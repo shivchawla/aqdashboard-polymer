@@ -127,7 +127,6 @@
         },
 
         routeData:Object,
-        
 
       },
 
@@ -188,7 +187,9 @@
       },
 
       _activeChanged: function(nAct, oAct) {
-          console.log("Post detail:"+nAct);
+        
+          this.resetView();
+
           if(nAct) {
               this.threadId = this.routeData.threadId;
               if(this.$.authItem.checkHasToken()) {
@@ -197,11 +198,14 @@
                 this.$.views.generateRequest();
                 this.$.getThreadQuery.generateRequest();  
               }
-          } else {
-              this.user = {};
-              this.header = {};
-              this.threadDetails = {};
-          } 
+          }
+      },
+
+      resetView: function() {
+          this.threadId = "";
+          this.user = {};
+          this.header = {};
+          this.threadDetails = {};
       },
 
 

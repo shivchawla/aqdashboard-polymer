@@ -203,7 +203,7 @@
 			},
 
 			goToShare: function(e) {
-    			this.fire('rt-changed' ,{route:'/dashboard/community/create/'+e.detail.id});
+    			this.fire('rt-changed' ,{route:'/dashboard/community/create?backtestId='+e.detail.id});
 			},
 
 			isBacktestCountOdd: function(backtests) {
@@ -306,13 +306,13 @@
 	        _activeChanged: function(active, subroute) {
 	        	console.log("Here I Come");
 	        	if(active && !this.hasTail(subroute)) {
-	        		this.resetView();
+	        		
 	        		this.strategyId = this.routeData.strategyId;
 	        		if(this.$.authItem.checkHasToken()) {
 		        		this.header = this.$.authItem.getHeader();
 		        		this.$.getBacktestsQuery.generateRequest();		
-		        	} else{
-	        			this.backtests = [];
+		        	} else {
+	        			this.resetView();
 	        		}	
         		}
 	        },

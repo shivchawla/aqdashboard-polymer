@@ -40,7 +40,6 @@
 
 				active:{
 					type:Boolean,
-					//observer: '_isActiveChanged',
 				},
 
 				routeData:Object,
@@ -55,15 +54,25 @@
 			},
 
 			_activeChanged: function(active, routeData) {
+				
 				if (active && routeData) {
 					this.strategyId = routeData.strategyId;
 					this.backtestId = routeData.backtestId;
+				} else {
+					this.resetView();
 				}
-			}
 
+				console.log("Analyze detail : " + active+" " + this.strategyId + " "+ this.backtestId);
+			},
+
+			resetView : function() {
+				this.strategyId = "";
+				this.backtestId = "";	
+			}
 
 				
 		});
+			
 	</script>
 			
 </dom-module>
