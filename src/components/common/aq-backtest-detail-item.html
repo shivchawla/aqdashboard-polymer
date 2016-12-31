@@ -392,7 +392,6 @@
 
 			_isActiveChanged: function(newVal, oldVal) {
 				if((oldVal + 1) && newVal) {
-					console.log("My name is Shiv");
 					this.reset();
 					this.async(this.subscribeData, 1000);
 				} 
@@ -465,10 +464,8 @@
 			},
 
 			subscribeData: function() {
-				console.log(this.backtestId);
 				this.async(function(){this.fire('subscribe-data',{backtestId: this.backtestId})}, 500);
 				
-				console.log("Here tooo");
 				this.cumRetData = {datasets:
 									[{label:"Strategy (%)",
 								 		borderColor: "#cc6666",
@@ -514,7 +511,7 @@
 				}
 
 				if (e.detail.outputtype == "performance") {	
-					this.addRealTimeData(e.detail);
+					this.addRealTimeData(e.detail,"");
 				} else if(e.detail.outputtype == "labels") {
 					this.addRealTimeData(e.detail, "labels");
 				}
@@ -531,16 +528,15 @@
 			addLineBulkData: function(data) {
 				for(i in data) {
 					if (data[i].outputtype=="performance") {
-						this.addRealTimeData(data[i]);
+						this.addRealTimeData(data[i],"");
 					} else if(data[i].outputtype == "labels") {
 						this.addRealTimeData(data[i], "labels");
 					}
 				}
 			},
 		
-			addRealTimeData: function(data, type="") {
+			addRealTimeData: function(data, type) {
 				if (type=="labels") {
-					console.log(data.labels);
 					var labels = Object.keys(data.labels).sort();
 					
 					this.set('cumRetData.labels', labels);

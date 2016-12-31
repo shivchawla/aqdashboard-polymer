@@ -20,7 +20,7 @@ gulp.task('vulcanize', function () {
         .pipe(gulp.dest('build/src/aq-dashboard'));
 });
 
- 
+ //'bower_components/iron-scroll'
 gulp.task('compress', ['vulcanize'], function (cb) {
   pump([
         gulp.src('build/src/aq-dashboard/aq-dashboard.js'),
