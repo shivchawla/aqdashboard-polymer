@@ -297,6 +297,14 @@
 	        },
 
 	        _activeChanged: function(active, subroute) {
+
+	        	if(active){
+					if(!this.$.authItem.checkHasToken()) {
+	         	 		this.fire('rt-changed',{route:'/user/signin'});
+		          		return;
+		          }
+		      	}
+
 	        	if(active && !this.hasTail(subroute)) {
 	        		
 	        		this.strategyId = this.routeData.strategyId;

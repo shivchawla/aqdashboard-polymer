@@ -415,6 +415,11 @@
     },
 
     onSearch: function(e) {
+
+      if (!this.$.authItem.checkHasToken()) {
+          this.fire('rt-changed',{route:'/user/signin'});
+      }
+
     	searchtext = e.detail.searchtext;
     	
     	if(searchtext!="") {
@@ -484,6 +489,14 @@
     },
 
     _activeChanged: function(active, subroute, queryParams) {
+
+      if(active){
+        if(!this.$.authItem.checkHasToken()) {
+            this.fire('rt-changed',{route:'/user/signin'});
+            return;
+        }
+      }
+
       if(active && !this.hasTail(subroute)) {
         
         if(this.queryParams && this.queryParams.create) {

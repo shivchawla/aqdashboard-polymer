@@ -1,7 +1,7 @@
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link rel='import' href='../common/aq-check-authentication.html'>
 
 <dom-module id='aq-editor-home-menu'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -107,6 +107,8 @@
 	</style>
 	
 	<template>
+		<aq-check-authentication id='authItem'></aq-check-authentication>
+
 	    <div class="toolbar layout horizontal">
 	    
 	    	<div class="flex self-center"><p>All Strategies</p></div>
@@ -160,6 +162,11 @@
 					this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
 				} else {
+	            	if (!this.$.authItem.checkHasToken()) {
+                  		this.fire('rt-changed',{route:'/user/signin'});
+                  		return;
+              		}
+
 					this.$$('#search').style.display = 'block';
 					this.$$('#searchbox').focus();
 					this.$$('#searchbox').value = "";

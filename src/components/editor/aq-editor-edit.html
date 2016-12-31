@@ -324,7 +324,7 @@
         },
 
         _narrowChanged: function(newVal, oldVal) {
-          if (!newVal && !this.isRunning) {
+          if (!newVal && !this.isRunning && this.$$('#codeEditorPanel')) {
             this.$$('#codeEditorPanel').style.display = 'block';
           }
         },
@@ -507,6 +507,14 @@
         },
 
         _activeChanged: function(active, routeData) {
+
+          if(active){
+            if(!this.$.authItem.checkHasToken()) {
+                this.fire('rt-changed',{route:'/user/signin'});
+                return;
+            }
+          }
+
           if(active && routeData) {
             this.strategyId = routeData.strategyId;
             if(this.$.authItem.checkHasToken()) {

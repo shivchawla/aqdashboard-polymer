@@ -573,6 +573,7 @@
         },
 
         goToRoute: function(e) {
+          
             var route = this.redirect(e.detail.route);
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));

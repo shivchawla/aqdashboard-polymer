@@ -119,15 +119,11 @@
         }
         
         paper-input {
-            --paper-input-container-underline-focus:{
-                background-color: teal;--#24293d;
-            }
+            --paper-input-container-focus-color :teal;
         }
 
         gold-email-input {
-            --paper-input-container-underline-focus:{
-                background-color: teal;--#24293d;
-            }
+            --paper-input-container-focus-color :teal;
         }
 
         paper-button.signinButton {
@@ -374,7 +370,6 @@
 
                 firstNameValid: {
                     type: Boolean,
-                    //value: true,
                 },
 
                 lastName: {
@@ -384,7 +379,6 @@
 
                 lastNameValid: {
                     type: Boolean,
-                    //value: true,
                 },
 
                 userEmail: {
@@ -473,7 +467,6 @@
                 displayMode: {
                     type: String,
                     value: "signin",
-                    //observer:'_displayModeChanged',
                 },
 
                 acceptPolicy: {
@@ -537,7 +530,6 @@
                     headerText: "Sign up",
                     footerText: "Already have an account?",
                     footerLinkText: " Log in here ",
-                    //lede: "Create your new account",
                     firstNameFieldLabel: "First Name",
                     lastNameFieldLabel: "Last Name",
                     userEmailFieldLabel: "Email",
@@ -556,7 +548,6 @@
                     headerText: "Sign in",
                     footerText: "Don't have an account? ",
                     footerLinkText: " Sign up now",
-                    //lede: "Signin with your email address",
                     userEmailFieldLabel: "Email",
                     firstNameErrorMessage: "Please enter a valid first name",
                     lastNameErrorMessage: "Please enter a valid last name",
@@ -573,7 +564,6 @@
                     headerText: "Forgot Password",
                     footerText: "Back to Sign in? ",
                     footerLinkText: " Log in here",
-                    //lede: "Request a temporary password",
                     userEmailErrorMessage: "Please enter a valid email",
                     userEmailFieldLabel: "Account Email Address",
                     actionButtonLabel: "Send Request",
@@ -599,25 +589,17 @@
             },
 
             attached: function() {
-
-                //this.displayMode = this.routeData.displayMode;
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
 
             _activeChanged: function(active, routeData) {
-                //console.log(active);
-                //console.log(routeData);
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
                     if(this.$.authItem.checkHasToken()) {
-                        //console.log("Came Here: But why?");
-                        //this.router.go('/dashboard');
-                        console.log("from here jjajajj")
                         this.fire('rt-changed',{route:'/dashboard'});
-                        //return;
+                        return;
                     }
 
-                    console.log("Here while in user-panel: " + this.displayMode);
                     if (this.displayMode != displayModes.signin && 
                         this.displayMode != displayModes.signup &&
                         this.displayMode != displayModes.forgotPassword &&
@@ -834,7 +816,6 @@
             },
 
             onUserEmailFocusOut: function() {
-                //this.actionFailedMessage = '';
                 this.userEmailValid = this.$$('#userEmailInput').validate();
                 this.userEmailInFocus = false;
             },
@@ -846,7 +827,6 @@
             },
 
             onPasswordFocusOut: function() {
-                //this.actionFailedMessage = '';
                 this.passwordValid = this.$$('#passwordInput').validate();
                 this.confimPassworValid = this.confirmPassword != ''
                     ? this.checkPasswordsMatch()
@@ -861,7 +841,6 @@
             },
 
             onNewPasswordFocusOut: function() {
-                //this.actionFailedMessage = '';
                 this.newPasswordValid = this.$$('#newPasswordInput').validate();
                 
                 this.newPasswordValid = this.password != ''
@@ -884,7 +863,6 @@
 
             onConfirmPasswordFocus: function() {
                 this.actionFailedMessage = '';
-                //this.confirmPasswordErrorMessage='';
                 this.confirmPasswordInFocus = true;
             },
 
@@ -928,17 +906,8 @@
             handleLoginResponse: function(data) {
             
                 this.fire('update-token',{user:data.detail.response});
-                ////console.log("User Before: ");
-                ////console.log(localStorage);
-                /*this.set('aimsquant.user', data.detail.response);
-                this.$.localStorage.save();
-                //console.log(this.aimsquant);
-                //console.log("User After: ")
-                //console.log(localStorage);*/
-
                 this.actionSucceeded();
                 this.$$('.signinButton').disabled = false;
-                //this.router.go('/dashboard/home');
             },
 
             handleLoginError: function(data) {
@@ -953,41 +922,28 @@
             },
 
             handleSignupResponse: function(e) {
-                console.log(e.detail.response);
                 this.$$('.signinButton').disabled = false;
             },
 
             handleSignupError: function(e) {
-                console.log(e.detail.response);
                 this.actionFailed("Email address already registered!! Sign up with a different email.");
-
                 this.clearFields();
                 this.$$('.signinButton').disabled = false;
             },
 
             handleForgotPasswordResponse: function(e) {
-                console.log("Forgot Password: Success");
-                console.log(e.detail.response);
                 this.$$('.signinButton').disabled = false;
-
             },
 
             handleForgotPasswordError: function(e) {
-                console.log("Forgot Password: Error");
-                console.log(e.detail.response);
                 this.$$('.signinButton').disabled = false;
             },
 
             handleResetPasswordResponse: function(e) {
-                //console.log("Reset Password: Success");
-                //console.log(e.detail.response);
-                //this.router.go('/user/authentication/reset');
                 this.$$('.signinButton').disabled = false;
             },
 
             handleResetPasswordError: function(e) {
-                console.log("Reset Password: Error");
-                console.log(e.detail.response);
                 this.$$('.signinButton').disabled = false;
             },
 
@@ -996,7 +952,6 @@
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
 
-                    console.log("Not valid");
                     if (this.displayMode != displayModes.resetPassword) {
                         this.$$('#userEmailInput').invalid = !this.userEmailValid;
                     }
@@ -1027,15 +982,14 @@
                         break;
                     case displayModes.signup:
                         this.$.signup.generateRequest();
-                        //this.router.go('/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName);
+                        this.fire('rt-chaged',{route:'/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
                         break;
                     case displayModes.forgotPassword:
                         this.$.forgotPasswordQuery.generateRequest();
-                         //this.router.go('/user/authentication/forgotpassword?emailId=' + this.userEmail);
+                         this.fire('rt-changed',{route:'/user/authentication/forgotpassword?emailId=' + this.userEmail});
                         break;
 
                     case displayModes.resetPassword:
-                        console.log("resetting request");
                         this.$.resetPasswordQuery.generateRequest();
                         break;
                     default:

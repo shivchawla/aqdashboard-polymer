@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
 <link rel='import' href='../components/analyze/aq-analyze-home-backtest-item2.html'>
+<link rel='import' href='../components/common/aq-check-authentication.html'>
 
 <dom-module id="aq-community-attachbacktest-dialog">
     
@@ -92,7 +93,9 @@
 
     <template>
 
-        <paper-dialog with-backdrop=1 id='selectBacktestDialog'>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+
+        <paper-dialog with-backdrop=1 id='selectBacktestDialog' on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
             <paper-drawer-panel right-drawer>
             
             <paper-header-panel id="btPanel" main mode="seamed">
@@ -127,7 +130,7 @@
         </paper-dialog>
 
         <iron-ajax
-            url="[[APIEndPoint]]/strategy"
+            url=""
             method='GET'
             id='getStrategiesQuery'
             handle-as="json"
@@ -183,8 +186,6 @@
             observer:'_strategyChanged',
           },
 
-          APIEndPoint: String,
-
           header:Object,
 
         },
@@ -193,25 +194,18 @@
             'backtestChecked':'onCheckedBacktest',
         },
 
-        ready: function() {
-            var x = localStorage.getItem('my-app-storage');
-            var user = JSON.parse(x).user;
-            if (user.token) {
-              this.header = {
-                "aimsquant-token": user.token,
-                "Content-Type": "application/json"};  
-            }
-            this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        },
-
         computeGetBacktestsUrl: function(strategyId) {
-            return this.APIEndPoint+'/strategy/'+strategyId+'/backtests';
+            var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            return APIEndPoint+'/strategy/'+strategyId+'/backtests';
         },
         
         onGetStrategiesResponse: function(data) {
             this.strategies = data.detail.response;
             this.strategyId = this.strategies[0]._id;
-            this.$.getBacktestsQuery.generateRequest();
+            if(this.$.authItem.checkHasToken()) {
+                this.header = this.$.authItem.getHeader();
+                this.$.getBacktestsQuery.generateRequest();
+            }
         },
 
         onGetAllBacktestsForStrategy :function(data) {
@@ -238,7 +232,20 @@
 
         open: function(){
             this.$.selectBacktestDialog.open();
-            this.$.getStrategiesQuery.generateRequest();
+            var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+            this.$.getStrategiesQuery.url = APIEndPoint+'/strategy';
+            if(this.$.authItem.checkHasToken()) {
+                this.header = this.$.authItem.getHeader();
+                this.$.getStrategiesQuery.generateRequest();
+            }
+        },
+
+        onCancel: function() {
+            this.strategyId = "";
+            this.strategies = [];
+            this.backtests = [];
+            this.checkedId="";
+            this.checkedCount = 0;
         },
 
         _strategyChanged: function(newVal, oldVal) {

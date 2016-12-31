@@ -313,18 +313,19 @@
             },
 
             createPost: function() {
-                this.updateCommunityState();
-
-                if (!this.header) {
-                  this.fire('rt-changed',{route:'/user/signin'});
-                  
+                
+                if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed',{route:'/user/signin'});
+                    return;
                 }
+
+                this.updateCommunityState();
 
                 this.fire('rt-changed',{route:'/dashboard/community/create'});
             },
 
             onSearch: function(e) {
-              
+
               this.searchText = e.detail.text;
               this.searchCategory = e.detail.category;
 
@@ -406,6 +407,14 @@
             },
 
             _activeChanged: function(active, subroute) {
+
+                if(active){
+                  if(!this.$.authItem.checkHasToken()) {
+                      this.fire('rt-changed',{route:'/user/signin'});
+                      return;
+                  }
+                }
+                
                 if(active && !this.hasTail(subroute)) {
 
                     this.processparams();   

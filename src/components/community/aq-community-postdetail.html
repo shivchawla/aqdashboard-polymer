@@ -183,7 +183,14 @@
       },
 
       _activeChanged: function(nAct, oAct) {
-        
+          
+         if(nAct){
+            if(!this.$.authItem.checkHasToken()) {
+                this.fire('rt-changed',{route:'/user/signin'});
+                return;
+            }
+          }
+
           this.resetView();
 
           if(nAct) {

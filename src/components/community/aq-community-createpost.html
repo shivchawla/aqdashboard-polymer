@@ -107,7 +107,6 @@
 
     </style>
 
-  
 
     <template>
 
@@ -122,10 +121,10 @@
         </app-route>
 
         <iron-ajax 
-            url="[[APIEndPoint]]/thread" 
+            url="" 
             body="{{threadData}}" 
             method='POST' 
-            id='thread' 
+            id='postThreadQuery' 
             headers='{{header}}' 
             handle-as="json" 
             on-response="onPostThreadResponse" 
@@ -136,7 +135,7 @@
         <iron-ajax
           url="[[computeFollowPostUrl(newThreadId)]]"
           method="POST"
-          id='follows'
+          id='followPostQuery'
           handle-as="json"
           headers='{{header}}'
           debounce-duration="300">
@@ -164,7 +163,7 @@
                       
                       <div id="attachedMessageDiv" class="layout horizontal self-end">
                         <i class="self-end">[[attachedMessage]]</i>
-                        <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="icons:remove-circle"></paper-icon-button>
+                        <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="aq-icons:remove-circle"></paper-icon-button>
                       </div>
                     </div>
 
@@ -238,20 +237,6 @@
 
             observers:['_activeChanged(active, queryParams)'],
 
-            attached: function() {
-            },
-
-            /*ready: function() { 
-                var x = localStorage.getItem('my-app-storage');
-                var user = JSON.parse(x).user;
-                if (user.token) {
-                  this.header = {
-                    "aimsquant-token": user.token,
-                    "Content-Type": "application/json"};  
-                }
-                this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-            },*/
-
             computeFollowPostUrl: function(threadId) {
               var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
               return APIEndPoint+'/thread/'+threadId+'/follow';
@@ -262,7 +247,9 @@
                 
                 if(x & this.$.authItem.checkHasToken()) {
                   this.header = this.$.authItem.getHeader();
-                  this.$.thread.generateRequest();
+                  var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                  this.$.postThreadQuery.url = APIEndPoint+'/thread';
+                  this.$.postThreadQuery.generateRequest();
                 }
             },
             
@@ -271,9 +258,10 @@
                 
                 if(this.$.authItem.checkHasToken()) {
                   this.header = this.$.authItem.getHeader(); 
-                  this.$.follows.generateRequest();
+                  this.$.followPostQuery.generateRequest();
                 }
-                
+
+                this.resetView();
                 this.fire('rt-changed', {route:"/dashboard/community/topics/"+this.newThreadId});
             },
 
@@ -281,7 +269,7 @@
             },
                        
             onAttachRequest: function() {
-                this.$.btDialog.open(); 
+                this.$$('#btDialog').open(); 
             },
 
             onBacktestAttached: function(e) {
@@ -349,6 +337,14 @@
             },
 
             _activeChanged: function(active, queryParams) {
+
+                if(active) {
+                  if(!this.$.authItem.checkHasToken()) {
+                      this.fire('rt-changed', {route:'/user/signin'});
+                      return;
+                  }
+                }
+                
                 this.resetView();
 
                 if (active && queryParams.backtestId) {
@@ -361,6 +357,15 @@
                 this.attachedBacktestId = "";
                 this.attachedMessage = "";
                 this.threadData = {};
+
+                if (this.$$('#editor')) {
+                  this.$$('#editor').setContent("");
+                }
+
+                if (this.$$('#topicInput')){
+                  this.$$('#topicInput').value="";
+                  this.$$('#topicInput').focus();
+                }
             },
 
             _backtestIdChanged: function(nId, oId) {
