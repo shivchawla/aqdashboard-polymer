@@ -119,14 +119,12 @@
       _sectionChanged: function(nSect, oSect) {
           if(nSect) {
               var dict =  {"home":0,"people":1, "careers":2, "contact":3};
-              console.log(dict[nSect.section]);
               if(dict[nSect.section]) {
                   this.selected = dict[nSect.section];
               } else {
                   this.selected = 0;
               }
           }
-        
       },
 
       attached: function(){

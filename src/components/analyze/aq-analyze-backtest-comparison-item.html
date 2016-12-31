@@ -1,9 +1,10 @@
 
 <!--link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html"-->
-<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
-<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-bar.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-line.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+<link rel='import' href='../common/aq-check-authentication.html'>
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
@@ -83,12 +84,29 @@
     	}
 
     	#cumRetLineChart {
-    		margin-left: -100px;
+    		--margin-left: -100px;
+    		height:400px;
+    		width:100%;
+    		background-color:white;
+    		border: 1px solid teal;
+    		padding:10px;
     	}
+
+    	#monthlyReturnBarChart {
+    		--margin-left: -100px;
+    		height:400px;
+    		width:100%;
+    		background-color:white;
+    		border: 1px solid teal;
+    		padding:10px;
+    	}
+
 
 	</style>
 
-	<template>	
+	<template>
+		<aq-check-authentication id='authItem'></aq-check-authentication>	
+
 		<div class="goBackButton layout horizontal">
             <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
             </paper-icon-button>
@@ -106,27 +124,17 @@
 		          
 			<iron-pages class="pages_select" selected={{graphType1}}>
 							
-				<nvd3-line 
+				<chart-line 
 		  			id="cumRetLineChart" 
-		  			class="bar1" 
-		  			height=460
-		  			show-legend 
-		  			use-interactive-guideline 
-		  			auto-resize 
-		  			no-data="No Data Available!" 
-		  			data="[[cumRetData]]">
-		  		</nvd3-line>
+		  			data="[[cumRetData]]"
+		  			options="[[cumRetLineChartOptions]]">
+		  		</chart-line>
 			  	
-  				<nvd3-multi-bar 
+  				<chart-bar 
 		  			id="monthlyReturnBarChart" 
-		  			class="bar" 
-		  			height=460
-		  			show-legend 
-		  			use-interactive-guideline 
-		  			auto-resize 
-		  			no-data="No Data Available!" 
-		  			data="[[monthlyReturnData]]">
-		  		</nvd3-multi-bar>
+		  			data="[[monthlyReturnData]]"
+		  			options="[[monthlyReturnBarChartOptions]]">
+		  		</chart-bar>
 		  	
 	  			<!--div style="width:100%">
 			  		<vaadin-grid size="0" id="table_details__comparison">
@@ -167,7 +175,6 @@
           	debounce-duration="300">
         </iron-ajax>
 				
-			
 	</template>
 
 	<script>
@@ -192,14 +199,15 @@
 				},
 
 				cumRetData:{
-					type:Array,
-					value:[],
+					type:Object,
 				},
 
 				monthlyReturnData:{
-					type:Array,
-					value:[],
+					type:Object,
 				},
+
+				cumRetLineChartOptions:Object,
+				monthlyReturnBarChartOptions:Object,
 
 				tableData:{
 					type:Array,
@@ -220,24 +228,106 @@
 
 				header: Object,
 
-				APIEndPoint:String,
-				
-			},
-
-			ready: function() {
-				var x = localStorage.getItem('my-app-storage');
-		        var user = JSON.parse(x).user;
-		        if (user.token) {
-		          this.header = {
-		            "aimsquant-token": user.token,
-		            "Content-Type": "application/json"};  
-		        }
-
-	           	this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-
 			},
 
 			attached: function() {
+				this.resetComparison();
+				this.cumRetLineChartOptions = {maintainAspectRatio:false,
+					backgroundColor:"#fff",
+						scales: {
+				            xAxes: [{
+				                ticks: {
+				                    maxTicksLimit:10,
+				                    maxRotation:0,
+				                    callback: function(value, index, values) {
+					                        var date = new Date(value);
+											var month = (date.getMonth() + 1);
+											var month = month >= 10 ? month.toString() : '0'+month.toString();
+											return date.getDate()+'/'+ month + '/' +  date.getFullYear();
+				                    },
+				                    fontColor:"#24293d",
+				                    padding:20,
+				                },
+						      	scaleLabel: {
+							        display: true,
+							        labelString: 'Date',
+							        fontSize: 16,
+							        fontColor:"#24293d",
+					            },
+				             	gridLines:{
+					            	display:false,
+					            },
+					        }],
+			                
+			                yAxes: [{
+				                ticks: {
+				                    maxTicksLimit:5,
+				                    fontColor:"#24293d",
+				                    padding:20,
+				                },
+						      	scaleLabel: {
+							        display: true,
+							        labelString: 'Total Return (%)',
+							        fontSize: 16,
+							        fontColor:"#24293d",
+					            },
+				             	gridLines:{
+					            	color:"#008080",
+					            },
+					        }]
+				        }
+		        };
+
+		        this.monthlyReturnBarChartOptions = {maintainAspectRatio:false,
+						scales: {
+							paddingBottom:10,
+				            xAxes: [{
+				                ticks: {
+				                    maxTicksLimit:10,
+				                    maxRotation:0,
+				                    callback: function(value, index, values) {
+					                        var year = Math.floor(value / 100);
+											var month = value % 100;
+											var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+											 "Sep", "Oct", "Nov", "Dec"];
+											return monthNames[month - 1] +" "+year.toString();
+				                    },
+				                    fontColor:"#24293d",
+				                    padding:20,
+				                },
+						      	scaleLabel: {
+							        display: true,
+							        labelString: 'Month/Year',
+							        fontSize: 16,
+							        fontColor:"#24293d",
+					            },
+					            gridLines:{
+					            	display:false,
+					            },
+
+					            paddingLeft:10,
+								
+					        }],
+			                yAxes: [{
+				                ticks: {
+				                    maxTicksLimit:5,
+				                    //fontSize: 14,
+							        fontColor:"#24293d",
+							        padding:20,
+				                },
+				                scaleLabel: {
+							        display: true,
+							        labelString: 'Monthly Return (%)',
+							        fontSize: 16,
+							        fontColor:"#24293d",
+					            },
+				             	gridLines:{
+					            	color:"#008080",
+					            },
+					        }]
+			            },
+		        };
+
 				if (this.active){
 					this.doComparison();
 				}
@@ -245,21 +335,30 @@
 
 			_isActiveChanged: function(newVal, oldVal) {
 				if (oldVal+1 && newVal) {
+					this.resetComparison();
 					this.doComparison();
 				}
 			},
 
 			computeGetBacktestUrl: function(backtestId) {
-				return this.APIEndPoint + '/backtest/' + backtestId;
+				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+				return APIEndPoint + '/backtest/' + backtestId;
 			},
 
 			doComparison: function() {
 				for(var key in this.compareItems) {	
-					if (!this.backtests[key]) {
-						this.backtestId = key;
-						this.$.getBacktestsQuery.generateRequest();
-					} else {
-						this.addBacktestToComparison(this.backtests[key]);
+					if(this.compareItems[key]) {
+						if (!this.backtests[key] ) {
+							
+							this.backtestId = key;
+							if(this.$.authItem.checkHasToken()) {
+								this.header = this.$.authItem.getHeader();
+								this.$.getBacktestsQuery.generateRequest();
+							}
+
+						} else {
+							this.addBacktestToComparison(this.backtests[key]);
+						}
 					}
 				}
 			},
@@ -287,94 +386,71 @@
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
 				var equityData = data.output.totalreturn.algorithm;
 				var keys = Object.keys(equityData);
-				var linePoints = new Array(keys.length);
-				var i = 0;
+				var yPoints = new Array(keys.length);
+				var xPoints = new Array(keys.length);
 				
-				var min = Infinity; 
-				var max = -Infinity;
+				var dataset = {
+						label:data._id,
+						borderColor:colors[this.counter],
+						borderWidth:2,
+						fill:false,
+						pointRadius:1,
+						pointHoverRadius:10,
+					};
+				
 				keys.sort()
       			.forEach(function(v, i) {
-      				linePoints[i++] = {x:v, 
-										y:equityData[v]};
-          			min = Math.min(equityData[v], min)
-          			max = Math.max(equityData[v], max) 
+      				yPoints[i] = equityData[v];
+      				xPoints[i] = v;
        			}); 
 
-  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+       			dataset.data = yPoints;
 
-  				min = Math.floor(0.98*min/scale,-1)*scale;
-				max = Math.ceil(1.02*max/scale,-1)*scale;
+				//var yAxisLabel = "Total Return (%)";
+				this.push('cumRetData.datasets', dataset);
 
-				var yAxisLabel = "Total Return (%)";
+				if(!this.cumRetData.labels) {
+					this.set('cumRetData.labels', xPoints);
+				}
 				
-	  			this.push('cumRetData',{"key":yAxisLabel,
-				  					"color": colors[this.counter],
-					  				"values":linePoints});
-
-	  			this.$$('#cumRetLineChart')._chart
-	  			.x(function(d) {return new Date(d.x);});
-
-	  			this.$$('#cumRetLineChart')._chart.xAxis
-  				.axisLabel('Date')
-				.tickFormat(function(d){
-					return d3.time.format('%d-%m-%Y')(new Date(d));
-				 });
-
-				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
-				this.$$('#cumRetLineChart')._chart.margin().left = 30;
-				this.$$('#cumRetLineChart')._chart.margin().right = 30;
-
-				this.$$('#cumRetLineChart').refresh();	
-
+				this.$$('#cumRetLineChart').updateChart()	
 			},
 
 			processBarChartData: function(data) {
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
 				var aggregatedReturns = data.output.returns.monthly.algorithm;
-		
-				var barPoints = new Array(Object.keys(aggregatedReturns).length);
+				var keys = Object.keys(aggregatedReturns);
+				var yPoints = new Array(keys.length);
+				var xPoints = new Array(keys.length);
 
-				var min = Infinity; 
-				var max = -Infinity;
+				var dataset = {
+						label:data._id,
+						borderColor:colors[this.counter],
+						backgroundColor:colors[this.counter],
+						borderWidth:2,
+						//fill:false,
+						//pointRadius:1,
+						//pointHoverRadius:10,
+					};
 
 				var i = 0;
 
-				for (var key in aggregatedReturns) {
-					barPoints[i++] = {x:key, y:aggregatedReturns[key]};
-					min = Math.min(aggregatedReturns[key], min)
-          			max = Math.max(aggregatedReturns[key], max)
-				}
+				keys.sort()
+      			.forEach(function(v, i) {
+      				yPoints[i] = aggregatedReturns[v];
+      				xPoints[i] = v;
+       			}); 
 
-				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+			
+      			dataset.data = yPoints;
 
-  				min = Math.floor(0.98*min/scale,-1)*scale;
-				max = Math.ceil(1.02*max/scale,-1)*scale;
+      			this.push('monthlyReturnData.datasets', dataset);
 
+      			if(!this.monthlyReturnData.labels) {
+      				this.set('monthlyReturnData.labels', xPoints);
+      			}
 
-				this.push('monthlyReturnData',
-								 {"key":"Monthly Returns (%)",
-				  					"color": colors[this.counter],
-					  				"values":barPoints}); 
-
-
-	  			this.$$('#monthlyReturnBarChart')._chart.xAxis
-  				.axisLabel('Year/Month')
-				.tickFormat(function(d) {
-
-					var year = Math.floor(d / 100);
-					var month = d % 100;
-					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", 
-										"Jun", "Jul", "Aug", "Sep", 
-										"Oct", "Nov", "Dec"];
-					return monthNames[month - 1] +" "+year.toString();
-				});
-
-				this.$$('#monthlyReturnBarChart')._chart.forceY([min,max]);
-				this.$$('#monthlyReturnBarChart')._chart.margin().left = 30;
-				this.$$('#monthlyReturnBarChart')._chart.margin().right = 30;
-
-
-	  			this.$$('#monthlyReturnBarChart').refresh();
+	  			this.$$('#monthlyReturnBarChart').updateChart();
 			},
 
 			processMetricsData: function(data){
@@ -402,8 +478,8 @@
 			},
 
 			resetComparison: function() {
-				this.cumRetData = [];
-				this.monthlyReturnData = [];
+				this.cumRetData = {datasets:[]};
+				this.monthlyReturnData = {datasets:[]};
 				this.tableData = [];
 				this.counter = 0;
 			},

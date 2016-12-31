@@ -272,14 +272,12 @@
                 if(this.$.authItem.checkHasToken()) {
                   this.header = this.$.authItem.getHeader(); 
                   this.$.follows.generateRequest();
-                  
                 }
                 
                 this.fire('rt-changed', {route:"/dashboard/community/topics/"+this.newThreadId});
             },
 
             onPostThreadError: function(data) {
-                //console.log(data);
             },
                        
             onAttachRequest: function() {
@@ -292,7 +290,6 @@
             },
 
             handleAttachedBacktest: function() {
-                
               if(this.attachedBacktestId && this.attachedBacktestId!="") {
                   this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
                   this.$$('#attachedMessageDiv').style.display = 'block';
@@ -341,7 +338,6 @@
                 this.error = "No preview available for empty post. Please create a valid post and a header.";
                 return false;
               }
-
             },
 
             onPreview: function() { 
@@ -353,12 +349,9 @@
             },
 
             _activeChanged: function(active, queryParams) {
-                console.log("Active or Route Data create post changed");
-                
                 this.resetView();
 
                 if (active && queryParams.backtestId) {
-                    console.log("in community create :"+ active + queryParams.backtestId);
                    this.attachedBacktestId = queryParams.backtestId;
                 } 
             },

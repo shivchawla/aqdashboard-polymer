@@ -85,7 +85,7 @@
       </div>
 
       <web-socket 
-          url="[[WSEndPoint]]"
+          url=""
           id="webSocketConn"
           json
           on-open="_onOpen"
@@ -101,7 +101,7 @@
         </iron-localstorage>
 
       <iron-ajax 
-        url="[[APIEndPoint]]/user/sendFeedback" 
+        url="" 
         body="{{feedBackData}}" 
         method='POST' 
         id='postFeedbackQuery' 
@@ -114,7 +114,7 @@
       </iron-ajax>
 
       <iron-ajax 
-        url="[[APIEndPoint]]/user/sendInvite" 
+        url=""
         body="{{inviteData}}" 
         method='POST' 
         id='sendInviteQuery' 
@@ -127,7 +127,7 @@
       </iron-ajax>
 
       <iron-ajax
-        url="computeGetBacktesturl(APIEndPoint, backtestId)"
+        url=""
         method='GET'
         id='getBacktestQuery'
         handle-as="json"
@@ -220,12 +220,6 @@
             'rt-changed':'goToRoute',
         },
 
-
-        ready : function() {
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-          this.WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-        },   
-
         attached: function() {
 
             //this.listen(window, 'hashchange', '_hashChanged');
@@ -237,7 +231,8 @@
 
                     //this.$$('#router').go('/dashboard');
                 }
-
+                var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+                this.$.webSocketConn.url = WSEndPoint;
                 this.$.webSocketConn.open();
             }
 
@@ -379,6 +374,10 @@
           return (window.location.pathname.match(path)) ? true : false;
         },
 
+        gotoSignin: function() {
+          this.fire('rt-changed',{route:'/user/signin'});
+        },
+
         onSignOut: function() {
           this.set('aimsquant.user','');
           this.$.localStorage.save(); 
@@ -392,8 +391,16 @@
         },
 
         sendFeedBack: function(e){
-          this.feedBackData = {"feedback":e.detail.feedback, "subject":e.detail.subject};
-          this.$.postFeedbackQuery.generateRequest();
+            this.feedBackData = {"feedback":e.detail.feedback, "subject":e.detail.subject};
+            
+            if(this.$.authItem.checkHasToken()) {
+                this.header = this.$.authItem.getHeader();
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                this.$.postFeedbackQuery.url = APIEndPoint+'/user/sendFeedback';
+                this.$.postFeedbackQuery.generateRequest();
+            } else {
+                this.gotoSignin();
+            }
         },
 
         onPostFeedbackResponse: function (e) {
@@ -407,8 +414,17 @@
         },
 
         sendInvite: function(e) {
-          this.inviteData = {email_list:e.detail.address};
-          this.$.sendInviteQuery.generateRequest();
+            
+            this.inviteData = {email_list:e.detail.address};
+            
+            if(this.$.authItem.checkHasToken()) {
+              this.header = this.$.authItem.getHeader();
+              var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+              this.$.postFeedbackQuery.url = APIEndPoint+'/user/sendInvite';
+              this.$.sendInviteQuery.generateRequest();
+            } else {
+              this.gotoSignin();
+            }
         },
 
         onSendInviteResponse: function(e) {
@@ -425,21 +441,26 @@
 
         },
 
-        _onMessage: function(e) {   
-            var backtestId = e.detail.backtest_id;
+        _onMessage: function(e) { 
+            
+            var backtestId = e.detail.backtestId;
             if (!this.backtests[backtestId]) {
+              //console.log("ohh no");
               return;
             }
               
+              //console.log("ohh yes1");
             this.backtests[backtestId].data.push(e.detail);
             var bulksent = this.backtests[backtestId].bulksent;
             var subscription = this.backtests[backtestId].subscription;
             var alldata = this.backtests[backtestId].data;    
                      
             if(subscription && !bulksent) {
+              //console.log("Firign bulk");
               this.fire('iron-signal',{name:'bulk-data', data:alldata});
               this.backtests[backtestId].bulksent = true;
             } else if (subscription){
+              //console.log("Firign point");
               this.fire('iron-signal',{name:'point-data', data:e.detail});
             }
         },
@@ -451,24 +472,33 @@
         },
 
         requestExecution: function(e) {
-          var backtestId = e.detail.backtestId;
-          this.backtestId = backtestId;
-          //Send message to web socket for execution
-          var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
-                action: 'exec-backtest',
-                backtest_id: backtestId};
 
-          this.backtestId = backtestId
-          this.backtests[backtestId] = {data:[], subscription:false,bulksent:false};
-          this.$.webSocketConn.send(msgForWS);
+          if(this.$.authItem.checkHasToken()) {
+            this.header = this.$.authItem.getHeader();
+            var backtestId = e.detail.backtestId;
+            this.backtestId = backtestId;
+            //Send message to web socket for execution
+            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+                  action: 'exec-backtest',
+                  backtest_id: backtestId};
+
+            this.backtestId = backtestId
+            this.backtests[backtestId] = {data:[], subscription:false,bulksent:false};
+            this.$.webSocketConn.send(msgForWS);
+          } else {
+            this.gotoSignin();
+          }
+
+          //console.log(this.backtests);
 
         },
 
         onSubscription: function(e) {
           var backtestId = e.detail.backtestId;
-          
+          //console.log("Subscribing");
           if(this.backtests[backtestId]) { 
             this.backtests[backtestId].subscription = true;
+            //console.log("Sub. Complete");
             this.async(this.managesubscriptions, 60000);
           }
         },
@@ -481,7 +511,6 @@
               this.backtests[backtestId].bulksent = false;
           }
 
-          
         },
 
         updateHeader: function(user) {
@@ -496,7 +525,6 @@
             this.$.localStorage.save();
 
             this.hasToken = this.$.authItem.checkHasToken();
-            
             
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
             
@@ -515,7 +543,14 @@
           if(Object.keys(this.backtests).length > 0) {
              for (var key in this.backtests) {
               this.backtestId = key;
-              this.$.getBacktestQuery.generateRequest();
+
+                if(this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.getBacktestQuery.url = this.computeGetBacktesturl(this.backtestId);
+                    this.$.getBacktestQuery.generateRequest();
+                } else {
+                  this.gotoSignin();
+                }
              } 
 
              this.async(this.managesubscriptions, 60000);
@@ -524,15 +559,18 @@
         },
 
         onGetBacktestSuccess: function(e){
+          console.log(e.detail);
           var id = e.detail.response._id;
           var status = e.detail.response.status
           if (this.backtests[id] && (status == "complete" || status=="exception")) {
             
             delete this.backtests[id];
           } 
-
         },
 
+        onGetBacktestError: function(e){
+
+        },
 
         goToRoute: function(e) {
             var route = this.redirect(e.detail.route);

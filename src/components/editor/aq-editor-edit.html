@@ -309,24 +309,23 @@
         },*/
 
         computeGetStrategyUrl: function(strategyId) {
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
-          console.log(this.APIEndPoint+'/strategy/'+strategyId);
-          return this.APIEndPoint+'/strategy/'+strategyId;
+          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          return APIEndPoint+'/strategy/'+strategyId;
         },
 
         computePutStrategyUrl: function(strategyId) {
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
-          return this.APIEndPoint +'/strategy/' + strategyId;
+          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          return APIEndPoint +'/strategy/' + strategyId;
         },
 
         computePostStrategyExecutionUrl: function(strategyId) {
-          this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
-          return this.APIEndPoint + '/strategy/'+ strategyId+'/exec'; 
+          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
+          return APIEndPoint + '/strategy/'+ strategyId+'/exec'; 
         },
 
         _narrowChanged: function(newVal, oldVal) {
           if (!newVal && !this.isRunning) {
-            //this.$$('#codeEditorPanel').style.display = 'block';
+            this.$$('#codeEditorPanel').style.display = 'block';
           }
         },
 
@@ -367,11 +366,11 @@
 
             var x = this.$$('#codeEditorPanel').style.display;
 
-            /*if(x=='none' && !this.isRunning) {
+            if(x=='none' && !this.isRunning) {
               this.$$('#codeEditorPanel').style.display = 'block';
             } else {
               this.$$('#codeEditorPanel').style.display = 'none';
-            }*/
+            }
 
           } else if (this.showSideBar && !this.narrow) {
             this.closeDrawer();
@@ -411,16 +410,14 @@
         },
 
         onGetStrategyResponse: function(data) {
-          console.log(data.detail.response);
           this.strategy = data.detail.response;
         },
 
         onGetStrategyError: function(data) {
-          console.log(data);
         },
 
         onStrategySavedResponse: function(data) {
-          
+            
           // Check if save was initiated before RUN
           if(this.runSwitch == 1) {
             
@@ -428,14 +425,11 @@
             this.runSwitch = 0;
             
             // Now run the saved strategy 
-            //this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             this.$.runStrategyQuery.generateRequest();
           }
         },
 
         onStrategySavedError: function(data) {
-          console.log("Error Saving");
-          console.log(data);
         },
 
         runStrategyFromPanel: function() {
@@ -443,6 +437,7 @@
         },
 
         saveStrategy: function(e) {
+
           this.putStrategyData = {
               "name":e.detail.name,
               "description": this.strategy.description,
@@ -451,12 +446,10 @@
               "code": this.$$('#codeEditorPanel').getCodeContent(),
           };
          
-          //this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
           this.$.saveStrategyQuery.generateRequest();
         },
 
         runStrategy: function(e) {
-           console.log("Going to Run:");
 
            //Get settings from the sidebar
            var strategySettings = this.$$('#runSidebar').getSettings();
@@ -476,7 +469,6 @@
           
           //Before execution starts, 
           //backtestId handle is sent from the backend
-          console.log(data.detail.response);
           this.activeBacktestId = data.detail.response._id;
           //This backtest object just contains settings and code
           //BUT has no output
@@ -485,11 +477,9 @@
           this.isRunning  = true;
           this.fire('execute-backtest', {backtestId:this.activeBacktestId});
           
-          console.log("Run: Success");
         },
 
         onStrategyExecutionError: function(data) {
-          console.log(data);
           //This get back the created backtest object with just the settings,
           //HAS no output
         },
@@ -500,8 +490,6 @@
         },
 
         _isRunningChanged: function() {
-          console.log(this.isRunning);
-          console.log(this.selectedSidebar);
 
           if(!this.isRunning) {
             this.selectedSidebar = 0;
@@ -515,7 +503,6 @@
         },
 
         showProgrammerWindow: function(isRunning, isProgrammer) {
-          console.log(!isRunning && isProgrammer);
           return !isRunning && isProgrammer;
         },
 

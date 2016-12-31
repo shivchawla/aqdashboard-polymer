@@ -86,17 +86,6 @@
         'analyzeClicked':'goToAnalyze',
       },
 
-      attached: function() {
-          console.log("Editor main is attached");
-          //console.log(this.subroute);
-          //console.log(this.subrouteData.strategyId);
-      },
-
-      detached: function() {
-        console.log("Editor main is Removed");
-      },  
-
-
       isEqual: function(view1, view2) {
         return view1==view2;
       },
@@ -164,8 +153,6 @@
       },
 
       hasTail: function(tail) {
-        //console.log("checking tail");
-        //console.log(tail);
         if (tail && tail.path) {
           return tail.path.length > 0;
         }
@@ -174,7 +161,6 @@
       },
 
       computeCreate: function(params) {
-        //console.log(params);
         if (params && params.create) {
           return 1;
         } else {
@@ -184,8 +170,6 @@
 
 
       isEditorHomeActive: function(active, tail) {
-        console.log("Checking if editor home is active");
-        console.log("Result: "+ (active && !this.hasTail(tail)));
         return active && !this.hasTail(tail);
 
       }

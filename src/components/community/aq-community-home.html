@@ -269,17 +269,6 @@
 
             observers:['_activeChanged(active, subroute)'],
 
-            /*ready: function() {
-                var x = localStorage.getItem('my-app-storage');
-                var user = JSON.parse(x).user;
-                if (user.token) {
-                  this.header = {
-                    "aimsquant-token": user.token,
-                    "Content-Type": "application/json"};  
-                }
-
-            },*/
-
             attached: function() {
               var x = localStorage.getItem('my-app-storage');
               if (x) {
@@ -293,11 +282,9 @@
                   } 
               }
 
-              this.processparams();
+              //console.log("Home");
+              //this.processparams();
 
-              /*var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-              this.$.getAllThreadsQuery.url = APIEndPoint + '/thread'; 
-              this.$.getAllThreadsQuery.generateRequest();  */            
             },
 
             isSelected: function(selected, selection) {
@@ -373,9 +360,7 @@
             },
 
             fetchResults: function() {
-                console.log("fetchResults");
                 if(this.$.authItem.checkHasToken()) {
-                  console.log("fetchResults + inside");
                   this.header = this.$.authItem.getHeader();
                   var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                   this.$.getAllThreadsQuery.url = APIEndPoint + '/thread'; 
@@ -385,9 +370,9 @@
             },
 
             _currentPageChanged: function(newPage, oldPage) {      
-                //console.log(newPage); 
-                //console.log(oldPage);
-                this.processparams(); 
+                if(this.active) {
+                  this.processparams(); 
+                }
             },
 
             updateCommunityState: function() {
@@ -399,13 +384,6 @@
                   this.$.localStorage.save();
               }
             },
-
-            /*saveCurrentPage: function(currentPage) {
-              if(this.aimsquant) {
-                this.aimsquant.community.lastPage = currentPage;
-                this.$.localStorage.save();
-              }
-            },*/
 
             isSearchActive: function(searchText) {
                 return searchText.length > 0;
@@ -424,14 +402,12 @@
             },
 
             isActive: function(active, subroute) {
-              //console.log("Community Home Active: "+ (active && !this.hasTail(subroute)))
               return active && !this.hasTail(subroute);
             },
 
             _activeChanged: function(active, subroute) {
-                console.log("Community Home Active: " + active);
                 if(active && !this.hasTail(subroute)) {
-                    console.log("Processing");
+
                     this.processparams();   
                 } else {
                   this.threads = [];

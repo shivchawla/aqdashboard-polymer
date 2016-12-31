@@ -76,7 +76,7 @@
           	on-response="onGetAllBacktestsForStrategy"
           	on-error="onGetAllBacktestsForStrategyError"
           	headers='{{header}}'
-          	debounce-duration="300">
+          	debounce-duration="500">
         </iron-ajax>
 		
 		<iron-ajax
@@ -161,12 +161,10 @@
 				active:{
 					type: Boolean,
 					value: false,
-					//observer:'_activeChanged',
 				},
 
 				routeData:Object,
 				subroute:Object,
-
     		}, 
 
     		observers:['_activeChanged(active, subroute)'],
@@ -181,7 +179,6 @@
 				'delete-action':'onDeletion',
 				'detail-action':'onDetail',
 			},
-
 
 	      	computeGetStrategyUrl: function(strategyId) {
 	      		var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -211,12 +208,10 @@
 			},
 			
 			onGetAllBacktestsForStrategy: function(data) {
-				console.log(data.detail.response);
 				this.backtests = data.detail.response;
 			},
 
 			onGetAllBacktestsForStrategyError: function(data) {
-				console.log(data)
 			},
 
 			onGetStrategy: function(data) {
@@ -225,7 +220,6 @@
 			},
 
 			onGetStrategyError: function(data) {
-				console.log(data);
 			},
 
 			checkBacktest: function(e) {
@@ -273,12 +267,12 @@
         			if (deleteId == this.backtests[i]._id) {
         				this.splice('backtests', i, 1);
         				this.checkedCount -= 1;
+        				delete this.checkedItems[deleteId];
         			}
         		}
 	        },
 
 	        onDeleteBacktestForStrategyError: function(data) {
-	        	console.log(data.detail.response);
 	        }, 
 
 	        toggleComparison: function() {
@@ -286,7 +280,6 @@
 	        },
 
 	        onDetail: function(e) {  
-	        	//console.log(this.router);
 	        	e.stopPropagation();    	
 	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id});
 	        },
@@ -304,16 +297,16 @@
 	        },
 
 	        _activeChanged: function(active, subroute) {
-	        	console.log("Here I Come");
 	        	if(active && !this.hasTail(subroute)) {
 	        		
 	        		this.strategyId = this.routeData.strategyId;
 	        		if(this.$.authItem.checkHasToken()) {
 		        		this.header = this.$.authItem.getHeader();
-		        		this.$.getBacktestsQuery.generateRequest();		
-		        	} else {
-	        			this.resetView();
-	        		}	
+	        			this.$.getStrategyQuery.generateRequest();
+		        	} 
+	        			
+        		} else {
+        			this.resetView();
         		}
 	        },
 

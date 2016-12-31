@@ -169,7 +169,6 @@
   				</aq-editor-home-strategy-item>	
   	    	</template>
   	
-
   		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
   		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
   		    						 cancel="Cancel"
@@ -180,7 +179,6 @@
 
   	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
   		    
-  		    <!--div id="actions"></div-->
   		</div> 
     </template>
 		
@@ -241,17 +239,6 @@
 			}
 		},
 
-		/*ready: function() {
-      var x = localStorage.getItem('my-app-storage');
-      var user = JSON.parse(x).user;
-      if (user.token) {	
-        this.header = {
-          "aimsquant-token": user.token,
-          "Content-Type": "application/json"};  
-      } 
-
-    },*/
-
     computPostDeleteStrategyUrl: function(deleteId) {
       var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
       return APIEndPoint+'/strategy/'+deleteId;
@@ -262,7 +249,6 @@
     },
 
 		onGetStrategiesError: function(data) {
-    	 //this.router.go('/user/signin');
     },        
 
 		listeners: {
@@ -380,18 +366,11 @@
 
 	 	goToAnalyze: function(e) {
         
-		// if strategy analyzed is called from elementmenu
     	if(!e.detail.id) {
 	 		  e.detail.id = this._currentRow.id;
     	}
     	
-    	//this.router.go('/dashboard/analyze/' + strategyId);
     },
-
-    /*goToAnalyzeFromEditor: function(e) {
-    	var strategyId = e.detail.id;
-    	this.router.go('/dashboard/analyze/' + strategyId);
-    },*/
 
     goToClone: function(e) {
     	var strategyId = this._currentRow.id;
@@ -411,7 +390,6 @@
     },
 
     goToEditor: function(e) {
-    	//var strategyId = this._currentRow.id;
     	var strategyId = e.detail.id;
     	this.fire('rt-changed',{route:'/dashboard/editor/' + strategyId});
     },
@@ -450,15 +428,12 @@
     },
 
     onDeletion: function() {
-      console.log("here");
     	//Send DELETE request to backend
     	for (key in this.checkedItems) {
     		for (i in this.strategies) {		
     			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
     				this.deleteId = this.strategies[i]._id;
     				this.$.deleteStrategyQuery.generateRequest();
-    				//this.splice('strategies', i, 1);
-    				//this.checkedCount -= 1;
     			}
     		}
 		}
@@ -481,10 +456,7 @@
   	},
 
     _createChanged: function(nCreate, oCreate) {
-      console.log("Here Create Changed");
-      console.log(nCreate);
       if(nCreate=="1") {
-        console.log("Firing Event");
         this.fire('newClicked');
         this.create = 0; 
       }
@@ -492,7 +464,6 @@
 
     fetchResults: function() {
         if (this.$.authItem.checkHasToken()) { 
-          console.log("but not here");
           this.header = this.$.authItem.getHeader();
           var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
           this.$.getStrategiesQuery.url = APIEndPoint+'/strategy';
@@ -513,9 +484,7 @@
     },
 
     _activeChanged: function(active, subroute, queryParams) {
-      console.log("Here in Editor home:"+ active);
       if(active && !this.hasTail(subroute)) {
-        console.log(this.queryParams);
         
         if(this.queryParams && this.queryParams.create) {
           this.create = this.queryParams.create;

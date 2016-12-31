@@ -1,5 +1,5 @@
-<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
-<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-line.html'>
+<link rel='import' href='../../../bower_components/chart-elements/chart-bar.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
@@ -19,10 +19,24 @@
 			--width:100%;
 			--height:70%;
 		}
-		chart-bar {
-			width: 5%;
-			height:5%;
+
+		#cumRetLineChart {
+			height:250px;
+			width:100%;
+			margin-bottom: 20px;
 		}
+
+		#trackVarLineChart {
+			margin-bottom: 20px;
+			height:160px;
+			width:100%;
+		}
+
+		#barChart {
+			height:400px;
+			width:100%;
+		}
+
 		.detail {
 			margin:10px;
 			--margin-bottom:0px !important;
@@ -53,7 +67,7 @@
 
 	
 		#detail-header {
-			margin-top:0px;
+			margin-top:20px;
 			margin-bottom: 20px;
 			margin-left:10px;
 			font-weight: bold;
@@ -86,6 +100,10 @@
 			display: -webkit-flex; /* Safari */
             -webkit-flex-wrap: wrap; 
             flex-wrap: wrap;
+        }
+        .card-actions{
+			background-color: #f2fbf7;
+        
 		}
 		
 		paper-tabs {
@@ -124,31 +142,23 @@
 				<!--template is='dom-if' if="[[netValueData]]"-->
 
 					<div class="layout vertical">
-						<nvd3-line 
-				  			id="cumRetLineChart" 
-				  			height=250
-				  			show-legend 
-				  			use-interactive-guideline 
-				  			auto-resize
-				  			no-data="Fetching Data" 
-				  			data="[[cumRetData]]">
-				  		</nvd3-line>
+						<chart-line 
+				  			id="cumRetLineChart"  
+				  			data="[[cumRetData]]"
+				  			options="[[cumRetLineChartOptions]]">
+				  		</chart-line>
 
 				  		<template is='dom-if' if="[[hasTrackVarData]]">
-					  		<nvd3-line 
+					  		<chart-line 
 					  			id="trackVarLineChart" 
-					  			height=150
-					  			show-legend 
-					  			use-interactive-guideline 
-					  			auto-resize
-					  			no-data="Fetching Data" 
-					  			data="[[trackVarData]]">
-					  		</nvd3-line>
+					  			data="[[trackVarData]]"
+					  			options="[[trackVarLineChartOptions]]">
+					  		</chart-line>
 				  		</template>
 			  		</div>
 
 			  		<!--/template-->
-
+			  		<div>
 			  		<template is='dom-if' if='[[!active]]'>
 					<!--nvd3-line 
 			  			id="netValueLineChart" 
@@ -166,21 +176,19 @@
 		  		<!--/template-->
 			      
 			    <!--template is='dom-if' if="[[barData]]"-->    
-			  		<nvd3-multi-bar 
-			  			id="barChart" 
-	  				 	height="300" 
-	  				 	class="bar" 
-  					 	auto-resize 
-	  				 	show-legend
-	  				 	use-interactive-guideline 
-	  				 	no-data="Fetching Data"
-	  				 	data="[[barData]]">	 	
-	  				 </nvd3-multi-bar>
+				  		<chart-bar 
+				  			id="barChart" 
+		  				 	class="bar" 
+	  					 	data="[[barData]]"
+	  					 	options="[[barChartOptions]]">	 	
+		  				 </chart-bar>
 	  				 </template>
+	  				 </div>
 		  		<!--/template-->
 	
 		  		</iron-pages>
 			      
+			    <div class='card-actions'>  
 				<div id='detail-header' class="layout horizontal flex">
 					<span class="self-center">Risk Metrics</span>
 					<div class="flex"></div>	
@@ -195,6 +203,7 @@
 							</aq-backtest-metric-item>
 						</div>
 					</template>			
+				</div>
 				</div>
 			</paper-card>	
 		
@@ -237,18 +246,26 @@
 				},
 
 				netValueData: {
-					type:Array, 
-					value:[],
+					type:Object, 
+					value:{},
 				},
 
 				cumRetData:{
-					type:Array,
-					value:[],
+					type:Object,
+					value:{},
+				},
+
+				cumRetLineChartOptions:{
+					type:Object,
 				},
 
 				trackVarData:{
-					type:Array,
-					value:[],
+					type:Object,
+					value:{},
+				},
+
+				trackVarLineChartOptions:{
+					type:Object,
 				},
 
 				hasTrackVarData:{
@@ -274,7 +291,11 @@
 
 				barData: {
 					type:Object,
-					value:[], 
+					value:{}, 
+				},
+
+				barChartOptions:{
+					type:Object,
 				},
 
 				count:{
@@ -298,34 +319,6 @@
 
 				APIEndPoint:String,
 
-			},
-
-			/*ready: function() {
-				 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-				},*/
-
-			attached: function() {
-
-				/*var x = localStorage.getItem('my-app-storage');
-		        var user = JSON.parse(x).user;
-		        if (user.token) {
-		          this.header = {
-		            "aimsquant-token": user.token,
-		            "Content-Type": "application/json"};  
-		        }*/
-
-				/*if(this.active) {
-					this.reset();
-					//this.$$('#cumRetLineChart').refresh();
-					//this.$$('#trackVarLineChart').refresh();
-					this.subscribeData();
-				} else {
-					this.reset();
-					//this.$$('#cumRetLineChart').refresh();
-					//this.$$('#trackVarLineChart').refresh();
-					//this.$$('#barChart').refresh();
-					this.requestStaticData();
-				}*/	
 			},
 
 			computeGetBacktestUrl: function(backtestId) {
@@ -399,25 +392,117 @@
 
 			_isActiveChanged: function(newVal, oldVal) {
 				if((oldVal + 1) && newVal) {
+					console.log("My name is Shiv");
 					this.reset();
 					this.async(this.subscribeData, 1000);
 				} 
 			},
 
 			reset: function() {
-				this.netValueData = [];
-				this.splice('cumRetData',0, this.cumRetData.length);
-				this.barData = [];
-				this.trackVarData = [];
+				this.netValueData = {};
+				this.barData = {};
+				this.trackVarData = {};
 				this.resetMetrics();
 				this.counter = 0;
 				this.hasTrackVarData = false;
-				this.$$('#cumRetLineChart').refresh();
 
+				if(this.$$('#cumRetLineChart')) {
+					this.$$('#cumRetLineChart').updateChart();
+				}
+
+				if(this.$$('#cumRetLineChart')) {
+					this.$$('#cumRetLineChart').updateChart();	
+				}	
+
+				if(this.$$('#barChart')) {
+					this.$$('#barChart').updateChart();	
+				}
+
+				var options_1 = {maintainAspectRatio:false,
+									scales: {
+							            xAxes: [{
+							                ticks: {
+							                    maxTicksLimit:10,
+							                    maxRotation:0,
+							                    callback: function(value, index, values) {
+								                        var date = new Date(value);
+														var month = (date.getMonth() + 1);
+														var month = month >= 10 ? month.toString() : '0'+month.toString();
+														return date.getDate()+'/'+ month + '/' +  date.getFullYear();
+							                    }
+							                }}],
+						                yAxes: [{
+							                ticks: {
+							                    maxTicksLimit:5,
+							                }}]
+						            },
+					        };
+
+		        var options_2 = {maintainAspectRatio:false,
+									scales: {
+							            xAxes: [{
+							                ticks: {
+							                    maxTicksLimit:10,
+							                    maxRotation:0,
+							                    callback: function(value, index, values) {
+								                        var year = Math.floor(value / 100);
+														var month = value % 100;
+														var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+														 "Sep", "Oct", "Nov", "Dec"];
+														return monthNames[month - 1] +" "+year.toString();
+							                    }
+							                }}],
+						                yAxes: [{
+							                ticks: {
+							                    maxTicksLimit:5,
+							                }}]
+						            },
+					        };
+
+		        this.barChartOptions = options_2;
+		        this.cumRetLineChartOptions = options_1;
+		        this.trackVarLineChartOptions = options_1;
 			},
 
 			subscribeData: function() {
-				this.fire('subscribe-data',{backtestId: this.backtestId});
+				console.log(this.backtestId);
+				this.async(function(){this.fire('subscribe-data',{backtestId: this.backtestId})}, 500);
+				
+				console.log("Here tooo");
+				this.cumRetData = {datasets:
+									[{label:"Strategy (%)",
+								 		borderColor: "#cc6666",
+								 		borderWidth:2,
+										fill:false,
+										pointRadius:1,
+										pointHoverRadius:10,
+										data:[]},
+									{label:"Benchmark (%)",
+										borderColor:"#0375b4",
+										borderWidth:2,
+										fill:false,
+										pointRadius:1,
+										pointHoverRadius:10,
+										data:[]}]};
+
+				this.trackVarData = {datasets:[]};
+			},
+
+			initializeTrackVarData: function(data) {
+				var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
+				this.hasTrackVarData = true;
+				var i=0;
+				for (var k in data["variables"]) {
+					var dataset = {label:k,
+							 		borderColor: colors[i++],
+							 		borderWidth:2,
+									fill:false,
+									pointRadius:1,
+									pointHoverRadius:10,
+									data: [data["variables"][k]]};
+
+					this.push('trackVarData.datasets', dataset);
+				}
 			},
 
 			onBacktestData: function(e) {
@@ -430,6 +515,8 @@
 
 				if (e.detail.outputtype == "performance") {	
 					this.addRealTimeData(e.detail);
+				} else if(e.detail.outputtype == "labels") {
+					this.addRealTimeData(e.detail, "labels");
 				}
 			},
 
@@ -445,115 +532,87 @@
 				for(i in data) {
 					if (data[i].outputtype=="performance") {
 						this.addRealTimeData(data[i]);
+					} else if(data[i].outputtype == "labels") {
+						this.addRealTimeData(data[i], "labels");
 					}
 				}
 			},
 		
-			addRealTimeData: function(data) {
+			addRealTimeData: function(data, type="") {
+				if (type=="labels") {
+					console.log(data.labels);
+					var labels = Object.keys(data.labels).sort();
+					
+					this.set('cumRetData.labels', labels);
+					this.set('trackVarData.labels', labels);
+					return;
+				}
+
 				var legends = ["Strategy (%)", "Benchmark (%)"]
 				var types = ["totalreturn","totalreturn_benchmark"];
 				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 
 				var typecount = 0;
 				var ct = this.counter++;
-				for(index = 0;index<types.length;index++) {
-					var linepoint = {};
-	            	linepoint.y = data[types[index]].toFixed(2);
-	            	
-	            	linepoint.x = ct;
-	           		
-	           		var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(linepoint.y))) - 1);
+				
+				for (index = 0;index<types.length;index++) {
+	            	this.array = this.cumRetData.datasets[index].data;
+	            	this.push('array', data[types[index]]);
+            	}
 
-	           		this.scale = Math.max(this.scale, scale);
+            	if(this.cumRetData.datasets[0]) {
+	            	var nPoints = this.cumRetData.datasets[0].data.length;
+	            	if (nPoints > 0 && (nPoints % 1 == 0)) {
+	            		this.addMetricData(data);
+	            		this.$$('#cumRetLineChart').updateChart();
+	            	}
+	            }
 
-	           		if (this.cumRetData.length == types.length) {
+				if (data["variables"]) {
+					
+					// Add variable tracker data
+					if(this.hasTrackVarData) {
 						
-							this.cumRetData[index]["values"].push(linepoint);
-							
-								this.minLineData = Math.floor(Math.min(this.minLineData, 0.98*linepoint.y)/this.scale)*this.scale;
-
-								this.maxLineData = Math.ceil(Math.max(this.maxLineData, 1.02*linepoint.y)/this.scale)*this.scale;
-
-							var len = this.cumRetData[index]["values"].length;	
-							
-							if (len %20 == 0 || len == 501) {
-								
-								this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
-								this.$$('#cumRetLineChart').refresh();
-								this.addMetricData(data);
-							}
-
-						} else {
-			
-							this.push('cumRetData', {
-							  "key":legends[index],
-							  "color":colors[typecount++],
-							  "values": [linepoint]});
-
-							this.minLineData = linepoint.y;
-							this.maxLineData = Math.ceil(1.02 * linepoint.y/this.scale)*this.scale;  
-							
-							this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
-							
-							//this.$$('#cumRetLineChart')._chart.forceX([0,501]);
-							
+						for (i=0; i<this.trackVarData.datasets.length; i++) {
+							this.array = this.trackVarData.datasets[i].data;
+							this.push('array', data["variables"][this.trackVarData.datasets[i]["label"]]);
 						}
+						
+					} else {
+						this.initializeTrackVarData(data);
 					}
 
-					if (data["variables"]) {
-						// Add variable tracker data
-						if(this.trackVarData.length) {
-							 
-							for (i=0;i<this.trackVarData.length;i++) {
-								var key = this.trackVarData[i]["key"];
-								var nvalue = data["variables"][key];
-								var linepoint = {};
-								linepoint.y = nvalue;
-								linepoint.x = this.trackVarData[i]["values"].length + 1;
-								this.trackVarData[i]["values"].push(linepoint);
-							}
-
-							this.$$('#trackVarLineChart').refresh();
-							
-						} else {
-							for (var k in data["variables"]) {
-								var linepoint = {};
-								linepoint.y = data["variables"][k];
-								linepoint.x = 1;
-								this.push('trackVarData', {
-									"key":k,
-									"color":colors[typecount++],
-									"values":[linepoint]
-								});
-								this.hasTrackVarData = true;
-							}
+					if(this.trackVarData.datasets[0] && this.$$('#trackVarLineChart')) {
+						var nPoints = this.trackVarData.datasets[0].data.length;
+						if(nPoints > 0 && (nPoints % 1 == 0)) {
+							this.$$('#trackVarLineChart').updateChart();
 						}
-
 					}
-
+					
+				}
 			},
 
 			addMetricData: function(data) {
 				this.metrics = [{
 				            		"metricName":"Total Return", 
-				            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
+				            		"metricValue":data.totalreturn.toString()+'%', 
 				            		"metricDescription":"Total Return"
 				            	},
 								{
 									"metricName":"Annual Return",
-									"metricValue":data.annualreturn.toFixed(2).toString()+'%',
+									"metricValue":data.annualreturn.toString()+'%',
 									"metricDescription":"Annual Return",
 								},
-							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
-							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},
-							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
+							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toString()+'%', "metricDescription":"Volatility"},
+							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio, "metricDescription":"Sharpe Ratio"},
+							{"metricName":"Information Ratio", "metricValue":data.informationratio, "metricDescription":"Information Ratio"},
 							//{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
 							//{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
-							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
-							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio.toFixed(2), "metricDescription":"Calmar Ratio"},
-							{"metricName":"Beta", "metricValue":data.beta.toFixed(2), "metricDescription":"Beta"},
-							{"metricName":"Stability", "metricValue":data.stability.toFixed(2), "metricDescription":"Stability"},
-							{"metricName":"Alpha", "metricValue":data.alpha.toFixed(2).toString()+'%', "metricDescription":"Alpha"},
+							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toString()+'%', "metricDescription":"Max Drawdown"},
+							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio, "metricDescription":"Calmar Ratio"},
+							{"metricName":"Beta", "metricValue":data.beta, "metricDescription":"Beta"},
+							{"metricName":"Stability", "metricValue":data.stability, "metricDescription":"Stability"},
+							{"metricName":"Alpha", "metricValue":data.alpha.toString()+'%', "metricDescription":"Alpha"},
 							//{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
 							];
 
@@ -567,7 +626,6 @@
 			},
 
 			onGetBacktestSuccess: function(e){
-				console.log(e.detail.response);
 				this.set('backtest', e.detail.response);
 				
 				if(this.backtest.output.analytics.rolling) {
@@ -649,9 +707,7 @@
 
 				//₨
 				this.$$('#netValueLineChart')._chart.forceY([min,max]);
-					  			
-	  			this.$$('#netValueLineChart').refresh();
-
+				
 			},
 
 			createCumRetLineChart: function() {
@@ -659,51 +715,42 @@
 				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
 				var legend = ["Strategy (%)", "Benchmark (%)"];
-				var min = Infinity; 
-				var max = -Infinity;
+
+				this.cumRetData = {datasets:[]};
 				
 				for (index =0; index<types.length;index++) {
+					var dataset = {
+						label:legend[index],
+						borderColor:colors[index],
+						borderWidth:2,
+						fill:false,
+						pointRadius:1,
+						pointHoverRadius:10,
+					};
 
 					var equityData = this.backtest.output.totalreturn[types[index]];
 					var keys = Object.keys(equityData);
-					var linePoints = new Array(keys.length);
+					var yPoints = new Array(keys.length);
+					var xPoints = new Array(keys.length);
 					var i = 0;
 					
 					keys.sort()
 	      			.forEach(function(v, i) {
-	      				linePoints[i++] = {x:v, 
-											y:equityData[v]};
-	          			min = Math.min(equityData[v], min)
-	          			max = Math.max(equityData[v], max) 
+	      				yPoints[i] = equityData[v];
+	      				xPoints[i] = v;
 	       			}); 
 
-	  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+					dataset["data"] = yPoints;
 
-	  				min = Math.floor(0.98*min/scale,-1)*scale;
-					max = Math.ceil(1.02*max/scale,-1)*scale;
-		
-					//var yAxisLabel = "Total Return (%)";			
-		  			this.push('cumRetData',{"key":legend[index],
-					  					"color":colors[index],
-						  				"values":linePoints});
+		  			this.push('cumRetData.datasets', dataset);
 
+		  			if(!this.cumRetData.labels) {
+		  				this.cumRetData["labels"] = xPoints;
+		  			}
 		  		}
 
-	  			this.$$('#cumRetLineChart')._chart
-	  			.x(function(d) {return new Date(d.x);});
-
-	  			this.$$('#cumRetLineChart')._chart.xAxis
-  				.axisLabel('Date')
-				.tickFormat(function(d){
-					return d3.time.format('%d-%m-%Y')(new Date(d));
-				 });
-
-				this.$$('#cumRetLineChart')._chart.yAxis
-				.ticks(Math.ceil((max - min)/scale));
-
-				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
-
-				this.$$('#cumRetLineChart').refresh();
+		  		this.$$('#cumRetLineChart').updateChart();
+				
 			},
 
 			createMonthlyReturnBarChart: function() {
@@ -711,112 +758,89 @@
 				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
 				var legend = ["Strategy (%)", "Benchmark (%)"];
-				var min = Infinity; 
-				var max = -Infinity;
-			
+				
+				this.barData = {datasets:[]};
+				
 				for (index=0; index<types.length;index++) {
 
+					var dataset = {
+						label:legend[index],
+						borderColor:colors[index],
+						backgroundColor:colors[index],
+						borderWidth:2,
+					};
+
 					var aggregatedReturns = this.backtest.output.returns.monthly[types[index]];
-				
-					var barPoints = new Array(Object.keys(aggregatedReturns).length);
-					
+					var keys = Object.keys(aggregatedReturns);
+					var yPoints = new Array(keys.length);
+					var xPoints = new Array(keys.length);
 					var i = 0;
 
-					for (var key in aggregatedReturns) {
-						barPoints[i++] = {x:key, y:aggregatedReturns[key]};
-						min = Math.min(aggregatedReturns[key], min)
-	          			max = Math.max(aggregatedReturns[key], max)
-					}
+					keys.sort()
+	      			.forEach(function(v, i) {
+	      				yPoints[i] = aggregatedReturns[v];
+	      				xPoints[i] = v;
+	       			}); 
 
-					var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+	       			dataset["data"] = yPoints;
 
-	  				min = Math.floor(0.98*min/scale,-1)*scale;
-					max = Math.ceil(1.02*max/scale,-1)*scale;
-		
+		  			this.push('barData.datasets', dataset);
 
-					this.push('barData', {"key":legend[index],
-				  				"color": colors[index],//"#0375b4",
-					  			"values":barPoints}); 
+		  			if(!this.barData.labels) {
+		  				this.barData["labels"] = xPoints;
+		  			}
 				}
 
-	  			this.$$('#barChart')._chart.xAxis
-  				.axisLabel('Year/Month')
-				.tickFormat(function(d) {
-
-					var year = Math.floor(d / 100);
-					var month = d % 100;
-					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
-					return monthNames[month - 1] +" "+year.toString();
-
-				});
-
-				this.$$('#barChart')._chart.forceY([min,max]);
-
-	  			this.$$('#barChart').refresh();
+	  			this.$$('#barChart').updateChart();
 			},
 
-
 			createTrackVarLineChart: function() {
-
-				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-
-				var min = Infinity; 
-				var max = -Infinity;
-				
+				var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
 				var variablesData = this.backtest.output.variables
 
 				if (variablesData) {
 
 					var dates = Object.keys(variablesData).sort();
-							
+						
+					this.trackVarData = {datasets:[], labels:[]};		
+
+					var dataArrays = {};
+					
 					for(idx=0;idx<dates.length;idx++) {
+						
 						var datekey = dates[idx];
 	      				var trackedVars = variablesData[datekey];
 	      				var nTrackedVars = Object.keys(trackedVars).length;
-	      				var i = 0;
+
+	      				this.push('trackVarData.labels', datekey);
+	      				
 	      				for (var key in trackedVars) {
-	      					var lp = {};
 
-	      					lp.y = trackedVars[key];
-	      					lp.x = datekey;
-
-	      					if (this.trackVarData.length < nTrackedVars) {
-	      						this.push('trackVarData',{
-	      							"key":key,
-	      							"color":'green',
-	      							"values":[lp]
-	      						});
-
+	      					if (dataArrays[key]) {
+	      						dataArrays[key].push(trackedVars[key]);
 	      					} else {
-		      					this.trackVarData[i++]["values"].push(lp);
-	          				}
-
-	          				min = Math.min(lp.y, min)
-	          				max = Math.max(lp.y, max)
+	      						dataArrays[key] = [trackedVars[key]];
+	      					}
 	      				}
+      				}
+
+      				var i = 0;
+
+      				for (var key in dataArrays) {
+      					var dataset = {
+							label:key,
+							borderColor:colors[i++],
+							borderWidth:2,
+							fill:false,
+							pointRadius:1,
+							pointHoverRadius:10,
+							data:dataArrays[key]
+						};
+
+      					this.push('trackVarData.datasets', dataset);
       				}	 
-		       		
-					var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 2);
 
-	  				min = Math.floor(0.98*min/scale,-1)*scale;
-					max = Math.ceil(1.02*max/scale,-1)*scale;
-				
-					this.$$('#trackVarLineChart')._chart
-		  			.x(function(d) {return new Date(d.x);});
-
-		  			this.$$('#trackVarLineChart')._chart.xAxis
-	  				.axisLabel('Date')
-					.tickFormat(function(d){
-						return d3.time.format('%d-%m-%Y')(new Date(d));
-					 });
-
-					this.$$('#trackVarLineChart')._chart.yAxis
-					.ticks(3);
-
-					this.$$('#trackVarLineChart')._chart.forceY([min,max]);
-
-					this.$$('#trackVarLineChart').refresh();
+					this.$$('#trackVarLineChart').updateChart();
 				}
 			
 			},
@@ -843,7 +867,7 @@
 		    },
 
 		    _backtestIdChanged: function(nId, oId) {
-		    	if(nId && this.isAttached) {
+		    	if(nId) {
 		    		if(this.active) {
 						this.reset();
 						this.subscribeData();
@@ -851,6 +875,7 @@
 						this.reset();
 						this.requestStaticData();
 					}	
+
 		    	}
 		    }
 

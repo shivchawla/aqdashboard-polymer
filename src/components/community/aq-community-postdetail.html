@@ -136,12 +136,10 @@
       },
 
       onGetThreadDetailResponse: function(data) {
-          //console.log(data.detail.response);
           this.set('threadDetails', data.detail.response);
       },
 
       onGetThreadDetailError: function(data) {
-          console.log(data);
       },
 
       attached: function() {  
@@ -177,8 +175,6 @@
       },
 
       hasThreadDetail: function(detail) {
-          console.log("thread");
-          console.log(detail);
           if (detail) {
             return Object.keys(detail).length > 0;
           }
