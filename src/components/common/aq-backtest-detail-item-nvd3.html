@@ -1,0 +1,813 @@
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
+<link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
+<link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='./aq-backtest-metric-item.html'>
+<link rel='import' href='./aq-check-authentication.html'>
+
+<dom-module id='aq-backtest-detail-item'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+  
+	<style> 
+		#netValueLineChart {
+			--width:100%;
+			--height:70%;
+		}
+		chart-bar {
+			width: 5%;
+			height:5%;
+		}
+		.detail {
+			margin:10px;
+			--margin-bottom:0px !important;
+			--height:250px;
+			width:50%;
+		}	
+
+		.detailmetric {
+			--border:1px solid teal;
+			height:73px;
+			--border-bottom:1px solid teal;
+			--border-right:1px solid teal;
+		}
+
+		.detailmetric span {
+			vertical-align: center;
+			text-align: center;
+			margin-top:15px;
+		}
+
+		.mdcontainer {
+			margin-left:10px;
+			margin-right:10px;
+			--margin-top:5px;
+			margin-bottom:8px;
+			height:62px;
+		}
+
+	
+		#detail-header {
+			margin-top:0px;
+			margin-bottom: 20px;
+			margin-left:10px;
+			font-weight: bold;
+		}
+
+		.chart {
+			width:95%;
+		}
+		.tooltip:{
+			margin-top: -10px;
+
+		}
+		.width_tab{
+			width: 144px;
+		}
+		.wrap    { 
+		  -webkit-flex-wrap: wrap;
+		  flex-wrap: wrap;
+		}  
+
+		.paper_body {
+			width: 98%;
+		    text-align: -webkit-center;
+		    color:#24293d;
+		    border:1px solid teal;
+		}
+
+		.flex_container{
+			display: flex;
+			display: -webkit-flex; /* Safari */
+            -webkit-flex-wrap: wrap; 
+            flex-wrap: wrap;
+		}
+		
+		paper-tabs {
+			--paper-tabs-selection-bar-color:teal;
+
+			--paper-tabs:{
+				--height:100%;
+				margin-bottom:10px;
+			};
+
+			margin-right:10px;
+		}
+
+	</style>
+
+	<template>
+		<aq-check-authentication id='authItem'></aq-check-authentication>
+
+			<paper-card class="flex detail layout vertical paper_body">
+				<div id='detail-header' class="layout horizontal">
+					<span class="self-center">Equity Curve</span>
+					<div class="flex"></div>	
+					
+					<paper-tabs noink selected="{{graphType}}">
+						<paper-tab>Cumulative Return</paper-tab>
+						<template is='dom-if' if='[[!active]]'>
+							<paper-tab>Monthly Returns</paper-tab>
+						</template>
+					</paper-tabs>
+						
+				</div>
+				
+				<iron-pages selected="{{graphType}}">
+				
+
+					<div class="layout vertical">
+						<nvd3-line 
+				  			id="cumRetLineChart" 
+				  			height=250
+				  			show-legend 
+				  			use-interactive-guideline 
+				  			auto-resize
+				  			no-data="Fetching Data" 
+				  			data="[[cumRetData]]">
+				  		</nvd3-line>
+
+				  		<template is='dom-if' if="[[hasTrackVarData]]">
+					  		<nvd3-line 
+					  			id="trackVarLineChart" 
+					  			height=150
+					  			show-legend 
+					  			use-interactive-guideline 
+					  			auto-resize
+					  			no-data="Fetching Data" 
+					  			data="[[trackVarData]]">
+					  		</nvd3-line>
+				  		</template>
+			  		</div>
+
+			  		<template is='dom-if' if='[[!active]]'>
+				  		<nvd3-multi-bar 
+				  			id="barChart" 
+		  				 	height="300" 
+		  				 	class="bar" 
+	  					 	auto-resize 
+		  				 	show-legend
+		  				 	use-interactive-guideline 
+		  				 	no-data="Fetching Data"
+		  				 	data="[[barData]]">	 	
+		  				 </nvd3-multi-bar>
+	  				 </template>
+	  				 
+		  		</iron-pages>
+			      
+				<div id='detail-header' class="layout horizontal flex">
+					<span class="self-center">Risk Metrics</span>
+					<div class="flex"></div>	
+				</div>
+
+				<div class="wrap flex_container">
+					<template is="dom-repeat" items="{{metrics}}">
+						<div class="layout horizontal flex mdcontainer">
+							<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}} 
+								metric-value={{item.metricValue}}
+								metric-desc={{item.metricDescription}}>
+							</aq-backtest-metric-item>
+						</div>
+					</template>			
+				</div>
+			</paper-card>	
+		
+
+		<iron-signals id='datasignal' on-iron-signal-point-data='onBacktestData' on-iron-signal-bulk-data='onBacktestData'></iron-signals>
+
+		<iron-ajax
+          	url="[[computeGetBacktestUrl(backtestId)]]"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onGetBacktestSuccess"
+          	on-error="onGetBacktestError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+			
+	</template>
+	<script>
+		Polymer ({
+			is:'aq-backtest-detail-item',
+			
+			properties:{
+				hide: {
+					type: Boolean,
+					value: true,
+				},
+
+				active:{
+					type:Boolean,
+					value:false,
+					observer:'_isActiveChanged',
+				},
+
+				metrics:Object,
+
+				graphType: {
+					type:Number,
+					value:0,
+				},
+
+				netValueData: {
+					type:Array, 
+					value:[],
+				},
+
+				cumRetData:{
+					type:Array,
+					value:[],
+				},
+
+				trackVarData:{
+					type:Array,
+					value:[],
+				},
+
+				hasTrackVarData:{
+					type:Boolean,
+					value:false,
+				},
+
+				maxLineData:{
+					type:Number,
+					value:-Infinity,
+
+				},
+
+				minLineData:{
+					type:Number,
+					value: Infinity,
+				},
+
+				counter:{
+					type:Number,
+					value:0,
+				},
+
+				barData: {
+					type:Object,
+					value:[], 
+				},
+
+				count:{
+					type:Number,
+					value:0,
+				},
+
+				backtestId: {
+					type:String,
+					observer: '_backtestIdChanged',
+				},
+
+				backtest:Object,
+				
+				scale:{
+					type:Number,
+					value:1,
+				},
+
+				header: Object,
+
+				APIEndPoint:String,
+
+			},
+
+			computeGetBacktestUrl: function(backtestId) {
+				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+				return APIEndPoint+'/backtest/'+backtestId;
+			},
+
+			resetMetrics: function() {
+				this.metrics = [{
+				            		"metricName":"Total Return", 
+				            		"metricValue":"-", 
+				            		"metricDescription":"Total Return"
+				            	},
+								{
+									"metricName":"Annual Return",
+									"metricValue":"-",
+									"metricDescription":"Annual Return",
+								},
+								{
+									"metricName":"Volatility",
+								 	"metricValue":"-", 
+								 	"metricDescription":"Volatility"
+								},
+								{
+									"metricName":"Sharpe Ratio", 
+									"metricValue":"-",
+									"metricDescription":"Sharpe Ratio"
+								},
+								{
+									"metricName":"Information Ratio",
+									"metricValue":"-",
+								 	"metricDescription":"Information Ratio"
+								},
+								{	
+									"metricName":"Sortino Ratio",
+									"metricValue":"-",
+									"metricDescription":"Sortino Ratio"
+								},
+								{	
+									"metricName":"Avg. Drawdown",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Avg. Drawdown"
+						 	 	},
+								{
+									"metricName":"Max Drawdown",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Max Drawdown"
+						 	 	},
+								{	
+									"metricName":"Calmar Ratio",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Calmar Ratio"
+						 	 	},
+								{
+									"metricName":"Beta",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Beta"
+						 	 	},
+								{
+									"metricName":"Stability",
+								 	"metricValue":"-",
+							 	 	"metricDescription":"Stability"
+						 	 	},
+								{
+									"metricName":"Avg. Concentration", 
+									"metricValue":"-",
+								 	"metricDescription":"Avg. Concentration"
+							 	},];
+
+			},
+
+			_isActiveChanged: function(newVal, oldVal) {
+				if((oldVal + 1) && newVal) {
+					this.reset();
+					this.async(this.subscribeData, 1000);
+				} 
+			},
+
+			reset: function() {
+				this.netValueData = [];
+				this.splice('cumRetData',0, this.cumRetData.length);
+				this.barData = [];
+				this.trackVarData = [];
+				this.resetMetrics();
+				this.counter = 0;
+				this.hasTrackVarData = false;
+				this.$$('#cumRetLineChart').refresh();
+
+			},
+
+			subscribeData: function() {
+				this.fire('subscribe-data',{backtestId: this.backtestId});
+			},
+
+			onBacktestData: function(e) {
+				var isArray = Array.isArray(e.detail);
+
+				if (isArray) {
+					this.onBacktestBulkData(e);
+					return;
+				}
+
+				if (e.detail.outputtype == "performance") {	
+					this.addRealTimeData(e.detail);
+				}
+			},
+
+			onBacktestBulkData: function(e) {
+				
+				var data = e.detail;
+				if(data && data.length > 0) {
+					this.addLineBulkData(e.detail);	
+				}
+			},		
+
+			addLineBulkData: function(data) {
+				for(i in data) {
+					if (data[i].outputtype=="performance") {
+						this.addRealTimeData(data[i]);
+					}
+				}
+			},
+		
+			addRealTimeData: function(data) {
+				var legends = ["Strategy (%)", "Benchmark (%)"]
+				var types = ["totalreturn","totalreturn_benchmark"];
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+
+				var typecount = 0;
+				var ct = this.counter++;
+				for(index = 0;index<types.length;index++) {
+					var linepoint = {};
+	            	linepoint.y = data[types[index]].toFixed(2);
+	            	
+	            	linepoint.x = ct;
+	           		
+	           		var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.abs(linepoint.y))) - 1);
+
+	           		this.scale = Math.max(this.scale, scale);
+
+	           		if (this.cumRetData.length == types.length) {
+						
+							this.cumRetData[index]["values"].push(linepoint);
+							
+								this.minLineData = Math.floor(Math.min(this.minLineData, 0.98*linepoint.y)/this.scale)*this.scale;
+
+								this.maxLineData = Math.ceil(Math.max(this.maxLineData, 1.02*linepoint.y)/this.scale)*this.scale;
+
+							var len = this.cumRetData[index]["values"].length;	
+							
+							if (len %20 == 0 || len == 501) {
+								
+								this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+								this.$$('#cumRetLineChart').refresh();
+								this.addMetricData(data);
+							}
+
+						} else {
+			
+							this.push('cumRetData', {
+							  "key":legends[index],
+							  "color":colors[typecount++],
+							  "values": [linepoint]});
+
+							this.minLineData = linepoint.y;
+							this.maxLineData = Math.ceil(1.02 * linepoint.y/this.scale)*this.scale;  
+							
+							this.$$('#cumRetLineChart')._chart.forceY([this.minLineData,this.maxLineData]);
+							
+							//this.$$('#cumRetLineChart')._chart.forceX([0,501]);
+							
+						}
+					}
+
+					if (data["variables"]) {
+						// Add variable tracker data
+						if(this.trackVarData.length) {
+							 
+							for (i=0;i<this.trackVarData.length;i++) {
+								var key = this.trackVarData[i]["key"];
+								var nvalue = data["variables"][key];
+								var linepoint = {};
+								linepoint.y = nvalue;
+								linepoint.x = this.trackVarData[i]["values"].length + 1;
+								this.trackVarData[i]["values"].push(linepoint);
+							}
+
+							this.$$('#trackVarLineChart').refresh();
+							
+						} else {
+							for (var k in data["variables"]) {
+								var linepoint = {};
+								linepoint.y = data["variables"][k];
+								linepoint.x = 1;
+								this.push('trackVarData', {
+									"key":k,
+									"color":colors[typecount++],
+									"values":[linepoint]
+								});
+								this.hasTrackVarData = true;
+							}
+						}
+
+					}
+
+			},
+
+			addMetricData: function(data) {
+				this.metrics = [{
+				            		"metricName":"Total Return", 
+				            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
+				            		"metricDescription":"Total Return"
+				            	},
+								{
+									"metricName":"Annual Return",
+									"metricValue":data.annualreturn.toFixed(2).toString()+'%',
+									"metricDescription":"Annual Return",
+								},
+							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
+							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},
+							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
+							//{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
+							//{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
+							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
+							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio.toFixed(2), "metricDescription":"Calmar Ratio"},
+							{"metricName":"Beta", "metricValue":data.beta.toFixed(2), "metricDescription":"Beta"},
+							{"metricName":"Stability", "metricValue":data.stability.toFixed(2), "metricDescription":"Stability"},
+							{"metricName":"Alpha", "metricValue":data.alpha.toFixed(2).toString()+'%', "metricDescription":"Alpha"},
+							//{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
+							];
+
+			},
+
+			requestStaticData: function() {
+				if(this.backtestId && this.$.authItem.checkHasToken()) {
+					this.header = this.$.authItem.getHeader();
+					this.$.getBacktestsQuery.generateRequest();
+				}
+			},
+
+			onGetBacktestSuccess: function(e){
+				console.log(e.detail.response);
+				this.set('backtest', e.detail.response);
+				
+				if(this.backtest.output.analytics.rolling) {
+					this.addMetricData(this.backtest.output.analytics.rolling);
+				}
+				
+				this.async(this.createCumRetLineChart, 500);
+				this.async(this.createMonthlyReturnBarChart, 2000);
+				
+				if(this.backtest.output.variables) {
+					// this variable is used because array changes are somehow not relaying back the template
+					this.hasTrackVarData = true;
+					this.async(this.createTrackVarLineChart, 500);
+				}
+			},
+
+			createNetValueChart: function() {
+				var equityData = this.backtest.output.equity;
+				var keys = Object.keys(equityData);
+				var linePoints = new Array(keys.length);
+				var i = 0;
+				
+				var min = Infinity; 
+				var max = 0;
+				keys.sort()
+      			.forEach(function(v, i) {
+      				linePoints[i++] = {x:v, 
+										y:equityData[v]};
+          			min = Math.min(equityData[v], min)
+          			max = Math.max(equityData[v], max) 
+       			});
+
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(max)) - 2);
+		
+				min = Math.floor(0.98*min/scale)*scale;
+
+				max = Math.ceil(1.02*max/scale)*scale;
+
+				var yAxisLabel = this.getYAxisLabel(max);
+				
+	  			this.push('netValueData', {"key":yAxisLabel,
+				  				"color": "#cc6666",
+					  			"values":linePoints});
+
+	  			
+	  			this.$$('#netValueLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#netValueLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d) {return d3.time.format('%d-%m-%Y')(new Date(d)); });
+
+				this.$$('#netValueLineChart')._chart.yAxis
+  				//.axisLabel(yAxisLabel)
+				.tickFormat(function(d){
+
+					formatMoneyValue = function(number) {
+
+			    		if (number < Math.pow(10,5)) {
+					    	return [number,""];
+					    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
+
+					    	number  = number / Math.pow(10,5); 
+					    	var plural = Math.round(number) > 1 ;
+					    	
+					    	return [number.toFixed(2), (plural ? " Lacs":"Lac")]; 
+					    } else {
+					    	number  = number / Math.pow(10,7); 
+					    	var plural = Math.round(number) > 1 ;
+					    	return [number.toFixed(2), (plural ? " Crores": " Crore")];
+					    }
+
+					};
+
+					formatValue = d3.format(".2f");
+					var x = formatMoneyValue(d);
+					return formatValue(x[0]);
+				});				
+
+				//₨
+				this.$$('#netValueLineChart')._chart.forceY([min,max]);
+				
+			},
+
+			createCumRetLineChart: function() {
+				
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var types = ["algorithm","benchmark"];
+				var legend = ["Strategy (%)", "Benchmark (%)"];
+				var min = Infinity; 
+				var max = -Infinity;
+				
+				for (index =0; index<types.length;index++) {
+
+					var equityData = this.backtest.output.totalreturn[types[index]];
+					var keys = Object.keys(equityData);
+					var linePoints = new Array(keys.length);
+					var i = 0;
+					
+					keys.sort()
+	      			.forEach(function(v, i) {
+	      				linePoints[i++] = {x:v, 
+											y:equityData[v]};
+	          			min = Math.min(equityData[v], min)
+	          			max = Math.max(equityData[v], max) 
+	       			}); 
+
+	  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+
+	  				min = Math.floor(0.98*min/scale,-1)*scale;
+					max = Math.ceil(1.02*max/scale,-1)*scale;
+		
+					//var yAxisLabel = "Total Return (%)";			
+		  			this.push('cumRetData',{"key":legend[index],
+					  					"color":colors[index],
+						  				"values":linePoints});
+
+		  		}
+
+	  			this.$$('#cumRetLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#cumRetLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d){
+					return d3.time.format('%d-%m-%Y')(new Date(d));
+				 });
+
+				this.$$('#cumRetLineChart')._chart.yAxis
+				.ticks(Math.ceil((max - min)/scale));
+
+				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
+
+				this.$$('#cumRetLineChart').refresh();
+				
+			},
+
+			createMonthlyReturnBarChart: function() {
+				
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var types = ["algorithm","benchmark"];
+				var legend = ["Strategy (%)", "Benchmark (%)"];
+				var min = Infinity; 
+				var max = -Infinity;
+			
+				for (index=0; index<types.length;index++) {
+
+					var aggregatedReturns = this.backtest.output.returns.monthly[types[index]];
+				
+					var barPoints = new Array(Object.keys(aggregatedReturns).length);
+					
+					var i = 0;
+
+					for (var key in aggregatedReturns) {
+						barPoints[i++] = {x:key, y:aggregatedReturns[key]};
+						min = Math.min(aggregatedReturns[key], min)
+	          			max = Math.max(aggregatedReturns[key], max)
+					}
+
+					var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+
+	  				min = Math.floor(0.98*min/scale,-1)*scale;
+					max = Math.ceil(1.02*max/scale,-1)*scale;
+		
+
+					this.push('barData', {"key":legend[index],
+				  				"color": colors[index],//"#0375b4",
+					  			"values":barPoints}); 
+				}
+
+	  			this.$$('#barChart')._chart.xAxis
+  				.axisLabel('Year/Month')
+				.tickFormat(function(d) {
+
+					var year = Math.floor(d / 100);
+					var month = d % 100;
+					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+					return monthNames[month - 1] +" "+year.toString();
+
+				});
+
+				this.$$('#barChart')._chart.forceY([min,max]);
+
+	  			this.$$('#barChart').refresh();
+			},
+
+
+			createTrackVarLineChart: function() {
+
+				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+
+				var min = Infinity; 
+				var max = -Infinity;
+				
+				var variablesData = this.backtest.output.variables
+
+				if (variablesData) {
+
+					var dates = Object.keys(variablesData).sort();
+							
+					for(idx=0;idx<dates.length;idx++) {
+						var datekey = dates[idx];
+	      				var trackedVars = variablesData[datekey];
+	      				var nTrackedVars = Object.keys(trackedVars).length;
+	      				var i = 0;
+	      				for (var key in trackedVars) {
+	      					var lp = {};
+
+	      					lp.y = trackedVars[key];
+	      					lp.x = datekey;
+
+	      					if (this.trackVarData.length < nTrackedVars) {
+	      						this.push('trackVarData',{
+	      							"key":key,
+	      							"color":'green',
+	      							"values":[lp]
+	      						});
+
+	      					} else {
+		      					this.trackVarData[i++]["values"].push(lp);
+	          				}
+
+	          				min = Math.min(lp.y, min)
+	          				max = Math.max(lp.y, max)
+	      				}
+      				}	 
+		       		
+					var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 2);
+
+	  				min = Math.floor(0.98*min/scale,-1)*scale;
+					max = Math.ceil(1.02*max/scale,-1)*scale;
+				
+					this.$$('#trackVarLineChart')._chart
+		  			.x(function(d) {return new Date(d.x);});
+
+		  			this.$$('#trackVarLineChart')._chart.xAxis
+	  				.axisLabel('Date')
+					.tickFormat(function(d){
+						return d3.time.format('%d-%m-%Y')(new Date(d));
+					 });
+
+					this.$$('#trackVarLineChart')._chart.yAxis
+					.ticks(3);
+
+					this.$$('#trackVarLineChart')._chart.forceY([min,max]);
+
+					this.$$('#trackVarLineChart').refresh();
+				}
+			
+			},
+
+			onGetBacktestError: function(e) {
+			},
+
+			getYAxisLabel: function(number){
+				var x = "Net Value" 
+				if (number < Math.pow(10,5)) {
+			    	return x;
+			    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
+
+			    	return x + " (Lacs)";
+			    } else {
+			    	return x +" (Crores)";
+			    }
+
+			    return label(max);
+		    },
+
+		    hasTrackVarData: function(trackVarData) {
+		    	return trackVarData.length > 0;
+		    },
+
+		    _backtestIdChanged: function(nId, oId) {
+		    	if(nId) {
+		    		if(this.active) {
+						this.reset();
+						this.subscribeData();
+					} else {
+						this.reset();
+						this.requestStaticData();
+					}	
+
+
+		    	}
+		    }
+
+		});
+	</script>
+			
+</dom-module>
+

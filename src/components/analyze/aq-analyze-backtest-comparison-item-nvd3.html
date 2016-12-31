@@ -1,0 +1,418 @@
+
+<!--link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html"-->
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-multi-bar.html'>
+<link rel='import' href='../../../bower_components/nvd3-elements/nvd3-line.html'>
+<link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+
+<dom-module id='aq-analyze-backtest-comparison-item'>	
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>	
+
+		paper-icon-button {
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+    		--color:#188364; 
+		}
+
+		#backButton {
+			margin:auto 0;
+			outline: none !important;
+		}
+
+		span {
+			text-align: center;
+			margin-top:15px;
+		}
+
+		.paper_align{
+			position: absolute;
+		    top: 20px;
+		    right: 7px;
+		}
+
+		.pages_select{
+			text-align: -webkit-center;
+			margin: 30px 0 30px 10px;
+		}
+
+		vaadin-grid {
+			--vaadin-grid-header-row-height : 78px;
+			--vaadin-grid-row-cell: blue;
+		}
+
+		#table_details__comparison{
+			overflow: scroll;width: 100%;
+		}
+		
+		
+		.sub_header{
+			display: flex;
+			justify-content: space-between;
+		}
+		
+		.vertical-textGraphs {
+			transform: rotate(270deg);
+			margin-right: -40px;	
+		}
+
+		.horizontal-textGraphs {
+			margin-top: -40px; 
+		}
+
+		#comparison-return {
+			margin-top:0px;
+		}
+
+		paper-tab:hover{
+    		font-weight: bold;
+    		font-size:110%;
+    	}
+
+    	paper-tabs {
+    		--paper-tabs-selection-bar-color: teal;
+    	}
+
+    	#cumRetLineChart {
+    		margin-left: -100px;
+    	}
+
+	</style>
+
+	<template>	
+		<div class="goBackButton layout horizontal">
+            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+            </paper-icon-button>
+            <p class="self-center">Back to All Backtests</p>
+      	</div>
+		
+		<div id='comparison-return'>
+			<div class="sub_header">
+				<paper-tabs noink selected={{graphType1}}>
+					<paper-tab>Total Return</paper-tab>
+					<paper-tab>Monthly Returns</paper-tab>
+					<!--paper-tab>Risk Metrics</paper-tab-->
+				</paper-tabs>
+			</div>
+		          
+			<iron-pages class="pages_select" selected={{graphType1}}>
+							
+				<nvd3-line 
+		  			id="cumRetLineChart" 
+		  			class="bar1" 
+		  			height=460
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data="[[cumRetData]]">
+		  		</nvd3-line>
+			  	
+  				<nvd3-multi-bar 
+		  			id="monthlyReturnBarChart" 
+		  			class="bar" 
+		  			height=460
+		  			show-legend 
+		  			use-interactive-guideline 
+		  			auto-resize 
+		  			no-data="No Data Available!" 
+		  			data="[[monthlyReturnData]]">
+		  		</nvd3-multi-bar>
+		  	
+	  			<!--div style="width:100%">
+			  		<vaadin-grid size="0" id="table_details__comparison">
+					  <table>
+					    <colgroup class="table_style">
+				    		<col name="Strategy Name" sortable/>
+					      	<col name="Backtest Name" sortable/>
+					      	<col name="Total Return" sortable/>
+					      	<col name="Annual Return" sortable/>
+					     	 <col name="Volatility" sortable/>
+					      	<col name="Sharpe Ratio" sortable/>
+					      	<!--col name="Information Ratio" sortable/>
+					      	<col name="Sortino Ratio" sortable/>
+					      	<col name="Avg Drawdown" sortable/-->
+					      	<!--col name="Max Drawdown" sortable/-->
+					      	<!--col name="Calmar Ratio" sortable/>
+					      	<col name="Beta Value" sortable/>
+					      	<col name="Stability" sortable/>
+					      	<col name="Avg Concentration" sortable/-->
+					    <!--/colgroup>
+					  </table>
+					</vaadin-grid>
+				</div-->
+	  		</iron-pages>
+		</div>
+		
+		<div id='comparison-risk' class = "layout horizontal flex">
+		</div>
+
+		<iron-ajax
+          	url="[[computeGetBacktestUrl(backtestId)]]"
+     	 	method='GET'
+          	id='getBacktestsQuery'
+          	handle-as="json"
+          	on-response="onGetBacktestSuccess"
+          	on-error="onGetBacktestError"
+          	headers='{{header}}'
+          	debounce-duration="300">
+        </iron-ajax>
+				
+			
+	</template>
+
+	<script>
+		Polymer ({
+			is:'aq-analyze-backtest-comparison-item',
+			
+			properties:{
+
+				compareItems: {
+					type:Object,
+				},
+
+				active:{
+					type:Boolean,
+					value:false,
+					observer:'_isActiveChanged',
+				},
+
+				backtests:{
+					type:Array,
+					value:[],
+				},
+
+				cumRetData:{
+					type:Array,
+					value:[],
+				},
+
+				monthlyReturnData:{
+					type:Array,
+					value:[],
+				},
+
+				tableData:{
+					type:Array,
+					value:[]
+				},
+
+				counter:{
+					type:Number,
+					value:0,
+				},
+
+				backtestId: String,
+
+				graphType1: {
+					type:Number,
+					value:0,
+				},
+
+				header: Object,
+
+				APIEndPoint:String,
+				
+			},
+
+			ready: function() {
+				var x = localStorage.getItem('my-app-storage');
+		        var user = JSON.parse(x).user;
+		        if (user.token) {
+		          this.header = {
+		            "aimsquant-token": user.token,
+		            "Content-Type": "application/json"};  
+		        }
+
+	           	this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+
+			},
+
+			attached: function() {
+				if (this.active){
+					this.doComparison();
+				}
+			},
+
+			_isActiveChanged: function(newVal, oldVal) {
+				if (oldVal+1 && newVal) {
+					this.doComparison();
+				}
+			},
+
+			computeGetBacktestUrl: function(backtestId) {
+				return this.APIEndPoint + '/backtest/' + backtestId;
+			},
+
+			doComparison: function() {
+				for(var key in this.compareItems) {	
+					if (!this.backtests[key]) {
+						this.backtestId = key;
+						this.$.getBacktestsQuery.generateRequest();
+					} else {
+						this.addBacktestToComparison(this.backtests[key]);
+					}
+				}
+			},
+
+			onGetBacktestSuccess: function(e){
+				var backtest = e.detail.response;
+				this.backtests[backtest._id] = backtest;
+				this.addBacktestToComparison(backtest);
+			},
+			
+			addBacktestToComparison: function(backtest){	
+				this.processLineChartData(backtest);
+				this.processBarChartData(backtest);
+				//this.processMetricsData(backtest);
+				this.counter++;
+
+				/*if (this.counter == Object.keys(this.compareItems).length) {
+					var grid = this.$.table_details__comparison;
+					grid.items = this.tableData;
+					grid.frozenColumns = 2;
+				}*/
+			},
+
+			processLineChartData: function(data) {
+				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
+				var equityData = data.output.totalreturn.algorithm;
+				var keys = Object.keys(equityData);
+				var linePoints = new Array(keys.length);
+				var i = 0;
+				
+				var min = Infinity; 
+				var max = -Infinity;
+				keys.sort()
+      			.forEach(function(v, i) {
+      				linePoints[i++] = {x:v, 
+										y:equityData[v]};
+          			min = Math.min(equityData[v], min)
+          			max = Math.max(equityData[v], max) 
+       			}); 
+
+  				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+
+  				min = Math.floor(0.98*min/scale,-1)*scale;
+				max = Math.ceil(1.02*max/scale,-1)*scale;
+
+				var yAxisLabel = "Total Return (%)";
+				
+	  			this.push('cumRetData',{"key":yAxisLabel,
+				  					"color": colors[this.counter],
+					  				"values":linePoints});
+
+	  			this.$$('#cumRetLineChart')._chart
+	  			.x(function(d) {return new Date(d.x);});
+
+	  			this.$$('#cumRetLineChart')._chart.xAxis
+  				.axisLabel('Date')
+				.tickFormat(function(d){
+					return d3.time.format('%d-%m-%Y')(new Date(d));
+				 });
+
+				this.$$('#cumRetLineChart')._chart.forceY([min,max]);
+				this.$$('#cumRetLineChart')._chart.margin().left = 30;
+				this.$$('#cumRetLineChart')._chart.margin().right = 30;
+
+				this.$$('#cumRetLineChart').refresh();	
+
+			},
+
+			processBarChartData: function(data) {
+				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
+				var aggregatedReturns = data.output.returns.monthly.algorithm;
+		
+				var barPoints = new Array(Object.keys(aggregatedReturns).length);
+
+				var min = Infinity; 
+				var max = -Infinity;
+
+				var i = 0;
+
+				for (var key in aggregatedReturns) {
+					barPoints[i++] = {x:key, y:aggregatedReturns[key]};
+					min = Math.min(aggregatedReturns[key], min)
+          			max = Math.max(aggregatedReturns[key], max)
+				}
+
+				var scale = 5*Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(max),Math.abs(min)))) - 1);
+
+  				min = Math.floor(0.98*min/scale,-1)*scale;
+				max = Math.ceil(1.02*max/scale,-1)*scale;
+
+
+				this.push('monthlyReturnData',
+								 {"key":"Monthly Returns (%)",
+				  					"color": colors[this.counter],
+					  				"values":barPoints}); 
+
+
+	  			this.$$('#monthlyReturnBarChart')._chart.xAxis
+  				.axisLabel('Year/Month')
+				.tickFormat(function(d) {
+
+					var year = Math.floor(d / 100);
+					var month = d % 100;
+					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", 
+										"Jun", "Jul", "Aug", "Sep", 
+										"Oct", "Nov", "Dec"];
+					return monthNames[month - 1] +" "+year.toString();
+				});
+
+				this.$$('#monthlyReturnBarChart')._chart.forceY([min,max]);
+				this.$$('#monthlyReturnBarChart')._chart.margin().left = 30;
+				this.$$('#monthlyReturnBarChart')._chart.margin().right = 30;
+
+
+	  			this.$$('#monthlyReturnBarChart').refresh();
+			},
+
+			processMetricsData: function(data){
+				
+				var metrics = data.output.analytics.rolling;
+				var id = data._id;
+				var strategyId = data.strategy;
+				this.tableData.push({
+		            'Strategy Name': strategyId,
+		            'Backtest Name': id,
+		            'Total Return': metrics.totalreturn,
+		            'Annual Return': metrics.annualreturn,
+		            'Volatility': metrics.annualstandarddeviation,
+		            'Sharpe Ratio': metrics.sharperatio,
+		            //'Information Ratio': metrics.informationratio,
+		            //'Sortino Ratio': analytics.so,
+		            //'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
+		            'Max Drawdown': metrics.maxdrawdown,
+		            //'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
+		            //'Beta': e.detail.response.result[i].Beta,
+		            //'Stability': e.detail.response.result[i].Stability,
+		            //'Avg Concentration': e.detail.response.result[i].Avg_Concentration
+
+		        });			
+			},
+
+			resetComparison: function() {
+				this.cumRetData = [];
+				this.monthlyReturnData = [];
+				this.tableData = [];
+				this.counter = 0;
+			},
+
+			goBackAllBacktests: function() {
+				this.resetComparison();
+	          	this.fire('comparison-off');
+	        },
+
+		});
+	</script>
+</dom-module>
