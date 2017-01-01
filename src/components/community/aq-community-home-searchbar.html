@@ -123,7 +123,7 @@
 	  			<div id="search" class="layout horizontal">
 	  				
   					<div id="searchdiv">
-		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-search="onSearch">
+		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-keydown="checkForKeys">
 
 		  				<div>
 		  				<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">
@@ -178,8 +178,8 @@
 				}
 			},
 
-			onSearch: function(e) {
-              
+			search: function() {
+				this.searchValue = this.$$('#searchbox').value;
                 this.fire('search-action', {text: this.searchValue, category: this.selectedCategory > 0 ? this.categories[this.selectedCategory].value : ""});
 
              	if(this.$.searchbox.value=="") {
@@ -199,7 +199,6 @@
                   	this.fire('rt-changed',{route:'/user/signin'});
                   	return;
               	}
-              	
                 this.$.searchdiv.style.display = 'block';
                 this.$.searchIcon.style.display = 'none';
                 this.$.searchbox.focus();
@@ -207,11 +206,23 @@
               }
             },
 
-             blur: function() {
+             /*blur: function(e) {
             	if(this.$$('#searchbox').value=="") {
-            		this.$$('#searchdiv').style.display = 'none';
-					this.$$('#searchIcon').style.display = 'inline';
+            		//this.$$('#searchdiv').style.display = 'none';
+					//this.$$('#searchIcon').style.display = 'inline';
+					console.log("in blur");
+					this.search();
 				} 
+            },*/
+
+            checkForKeys: function(e) {
+                // check if 'esc' was pressed
+                if (e.keyCode === 27) {
+                    this.$$('#searchbox').value="";
+                    this.search();
+                } else if (e.keyCode === 13) {
+                	this.search();
+                } 
             },
 
 		});

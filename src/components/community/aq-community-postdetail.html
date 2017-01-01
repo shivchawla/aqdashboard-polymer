@@ -142,11 +142,6 @@
       onGetThreadDetailError: function(data) {
       },
 
-      attached: function() {  
-          //this.$.views.generateRequest();
-          //this.$.getThreadQuery.generateRequest();
-      },
-
       computeGetThreadUrl: function(threadId){
         var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
         return APIEndPoint + '/thread/' + threadId;
@@ -164,13 +159,9 @@
       addReply: function(e) {
         
         var reply = e.detail.reply;
-        var replyElement = document.createElement('aq-community-postdetail-content');
-        
         reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
-        
-        replyElement.postContent = reply;
 
-        this.$$("#replyContainer").appendChild(replyElement);
+        this.push('threadDetails.replies', reply);
         this.$$("#replyEditor").clearEditor();
       },
 

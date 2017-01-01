@@ -81,6 +81,11 @@
       --paper-tooltip-background: teal;
     }
 
+    #followIcon {
+      color: "#cc6666";
+      background-color: white;
+    }
+
   </style>
 
   <template>
@@ -96,28 +101,26 @@
       debounce-duration="300">
     </iron-ajax>
 
+          <div id='post-header'>
+            <div id='heading'>
+              <span>[[postHeader.title]]</span>
+            </div>
 
-        <div id='post-header'>
-          <div id='heading'>
-            <span>[[postHeader.title]]</span>
+            <div class="layout horizontal">
+              <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
+              <div class="flex"></div>
+
+              <template is="dom-if" if="[[hasFollowers(followers)]]">
+                <span id='followers' class="self-end">[[followers.length]] Followers</span>
+              </template>
+              <paper-icon-button id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
+            </div>
+
+            <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
+
           </div>
 
-          <div class="layout horizontal">
-            <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
-            <div class="flex"></div>
-
-            <template is="dom-if" if="[[hasFollowers(followers)]]">
-              <span id='followers' class="self-end">[[followers.length]] Followers</span>
-            </template>
-            <paper-icon-button id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
-          </div>
-
-          <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
-
-        </div>
-
-        <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
-
+          <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
   
   </template>
 
@@ -126,7 +129,10 @@
       is: 'aq-community-postdetail-header',
 
       properties :{
-        postHeader: Object,
+        postHeader: {
+          type:Object,
+          observer:'_postHeaderChanged',
+        },
         
         header:Object,
         
@@ -141,18 +147,23 @@
         },
       },
 
-      attached: function() {
-        if (this.postHeader.followers) {
-          this.followers = this.postHeader.followers;
-        }
-      },
-
       hasPostHeader: function(postHeader) {
           if (postHeader) {
-            return Object.keys(postHeader).length > 0;
+              if (postHeader.followers) {
+                this.followers = this.postHeader.followers;
+              }
+             return Object.keys(postHeader).length > 0;
           }
 
           return false;
+      },
+
+      _postHeaderChanged: function(nPh, oPh) {
+        if(nPh) {
+          if (nPh.followers) {
+              this.followers = nPh.followers;
+          }
+        }
       },
 
       computeFollowPostUrl: function(postHeader) {
@@ -191,12 +202,12 @@
                 this.$$('#followIcon').style.outlineColor = '#cc6666';
                 return "UnFollow";
 
+              } else {
+                  this.$$('#followIcon').style.color = '#cc6666';
+                  this.$$('#followIcon').style.backgroundColor = 'white';
+                  return "Follow";
               }
 
-              this.$$('#followIcon').style.color = '#cc6666';
-              this.$$('#followIcon').style.backgroundColor = 'white';
-
-              return "Follow";
           }
 
       },

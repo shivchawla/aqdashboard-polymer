@@ -178,7 +178,7 @@
                     <aq-pagination class="self-center" 
                                     per-page="[[perPage]]"   
                                     current-page="{{currentPage}}"
-                                    total-threads="[[totalThreads]]">
+                                    total-items="[[totalThreads]]">
                     </aq-pagination>
                 </template>
             
@@ -281,10 +281,6 @@
                       this.currentPage = community.lastPage;
                   } 
               }
-
-              //console.log("Home");
-              //this.processparams();
-
             },
 
             isSelected: function(selected, selection) {
@@ -366,13 +362,13 @@
                   var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                   this.$.getAllThreadsQuery.url = APIEndPoint + '/thread'; 
                   this.$.getAllThreadsQuery.generateRequest();   
-
                 }
             },
 
             _currentPageChanged: function(newPage, oldPage) {      
                 if(this.active) {
-                  this.processparams(); 
+                  this.processparams();
+                  this.$$('#community-tabs').scrollIntoView(true); 
                 }
             },
 
@@ -414,7 +410,7 @@
                       return;
                   }
                 }
-                
+
                 if(active && !this.hasTail(subroute)) {
 
                     this.processparams();   

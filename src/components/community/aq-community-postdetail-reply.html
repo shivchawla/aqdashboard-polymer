@@ -171,17 +171,18 @@
           var x = localStorage.getItem('my-app-storage');
           var user = JSON.parse(x).user;
 
-          this.threadData = {
+          var threadData = {
               "markdownText": markdownText,
               "user":{"firstName":user.firstName,"lastName":user.lastName},
               "updatedAt": new Date(),
           };
 
           if(this.attachedBacktestId && this.attachedBacktestId!="") {
-            this.threadData["backtestId"] = this.attachedBacktestId;
+             threadData["backtestId"] = this.attachedBacktestId;
           }
 
-          if(this.threadData["markdownText"]!="") {
+          if(threadData["markdownText"]!="") {
+            this.threadData = threadData;
               this.error = "";
               return true;
           } else {
@@ -213,6 +214,7 @@
       onRemoveAttached: function() {
           this.attachedBacktestId = "";
           this.attachedMessage = "";
+          this.threadData = {};
           this.$$('#removeIcon').style.display = 'none';
       },
 

@@ -274,20 +274,23 @@
 
             onBacktestAttached: function(e) {
                 this.attachedBacktestId = e.detail.id;
-                this.handleAttachedBacktest();
+                //this.handleAttachedBacktest();
             },
 
             handleAttachedBacktest: function() {
               if(this.attachedBacktestId && this.attachedBacktestId!="") {
                   this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
                   this.$$('#attachedMessageDiv').style.display = 'block';
+              } else {
+                  this.attachedMessage = "";
+                  if(this.$$('#attachedMessageDiv')) {
+                    this.$$('#attachedMessageDiv').style.display = 'none';
+                  }
               }
             },
 
             onRemoveAttached: function() {
               this.attachedBacktestId = "";
-              this.attachedMessage = "";
-              this.$$('#attachedMessageDiv').style.display = 'none';
             },
 
             goBack: function() {
@@ -302,7 +305,7 @@
               var x = localStorage.getItem('my-app-storage');
               var user = JSON.parse(x).user;
 
-              this.threadData = {
+              var threadData = {
                   "category": category,
                   "title": title,
                   "markdownText": markdownText,
@@ -312,16 +315,18 @@
 
               // Send to backedn only if available. Backend can't handle empty backtestids 
               if(this.attachedBacktestId && this.attachedBacktestId!="") {
-                this.threadData["backtestId"] = this.attachedBacktestId;
+                  threadData["backtestId"] = this.attachedBacktestId;
               }
 
-              if(this.threadData["title"]!="" && 
-                  this.threadData["category"]!="" &&
-                  this.threadData["markdownText"]!=""
+              if(threadData["title"]!="" && 
+                  threadData["category"]!="" &&
+                  threadData["markdownText"]!=""
                 ) {
+                  
                   this.error = "";
-                
+                  this.threadData = threadData;
                   return true;
+             
               } else {
                 this.error = "No preview available for empty post. Please create a valid post and a header.";
                 return false;
@@ -333,6 +338,7 @@
             },
 
             onEdit: function() {
+              this.threadData = {};
               this.preview = false;
             },
 
@@ -359,18 +365,24 @@
                 this.threadData = {};
 
                 if (this.$$('#editor')) {
-                  this.$$('#editor').setContent("");
+                    this.$$('#editor').setContent("");
                 }
 
                 if (this.$$('#topicInput')){
-                  this.$$('#topicInput').value="";
-                  this.$$('#topicInput').focus();
+                    this.$$('#topicInput').value="";
+                    this.$$('#topicInput').focus();
                 }
             },
 
             _backtestIdChanged: function(nId, oId) {
-                this.async(this.handleAttachedBacktest, 200);
+                this.async(this.handleAttachedBacktest, 500);
             }
+
+            /*_previewChanged: function(nPreview, oPreview) {
+                if(!nPreview) {
+
+                }
+            },*/
 
 
         });

@@ -241,10 +241,11 @@
         },
 
         onCancel: function() {
+            console.log("Resetting bt dialog");
             this.strategyId = "";
             this.strategies = [];
             this.backtests = [];
-            this.checkedId="";
+            this.checkedId = {};
             this.checkedCount = 0;
         },
 
@@ -259,6 +260,7 @@
 
         onAttach: function() {
             var key = "";
+            console.log(this.checkedId);
             for (key in this.checkedId) {
                 if(this.checkedId[key]) {
                     break;

@@ -79,19 +79,7 @@
         postContent: Object,  
       },
 
-     /* ready: function() {
-          var x = localStorage.getItem('my-app-storage');
-          var user = JSON.parse(x).user;
-          if (user.token) {
-            this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"};  
-          }
-                    
-      },*/
-
       hasContent: function(item) {
-        console.log(item && Object.keys(item).length>0);
         if(item) {
           return Object.keys(item).length > 0;
         }
