@@ -389,13 +389,13 @@
 				var settings = {startDate:this.startDate,
 						endDate:this.endDate,
 						initialCash:this.initialCash,
-						rebalance:this.rebalance,
-						cancelPolicy:this.cancelPolicy,
-						slippage:{model:this.slippageModel, value:this.slippageValue},
-						commission:{model:this.commissionModel, value:this.commissionValue},
-						resolution:this.resolution,
-						universe:this.universe,
-						investmentPlan:this.investmentPlan};
+						advanced: JSON.stringify({rebalance:this.rebalance,
+									cancelPolicy:this.cancelPolicy,
+									slippage:{model:this.slippageModel, value:this.slippageValue},
+									commission:{model:this.commissionModel, value:this.commissionValue},
+									resolution:this.resolution,
+									investmentPlan: this.investmentPlan}),
+						universe:this.universe};
 				return settings;
 			},
 

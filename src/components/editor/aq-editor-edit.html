@@ -417,16 +417,18 @@
         },
 
         onStrategySavedResponse: function(data) {
-            
-          // Check if save was initiated before RUN
-          if(this.runSwitch == 1) {
-            
-            //reset the run switch to off
-            this.runSwitch = 0;
-            
-            // Now run the saved strategy 
-            this.$.runStrategyQuery.generateRequest();
-          }
+            // Check if save was initiated before RUN
+            if(this.runSwitch == 1) {
+              
+                //reset the run switch to off
+                this.runSwitch = 0;
+                
+                // Now run the saved strategy 
+                if(this.$.authItem.checkHasToken()) {
+                  this.header = this.$.authItem.getHeader();
+                  this.$.runStrategyQuery.generateRequest();
+                }
+            }
         },
 
         onStrategySavedError: function(data) {
@@ -445,21 +447,21 @@
               "type": this.strategy.type,
               "code": this.$$('#codeEditorPanel').getCodeContent(),
           };
-         
-          this.$.saveStrategyQuery.generateRequest();
+          
+          if(this.$.authItem.checkHasToken()) {
+              this.header = this.$.authItem.getHeader();
+              this.$.saveStrategyQuery.generateRequest();
+          }
         },
 
         runStrategy: function(e) {
 
-           //Get settings from the sidebar
-           var strategySettings = this.$$('#runSidebar').getSettings();
-
+          //Get settings from the sidebar
+          //var strategySettings = 
+        
           // first save the strategy
-          this.runStrategyData = {  
-                    "start": "2015-11-07T03:41:47.262Z",
-                    "end": "2016-11-07T03:41:47.262Z",
-                    "capital": 1000000,
-                    "plan": "string"};
+          this.runStrategyData = this.$$('#runSidebar').getSettings();
+          console.log(this.runStrategyData);
 
           this.runSwitch = 1;
           this.saveStrategy(e);  
@@ -480,6 +482,7 @@
         },
 
         onStrategyExecutionError: function(data) {
+          console.log(data.detail);
           //This get back the created backtest object with just the settings,
           //HAS no output
         },
