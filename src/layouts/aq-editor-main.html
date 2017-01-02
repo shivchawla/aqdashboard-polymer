@@ -95,10 +95,12 @@
         this.strategyData["name"] = e.detail.name;
         this.strategyData["description"] = e.detail.description;
 
-        this.header = this.$.authItem.getHeader();
-        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        this.$$('#postStrategyQuery').url = APIEndPoint+'/strategy'; 
-        this.$$('#postStrategyQuery').generateRequest();
+        if(this.$.authItem.checkHasToken()) {
+          this.header = this.$.authItem.getHeader();
+          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+          this.$$('#postStrategyQuery').url = APIEndPoint+'/strategy'; 
+          this.$$('#postStrategyQuery').generateRequest();
+        }
       },
 
       onStrategyCreationResponse: function(data) {

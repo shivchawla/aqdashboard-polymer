@@ -72,6 +72,8 @@
 
 		#comparison-return {
 			margin-top:0px;
+			margin:0 auto;
+			--width:95%;
 		}
 
 		paper-tab:hover{
@@ -264,15 +266,24 @@
 				                    maxTicksLimit:5,
 				                    fontColor:"#24293d",
 				                    padding:20,
+				                    callback: function(value, index, values) {
+				                    	return value+'%';
+				                    },
 				                },
 						      	scaleLabel: {
 							        display: true,
-							        labelString: 'Total Return (%)',
+							        //labelString: 'Total Return (%)',
 							        fontSize: 16,
 							        fontColor:"#24293d",
 					            },
 				             	gridLines:{
 					            	color:"#008080",
+					            },
+				              	position:"right",
+					            gridLines :{
+					            	drawTicks:false,
+				                    tickMarkLength:0,
+				                    drawBorder:true,
 					            },
 					        }]
 				        }
@@ -314,10 +325,13 @@
 				                    //fontSize: 14,
 							        fontColor:"#24293d",
 							        padding:20,
+							        callback: function(value, index, values){
+							        	return value+'%';
+							        },
 				                },
 				                scaleLabel: {
 							        display: true,
-							        labelString: 'Monthly Return (%)',
+							        //labelString: 'Monthly Return (%)',
 							        fontSize: 16,
 							        fontColor:"#24293d",
 					            },
@@ -392,9 +406,9 @@
 				var dataset = {
 						label:data._id,
 						borderColor:colors[this.counter],
-						borderWidth:2,
+						borderWidth:1,
 						fill:false,
-						pointRadius:1,
+						pointRadius:0,
 						pointHoverRadius:10,
 					};
 				
