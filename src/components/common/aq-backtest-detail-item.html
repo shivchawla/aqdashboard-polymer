@@ -24,12 +24,14 @@
 			height:250px;
 			width:100%;
 			margin-bottom: 20px;
+			margin-left:5px;
 		}
 
 		#trackVarLineChart {
 			margin-bottom: 20px;
 			height:160px;
 			width:100%;
+			width:98%;
 		}
 
 		#barChart {
@@ -418,6 +420,13 @@
 				}
 
 				var options_1 = {maintainAspectRatio:false,
+									legend:{
+										display:true,
+										labels: {
+											fontSize:16,
+											fontColor:"#24293d",
+										},
+									},
 									scales: {
 							            xAxes: [{
 							                ticks: {
@@ -428,16 +437,98 @@
 														var month = (date.getMonth() + 1);
 														var month = month >= 10 ? month.toString() : '0'+month.toString();
 														return date.getDate()+'/'+ month + '/' +  date.getFullYear();
-							                    }
-							                }}],
+							                    },
+							                    padding:10,
+							                },
+						                	scaleLabel: {
+										        display: true,
+										        labelString: 'Date',
+										        fontSize: 16,
+										        fontColor:"#24293d",
+								            },
+							             	gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+							            }],
 						                yAxes: [{
 							                ticks: {
 							                    maxTicksLimit:5,
-							                }}]
+							                    callback: function(value, index, values) {
+							                    	return value +'%';
+							                    },
+							                    padding:10,
+
+							                },
+							                scaleLabel: {
+										        display: true,
+										        //labelString: 'Cumulative Return (%)',
+										        fontSize: 16,
+										        fontColor:"#24293d",
+								            },
+								            position:"right",
+								            gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+							            }]
 						            },
 					        };
 
+
+				var options_3 = {maintainAspectRatio:false,
+									scales: {
+							            xAxes: [{
+							                ticks: {
+							                    maxTicksLimit:10,
+							                    maxRotation:0,
+							                    callback: function(value, index, values) {
+								                        var date = new Date(value);
+														var month = (date.getMonth() + 1);
+														var month = month >= 10 ? month.toString() : '0'+month.toString();
+														return date.getDate()+'/'+ month + '/' +  date.getFullYear();
+							                    },
+							                    padding:10,
+							                },
+						                	scaleLabel: {
+										        display: true,
+										        labelString: 'Date',
+										        fontSize: 16,
+										        fontColor:"#24293d",
+								            },
+								            gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+							            }],
+						                yAxes: [{
+							                ticks: {
+							                    maxTicksLimit:5,
+							                    padding:10,
+							                },
+							                gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+
+
+							                position:"right",
+							            }]
+						            },
+					        };	        
+
 		        var options_2 = {maintainAspectRatio:false,
+		        					legend:{
+										display:true,
+										labels: {
+											fontSize:16,
+											fontColor:"#24293d",
+										},
+									},
 									scales: {
 							            xAxes: [{
 							                ticks: {
@@ -449,37 +540,69 @@
 														var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 														 "Sep", "Oct", "Nov", "Dec"];
 														return monthNames[month - 1] +" "+year.toString();
-							                    }
-							                }}],
+							                    },
+							                    padding:10,
+							                },
+							                scaleLabel: {
+										        display: true,
+										        labelString: 'Month/Year',
+										        fontSize: 16,
+										        fontColor:"#24293d",
+								            },
+								            gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+							            }],
 						                yAxes: [{
 							                ticks: {
 							                    maxTicksLimit:5,
-							                }}]
+							                    padding:10,
+							                    callback: function(value, index, values) {
+							                    	return value +'%';
+							                    },
+							                },
+							                scaleLabel: {
+										        display: true,
+										        //labelString: 'Monthly Returns (%)',
+										        fontSize: 16,
+										        fontColor:"#24293d",
+								            },
+								            gridLines :{
+								            	drawTicks:false,
+							                    tickMarkLength:0,
+							                    drawBorder:true,
+								            },
+								            position:"right",
+							            }]
 						            },
 					        };
 
 		        this.barChartOptions = options_2;
 		        this.cumRetLineChartOptions = options_1;
-		        this.trackVarLineChartOptions = options_1;
+		        this.trackVarLineChartOptions = options_3;
 			},
 
 			subscribeData: function() {
 				this.async(function(){this.fire('subscribe-data',{backtestId: this.backtestId})}, 500);
 				
 				this.cumRetData = {datasets:
-									[{label:"Strategy (%)",
-								 		borderColor: "#cc6666",
+									[{label:"Strategy",
+								 		borderColor: "#0375b4",
 								 		borderWidth:2,
 										fill:false,
-										pointRadius:1,
+										pointRadius:0,
 										pointHoverRadius:10,
+										tension:0,
 										data:[]},
-									{label:"Benchmark (%)",
-										borderColor:"#0375b4",
-										borderWidth:2,
+									{label:"Benchmark",
+										borderColor:"#cc6666",
+										borderWidth:1,
 										fill:false,
-										pointRadius:1,
+										pointRadius:0,
 										pointHoverRadius:10,
+										tension:0,
 										data:[]}]};
 
 				this.trackVarData = {datasets:[]};
@@ -492,10 +615,11 @@
 				for (var k in data["variables"]) {
 					var dataset = {label:k,
 							 		borderColor: colors[i++],
-							 		borderWidth:2,
+							 		borderWidth:1,
 									fill:false,
-									pointRadius:1,
+									pointRadius:0,
 									pointHoverRadius:10,
+									tension:0,
 									data: [data["variables"][k]]};
 
 					this.push('trackVarData.datasets', dataset);
@@ -544,7 +668,7 @@
 					return;
 				}
 
-				var legends = ["Strategy (%)", "Benchmark (%)"]
+				var legends = ["Strategy", "Benchmark"]
 				var types = ["totalreturn","totalreturn_benchmark"];
 				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 
@@ -708,9 +832,10 @@
 
 			createCumRetLineChart: function() {
 				
-				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#0375b4","#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
-				var legend = ["Strategy (%)", "Benchmark (%)"];
+				var legend = ["Strategy", "Benchmark"];
+				var width = [2, 1];
 
 				this.cumRetData = {datasets:[]};
 				
@@ -718,9 +843,10 @@
 					var dataset = {
 						label:legend[index],
 						borderColor:colors[index],
-						borderWidth:2,
+						borderWidth:width[index],
 						fill:false,
-						pointRadius:1,
+						pointRadius:0,
+						tension:0,
 						pointHoverRadius:10,
 					};
 
@@ -751,9 +877,9 @@
 
 			createMonthlyReturnBarChart: function() {
 				
-				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colors = ["#0375b4", "#cc6666", "#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var types = ["algorithm","benchmark"];
-				var legend = ["Strategy (%)", "Benchmark (%)"];
+				var legend = ["Strategy", "Benchmark"];
 				
 				this.barData = {datasets:[]};
 				
@@ -764,6 +890,7 @@
 						borderColor:colors[index],
 						backgroundColor:colors[index],
 						borderWidth:2,
+
 					};
 
 					var aggregatedReturns = this.backtest.output.returns.monthly[types[index]];
@@ -826,9 +953,10 @@
       					var dataset = {
 							label:key,
 							borderColor:colors[i++],
-							borderWidth:2,
+							borderWidth:1,
 							fill:false,
-							pointRadius:1,
+							pointRadius:0,
+							tension:0,
 							pointHoverRadius:10,
 							data:dataArrays[key]
 						};
