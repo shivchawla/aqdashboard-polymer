@@ -73,6 +73,7 @@
   </template>
 
   <script>
+    
     Polymer ({
       is: 'aq-community-postdetail-content',
       properties :{
@@ -92,10 +93,15 @@
           return item.user.firstName[0] + item.user.lastName[0];
         } else
         return "";
-      },
+      }, 
 
       format: function(date) {
-          return new Date(date).toLocaleTimeString("en-us", options);
+        var options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
+
+        return new Date(date).toLocaleTimeString("en-us", options);
       },
 
       isValidBacktestId: function(postContent) {

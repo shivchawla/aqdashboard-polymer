@@ -613,7 +613,9 @@
                     if (this.displayMode == displayModes.signout) {
                         this.signoutMessage = "Successfully signed out!!";
                         this.displayMode = displayModes.signin;
-                    } 
+                    } else {
+                        this.signoutMessage ="";
+                    }
 
                     this.resetView();    
                 }
@@ -623,6 +625,7 @@
                 this.clearFields();
                 this.clearErrorMessages();
                 this.updateMessageStrings();
+
             },
 
             checkHasToken: function() {
