@@ -228,7 +228,7 @@
         </template>
 
         <template is='dom-if' if='{{!isAuthMessageMode(displayMode)}}'>
-            <div id='containerr' class="layout vertical fit">
+            <div id='containerr' class="layout vertical fit" >
                 
                 <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
                 
@@ -255,7 +255,8 @@
                                 no-label-float
                                 required
                                 max-length=15
-                                invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'>  
+                                invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'
+                                on-keydown="checkForKeys">  
                             </paper-input>
 
                             <paper-input
@@ -270,7 +271,8 @@
                                 no-label-float
                                 required
                                 max-length=15
-                                invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'>
+                                invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'
+                                on-keydown="checkForKeys">
                             </paper-input>
 
                         </template>
@@ -287,7 +289,8 @@
                                 required
                                 on-focus='onUserEmailFocus'
                                 on-blur='onUserEmailFocusOut'
-                                invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'>    
+                                invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'
+                                on-keydown="checkForKeys">    
                             </gold-email-input>
                         </template>
 
@@ -304,7 +307,8 @@
                                 required
                                 on-blur="onPasswordFocusOut"
                                 on-focus="onPasswordFocus"
-                                invalid='{{!isPasswordValid(password,passwordInFocus)}}'>
+                                invalid='{{!isPasswordValid(password,passwordInFocus)}}'
+                                on-keydown="checkForKeys">
                             </paper-input>
                         </template>
 
@@ -320,7 +324,8 @@
                                 required
                                 on-focus="onConfirmPasswordFocus"
                                 on-blur="onConfirmPasswordFocusOut"
-                                invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'></paper-input>
+                                invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'
+                                on-keydown="checkForKeys"></paper-input>
                         </template>
 
                         <template is="dom-if" if="{{isSigninMode(displayMode)}}">
@@ -925,13 +930,13 @@
             
                 this.fire('update-token',{user:data.detail.response});
                 this.actionSucceeded();
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
             },
 
             handleLoginError: function(data) {
                 this.clearErrorMessages();
                 this.actionFailed("Incorrect Username/Password");
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
             },
 
             handleSignupResponse: function(e) {
@@ -1068,6 +1073,13 @@
             actionFailed: function(errorMessage) {
                 this.actionFailedMessage = errorMessage;
             },
+
+            checkForKeys: function(e) {
+                if (e.keyCode === 13) {
+                    this.$$('.signinButton').focus();
+                    this.onInvokeAction();
+                }
+            }
 
         });
     </script>
