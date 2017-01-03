@@ -12,6 +12,7 @@
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 
 <link rel="import" href="../common/aq-check-authentication.html">
+<link rel="import" href="./aq-authentication-message.html">
 
 <dom-module id="aq-user-login-panel">
     <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -222,7 +223,11 @@
           debounce-duration="300">
         </iron-ajax>
 
-        <template is='dom-if' if='{{active}}'>
+        <template is='dom-if' if='{{isAuthMessageMode(displayMode)}}'>
+            <aq-authentication-message></aq-authentication-message>
+        </template>
+
+        <template is='dom-if' if='{{!isAuthMessageMode(displayMode)}}'>
             <div id='containerr' class="layout vertical fit">
                 
                 <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
@@ -355,6 +360,7 @@
             forgotPassword: 'forgotPassword',
             signout:'signout',
             resetPassword:'resetPassword',
+            authMessage:'authMessage',
         };
 
         Polymer({
@@ -604,7 +610,8 @@
                         this.displayMode != displayModes.signup &&
                         this.displayMode != displayModes.forgotPassword &&
                         this.displayMode != displayModes.signout && 
-                        this.displayMode != displayModes.resetPassword) {
+                        this.displayMode != displayModes.resetPassword &&
+                        this.displayMode != displayModes.authMessage) {
                         
                         this.displayMode = displayModes.signin;
                         this.signoutMessage = "";
@@ -617,7 +624,9 @@
                         this.signoutMessage ="";
                     }
 
-                    this.resetView();    
+                    if(this.displayMode != displayModes.authMessage){
+                        this.resetView();    
+                    }
                 }
             },
 
@@ -677,6 +686,12 @@
             isResetPasswordMode: function(displayMode) {
                 
                 return displayMode == displayModes.resetPassword;
+            },
+
+            isAuthMessageMode: function(displayMode) {
+                //console.log(displayMode == displayModes.authMessage);
+                //console.log(this.active);
+                return displayMode == displayModes.authMessage && this.active;
             },
 
             onFooterLinkTap: function(e) {
@@ -919,35 +934,33 @@
                 this.$$('.signinButton').disabled = false;
             },
 
-            handleSignup: function(data) {
-                this.setDisplayMode(displayModes.signin);
-                this.$$('.signinButton').disabled = false;
-            },
-
             handleSignupResponse: function(e) {
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
+                this.fire('rt-changed',{route:'/user/authMessage?mode=activation&emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
             },
 
             handleSignupError: function(e) {
                 this.actionFailed("Email address already registered!! Sign up with a different email.");
                 this.clearFields();
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
             },
 
             handleForgotPasswordResponse: function(e) {
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
+                this.fire('rt-changed',{route:'/user/authMessage?mode=forgotpassword&emailId=' + this.userEmail});
             },
 
             handleForgotPasswordError: function(e) {
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
             },
 
             handleResetPasswordResponse: function(e) {
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
+                this.fire('rt-changed',{route:'/user/authMessage?mode=reset&emailId=' + this.userEmail});
             },
 
             handleResetPasswordError: function(e) {
-                this.$$('.signinButton').disabled = false;
+                this.enableAll();
             },
 
             onInvokeAction: function() {
@@ -977,19 +990,17 @@
                     return;
                 }
 
-                this.$$('.signinButton').disabled = true;
-
+                this.disableAll();
+                
                 switch (this.displayMode) {
                     case displayModes.signin:
                         this.$.login.generateRequest();
                         break;
                     case displayModes.signup:
                         this.$.signup.generateRequest();
-                        this.fire('rt-chaged',{route:'/user/authentication/activation?emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
                         break;
                     case displayModes.forgotPassword:
                         this.$.forgotPasswordQuery.generateRequest();
-                         this.fire('rt-changed',{route:'/user/authentication/forgotpassword?emailId=' + this.userEmail});
                         break;
 
                     case displayModes.resetPassword:
@@ -997,6 +1008,55 @@
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displaymode)
+                }
+            },
+
+            enableAll: function() {
+                this.$$('.signinButton').disabled = false;
+                switch (this.displayMode) {
+                    case displayModes.signin:
+                        this.$$('#userEmailInput').disabled = false;
+                        this.$$('#passwordInput').disabled = false;
+                        break;
+                    case displayModes.signup:
+                        this.$$('#firstNameInput').disabled = false;
+                        this.$$('#lastNameInput').disabled = false;
+                        this.$$('#userEmailInput').disabled = false;
+                        this.$$('#passwordInput').disabled = false;
+                        this.$$('#confirmPasswordInput').disabled = false;
+                        break;
+                    case displayModes.forgotPassword:
+                        this.$$('#userEmailInput').disabled = false;
+                        break;
+
+                    case displayModes.resetPassword:
+                        this.$$('#passwordInput').disabled = false;
+                        break;
+                }
+            },
+
+            disableAll: function() {
+                this.$$('.signinButton').disabled = true;
+
+                switch (this.displayMode) {
+                    case displayModes.signin:
+                        this.$$('#userEmailInput').disabled = true;
+                        this.$$('#passwordInput').disabled = true;
+                        break;
+                    case displayModes.signup:
+                        this.$$('#firstNameInput').disabled = true;
+                        this.$$('#lastNameInput').disabled = true;
+                        this.$$('#userEmailInput').disabled = true;
+                        this.$$('#passwordInput').disabled = true;
+                        this.$$('#confirmPasswordInput').disabled = true;
+                        break;
+                    case displayModes.forgotPassword:
+                        this.$$('#userEmailInput').disabled = true;
+                        break;
+                    case displayModes.resetPassword:
+                        this.$$('#passwordInput').disabled = true;
+                        this.$$('#confirmPasswordInput').disabled = true;
+                        break;
                 }
             },
             

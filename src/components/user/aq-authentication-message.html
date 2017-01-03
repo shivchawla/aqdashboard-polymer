@@ -1,3 +1,5 @@
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
 
 <dom-module id='aq-authentication-message'>
 	
@@ -45,8 +47,9 @@
       	<app-location route="{{route}}"></app-location>
   		<app-route
             route="{{route}}"
-            pattern="/dashboard/authentication/:mode"
-            active="{{active}}">
+            pattern="/user/authMessage"
+            active="{{active}}"
+            query-params="{{queryParams}}">
       	</app-route>  
 
       	<template is='dom-if' if='{{active}}'>
@@ -84,7 +87,26 @@
 				emailId:String,
 				mode:String,
 				name:String,
-				active:Boolean,
+				active: Boolean,
+				queryParams: Object,
+			},
+
+			observers:['_hasQueryParamsChanged(queryParams)'],
+
+			_hasQueryParamsChanged: function(qp){
+				if (this.active) {
+					if (qp.mode) {
+						this.mode = qp.mode;
+					}
+
+					if (qp.emailId) {
+						this.emailId = qp.emailId;
+					}	
+
+					if (qp.name) {
+						this.name = qp.name;
+					}
+				}
 			},
 
 			isModeForgotPassword: function(mode) {
@@ -100,7 +122,7 @@
 			},
 
 			goToLogin: function() {
-				this.router.go('/user/signin');
+				this.fire('rt-changed', {route:'/user/signin'});
 			},
 		});
 	</script>

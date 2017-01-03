@@ -68,10 +68,10 @@
                   <aq-homepage></aq-homepage>
                   <aq-dashboard-main></aq-dashboard-main>
                   <aq-aboutpage></aq-aboutpage>
+                  <aq-user-login-panel></aq-user-login-panel>                    
+                  <aq-user-login-panel></aq-user-login-panel>                    
                 </iron-pages>
                 
-                <aq-user-login-panel></aq-user-login-panel>                    
-                <aq-authentication-message></aq-authentication-message>
                 
           </paper-header-panel>
         </paper-drawer-panel>
@@ -594,8 +594,9 @@
                   '/about',
                   '/user/signin',
                   '/user/signup',
+                  '/user/signout',
                   '/user/resetPassword',
-                  '/user/signout'];
+                  '/user/authMessage'];
 
           for(i=0;i<pathArray.length;i++){
             if(this.URLcontains(pathArray[i])){
@@ -604,8 +605,12 @@
             }
           }
 
-          if(ctab==6 || ctab ==5) {
+          if(ctab==5) {
             ctab = 3;
+          }
+
+          if(ctab>5) {
+            return;
           }
 
           this.currentTab = ctab;
