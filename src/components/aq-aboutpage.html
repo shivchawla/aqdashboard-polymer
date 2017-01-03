@@ -31,13 +31,14 @@
       paper-tabs {
         margin-left: 20%;
         margin-right:10%;
-        width:50%;
+        max-width:500px;
+       --min-width: 300px;
         margin-bottom: 20px;
         margin-top:100px;
       }
 
       paper-tab {
-        max-width:10%;
+        width:10%;
         color:teal;
         font-size: 16px;
       }
@@ -56,6 +57,12 @@
             route="{{route}}"
             pattern="/about/:section"
             data="{{routeData}}">
+        </app-route>
+
+        <app-route
+            route="{{route}}"
+            pattern="/about"
+            active="{{active}}">
         </app-route>
 
             <div id='container-bg' class="layout vertical fit">
@@ -114,6 +121,10 @@
               type: Object,  
               observer:'_sectionChanged',
           },
+          active:{
+            type:Boolean,
+            observer:'_activeChanged',
+          },
       },
 
       _sectionChanged: function(nSect, oSect) {
@@ -125,6 +136,17 @@
                   this.selected = 0;
               }
           }
+      },
+
+      _activeChanged: function(nAct, oAct) {
+        var emptyRoute = true;
+        if(this.routeData) {
+            emptyRoute = emptyRoute && Object.keys(this.routeData).length == 0;
+        }
+
+        if(nAct && emptyRoute) {
+          this.selected = 0;
+        }
       },
 
       attached: function(){
@@ -188,12 +210,12 @@
               <div class="layout vertical">
                 <div class="flex"></div>
                 </hr>
-                <p class="header self-center">[[header]]</p>
+                <p class="header self-center flex">[[header]]</p>
                 
-                <p class="self-center">[[paragraph]]&nbsp<a href$="[[link]]"><i>[[linkText]]</i></a></p>
+                <p class="self-center flex">[[paragraph]]&nbsp<a href$="[[link]]"><i>[[linkText]]</i></a></p>
 
                 <template is='dom-if' if="[[hasParagraph2(paragraph2)]]">
-                    <p class="self-center">[[paragraph2]]&nbsp</p>
+                    <p class="self-center flex">[[paragraph2]]&nbsp</p>
                 </template>
                 <div class="flex"></div>
               </div>
