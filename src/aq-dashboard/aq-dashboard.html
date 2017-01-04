@@ -415,12 +415,12 @@
 
         sendInvite: function(e) {
             
-            this.inviteData = {email_list:e.detail.address};
+            this.inviteData = {emailList:e.detail.address};
             
             if(this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
               var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-              this.$.postFeedbackQuery.url = APIEndPoint+'/user/sendInvite';
+              this.$.sendInviteQuery.url = APIEndPoint+'/user/sendInvite';
               this.$.sendInviteQuery.generateRequest();
             } else {
               this.gotoSignin();

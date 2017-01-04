@@ -20,18 +20,20 @@
     		background-color:#f6fcfa;
         height:100%;
         min-height:640px;
+        background: url(../../resources/images/bg1.jpg);
+        background-size: cover;
 	    }
 
-       #ideas {
-        width:25px;
-        height:25px;
+      #ideas {
+        width:24px;
+        height:36px;
         background: url(../../resources/images/Ideas/ideas2.png);
         background-size: cover;
-        --overflow: none;
+        margin-bottom: 2px;
       }
 
     	#headerTagline {
-    		font-size: 36px;
+    		font-size: 50px;
     		font-weight: bold;
     		margin-bottom: -10px;
         color: teal;
@@ -44,6 +46,8 @@
         font-style: italic;
         opacity: 2.0;
         z-index: 2;
+        font-weight: bold;
+        font-size: 20px;
       }
 
     	p,i {
@@ -56,7 +60,7 @@
     		width: 10%;
     		color: white;
         background-color: teal;
-    	  margin-top: 30px;
+    	  margin-top: 20px;
         margin-bottom: 30px;
     		min-width: 150px;
     		border-radius: 20px;
@@ -69,7 +73,7 @@
       paper-button.button2 {
         width: 20%;
         color: #cc6666;
-        margin-top: 30px;
+        margin-top: 100px;
         margin-bottom: 30px;
         min-width: 200px;
         border-radius: 20px;
@@ -99,7 +103,6 @@
     	paper-icon-button {
   			height:60px;
   			width:60px;
-  			
   			padding: 0px;
   			opacity: 0.1;
     	}
@@ -110,10 +113,9 @@
 
       #section-describe-code {
         padding-top:50px;
-        color: teal;
-        background-color:#f6fcfa;
+        color: teal;--#24293d;
+        background-color:#e3f6ed;--#f6fcfa;
         height:100%;
-        --min-height: 580px;
         min-height:640px;
       }
 
@@ -122,21 +124,23 @@
         height:310px;
         background: url(../../resources/images/code.png);
         background-size: cover;
-        --opacity: 0.7;
+      }
+
+      #btDiv{
+        margin-top: 100px;
+        margin-bottom: 50px;
       }
 
       #section-describe-backtest {
-        --padding-top:50px;
-        --margin-bottom: 100px;
-        --height:600px;
+        padding-top:50px;
         color:teal;--#0375b4;  
-        background-color:#f6fcfa;
+        background-color:#ecf6e3;--#f6fcfa;
         height:100%;
         min-height: 640px;
+       
       }
 
       #backtestDiv {
-        --margin-right:20px;
         margin-top:20px;
         margin-bottom:20px;
         margin-left: 20px;
@@ -144,10 +148,7 @@
       }
 
       #analysisDiv {
-        margin-right:20px;
-        margin-bottom: 10px;
-        margin-top:20px;
-        max-height: 200px;
+        margin-bottom: 50px;
       }
 
       .specialFlex {
@@ -159,17 +160,7 @@
         background-size: cover;
         height: 200px;
         width:388px;
-        --margin-left: 20px;
-      }
-
-      #section-describe-community {
-        ==padding-top:50px;
-        --margin-bottom: 100px;
-        --height:600px;
-        color:teal;
-        background-color:#f6fcfa;
-        height:100%;
-        min-height:640px;
+        margin-bottom:50px;
       }
 
       #communityDiv{
@@ -177,7 +168,6 @@
         width:400px;
         background: url(../../resources/images/Ideas/shareideas.jpg);
         background-size: cover;
-        --opacity: 2.0;
       }
       
       .smallIcon {
@@ -201,23 +191,21 @@
       .tagline {
         color: #cc6666;
         font-size: 26px;
-        --font-weight: thin;
+        font-weight: bold;
       }
 
       .spTagline {
         color: #cc6666;
         font-size: 26px;
-        --font-weight: thin;
         margin-bottom: -30px !important;
       }
 
     	#section-advantages {
     		padding-top:50px;
-    		--margin-bottom: 100px;
     		height:100%;
         min-height:690px;
     		color:teal;
-    		background-color:#f6fcfa;
+    		background-color:#e3f6ee;
     	}
 
     	#advantages p{
@@ -226,7 +214,6 @@
     		font-weight: bold;
         color:#cc6666;
     	}
-
 
     	a {
     		text-decoration: none;
@@ -238,7 +225,6 @@
     		cursor: pointer;
     	}
 
-
       .footer {      
         bottom: 0px;
         background-color:#24293d;
@@ -248,9 +234,7 @@
 
       .footer p{
       	color: white;
-        --font-weight: thin;
         font-size: 12px;
-        --cursor: pointer;
       }
 
       .footer-link:hover {
@@ -269,18 +253,17 @@
         </app-route>
         
     		<div id="section-home" class="layout vertical">
-              <div class="flex"></div>
-  	      	  <div class="layout horizontal self-center">
-                <p id="headerTagline">Invest in Y</p>
-                <div id='ideas' class="self-end"></div>
-                <p id="headerTagline">ur Ideas</p>        
-              </div>
-  	      	    <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas<!--<i>your</i> investment ideas--></p>
-  	      	
-  	      	<paper-button class="button self-center" noink on-tap='onJoin'>Start Now</paper-button>
-            <!--div id='ideas2' class="self-center"></div-->
-  	      	<div class="flex"></div>
-  	      	<!--i class="self-center" style="color:#0375b4;">Bringing the tools of professionals to everyone</i-->
+            
+            <div class="flex"></div>
+        	  <div class="layout horizontal self-center">
+              <p id="headerTagline">Invest in Y</p>
+              <div id='ideas' class="self-end"></div>
+              <p id="headerTagline">ur Ideas</p>        
+            </div>
+      	    <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
+        	
+        	  <paper-button class="button self-center" noink on-tap='onJoin'>Start Now</paper-button>
+             <div class="flex"></div>
   	      	<paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
     		</div>
 
@@ -291,95 +274,59 @@
                   <p class="self-center"> <i class="tagline">Testing an investment idea has never been simpler</i></p>
                   
                   <p class="self-center"><i>Embedded Code Editor</i></p>
-                  <!--iron-icon class='smallIcon self-center'icon="icons:add"></iron-icon-->
                   <p class="self-center"><i>Free Data for Indian Equity Markets</i></p>
-                  <!--iron-icon class='smallIcon self-center'icon="icons:add"></iron-icon-->
                   <p class="self-center"><i>Backtester in Julia to quickly implement your trade ideas
                   </i></p>
+                 
+                <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button> 
+                
+                <div class="layout vertical self-center" id='btDiv'>
+                  <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
+                  <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
+                </div>
 
-                  <paper-button class="button3 self-center" noink on-tap='onJoin'>Join now</paper-button>
               </div>
 
-              
-              <div class="layout vertical self-end">
-                 <!--iron-icon style="margin-top:20px;margin-bottom:20px;" class="self-center bigIcon" icon="vaadin-icons:code"></iron-icon-->
-              
+              <div class="layout vertical self-center">
                 <div id='codeContainer'></div>
               </div>  
             </div>
 
             <div class="flex"></div>
+            
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageThree'></paper-icon-button>
            
         </div>
 
         <div id="section-describe-backtest" class="layout vertical"> 
 
-          <div class="layout horizontal wrap flex around-justified" id='backtestDiv'>
-              <div class="layout vertical self-start">
-                <iron-icon class="bigIcon self-center" icon="vaadin-icons:bar-chart"></iron-icon>
-                <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
-              
-                <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
-                <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button>
-          
-              </div>
-
-              <!--div class="flex specialFlex"></div-->
-
-              <div id='anGraphDivision' class="self-center"></div>
-              
-          </div>
-
-          
-          <!--div class="layout horizontal">
-              <div class="flex"></div>
-              <div id='anGraphDivision' class="self-center"></div>
-              <div class="flex"></div>        
-          </div-->
-
-          <div class="flex"></div>
-
-          <!--div class="layout horizontal flex around-justified wrap" id='analysisDiv'-->
-              
-              <!--div class="specialFlex flex"></div-->
-             
-
-              <div class="layout vertical self-center" id>
+            <div class="layout horizontal wrap flex around-justified" id='backtestDiv'>
+              <div class="layout vertical self-center" id='analysisDiv'>
                 <iron-icon class="bigIcon self-center" icon="vaadin-icons:line-bar-chart"></iron-icon>
 
-                <p class="self-center"><i class='spTagline'>Detailed analysis of your backtests</i></p>
+                <p class="self-center"><i class='tagline'>Detailed analysis of your backtests</i></p>
                 <i style="margin-top:0px"class="self-center">Analyze your idea with variety of trading and portfolio metrics. </i>
-                
-
               </div>
-          <!--/div-->
 
+              <div id='anGraphDivision' class="self-center"></div>
             
-          <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageFour'>
-          </paper-icon-button>
+            </div>
+
+            <div class="flex"></div>
+            
+            <div class="layout vertical self-center">
+                 <iron-icon class="bigIcon self-center" icon="vaadin-icons:group"></iron-icon>
+
+                <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
+                <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
+                </i>
+                <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
+            </div>    
+           
+            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageFour'>
+            </paper-icon-button>
 
         </div>
-
-        <div id="section-describe-community" class="layout vertical flex"> 
-        
-                <div class="flex"></div>
-                <div class="self-center" id='communityDiv'></div>
-                <div class="layout vertical self-center">
-                    <!--iron-icon class="bigIcon self-center" icon="vaadin-icons:group"></iron-icon-->
-                    
-                    <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
-                    
-                    <p class="self-center"><i>Community is one place where ideas take real shape. Harness it!! 
-                    </i></p>
-
-                    <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
-                </div> 
-
-                <div class="flex"></div>
-            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageFive'></paper-icon-button>
-        </div>
-        
 
         	<div id="section-advantages" class="layout vertical flex">
         		<div id='advantages' class="self-center">
@@ -400,7 +347,7 @@
     				</div>
 
     				<div class="layout vertical adv-container">
-    					<iron-icon class="mediumIcon self-center" icon="hardware:security"></iron-icon>
+    					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
     					<p class="self-center">SECURE</p>
     					<i class="self-center" style="color:#cc6666;--#de6238;;--#e2734e;--#cc6666;">Your ideas are your property</i>
     					
@@ -496,15 +443,10 @@
   		},
 
       onPageFour: function() {
-        this.$$('#section-describe-community').scrollIntoView(true);
-      },
-
-      onPageFive: function() {
         this.$$('#section-advantages').scrollIntoView(true);
       },
 
       onAboutUs: function(e) {
-        //console.log(e.target.getAttribute('route'));
         this.fire('rt-changed', {route:e.target.getAttribute('route')});
       } 
 
