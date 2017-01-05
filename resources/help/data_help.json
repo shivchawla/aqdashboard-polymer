@@ -249,7 +249,7 @@
 			"header": {"value":"Feedback","size":"Normal"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "## Feedback \n#### We encourage you to use the platform and help us in improving the platform. Please share your feedback with us. You can post in the community or send us a private message via [Send us Feedback](#/dashboard/feedback). Happy Backtesting!!!"
+			"text": "## Feedback \n#### We encourage you to use the platform and help us in improving the platform. Please share your feedback with us. You can post in the community or send us a private message via [Send us Feedback](/dashboard/sendfeedback). Happy Backtesting!!!"
 		}
 
 	],

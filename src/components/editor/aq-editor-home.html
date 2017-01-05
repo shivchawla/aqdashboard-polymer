@@ -162,11 +162,11 @@
   		    </div>
               
   	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-  	    		<aq-editor-home-strategy-item										strategy-name = "[[item.name]]"
-  							num-backtest = "[[item.backtests]]"
-  							strategy-desc = "[[item.description]]"
-  							strategy-id = "[[item._id]]">
-  				</aq-editor-home-strategy-item>	
+    	    		<aq-editor-home-strategy-item										strategy-name = "[[item.name]]"
+    							num-backtest = "[[item.backtests]]"
+    							strategy-desc = "[[item.description]]"
+    							strategy-id = "[[item._id]]">
+    				  </aq-editor-home-strategy-item>	
   	    	</template>
   	
   		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"

@@ -45,6 +45,12 @@
 
   </style>
 
+  <app-location route="{{route}}"></app-location>
+  <app-route path="{{route}}"
+              pattern="/dashboard/sendfeedback"
+              active="{{active}}">
+  </app-route>
+
   <template>
         
         <div id="content" class="fit">
@@ -52,7 +58,7 @@
           <aq-analyze-main></aq-analyze-main>
           <aq-community-main></aq-community-main>
           <aq-help-main></aq-help-main>
-          <aq-home-main></aq-home-main>
+          <!--aq-home-main></aq-home-main-->
         </div>
 
   </template>
@@ -60,9 +66,24 @@
   <script>
   Polymer({
     is:'aq-dashboard-main',
+    properties:{
+
+      active: {
+        type:Boolean,
+        observer:'_activeChanged',
+      },
+      
+    },
 
     attached: function() {
       this.fire('tabChanged',{tab:1});
+    },
+
+    _activeChanged: function(nAct, oAct) {
+      console.log(nAct);
+        if (nAct) {
+          this.fire('take-feedback-action');
+        }
     },
 
   });

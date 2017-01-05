@@ -69,7 +69,7 @@
     }
 
     #rightPanel {
-      background-color:#f2fbf7;--#f3f9fa;--#f3f4f8;
+      background-color:white;--#f2fbf7;--#f3f9fa;--#f3f4f8;
       border-left: 5px solid #24293d;
       color:#02558b;
     }
@@ -168,7 +168,7 @@
                   <paper-tabs selected="{{selectedSidebar}}" noink>
                     <template is="dom-if" if="[[!isRunning]]">
                     <paper-tab>Run</paper-tab>
-                    <paper-tab>Quick Help</paper-tab>
+                    <!--paper-tab>Quick Help</paper-tab-->
                     </template>
                     
                     <template is="dom-if" if="[[isRunning]]">
@@ -456,12 +456,8 @@
 
         runStrategy: function(e) {
 
-          //Get settings from the sidebar
-          //var strategySettings = 
-        
           // first save the strategy
           this.runStrategyData = this.$$('#runSidebar').getSettings();
-          console.log(this.runStrategyData);
 
           this.runSwitch = 1;
           this.saveStrategy(e);  

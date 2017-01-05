@@ -222,9 +222,8 @@
 
         attached: function() {
 
-            //this.listen(window, 'hashchange', '_hashChanged');
             this.listen(window, 'popstate', '_urlChanged');
-
+            
             if(this.$.authItem.checkHasToken()) {
                 if(this.URLcontains('/user')) {
                     this.fire('rt-changed',{route:'/dashboard'});
@@ -445,22 +444,18 @@
             
             var backtestId = e.detail.backtestId;
             if (!this.backtests[backtestId]) {
-              //console.log("ohh no");
               return;
             }
               
-              //console.log("ohh yes1");
             this.backtests[backtestId].data.push(e.detail);
             var bulksent = this.backtests[backtestId].bulksent;
             var subscription = this.backtests[backtestId].subscription;
             var alldata = this.backtests[backtestId].data;    
                      
             if(subscription && !bulksent) {
-              //console.log("Firign bulk");
               this.fire('iron-signal',{name:'bulk-data', data:alldata});
               this.backtests[backtestId].bulksent = true;
             } else if (subscription){
-              //console.log("Firign point");
               this.fire('iron-signal',{name:'point-data', data:e.detail});
             }
         },
@@ -489,16 +484,12 @@
             this.gotoSignin();
           }
 
-          //console.log(this.backtests);
-
         },
 
         onSubscription: function(e) {
           var backtestId = e.detail.backtestId;
-          //console.log("Subscribing");
           if(this.backtests[backtestId]) { 
             this.backtests[backtestId].subscription = true;
-            //console.log("Sub. Complete");
             this.async(this.managesubscriptions, 60000);
           }
         },
@@ -559,7 +550,6 @@
         },
 
         onGetBacktestSuccess: function(e){
-          console.log(e.detail);
           var id = e.detail.response._id;
           var status = e.detail.response.status
           if (this.backtests[id] && (status == "complete" || status=="exception")) {
@@ -573,7 +563,6 @@
         },
 
         goToRoute: function(e) {
-          
             var route = this.redirect(e.detail.route);
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
@@ -581,8 +570,13 @@
         },
 
         _urlChanged: function(e) {
-          
+          console.log("SHivaaaaa");
           this.changeTabOnURL();
+        },
+
+        _hashChanged: function(e) {
+          console.log(e.detail);
+          console.log("My name is shiv");
         },
 
         changeTabOnURL: function() {
@@ -623,6 +617,12 @@
               break;
             case "/dashboard/createpost":
               return "/dashboard/community/create"
+              break;
+            case "/dashboard": 
+              return "/dashboard/editor"; 
+              break;
+            case "/dashboard/home": 
+              return "/dashboard/editor"; 
               break;
             default:
               return route;

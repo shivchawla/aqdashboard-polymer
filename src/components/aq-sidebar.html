@@ -164,18 +164,14 @@
         <paper-menu fallback-selection="home" 
                     selected="{{menuSelected}}" 
                     attr-for-selected="menu-panel">
-          <paper-icon-item id='menu-home' class="menu" menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
+          <!--paper-icon-item id='menu-home' class="menu" menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
             <iron-icon id="homeIcon" item-icon icon="aq-icons:home"></iron-icon>
-          </paper-icon-item>
+          </paper-icon-item-->
 
           <paper-icon-item id='menu-editor' class="menu" menu-panel="editor" on-tap="onSelected" active="{{_isEqual(menuSelected, 'editor')}}">Strategy Builder
             <iron-icon id="editorIcon" item-icon icon="vaadin-icons:twin-col-select"></iron-icon>
           </paper-icon-item>
 
-          <!--paper-icon-item id='menu-analyze' menu-panel="analyze" on-tap="onSelected" active="{{_isEqual(menuSelected, 'analyze')}}">Analyze
-            <iron-icon item-icon icon="aq-icons:chart"></iron-icon>
-          </paper-icon-item-->
-          
           <paper-icon-item menu-panel="community" class="menu" on-tap="onSelected" active="{{_isEqual(menuSelected, 'community')}}">Community
             <iron-icon id="communityIcon" item-icon icon="vaadin-icons:group"></iron-icon>
           </paper-icon-item>
