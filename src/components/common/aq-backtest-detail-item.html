@@ -10,6 +10,7 @@
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-check-authentication.html'>
+<link rel='import' href='./aq-cumRetLineChart.html'>
 
 <dom-module id='aq-backtest-detail-item'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -147,7 +148,7 @@
 		
 			<paper-card class="flex detail layout vertical paper_body">
 				<div id='detail-header' class="layout horizontal">
-					<span class="self-center">Equity Curve</span>
+					<span class="self-center">Strategy vs Benchmark Performance</span>
 					<div class="flex"></div>	
 					
 					<paper-tabs noink selected="{{graphType}}">
@@ -161,35 +162,10 @@
 				</div>
 				
 				<iron-pages on-iron-resize='onResize' selected="{{graphType}}">
-				
-					<highcharts-stock 
-			  			id="cumRetLineChart"
-			  			type="line"  
-			  			y-axis="{{cumRetLineChartOptions.yAxis}}"
-			  			tooltip-options="[[cumRetLineChartOptions.tooltip]]"
-			  			highchart-options="[[cumRetLineChartOptions.highchartOptions]]"
-			  			legend-options="[[cumRetLineChartOptions.legendOptions]]">
-			  		</highcharts-stock>
+
+					<div id='cumRetLineChartDiv'></div>
 
 			  		<template is='dom-if' if='[[!active]]'>
-					<!--nvd3-line 
-			  			id="netValueLineChart" 
-			  			height=300
-			  			show-legend 
-			  			use-interactive-guideline 
-			  			auto-resize
-			  			no-data="Fetching Data" 
-			  			data="[[netValueData]]">
-			  		</nvd3-line-->
-		  		<!--/template-->
-
-		  		<!--template is='dom-if' if="[[cumRetData]]"-->
-					
-		  		<!--/template-->
-			      
-			    <!--template is='dom-if' if="[[barData]]" y-axis="{{barChartOptions.yAxis}}"
-	  					 	tooltip-options="[[barChartOptions.tooltip]]"-->   
-
 				  		<highcharts-stock
 				  			id="barChart" 
 				  			type="column"
@@ -200,7 +176,6 @@
 				  			>	 	
 		  				 </highcharts-stock>
 	  				 </template>
-		  		<!--/template-->
 	
 		  		</iron-pages>
 			      
@@ -265,80 +240,6 @@
 					value:{},
 				},
 
-				cumRetLineChartOptions:{
-					type:Object,
-					value:{
-						
-			            yAxis: [{
-			                labels: {
-			                    align: 'right',
-			                    x: -3,
-			                    formatter: function () {
-			                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-			                    }
-			                },
-
-			                plotLines: [{
-			                    value: 0,
-			                    width: 2,
-			                    color: 'silver'
-			                }],
-			               
-			                height: '100%',
-			                lineWidth: 2
-			            }, {
-			                labels: {
-			                    align: 'right',
-			                    x: -3
-			                },
-			                top: '0%',
-			                height: '0%',
-			                offset: 0,
-			                lineWidth: 2
-			            }],
-
-			          	tooltip: {
-				            xDateFormat:'%e-%b %Y',
-				            shared:true,
-				        },
-
-				         /*tooltip: {
-				            backgroundColor: 'white',
-				            borderWidth: 0,
-				            borderRadius: 0,
-				            headerFormat: '{point.key} ',
-				            pointFormat: ' | <span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b>',
-				            positioner: function () {
-				                return { x: 5, y: 25 };
-				            },
-				            shadow: false
-				        },*/
-
-				        highchartOptions:{
-				        	rangeSelector: {
-				        		enabled: false,
-				        	},
-
-				        	title:{
-								text:"Strategy vs Benchmark Performance",
-								margin:30
-							},
-			          	}, 
-
-			          	legendOptions:{
-			          		enabled:true,
-			          		align:"left",
-			          		floating:true,
-			          		verticalAlign:'top',
-			          		y:15,
-			          		itemStyle: {
-			          			fontSize:13,
-			          			fontWeight:"normal",
-			          		},
-			          	},
-
-					}
-				},
 
 				barChartOptions:{
 					type:Object,
@@ -368,13 +269,13 @@
 				        },
 
 				        highchartOptions:{
-				        	rangeSelector: {
+				        	/*rangeSelector: {
 				        		enabled: false,
-				        	},
+				        	},*/
 
-				        	title: {
+				        	/*title: {
 								text:"Strategy vs Benchmark Performance"
-							},
+							},*/
 			          	},  
 
 
@@ -433,10 +334,6 @@
 
 				APIEndPoint:String,
 
-			},
-
-			attached: function() {
-				this.listen(this.$$('paper-card'), 'resize', 'onResize');
 			},
 
 			computeGetBacktestUrl: function(backtestId) {
@@ -511,99 +408,58 @@
 			_isActiveChanged: function(newVal, oldVal) {
 				if((oldVal + 1) && newVal) {
 					this.reset();
-					this.async(this.subscribeData, 1000);
+					
+					this.cumRetLineChartOptions = {};
+					this.updateCumRetLineChartOptions();
+
+					this.subscribeData();
 				} 
 			},
 
 			reset: function() {
-				this.netValueData = {};
+				
+				//Polymer.dom.flush();
+
+				var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumRetLineChart');
+
+				if(child) {
+					Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+				} 
+
+				Polymer.dom(this.$.cumRetLineChartDiv).appendChild(document.createElement('aq-cumRetLineChart'));
+				
+				Polymer.dom.flush();
+
 				this.resetMetrics();
 				this.counter = 0;
 				this.hasTrackVarData = false;
-				
-				if(this.$$('#cumRetLineChart')) {
-					for(i=0;i<7;i++){
-						this.$.cumRetLineChart.removeSeries(this.$.cumRetLineChart.getSeries(i).index);
-					}
-				}
-
-				if(this.$$('#barChart')) {
-					for(i=0;i<2;i++){
-						this.$$('#barChart').removeSeries(this.$$('#barChart').getSeries(i).index);
-					}
-				}
 			},
 
 			subscribeData: function() {
-				this.async(function(){this.fire('subscribe-data',{backtestId: this.backtestId})}, 500);
-				
-				this.cumRetData = {datasets:
-									[{label:"Strategy",
-								 		borderColor: "#0375b4",
-								 		borderWidth:2,
-										fill:false,
-										pointRadius:0,
-										pointHoverRadius:10,
-										tension:0,
-										data:[]},
-									{label:"Benchmark",
-										borderColor:"#cc6666",
-										borderWidth:1,
-										fill:false,
-										pointRadius:0,
-										pointHoverRadius:10,
-										tension:0,
-										data:[]}]};
-
-				this.trackVarData = {datasets:[]};
+				this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
+				this.updateCumRetLineChartOptions();
 			},
 
 			initializeTrackVarData: function(data) {
 				var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-				
-				this.hasTrackVarData = true;
 
+				this.updateCumRetLineChartOptionsForTrackVars();
 				//Update chart height for accomodatin tracking variables
-				this.set('cumRetLineChartOptions.yAxis',[]);
-				this.$.cumRetLineChart._chart.yAxis[0].update({
-		                labels: {
-		                    align: 'right',
-		                    x: -3,
-		                    formatter: function () {
-		                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-		                    }
-		                },
-		               
-		                height: '60%',
-		                lineWidth: 2
-		            }),
-
-				this.$.cumRetLineChart._chart.yAxis[1].update({
-		                labels: {
-		                    align: 'right',
-		                    x: -3
-		                },
-		                top: '65%',
-		                height: '35%',
-		                offset: 0,
-		                lineWidth: 2
-		            });
-
-
-				
 
 				var dataset = new Array(this.realtimeXLabels.length);
+				
 				for(var i=0; i<this.realtimeXLabels.length; i++) {
 					dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
 				}
 
-				var i=0;
-				var keysArray = Object.keys(data["variables"]).sort();
+				this.trackVarKeysArray = Object.keys(data["variables"]).sort();
 
-				for (i=0;i<keysArray.length; i++) {
-					dataset[0][1] = data["variables"][keysArray[i]];
-					this.$$('#cumRetLineChart').addSeries(keysArray[i], dataset, false, {lineWidth:1, yAxis:1, color:colors[i]});
+				this.trackVarData = [];
+				for (i=0;i<this.trackVarKeysArray.length; i++) {
+					this.push('trackVarData', dataset);
 				}
+
+				this.hasTrackVarData = true;
 
 			},
 
@@ -623,7 +479,6 @@
 			},
 
 			onBacktestBulkData: function(e) {
-				
 				var data = e.detail;
 				if(data && data.length > 0) {
 					this.addLineBulkData(e.detail);	
@@ -641,70 +496,61 @@
 			},
 		
 			addRealTimeData: function(data, type) {
-
 				var legends = ["Strategy", "Benchmark"]
 				var types = ["totalreturn","totalreturn_benchmark"];
-				var colors = ["#cc6666","#0375b4","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-
+				var colors = ["#0375b4", "#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var colorsTrack = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
 				if (type=="labels") {
 					this.realtimeXLabels = Object.keys(data.labels).sort();
 
 					var dataset = new Array(this.realtimeXLabels.length);
-					this.rtData = [dataset, dataset];
 					for(var i=0; i<this.realtimeXLabels.length; i++) {
 						dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
 					}
 
-					this.$$('#cumRetLineChart').addSeries("Strategy", this.rtData[0], false, {color:colors[1],lineWidth:2});
-					this.$$('#cumRetLineChart').addSeries("Benchmark", this.rtData[1], false, {color:colors[0],lineWidth:1});
+					this.rtData = [dataset, dataset];
+
+					this.$$('aq-cumRetLineChart').addSeries("Strategy", this.rtData[0], false, {color:colors[0],lineWidth:2});					
+					this.$$('aq-cumRetLineChart').addSeries("Benchmark", this.rtData[1], false, {color:colors[1],lineWidth:1});
+
+					if(this.hasTrackVarData) {
+						for (i=0; i<this.trackVarData.length; i++){
+							console.log("Shiv");
+							this.$$('aq-cumRetLineChart').addSeries(this.trackVarKeysArray[i], this.trackVarData[i], false, {lineWidth:1, yAxis:1, color:colorsTrack[i]});
+						}
+					}
+
 					return;
 				}
 
 				var ct = this.counter++;
 				
-				/*for (idx = 0;idx<10;idx++) {
-					this.$$('#cumRetLineChart').removeSeries(idx);
-				}*/
-
 				for (idx=0;idx<types.length;idx++) {
-	            	
 					this.rtData[idx][ct][1] = data[types[idx]];
-					this.$$('#cumRetLineChart')._chart.series[idx].data[ct].update(data[types[idx]]);
-					this.$$('#cumRetLineChart')._chart.redraw();
+					this.$$('aq-cumRetLineChart').updateRealtime(ct, idx, data[types[idx]])
             	}
 
         		this.addMetricData(data);
            
-            	/*if(this.cumRetData.datasets[0]) {
-	            	var nPoints = this.cumRetData.datasets[0].data.length;
-	            	if (nPoints > 0 && (nPoints % 1 == 0)) {
-	            		
-	            		//this.$$('#cumRetLineChart').updateChart();
-	            	}
-	            }*/
-
 				if (data["variables"]) {
 					
 					// Add variable tracker data
 					if(this.hasTrackVarData) {
 						
-						
 						var keysArray = Object.keys(data["variables"]).sort();
 
 						for (i=0; i<keysArray.length; i++) {
-							this.$$('#cumRetLineChart')._chart.series[i+2].data[ct].update(data["variables"][keysArray[i]]);
-							this.$$('#cumRetLineChart')._chart.redraw();
+							this.$$('aq-cumRetLineChart').updateRealtime(ct, i+2, data["variables"][keysArray[i]]);
 						}
 						
 					} else {
-						this.initializeTrackVarData(data);
-					}
 
-					if(this.trackVarData.datasets[0] && this.$$('#trackVarLineChart')) {
-						var nPoints = this.trackVarData.datasets[0].data.length;
-						if(nPoints > 0 && (nPoints % 1 == 0)) {
-							this.$$('#trackVarLineChart').updateChart();
-						}
+						//return;
+						//reset the current graph to accomodate the trackers
+						this.fire('unsubscribe-data',{backtestId: this.backtestId});
+						this.reset();
+						this.initializeTrackVarData(data);
+						this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
 					}
 				}
 			},
@@ -742,46 +588,33 @@
 				}
 			},
 
+			updateCumRetLineChartOptions: function() {
+				this.$$('aq-cumRetLineChart').updateProperties();
+			},
+
+			updateCumRetLineChartOptionsForTrackVars: function() {
+				this.$$('aq-cumRetLineChart').updatePropertiesForTrackVars();
+			},
+
 			onGetBacktestSuccess: function(e){
+
 				this.set('backtest', e.detail.response);
 				
 				if(this.backtest.output.analytics.rolling) {
 					this.addMetricData(this.backtest.output.analytics.rolling);
 				}
 
-				this.async(this.createCumRetLineChart, 500);
-				this.async(this.createMonthlyReturnBarChart, 2000);
-				
 				if(this.backtest.output.variables) {
 					// this variable is used because array changes are somehow not relaying back the template
 					this.hasTrackVarData = true;
-					this.set('cumRetLineChartOptions.yAxis',[]);
-					this.$.cumRetLineChart._chart.yAxis[0].update({
-			                labels: {
-			                    align: 'right',
-			                    x: -3,
-			                    formatter: function () {
-			                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-			                    }
-			                },
-			               
-			                height: '60%',
-			                lineWidth: 2
-			            }),
+					this.updateCumRetLineChartOptionsForTrackVars();
+				} else {
+					this.updateCumRetLineChartOptions();
+				}
 
-					this.$.cumRetLineChart._chart.yAxis[1].update({
-			                labels: {
-			                    align: 'right',
-			                    x: -3
-			                },
-			                top: '65%',
-			                height: '35%',
-			                offset: 0,
-			                lineWidth: 2
-			            });
-
-					this.async(this.createTrackVarLineChart, 500);
-				} 
+				this.async(this.createCumRetLineChart, 200);
+				this.async(this.createMonthlyReturnBarChart, 200);
+				this.async(this.createTrackVarLineChart, 200);
 			},
 
 			createNetValueChart: function() {
@@ -853,27 +686,7 @@
 			},
 
 			createCumRetLineChart: function() {
-				
-				var colors = ["#0375b4","#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-				var types = ["algorithm","benchmark"];
-				var legend = ["Strategy (%)", "Benchmark (%)"];
-				var width = [2, 1];
-
-				for (index=0;index<types.length;index++) {
-					
-					var equityData = this.backtest.output.totalreturn[types[index]];
-					var keys = Object.keys(equityData);
-					var dataset = new Array(keys.length);
-			
-					var i = 0;
-					
-					keys.sort()
-	      			.forEach(function(v, i) {
-	      				dataset[i] = [Date.parse(v), equityData[v]];
-	       			}); 
-
-					this.$.cumRetLineChart.addSeries(legend[index], dataset, false, {lineWidth:width[index], color:colors[index]});
-		  		}
+				this.$$('aq-cumRetLineChart').createCumRetLineChart(this.backtest);
 			},
 
 			createMonthlyReturnBarChart: function() {
@@ -902,35 +715,7 @@
 			},
 
 			createTrackVarLineChart: function() {
-				var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-				var variablesData = this.backtest.output.variables
-
-				if (variablesData) {
-
-					var dates = Object.keys(variablesData).sort();
-					var dataArrays = {};
-					
-					for(idx=0;idx<dates.length;idx++) {
-						
-						var datekey = dates[idx];
-	      				var trackedVars = variablesData[datekey];
-	      				var nTrackedVars = Object.keys(trackedVars).length;
-
-	      				for (var key in trackedVars) {
-	      					if (dataArrays[key]) {
-	      						dataArrays[key].push([Date.parse(datekey), trackedVars[key]]);
-	      					} else {
-	      						dataArrays[key] = [[Date.parse(datekey), trackedVars[key]]];
-	      					}
-	      				}
-      				}
-
-      				var i=0;
-      				for (var key in dataArrays) {
-      					this.$.cumRetLineChart.addSeries(key, dataArrays[key], false, {color:colors[i++], lineWidth:1, yAxis:1});
-      				}
-
-				}
+				this.$$('aq-cumRetLineChart').createTrackVarLineChart(this.backtest);
 			},
 
 			onGetBacktestError: function(e) {
@@ -951,20 +736,24 @@
 		    },
 
 		    _backtestIdChanged: function(nId, oId) {
+	    		console.log("here");
 		    	if(nId) {
+		    		console.log("Id Changed");
 		    		if(this.active) {
 						this.reset();
+						this.isYAxisReady = true;
 						this.subscribeData();
 					} else {
 						this.reset();
-						//this.getTestData();
 						this.requestStaticData();
 					}	
 		    	}
 		    },
 
 		    onResize: function() {
-		    	this.$$('#cumRetLineChart').resizeChart();
+		    	if(this.$$('aq-cumRetLineChart')) {
+		    		this.$$('aq-cumRetLineChart').resizeChart();
+		    	}
 		    	
 		    	if(this.$$('#barChart')) {
 		    		this.$$('#barChart').resizeChart();

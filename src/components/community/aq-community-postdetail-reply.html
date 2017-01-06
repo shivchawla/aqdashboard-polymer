@@ -110,7 +110,10 @@
         
         error: String,
         
-        threadId: String,
+        threadId: {
+          type: String,
+          observer: "_threadIdChanged",
+        },
         
         threadData: Object,
         
@@ -218,6 +221,19 @@
           this.$$('#removeIcon').style.display = 'none';
       },
 
+      _threadIdChanged: function(nThreadId, oThreadId) {
+          if(!nThreadId || nThreadId == "") {
+            console.log("Resetting Reply");
+              this.resetView();
+          }
+      },
+
+      resetView: function() {
+        this.preview = false;
+        this.$$('#editor').setContent("");
+        this.$$('#editor').focus();
+        this.onRemoveAttached(); 
+      },
 
     });
   </script>
