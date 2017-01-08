@@ -1,0 +1,130 @@
+
+<link rel='import' href='../../../bower_components/highcharts-chart/highcharts-stock.html'>
+
+<dom-module id='aq-aggregatedreturns-barchart'>
+	<template>
+		<template is="dom-if" if="[[axisReady]]" id='barChartTemplate'>
+			<highcharts-stock
+	  			id="barChart" 
+	  			type="column"
+	  			y-axis = "{{yAxis}}"
+	  			x-axis="[[xAxis]]"
+	  			tooltip-options="[[tooltip]]"
+	  			legend-options="[[legend]]"
+	  			highchart-options="[[chartOptions]]">
+		 	</highcharts-stock>
+  		</template>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-aggregatedreturns-barchart',
+			properties:{
+
+				yAxis:{ 
+					type: Object,
+					value: [{
+						labels: {
+		                    formatter: function () {
+		                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
+		                    }
+		                },
+
+		                plotLines: [{
+		                    value: 0,
+		                    width: 2,
+		                    color: 'silver'
+		                }],
+		            }],
+		        },
+
+	            tooltip: {
+	            	type: Object,
+	            	value:{
+		            	xDateFormat:'%b \'%y',
+		            	shared:true,
+		            }
+		        },
+
+	          	xAxis:{
+	          		type: Object,
+          		},
+
+          		legend:{
+					type:Object,
+					value: {
+						enabled:true,
+		          		align:"right",
+		          		verticalAlign:'top',
+		          		y:15,
+	          	
+		          		itemStyle: {
+		          			fontSize:13,
+		          			fontWeight:"normal",
+		          		},
+		          	},
+				},
+
+				chartOptions:{
+					type:Object,
+					value:{
+						navigator:{
+							height:30,
+							margin:10,
+						},
+
+						rangeSelector:{
+							enabled:false,
+						},
+					},
+				},
+
+			            
+				axisReady: {
+					type: Boolean,
+					value:false,
+				},
+
+			},
+
+			updateProperties: function() {
+			    this.axisReady = true;
+			    this.$.barChartTemplate.render();
+				this.$$('#barChart').removeSeries(0);
+			},
+
+			addSeries: function(name, data, colorByPoint, options) {
+				this.$$('#barChart').addSeries(name, data, colorByPoint, options);
+			},
+
+			createMonthlyReturnBarChart: function(backtest) {
+				var types = ["algorithm","benchmark"];
+				var colors = ["#0375b4", "#cc6666", "#FFAA1D","#007849","#6e2667","#fc4a1a"];
+				var legend = ["Strategy", "Benchmark"];
+				
+				for (index=0; index<types.length;index++) {
+
+					var aggregatedReturns = backtest.output.returns.monthly[types[index]];
+					var keys = Object.keys(aggregatedReturns);
+					var dataset = new Array(keys.length);
+
+					var i = 0;
+					keys.sort()
+	      			.forEach(function(v, i) {
+	      				dataset[i] = [Date.parse(v.substring(0, 4)+"-"+v.substring(4, 6)), aggregatedReturns[v]];
+	       			}); 
+
+		  			this.$$('#barChart').addSeries(legend[index], dataset, false, {color:colors[index]});	
+				}
+
+			},
+
+			resizeChart: function() {
+				if(this.$$('#barChart')) {
+					this.$$('#barChart').resizeChart();
+				}
+			},
+
+		});
+	</script>
+</dom-module>

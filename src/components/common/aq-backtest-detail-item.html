@@ -1,6 +1,3 @@
-<link rel='import' href='../../../bower_components/highcharts-chart/highcharts-stock.html'>
-<link rel='import' href='../../../bower_components/chart-elements/chart-line.html'>
-<link rel='import' href='../../../bower_components/chart-elements/chart-bar.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
@@ -10,7 +7,8 @@
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-check-authentication.html'>
-<link rel='import' href='./aq-cumRetLineChart.html'>
+<link rel='import' href='./aq-cumret-linechart.html'>
+<link rel='import' href='./aq-aggregatedreturns-barchart.html'>
 
 <dom-module id='aq-backtest-detail-item'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -154,7 +152,6 @@
 					<paper-tabs noink selected="{{graphType}}">
 						<paper-tab>Cumulative Return</paper-tab>
 						<template is='dom-if' if='[[!active]]'>
-							<!--paper-tab>Net Value</paper-tab-->
 							<paper-tab>Monthly Returns</paper-tab>
 						</template>
 					</paper-tabs>
@@ -164,19 +161,11 @@
 				<iron-pages on-iron-resize='onResize' selected="{{graphType}}">
 
 					<div id='cumRetLineChartDiv'></div>
+					
+					<template is='dom-if' if='[[!active]]'>
+						<div id='barChartDiv'></div>
+					</template>
 
-			  		<template is='dom-if' if='[[!active]]'>
-				  		<highcharts-stock
-				  			id="barChart" 
-				  			type="column"
-				  			y-axis = "[[barChartOptions.yAxis]]"
-				  			x-Axis = "[[barChartOptions.xAxis]]"
-				  			tooltip-options="[[barChartOptions.tooltip]]"
-				  			highchart-options="[[barChartOptions.highchartOptions]]"
-				  			>	 	
-		  				 </highcharts-stock>
-	  				 </template>
-	
 		  		</iron-pages>
 			      
 			    <div class='card-actions'>  
@@ -198,7 +187,9 @@
 				</div>
 			</paper-card>	
 
-		<iron-signals id='datasignal' on-iron-signal-point-data='onBacktestData' on-iron-signal-bulk-data='onBacktestData'></iron-signals>
+		<iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
+
+		<iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
 		<iron-ajax
           	url="[[computeGetBacktestUrl(backtestId)]]"
@@ -225,7 +216,6 @@
 				active:{
 					type:Boolean,
 					value:false,
-					observer:'_isActiveChanged',
 				},
 
 				metrics:Object,
@@ -240,77 +230,14 @@
 					value:{},
 				},
 
-
-				barChartOptions:{
-					type:Object,
-					value:{
-						
-						yAxis:{
-							labels: {
-			                    formatter: function () {
-			                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-			                    }
-			                },
-
-			                plotLines: [{
-			                    value: 0,
-			                    width: 2,
-			                    color: 'silver'
-			                }],
-			            },
-
-			            xAxis:{
-			            	type:'datetime',
-			            },
-
-			            tooltip: {
-				            xDateFormat:'%b \'%y',
-				            shared:true,
-				        },
-
-				        highchartOptions:{
-				        	/*rangeSelector: {
-				        		enabled: false,
-				        	},*/
-
-				        	/*title: {
-								text:"Strategy vs Benchmark Performance"
-							},*/
-			          	},  
-
-
-					},
-				},
-
-				trackVarData:{
-					type:Object,
-					value:{},
-				},
-
 				hasTrackVarData:{
 					type:Boolean,
 					value:false,
 				},
 
-				maxLineData:{
-					type:Number,
-					value:-Infinity,
-
-				},
-
-				minLineData:{
-					type:Number,
-					value: Infinity,
-				},
-
 				counter:{
 					type:Number,
 					value:0,
-				},
-
-				barData: {
-					type:Object,
-					value:{}, 
 				},
 
 				count:{
@@ -324,17 +251,14 @@
 				},
 
 				backtest:Object,
-				
-				scale:{
-					type:Number,
-					value:1,
-				},
 
 				header: Object,
 
 				APIEndPoint:String,
 
 			},
+
+			//observers:['_isActiveOrBacktestIdChanged(active, backtestId)'],
 
 			computeGetBacktestUrl: function(backtestId) {
 				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -405,38 +329,45 @@
 
 			},
 
-			_isActiveChanged: function(newVal, oldVal) {
-				if((oldVal + 1) && newVal) {
-					this.reset();
-					
-					this.cumRetLineChartOptions = {};
-					this.updateCumRetLineChartOptions();
-
-					this.subscribeData();
-				} 
-			},
-
 			reset: function() {
-				
-				//Polymer.dom.flush();
 
-				var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumRetLineChart');
-
+				var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
 				if(child) {
 					Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
 				} 
 
-				Polymer.dom(this.$.cumRetLineChartDiv).appendChild(document.createElement('aq-cumRetLineChart'));
+				var el = document.createElement('aq-cumret-linechart');
+				Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
 				
 				Polymer.dom.flush();
+
+				this.async(
+					function() {
+						if(!this.active) {
+							var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
+							
+							if(child) {
+								Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
+							} 
+
+							var el = document.createElement('aq-aggregatedreturns-barchart');
+							Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+							Polymer.dom.flush();
+						}
+
+					},
+					 200);	
 
 				this.resetMetrics();
 				this.counter = 0;
 				this.hasTrackVarData = false;
+				this.realtimeXLabels = [];
+				this.trackVarKeysArray = [];
 			},
 
 			subscribeData: function() {
 				this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
+				this.reset();
 				this.updateCumRetLineChartOptions();
 			},
 
@@ -453,32 +384,27 @@
 				}
 
 				this.trackVarKeysArray = Object.keys(data["variables"]).sort();
-
-				this.trackVarData = [];
-				for (i=0;i<this.trackVarKeysArray.length; i++) {
-					this.push('trackVarData', dataset);
-				}
-
 				this.hasTrackVarData = true;
-
 			},
 
 			onBacktestData: function(e) {
-				var isArray = Array.isArray(e.detail);
-
-				if (isArray) {
-					this.onBacktestBulkData(e);
-					return;
+				//process data obnly when element is active
+				if (!this.active) {
+					return
 				}
-
-				if (e.detail.outputtype == "performance") {	
-					this.addRealTimeData(e.detail,"");
-				} else if(e.detail.outputtype == "labels") {
-					this.addRealTimeData(e.detail, "labels");
-				}
+				
+				data = e.detail;
+				if ((data.outputtype=="performance" || data.outputtype=="labels") && this.active) {
+					this.addRealTimeData(data);
+				} 
 			},
 
 			onBacktestBulkData: function(e) {
+				//process data obnly when element is active
+				if (!this.active) {
+					return;
+				}
+
 				var data = e.detail;
 				if(data && data.length > 0) {
 					this.addLineBulkData(e.detail);	
@@ -486,21 +412,21 @@
 			},		
 
 			addLineBulkData: function(data) {
+				//this.addRealTimeBulkData(data);
 				for(i in data) {
-					if (data[i].outputtype=="performance") {
-						this.addRealTimeData(data[i],"");
-					} else if(data[i].outputtype == "labels") {
-						this.addRealTimeData(data[i], "labels");
-					}
+					if ((data[i].outputtype=="performance" || data[i].outputtype=="labels") && this.active) {
+						this.addRealTimeData(data[i]);
+					} 
 				}
+
 			},
 		
-			addRealTimeData: function(data, type) {
+			addRealTimeData: function(data) {
 				var legends = ["Strategy", "Benchmark"]
 				var types = ["totalreturn","totalreturn_benchmark"];
 				var colors = ["#0375b4", "#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var colorsTrack = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-				if (type=="labels") {
+				if (data.outputtype=="labels") {
 					this.realtimeXLabels = Object.keys(data.labels).sort();
 
 					var dataset = new Array(this.realtimeXLabels.length);
@@ -508,15 +434,12 @@
 						dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
 					}
 
-					this.rtData = [dataset, dataset];
-
-					this.$$('aq-cumRetLineChart').addSeries("Strategy", this.rtData[0], false, {color:colors[0],lineWidth:2});					
-					this.$$('aq-cumRetLineChart').addSeries("Benchmark", this.rtData[1], false, {color:colors[1],lineWidth:1});
+					this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, {color:colors[0],lineWidth:2});					
+					this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset, false, {color:colors[1],lineWidth:1});
 
 					if(this.hasTrackVarData) {
-						for (i=0; i<this.trackVarData.length; i++){
-							console.log("Shiv");
-							this.$$('aq-cumRetLineChart').addSeries(this.trackVarKeysArray[i], this.trackVarData[i], false, {lineWidth:1, yAxis:1, color:colorsTrack[i]});
+						for (i=0; i<this.trackVarKeysArray.length; i++){
+							this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, {lineWidth:1, yAxis:1, color:colorsTrack[i]});
 						}
 					}
 
@@ -524,10 +447,11 @@
 				}
 
 				var ct = this.counter++;
-				
 				for (idx=0;idx<types.length;idx++) {
-					this.rtData[idx][ct][1] = data[types[idx]];
-					this.$$('aq-cumRetLineChart').updateRealtime(ct, idx, data[types[idx]])
+					
+					if(this.$$('aq-cumret-linechart') && this.active) {
+						this.$$('aq-cumret-linechart').updateRealtime(ct, idx, data[types[idx]]);
+					}
             	}
 
         		this.addMetricData(data);
@@ -538,19 +462,20 @@
 					if(this.hasTrackVarData) {
 						
 						var keysArray = Object.keys(data["variables"]).sort();
-
-						for (i=0; i<keysArray.length; i++) {
-							this.$$('aq-cumRetLineChart').updateRealtime(ct, i+2, data["variables"][keysArray[i]]);
+						if(this.$$('aq-cumret-linechart') && this.active){
+							for (i=0; i<keysArray.length; i++) {
+								this.$$('aq-cumret-linechart').updateRealtime(ct, i+2, data["variables"][keysArray[i]]);
+							}
 						}
 						
 					} else {
 
-						//return;
 						//reset the current graph to accomodate the trackers
-						this.fire('unsubscribe-data',{backtestId: this.backtestId});
+						this.active = false;
+						this.fire('unsubscribe-data', {backtestId: this.backtestId});
 						this.reset();
 						this.initializeTrackVarData(data);
-						this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
+						this.async(function(){this.active = true; this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
 					}
 				}
 			},
@@ -589,18 +514,25 @@
 			},
 
 			updateCumRetLineChartOptions: function() {
-				this.$$('aq-cumRetLineChart').updateProperties();
+				this.$$('aq-cumret-linechart').updateProperties();
 			},
 
 			updateCumRetLineChartOptionsForTrackVars: function() {
-				this.$$('aq-cumRetLineChart').updatePropertiesForTrackVars();
+				this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
 			},
 
 			onGetBacktestSuccess: function(e){
 
 				this.set('backtest', e.detail.response);
-				
-				if(this.backtest.output.analytics.rolling) {
+
+				if(this.backtest.status=="active") {
+					this.active = true;
+					this.reset();
+					this.subscribeData();
+					return;
+				}
+
+				if(this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
 					this.addMetricData(this.backtest.output.analytics.rolling);
 				}
 
@@ -613,8 +545,8 @@
 				}
 
 				this.async(this.createCumRetLineChart, 200);
-				this.async(this.createMonthlyReturnBarChart, 200);
 				this.async(this.createTrackVarLineChart, 200);
+				this.async(this.createMonthlyReturnBarChart, 500);
 			},
 
 			createNetValueChart: function() {
@@ -686,36 +618,18 @@
 			},
 
 			createCumRetLineChart: function() {
-				this.$$('aq-cumRetLineChart').createCumRetLineChart(this.backtest);
+				this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest);
 			},
 
 			createMonthlyReturnBarChart: function() {
-				
-				var colors = ["#0375b4", "#cc6666", "#FFAA1D","#007849","#6e2667","#fc4a1a"];
-				var types = ["algorithm","benchmark"];
-				var legend = ["Strategy", "Benchmark"];
-				
-				//this.barData = {datasets:[]};
-				
-				for (index=0; index<types.length;index++) {
-
-					var aggregatedReturns = this.backtest.output.returns.monthly[types[index]];
-					var keys = Object.keys(aggregatedReturns);
-					var dataset = new Array(keys.length);
-
-					var i = 0;
-					keys.sort()
-	      			.forEach(function(v, i) {
-	      				dataset[i] = [Date.parse(v.substring(0, 4)+"-"+v.substring(4, 6)), aggregatedReturns[v]];
-	       			}); 
-
-		  			this.$$('#barChart').addSeries(legend[index], dataset, false, {color:colors[index]});	
+				if(!this.active) {
+					this.$$('aq-aggregatedreturns-barchart').updateProperties();
+					this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest);
 				}
-
 			},
 
 			createTrackVarLineChart: function() {
-				this.$$('aq-cumRetLineChart').createTrackVarLineChart(this.backtest);
+				this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest);
 			},
 
 			onGetBacktestError: function(e) {
@@ -736,27 +650,21 @@
 		    },
 
 		    _backtestIdChanged: function(nId, oId) {
-	    		console.log("here");
 		    	if(nId) {
-		    		console.log("Id Changed");
-		    		if(this.active) {
-						this.reset();
-						this.isYAxisReady = true;
-						this.subscribeData();
-					} else {
-						this.reset();
-						this.requestStaticData();
-					}	
-		    	}
+		    		this.reset();
+					this.requestStaticData();
+				} else {
+					this.active = false;
+				}	
 		    },
 
 		    onResize: function() {
-		    	if(this.$$('aq-cumRetLineChart')) {
-		    		this.$$('aq-cumRetLineChart').resizeChart();
+		    	if(this.$$('aq-cumret-linechart')) {
+		    		this.$$('aq-cumret-linechart').resizeChart();
 		    	}
 		    	
-		    	if(this.$$('#barChart')) {
-		    		this.$$('#barChart').resizeChart();
+		    	if(this.$$('aq-aggregatedreturns-barchart')) {
+		    		this.$$('aq-aggregatedreturns-barchart').resizeChart();
 		    	}
 		    },
 

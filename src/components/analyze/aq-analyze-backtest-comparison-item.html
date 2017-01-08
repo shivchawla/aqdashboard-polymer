@@ -1,12 +1,11 @@
 
-<!--link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html"-->
-<link rel='import' href='../../../bower_components/chart-elements/chart-bar.html'>
-<link rel='import' href='../../../bower_components/chart-elements/chart-line.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
-<link rel='import' href='../common/aq-check-authentication.html'>
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../common/aq-check-authentication.html'>
+<link rel='import' href='../common/aq-cumret-linechart.html'>
+<link rel='import' href='../common/aq-aggregatedreturns-barchart.html'>
 
 <link rel='import' href='../../icons/aq-iconset.html'>
 
@@ -15,7 +14,6 @@
 	</style>
 
 	<style>	
-
 		paper-icon-button {
 			width:35px;
     		height:35px;
@@ -74,6 +72,9 @@
 			margin-top:0px;
 			margin:0 auto;
 			--width:95%;
+			padding:10px;
+			border: 2px solid teal;
+			background-color: white;
 		}
 
 		paper-tab:hover{
@@ -103,7 +104,6 @@
     		padding:10px;
     	}
 
-
 	</style>
 
 	<template>
@@ -116,50 +116,23 @@
       	</div>
 		
 		<div id='comparison-return'>
-			<div class="sub_header">
-				<paper-tabs noink selected={{graphType1}}>
-					<paper-tab>Total Return</paper-tab>
-					<paper-tab>Monthly Returns</paper-tab>
-					<!--paper-tab>Risk Metrics</paper-tab-->
-				</paper-tabs>
+
+			<div class="layout horizontal">
+				<p>Comparing Backtests for <i>{{strategyName}}</i></p>
+				<div class="flex"></div>
+				<div class="sub_header">
+					<paper-tabs noink selected={{graphType1}}>
+						<paper-tab>Total Return</paper-tab>
+						<paper-tab>Monthly Returns</paper-tab>
+						<!--paper-tab>Risk Metrics</paper-tab-->
+					</paper-tabs>
+				</div>
 			</div>
 		          
-			<iron-pages class="pages_select" selected={{graphType1}}>
+			<iron-pages class="pages_select" selected={{graphType1}} on-iron-resize='onResize'>
 							
-				<chart-line 
-		  			id="cumRetLineChart" 
-		  			data="[[cumRetData]]"
-		  			options="[[cumRetLineChartOptions]]">
-		  		</chart-line>
-			  	
-  				<chart-bar 
-		  			id="monthlyReturnBarChart" 
-		  			data="[[monthlyReturnData]]"
-		  			options="[[monthlyReturnBarChartOptions]]">
-		  		</chart-bar>
-		  	
-	  			<!--div style="width:100%">
-			  		<vaadin-grid size="0" id="table_details__comparison">
-					  <table>
-					    <colgroup class="table_style">
-				    		<col name="Strategy Name" sortable/>
-					      	<col name="Backtest Name" sortable/>
-					      	<col name="Total Return" sortable/>
-					      	<col name="Annual Return" sortable/>
-					     	 <col name="Volatility" sortable/>
-					      	<col name="Sharpe Ratio" sortable/>
-					      	<!--col name="Information Ratio" sortable/>
-					      	<col name="Sortino Ratio" sortable/>
-					      	<col name="Avg Drawdown" sortable/-->
-					      	<!--col name="Max Drawdown" sortable/-->
-					      	<!--col name="Calmar Ratio" sortable/>
-					      	<col name="Beta Value" sortable/>
-					      	<col name="Stability" sortable/>
-					      	<col name="Avg Concentration" sortable/-->
-					    <!--/colgroup>
-					  </table>
-					</vaadin-grid>
-				</div-->
+				<div id='cumRetLineChartDiv'></div>
+				<div id='barChartDiv'></div>
 	  		</iron-pages>
 		</div>
 		
@@ -184,7 +157,6 @@
 			is:'aq-analyze-backtest-comparison-item',
 			
 			properties:{
-
 				compareItems: {
 					type:Object,
 				},
@@ -200,21 +172,7 @@
 					value:[],
 				},
 
-				cumRetData:{
-					type:Object,
-				},
-
-				monthlyReturnData:{
-					type:Object,
-				},
-
-				cumRetLineChartOptions:Object,
-				monthlyReturnBarChartOptions:Object,
-
-				tableData:{
-					type:Array,
-					value:[]
-				},
+				strategyName: String,
 
 				counter:{
 					type:Number,
@@ -233,124 +191,17 @@
 			},
 
 			attached: function() {
-				this.resetComparison();
-				this.cumRetLineChartOptions = {maintainAspectRatio:false,
-					backgroundColor:"#fff",
-						scales: {
-				            xAxes: [{
-				                ticks: {
-				                    maxTicksLimit:10,
-				                    maxRotation:0,
-				                    callback: function(value, index, values) {
-					                        var date = new Date(value);
-											var month = (date.getMonth() + 1);
-											var month = month >= 10 ? month.toString() : '0'+month.toString();
-											return date.getDate()+'/'+ month + '/' +  date.getFullYear();
-				                    },
-				                    fontColor:"#24293d",
-				                    padding:20,
-				                },
-						      	scaleLabel: {
-							        display: true,
-							        labelString: 'Date',
-							        fontSize: 16,
-							        fontColor:"#24293d",
-					            },
-				             	gridLines:{
-					            	display:false,
-					            },
-					        }],
-			                
-			                yAxes: [{
-				                ticks: {
-				                    maxTicksLimit:5,
-				                    fontColor:"#24293d",
-				                    padding:20,
-				                    callback: function(value, index, values) {
-				                    	return value+'%';
-				                    },
-				                },
-						      	scaleLabel: {
-							        display: true,
-							        //labelString: 'Total Return (%)',
-							        fontSize: 16,
-							        fontColor:"#24293d",
-					            },
-				             	gridLines:{
-					            	color:"#008080",
-					            },
-				              	position:"right",
-					            gridLines :{
-					            	drawTicks:false,
-				                    tickMarkLength:0,
-				                    drawBorder:true,
-					            },
-					        }]
-				        }
-		        };
-
-		        this.monthlyReturnBarChartOptions = {maintainAspectRatio:false,
-						scales: {
-							paddingBottom:10,
-				            xAxes: [{
-				                ticks: {
-				                    maxTicksLimit:10,
-				                    maxRotation:0,
-				                    callback: function(value, index, values) {
-					                        var year = Math.floor(value / 100);
-											var month = value % 100;
-											var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-											 "Sep", "Oct", "Nov", "Dec"];
-											return monthNames[month - 1] +" "+year.toString();
-				                    },
-				                    fontColor:"#24293d",
-				                    padding:20,
-				                },
-						      	scaleLabel: {
-							        display: true,
-							        labelString: 'Month/Year',
-							        fontSize: 16,
-							        fontColor:"#24293d",
-					            },
-					            gridLines:{
-					            	display:false,
-					            },
-
-					            paddingLeft:10,
-								
-					        }],
-			                yAxes: [{
-				                ticks: {
-				                    maxTicksLimit:5,
-				                    //fontSize: 14,
-							        fontColor:"#24293d",
-							        padding:20,
-							        callback: function(value, index, values){
-							        	return value+'%';
-							        },
-				                },
-				                scaleLabel: {
-							        display: true,
-							        //labelString: 'Monthly Return (%)',
-							        fontSize: 16,
-							        fontColor:"#24293d",
-					            },
-				             	gridLines:{
-					            	color:"#008080",
-					            },
-					        }]
-			            },
-		        };
-
+				this.async(this.resetComparison, 200);
 				if (this.active){
-					this.doComparison();
+					this.async(this.doComparison, 200);
 				}
 			},
 
 			_isActiveChanged: function(newVal, oldVal) {
-				if (oldVal+1 && newVal) {
-					this.resetComparison();
-					this.doComparison();
+				if ((oldVal+1) && newVal) {
+
+					this.async(this.resetComparison, 200);
+					this.async(this.doComparison, 200);
 				}
 			},
 
@@ -397,74 +248,34 @@
 			},
 
 			processLineChartData: function(data) {
+				
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
 				var equityData = data.output.totalreturn.algorithm;
 				var keys = Object.keys(equityData);
-				var yPoints = new Array(keys.length);
-				var xPoints = new Array(keys.length);
 				
-				var dataset = {
-						label:data._id,
-						borderColor:colors[this.counter],
-						borderWidth:1,
-						fill:false,
-						pointRadius:0,
-						pointHoverRadius:10,
-					};
+				var dataset = new Array(keys.length);
 				
 				keys.sort()
       			.forEach(function(v, i) {
-      				yPoints[i] = equityData[v];
-      				xPoints[i] = v;
+      				dataset[i]= [Date.parse(v), equityData[v]];
        			}); 
 
-       			dataset.data = yPoints;
+       			this.$$('aq-cumret-linechart').addSeries(data._id, dataset, false, {lineWidth:1, color: colors[this.counter]});
 
-				//var yAxisLabel = "Total Return (%)";
-				this.push('cumRetData.datasets', dataset);
-
-				if(!this.cumRetData.labels) {
-					this.set('cumRetData.labels', xPoints);
-				}
-				
-				this.$$('#cumRetLineChart').updateChart()	
 			},
 
 			processBarChartData: function(data) {
 				var colors = ["#fc4a1a","#0375b4","#FFAA1D","#007849","#6e2667"];
 				var aggregatedReturns = data.output.returns.monthly.algorithm;
 				var keys = Object.keys(aggregatedReturns);
-				var yPoints = new Array(keys.length);
-				var xPoints = new Array(keys.length);
-
-				var dataset = {
-						label:data._id,
-						borderColor:colors[this.counter],
-						backgroundColor:colors[this.counter],
-						borderWidth:2,
-						//fill:false,
-						//pointRadius:1,
-						//pointHoverRadius:10,
-					};
-
-				var i = 0;
+				var dataset = new Array(keys.length);
 
 				keys.sort()
       			.forEach(function(v, i) {
-      				yPoints[i] = aggregatedReturns[v];
-      				xPoints[i] = v;
+      				dataset[i] = [Date.parse(v.substring(0, 4)+"-"+v.substring(4, 6)), aggregatedReturns[v]];
        			}); 
 
-			
-      			dataset.data = yPoints;
-
-      			this.push('monthlyReturnData.datasets', dataset);
-
-      			if(!this.monthlyReturnData.labels) {
-      				this.set('monthlyReturnData.labels', xPoints);
-      			}
-
-	  			this.$$('#monthlyReturnBarChart').updateChart();
+				this.$$('aq-aggregatedreturns-barchart').addSeries(data._id, dataset, false, {color: colors[this.counter]});
 			},
 
 			processMetricsData: function(data){
@@ -492,16 +303,47 @@
 			},
 
 			resetComparison: function() {
-				this.cumRetData = {datasets:[]};
-				this.monthlyReturnData = {datasets:[]};
-				this.tableData = [];
 				this.counter = 0;
+				var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
+				if(child) {
+
+					Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+				} 
+
+				var el = document.createElement('aq-cumret-linechart');
+				Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+				
+				Polymer.dom.flush();
+
+				var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
+				
+				if(child) {
+					Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
+				} 
+
+				var el = document.createElement('aq-aggregatedreturns-barchart');
+				Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+				
+				Polymer.dom.flush();
+				
+				this.$$('aq-cumret-linechart').updateProperties();
+				this.$$('aq-aggregatedreturns-barchart').updateProperties();
 			},
 
 			goBackAllBacktests: function() {
 				this.resetComparison();
 	          	this.fire('comparison-off');
 	        },
+
+		    onResize: function() {
+		    	if(this.$$('aq-cumret-linechart')) {
+		    		this.$$('aq-cumret-linechart').resizeChart();
+		    	}
+		    	
+		    	if(this.$$('aq-aggregatedreturns-barchart')) {
+		    		this.$$('aq-aggregatedreturns-barchart').resizeChart();
+		    	}
+		    },
 
 		});
 	</script>

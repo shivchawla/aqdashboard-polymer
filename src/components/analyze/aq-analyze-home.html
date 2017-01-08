@@ -109,7 +109,7 @@
 				</template>
 
 				<template is='dom-if' if="[[showComparison]]">
-					<aq-analyze-backtest-comparison-item compare-items="[[checkedItems]]" active="[[showComparison]]">
+					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
 					</aq-analyze-backtest-comparison-item>
 				</template>
 
@@ -280,7 +280,7 @@
 	        },
 
 	        onDetail: function(e) {  
-	        	e.stopPropagation();    	
+	        	e.stopPropagation();    
 	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id});
 	        },
 

@@ -47,7 +47,7 @@
 				isRunning: {
 					type:Boolean,
 					value:false,
-					observer:'_isRunningChanged',
+					//observer:'_isRunningChanged',
 					notify:true,
 				},
 
@@ -59,55 +59,10 @@
 				backtestId:String,
 			},
 
-			_isRunningChanged: function(newValue, oldValue) {
-				if (newValue) {
-					this.debounce('start', function() {
-						this.start();
-					}, 2000);
-
-				} else {
-					this.stop();
-				}
-			},
-
-			start: function() {
-				//this.$.detailItem.fetchData();
-				//console.log("Starting Websocket:");	
-        		//this.$.webSocketConn.open();
-			},
-
-			stop: function() {
-				//console.log("Stopping Websocket");	
-        		//this.$.webSocketConn.close();
-			},
-
-			/*_onOpen: function(e){
-		        console.log("Open");
-		        this.$.backtestDisplay.reset();
-		        this.$.webSocketConn.send("run");
-	      	},
-
-	      	_onMessage: function(e) {    
-	          	if (e.detail.outputtype == "performance") {
-	            	this.$.backtestDisplay.addLineData(e.detail);
-	          	}
-	      	},
-
-      		_onError: function(e) {
-      			console.log(e.detail);
-        		console.log("Error");
-        			
-  			},
-
-      		_onClose: function(e) {
-        		console.log("Close:");
-      		},*/
-
 			onBack: function() {
+
 				this.isRunning = false;
-				//this.active = !this.active;
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
-				//this.fire('backClicked-backtest');
 			},
 
 			toggleDrawer: function() {
