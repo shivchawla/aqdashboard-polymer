@@ -194,7 +194,7 @@
                   <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
                   <div>This is quick help!!</div>
                   
-                  <aq-editor-sidebar-log></aq-editor-sidebar-log>
+                  <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
                   
                 </iron-pages>
             
@@ -411,6 +411,7 @@
 
         onGetStrategyResponse: function(data) {
           this.strategy = data.detail.response;
+
         },
 
         onGetStrategyError: function(data) {
@@ -474,7 +475,7 @@
           // Send Execution request via web-sockets 
           this.isRunning  = true;
           this.fire('execute-backtest', {backtestId:this.activeBacktestId});
-          
+        
         },
 
         onStrategyExecutionError: function(data) {
@@ -495,6 +496,11 @@
           } else {
             this.selectedSidebar = 2;
           }
+
+          if(this.$$('#logContainer')) {
+            this.$$('#logContainer').resetLogs();
+          }
+
         },
 
         onScroll: function() {
@@ -523,6 +529,7 @@
           } else {
             this.strategyId = "";
             this.isRunning  = false;
+            
           }
         }
 

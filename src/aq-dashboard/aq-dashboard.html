@@ -449,7 +449,7 @@
             }
               
             this.backtests[backtestId].data.push(e.detail);
-            var bulksent = this.backtests[backtestId].bulksent;
+            /*var bulksent = this.backtests[backtestId].bulksent;
             var subscription = this.backtests[backtestId].subscription;
             var alldata = this.backtests[backtestId].data;    
                  
@@ -458,7 +458,7 @@
               this.backtests[backtestId].bulksent = true;
             } else if (subscription){
                 this.fire('iron-signal',{name:'point-data', data:e.detail});
-            }
+            }*/
         },
 
         _onError: function(e) {
@@ -479,7 +479,7 @@
                   backtest_id: backtestId};
 
             this.backtestId = backtestId
-            this.backtests[backtestId] = {data:[], subscription:false,bulksent:false};
+            this.backtests[backtestId] = {data:[], subscription:false,bulksent:false, currentIndex:0};
             this.$.webSocketConn.send(msgForWS);
           } else {
             this.gotoSignin();
@@ -492,7 +492,10 @@
           if(this.backtests[backtestId]) { 
             this.backtests[backtestId].subscription = true;
             this.backtests[backtestId].bulksent = false;
+            this.backtests[backtestId].currentIndex = 0;
+            this.sendDataSlowly();
             this.async(this.managesubscriptions, 60000);
+
           }
         },
 
@@ -502,8 +505,29 @@
           if(this.backtests[backtestId]) {
               this.backtests[backtestId].subscription = false;
               this.backtests[backtestId].bulksent = false;
+              delete this.backtests[backtestId].currentIndex;
+              this.backtests[backtestId].currentIndex = 0;
           }
 
+        },
+
+        sendDataSlowly: function() {
+            for(var key in this.backtests) {
+                if(this.backtests[key]) {
+                    if(this.backtests[key].subscription) {
+                      var currentIndex = this.backtests[key].currentIndex;
+                      var currentLength = this.backtests[key].data.length;
+                      if(currentIndex <  currentLength && currentLength > 0) {
+                        var dataPoint = this.backtests[key].data[currentIndex];
+                        this.fire('iron-signal',{name:'point-data', data:dataPoint});
+                        this.backtests[key].currentIndex = currentIndex + 1;
+                      }
+                      
+                    }
+                }
+            }
+
+            this.async(this.sendDataSlowly, 300);
         },
 
         updateHeader: function(user) {

@@ -79,6 +79,10 @@
 				
 			},
 
+			resetLogs: function() {
+				this.logs=[];
+			},
+
 		});
 	</script>
 
@@ -150,18 +154,15 @@
 			},
 
 			isInfo: function(messageType) {
-				//console.log(messageType);
-				return messageType == "info";
+				return messageType == "INFO";
 			},
 
 			isWarning: function(messageType) {
-				//console.log(messageType);
-				return messageType == "warning";
+				return messageType == "WARN";
 			},
 
 			isError: function(messageType) {
-				//console.log(messageType);
-				return messageType == "error";
+				return messageType == "ERROR";
 			},
 
 			toUpperCase: function(messageType) {

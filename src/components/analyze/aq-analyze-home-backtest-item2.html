@@ -32,8 +32,8 @@
 		.metric {
 			margin-right: 10px;
 			margin-left:10px;
-			margin-top: 20px;
-			margin-bottom: 5px;
+			--margin-top: 20px;
+			margin-bottom: 10px;
 			--max-width:200px;
 			font-size:12px;
 			--min-width: 75px;
@@ -81,7 +81,7 @@
 		}
 
 		#content {
-			height:70px;
+			height:75px;
 			border-bottom:1px solid teal;
 			background: white !important;
 		}
@@ -92,7 +92,7 @@
 		}
 
 		.container-int {
-			height:30px;
+			--height:30px;
 		}
 
 		paper-icon-button {
@@ -112,18 +112,13 @@
 			width:120px !important;
 		}
 
-		.card-actions {
-			
-		}
-
-
 	</style>
 
 	<template>
 		<paper-card class="self-center flex">
 			<div id='content' class="card-content flex">
-				<div  class="container-int layout horizontal">
-					<paper-checkbox noink id='checkbox' on-tap = 'onCheck'></paper-checkbox>	
+				<div class="container-int layout horizontal">
+					<paper-checkbox noink id='checkbox' on-tap='onCheck'></paper-checkbox>	
 					<p>Backtest: <strong>[[formatIndex(index)]]</strong></p>
 					<div class="flex"></div>
 		          	
@@ -144,8 +139,8 @@
 					</div>
 
 					
-					<div class="layout vertical metric flex">	
-						<span id="createdAt" class="bold-span flex">[[processedBacktest.createdAt]]</span>
+					<div class="layout vertical metric">	
+						<span class="bold-span flex">[[processedBacktest.createdAt]]</span>
 						<span>Created</span>					
 					</div>	
 
