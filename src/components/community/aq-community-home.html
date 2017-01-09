@@ -152,9 +152,8 @@
                 
                 </div>
              
-                <template is='dom-if' if='[[isSearchActive(searchText)]]'>
-                  <p style="font-size: 16px;">Search results for: 
-                    <i>"[[searchText]]"</i>
+                <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
+                    <p style="font-size: 16px;"><i>Search results for "[[searchText]]"&nbsp</i> in Category: <i>"[[searchCategory]]"</i>
                   </p>
                 </template>
               
@@ -346,7 +345,9 @@
 
               this.updateCommunityState();
               
-              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": this.searchCategory};
+              var category = this.searchCategory=="All" ? "":this.searchCategory;
+
+              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": category};
   
               this.fetchResults();
             
@@ -378,8 +379,8 @@
               }
             },
 
-            isSearchActive: function(searchText) {
-                return searchText.length > 0;
+            isSearchActive: function(searchText, searchCategory) {
+                return searchText.length > 0 || (searchCategory && searchCategory!="All" && searchCategory.length>0);
             },
 
             hasThreads: function(threads) {
@@ -414,7 +415,6 @@
                   this.threads = [];
                 }
             },
-
 
         });
     </script>

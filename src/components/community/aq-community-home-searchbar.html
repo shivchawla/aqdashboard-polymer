@@ -120,9 +120,9 @@
 	    		<!--aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown-->
     			<aq-check-authentication id='authItem'></aq-check-authentication>
 
-	  			<div id="search" class="layout horizontal">
+	  			<div id="search" class="layout horizontal" on-keydown="checkForKeys">
 	  				
-  					<div id="searchdiv">
+  					<div id="searchdiv" on-keydown="checkForKeys">
 		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-keydown="checkForKeys">
 
 		  				<div>
@@ -180,7 +180,7 @@
 
 			search: function() {
 				this.searchValue = this.$$('#searchbox').value;
-                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory > 0 ? this.categories[this.selectedCategory].value : ""});
+                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory >= 0 ? this.categories[this.selectedCategory].value : ""});
 
              	if(this.$.searchbox.value=="") {
                 	this.toggle();

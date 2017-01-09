@@ -66,7 +66,7 @@
 	</style>
 	
 	<template>
-	    <paper-dialog id='createStrategyModalDialog' with-backdrop>
+	    <paper-dialog id='createStrategyModalDialog' with-backdrop on-keydown='checkForKeys'>
 	    	<div class="layout horizontal">
           		<div class="flex"></div>
           		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
@@ -149,6 +149,12 @@
           return "aq-icons:add";
         } else {
           return "aq-icons:content-copy";
+        }
+      },
+
+      checkForKeys: function(e){
+        if(e.keyCode == 13) {
+          this.onSubmit();
         }
       }
 
