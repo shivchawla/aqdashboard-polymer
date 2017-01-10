@@ -171,6 +171,7 @@
             route="{{route}}"
             pattern="/user/:displayMode"
             data="{{routeData}}"
+            query-params="{{queryParams}}"
             active="{{active}}">
         </app-route>
 
@@ -213,12 +214,12 @@
 
         <iron-ajax
           url="[[APIEndPoint]]/user/resetpasswordcall"
-          body="{{resetPasswordParams}}"
+          body="{{resetpasswordParams}}"
           method='POST'
-          id='resetPasswordQuery'
+          id='resetpasswordQuery'
           handle-as="json"
-          on-response="handleResetPasswordResponse"
-          on-error="handleResetPasswordError"
+          on-response="handleresetpasswordResponse"
+          on-error="handleresetpasswordError"
           headers='{"Content-Type": "application/json"}'
           debounce-duration="300">
         </iron-ajax>
@@ -277,7 +278,7 @@
 
                         </template>
 
-                        <template is='dom-if' if=[[!isResetPasswordMode(displayMode)]]>
+                        <template is='dom-if' if=[[!isresetpasswordMode(displayMode)]]>
                             <gold-email-input
                                 id='userEmailInput'
                                 class='input-fields'
@@ -329,8 +330,8 @@
                         </template>
 
                         <template is="dom-if" if="{{isSigninMode(displayMode)}}">
-                            <div class="forgot-password">{{aRsrc.resetPasswordText}}
-                                <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetPasswordLinkText}}
+                            <div class="forgot-password">{{aRsrc.resetpasswordText}}
+                                <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetpasswordLinkText}}
                                 </a>
                             </div>
 
@@ -364,7 +365,7 @@
             signup: 'signup',
             forgotPassword: 'forgotPassword',
             signout:'signout',
-            resetPassword:'resetPassword',
+            resetpassword:'resetpassword',
             authMessage:'authMessage',
         };
 
@@ -500,9 +501,9 @@
                     computed:'computeForgotPasswordParams(userEmail)',
                 },
 
-                resetPasswordParams:{
+                resetpasswordParams:{
                     type:Object,
-                    computed:'computeResetPasswordParams(password, confirmPassword, resetcode)'
+                    computed:'computeresetpasswordParams(password, confirmPassword, resetcode)'
                 },
 
                 actionFailedMessage:{
@@ -522,10 +523,11 @@
                 APIEndPoint:String,
                 active: Boolean,
                 routeData:Object,
+                queryParams: Object,
 
             },
 
-            observers:['_activeChanged(active, routeData)'],
+            observers:['_activeChanged(active, routeData, queryParams)'],
 
             /**
            * Resource strings. If you do I18N this will make sense. If not, just run with it :~)
@@ -568,8 +570,8 @@
                     actionButtonLabel: "Log in",
                     actionButtonInProgressLabel: "Authenticating...",
                     actionButtonSuccessLabel: "Welcome back.",
-                    resetPasswordText: "Forgot your password?",
-                    resetPasswordLinkText: "Click here."
+                    resetpasswordText: "Forgot your password?",
+                    resetpasswordLinkText: "Click here."
                 },
                 forgotPassword: {
                     headerText: "Forgot Password",
@@ -582,7 +584,7 @@
                     actionButtonSuccessLabel: "Success! Please check your inbox."
                 },
 
-                resetPassword: {
+                resetpassword: {
                     headerText: "Reset Password",
                     footerText: "Back to Sign in? ",
                     footerLinkText: "Log in here",
@@ -603,7 +605,7 @@
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
 
-            _activeChanged: function(active, routeData) {
+            _activeChanged: function(active, routeData, queryParams) {
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
                     if(this.$.authItem.checkHasToken()) {
@@ -615,7 +617,7 @@
                         this.displayMode != displayModes.signup &&
                         this.displayMode != displayModes.forgotPassword &&
                         this.displayMode != displayModes.signout && 
-                        this.displayMode != displayModes.resetPassword &&
+                        this.displayMode != displayModes.resetpassword &&
                         this.displayMode != displayModes.authMessage) {
                         
                         this.displayMode = displayModes.signin;
@@ -629,9 +631,21 @@
                         this.signoutMessage ="";
                     }
 
+                    if(this.displayMode == displayModes.resetpassword) {
+                        console.log(this.queryParams);
+                        //console.log(this.queryParams.resetcode);
+                        if(this.queryParams && this.queryParams.resetcode) {
+                            this.resetcode = this.queryParams.resetcode;
+                        } else {
+                            this.displayMode = displayModes.signin;
+                        }
+                    }
+                    
                     if(this.displayMode != displayModes.authMessage){
                         this.resetView();    
                     }
+
+
                 }
             },
 
@@ -664,7 +678,7 @@
                 return {email: userEmail};
             },
 
-            computeResetPasswordParams: function(password, newPassword, resetcode) {
+            computeresetpasswordParams: function(password, newPassword, resetcode) {
                 return {code:resetcode, password:password, newpassword:newPassword};
             },
 
@@ -680,7 +694,7 @@
 
             isSignupOrResetMode: function(displayMode) {
                 
-                return displayMode == displayModes.signup || displayMode == displayModes.resetPassword;
+                return displayMode == displayModes.signup || displayMode == displayModes.resetpassword;
             },
 
             isForgotPasswordMode: function(displayMode) {
@@ -688,9 +702,9 @@
                 return displayMode == displayModes.forgotPassword;
             },
 
-            isResetPasswordMode: function(displayMode) {
+            isresetpasswordMode: function(displayMode) {
                 
-                return displayMode == displayModes.resetPassword;
+                return displayMode == displayModes.resetpassword;
             },
 
             isAuthMessageMode: function(displayMode) {
@@ -710,7 +724,7 @@
                     case displayModes.forgotPassword:
                         this.setDisplayMode(displayModes.signin);
                         break;
-                    case displayModes.resetPassword:
+                    case displayModes.resetpassword:
                         this.setDisplayMode(displayModes.signin);
                         break;
                     default:
@@ -791,7 +805,7 @@
 
             updateValidity: function() {
 
-                if (this.displayMode !=displayModes.resetPassword) {
+                if (this.displayMode !=displayModes.resetpassword) {
                     this.$$('#userEmailInput').invalid = false;
                 }
 
@@ -809,7 +823,7 @@
                     }
                 }
 
-                if (this.displayMode != displayModes.resetPassword) {
+                if (this.displayMode != displayModes.resetpassword) {
                      if (this.$$('#confirmPasswordInput')) {
                         this.$$('#confirmPasswordInput').invalid = false;
                     }
@@ -890,7 +904,7 @@
             checkPasswordsMatch: function() {
                 if (this.displayMode == displayModes.signup) {
                     return this.password == this.confirmPassword;
-                } else if (this.displayMode == displayModes.resetPassword) {
+                } else if (this.displayMode == displayModes.resetpassword) {
                     return this.password == this.confirmPassword;
                 } else {
                     return true;
@@ -901,7 +915,7 @@
 
                 var valid = true;
 
-                if (displayMode != displayModes.resetPassword) {
+                if (displayMode != displayModes.resetpassword) {
                     valid &= userEmailValid;
                 }
 
@@ -916,7 +930,7 @@
                     valid &= acceptPolicy;
                 }
 
-                if (displayMode == displayModes.resetPassword) {
+                if (displayMode == displayModes.resetpassword) {
                     valid &= passwordValid;
                     valid &= confirmPasswordValid & this.confirmPassword == this.password;
                 }
@@ -957,13 +971,14 @@
                 this.enableAll();
             },
 
-            handleResetPasswordResponse: function(e) {
+            handleresetpasswordResponse: function(e) {
                 this.enableAll();
                 this.fire('rt-changed',{route:'/user/authMessage?mode=reset&emailId=' + this.userEmail});
             },
 
-            handleResetPasswordError: function(e) {
+            handleresetpasswordError: function(e) {
                 this.enableAll();
+                //this.errorMessage = ""
             },
 
             onInvokeAction: function() {
@@ -971,7 +986,7 @@
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
 
-                    if (this.displayMode != displayModes.resetPassword) {
+                    if (this.displayMode != displayModes.resetpassword) {
                         this.$$('#userEmailInput').invalid = !this.userEmailValid;
                     }
 
@@ -985,7 +1000,7 @@
                         this.$$('#confirmPasswordInput').invalid = !this.confirmPasswordValid
                     }
 
-                    if (this.displayMode == displayModes.resetPassword) {
+                    if (this.displayMode == displayModes.resetpassword) {
                         this.$$('#confirmPasswordInput').invalid = !this.confirmPasswordValid
                     }
 
@@ -1006,8 +1021,8 @@
                         this.$.forgotPasswordQuery.generateRequest();
                         break;
 
-                    case displayModes.resetPassword:
-                        this.$.resetPasswordQuery.generateRequest();
+                    case displayModes.resetpassword:
+                        this.$.resetpasswordQuery.generateRequest();
                         break;
                     default:
                         throw new Error("Invalid display mode: " + this.displaymode)
@@ -1032,7 +1047,7 @@
                         this.$$('#userEmailInput').disabled = false;
                         break;
 
-                    case displayModes.resetPassword:
+                    case displayModes.resetpassword:
                         this.$$('#passwordInput').disabled = false;
                         break;
                 }
@@ -1056,7 +1071,7 @@
                     case displayModes.forgotPassword:
                         this.$$('#userEmailInput').disabled = true;
                         break;
-                    case displayModes.resetPassword:
+                    case displayModes.resetpassword:
                         this.$$('#passwordInput').disabled = true;
                         this.$$('#confirmPasswordInput').disabled = true;
                         break;

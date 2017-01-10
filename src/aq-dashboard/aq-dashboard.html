@@ -262,10 +262,12 @@
                       break;   
                     }
                 }
-            }
 
-            this.currentTab = lastTab;
-            this.hasToken = this.$.authItem.checkHasToken();
+                this.currentTab = lastTab;
+                this.hasToken = this.$.authItem.checkHasToken();
+            } else {
+              this.changeTabOnURL();
+            }
         },
 
         computeGetBacktesturl: function(backtestId) {
@@ -350,7 +352,7 @@
                   '/about',
                   '/user/signin',
                   '/user/signup',
-                  '/user/resetPassword',
+                  '/user/resetpassword',
                   '/user/signout'];
 
           if (this.currentTab == 1) {
@@ -359,6 +361,7 @@
           }
 
           if ((this.URLcontains(path[5]) || this.URLcontains(path[6])) && newTab==3) {
+              console.log("Returning");
               return;
           }
 
@@ -490,10 +493,12 @@
         onSubscription: function(e) {
           var backtestId = e.detail.backtestId;
           if(this.backtests[backtestId]) { 
+            console.log("Subscribing");
             this.backtests[backtestId].subscription = true;
             this.backtests[backtestId].bulksent = false;
             this.backtests[backtestId].currentIndex = 0;
-            this.sendDataSlowly();
+            console.log("Getting Ready");
+            this.sendDataSlowly(backtestId);
             this.async(this.managesubscriptions, 60000);
 
           }
@@ -503,6 +508,7 @@
           var backtestId = e.detail.backtestId; 
           
           if(this.backtests[backtestId]) {
+              console.log("Unsubscribing");
               this.backtests[backtestId].subscription = false;
               this.backtests[backtestId].bulksent = false;
               delete this.backtests[backtestId].currentIndex;
@@ -511,23 +517,27 @@
 
         },
 
-        sendDataSlowly: function() {
-            for(var key in this.backtests) {
-                if(this.backtests[key]) {
-                    if(this.backtests[key].subscription) {
-                      var currentIndex = this.backtests[key].currentIndex;
-                      var currentLength = this.backtests[key].data.length;
-                      if(currentIndex <  currentLength && currentLength > 0) {
-                        var dataPoint = this.backtests[key].data[currentIndex];
-                        this.fire('iron-signal',{name:'point-data', data:dataPoint});
-                        this.backtests[key].currentIndex = currentIndex + 1;
-                      }
-                      
-                    }
+        sendDataSlowly: function(key) {
+            var timeGap = 300;
+            //console.log(key);
+            //console.log(Date.now());
+
+            if(this.backtests[key]) {
+
+                if(this.backtests[key].subscription) {
+                  var currentIndex = this.backtests[key].currentIndex;
+                  var currentLength = this.backtests[key].data.length;
+                  if(currentIndex <  currentLength && currentLength > 0) {
+                    var dataPoint = this.backtests[key].data[currentIndex];
+                    //console.log("Firing");
+                    this.fire('iron-signal',{name:'point-data', data:dataPoint});
+                    this.backtests[key].currentIndex = currentIndex + 1;
+                  }
+
+                  this.async(function(){this.sendDataSlowly(key);}, timeGap);
+
                 }
             }
-
-            this.async(this.sendDataSlowly, 300);
         },
 
         updateHeader: function(user) {
@@ -559,6 +569,12 @@
         managesubscriptions: function(){ 
           if(Object.keys(this.backtests).length > 0) {
              for (var key in this.backtests) {
+
+              //continue with still subscribed
+              if(this.backtests[key].subscription){
+                break;
+              }
+
               this.backtestId = key;
 
                 if(this.$.authItem.checkHasToken()) {
@@ -602,6 +618,7 @@
         changeTabOnURL: function() {
 
           var pathname = window.location.pathname;
+          console.log(pathname);
           var ctab=0;
           var pathArray = ['/main', 
                   '/dashboard', 
@@ -609,7 +626,7 @@
                   '/user/signin',
                   '/user/signup',
                   '/user/signout',
-                  '/user/resetPassword',
+                  '/user/resetpassword',
                   '/user/authMessage'];
 
           for(i=0;i<pathArray.length;i++){
@@ -619,14 +636,15 @@
             }
           }
 
-          if(ctab==5) {
+          if(ctab==5 || ctab==6) {
             ctab = 3;
           }
 
-          if(ctab>5) {
+          if(ctab==7) {
             return;
           }
 
+          console.log("Changin tab");
           this.currentTab = ctab;
         },
 
