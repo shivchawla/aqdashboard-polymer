@@ -55,17 +55,23 @@
       	<template is='dom-if' if='{{active}}'>
 			<div class="layout vertical fit" style="background-color: #f4f9f7;">
 				
-				<div id = 'container' class="self-center"> 
+				<div id = 'container' class="self-start"> 
 					<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
 						<p id='header'class="self-start">We are here to help you!!</p>
 						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>
 						<paper-button on-tap='goToLogin'>Go Back</paper-button>
 					</template>
 
-					<template is='dom-if' if='[[isModeActivation(mode)]]'>
+					<template is='dom-if' if='[[isModeActivationPending(mode)]]'>
 						<p id='header' class="self-start">You are just one step away to test your great ideas!!</p>
 						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
 						<paper-button on-tap='goToLogin'>Go Back</paper-button>
+					</template>
+
+					<template is='dom-if' if='[[isModeActivationComplete(mode)]]'>
+						<p id='header' class="self-start">Account activation is complete!!</p>
+						<p id='p1' class="self-start">Welcome to AimsQuant. Start testing your investment ideas.</p>
+						<paper-button on-tap='goToLogin'>Sign In</paper-button>
 					</template>
 
 
@@ -113,8 +119,12 @@
 				return mode=="forgotpassword";
 			},
 
-			isModeActivation: function(mode) {
-				return mode=="activation";
+			isModeActivationPending: function(mode) {
+				return mode=="activationPending";
+			},
+
+			isModeActivationComplete: function(mode) {
+				return mode == "activationComplete";
 			},
 
 			isModeReset: function(mode) {

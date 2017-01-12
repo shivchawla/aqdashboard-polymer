@@ -144,6 +144,10 @@
         this.$.strategyNameInput.focus();
 			},
 
+      close: function() {
+        this.$.createStrategyModalDialog.close();
+      },
+
       computeIconType: function(header) {
         if (header.match("Create")) {
           return "aq-icons:add";
@@ -155,6 +159,8 @@
       checkForKeys: function(e){
         if(e.keyCode == 13) {
           this.onSubmit();
+        } else if(e.keyCode == 27) {
+            this.onCancel();
         }
       }
 

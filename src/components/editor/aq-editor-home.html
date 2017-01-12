@@ -105,6 +105,11 @@
       	display: none;
       }
 
+      a{
+        color:teal;
+        font-style: italic;
+      }
+
     </style>
 
 	<template>
@@ -162,12 +167,16 @@
   		    </div>
               
   	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-    	    		<aq-editor-home-strategy-item										strategy-name = "[[item.name]]"
+    	    		<aq-editor-home-strategy-item	strategy-name = "[[item.name]]"
     							num-backtest = "[[item.backtests]]"
     							strategy-desc = "[[item.description]]"
     							strategy-id = "[[item._id]]">
     				  </aq-editor-home-strategy-item>	
   	    	</template>
+
+          <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
+            <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
+          </template>
   	
   		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
   		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
@@ -454,7 +463,12 @@
     	var idDeleted = data.detail.response.id;
     	for (i in this.strategies) {	
   			if (idDeleted == this.strategies[i]._id) {
-  				this.splice('strategies', i, 1);
+          this.splice('strategies', i, 1);
+          
+          if(this.strategies.length == 0) {
+            this.strategies = [];
+          }
+
   				this.checkedCount -= 1;
   			}
   		}
@@ -501,7 +515,9 @@
         
         if(this.queryParams && this.queryParams.create) {
           this.create = this.queryParams.create;
-        } 
+        } else {
+          this.fire('close-action');
+        }
 
         this.fetchResults();
 
@@ -510,7 +526,11 @@
         this.checkedItems = {};
         this.checkedCount = 0;
       }
-    }
+    },
+
+    hasStrategies: function(strategies, searchParam) {
+        return (strategies && strategies.length > 0) || (searchParam && searchParam.search!="");
+    },
 
 	});
   </script>

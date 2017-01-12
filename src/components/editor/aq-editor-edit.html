@@ -411,7 +411,6 @@
 
         onGetStrategyResponse: function(data) {
           this.strategy = data.detail.response;
-
         },
 
         onGetStrategyError: function(data) {
@@ -448,7 +447,7 @@
               "type": this.strategy.type,
               "code": this.$$('#codeEditorPanel').getCodeContent(),
           };
-          
+
           if(this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
               this.$.saveStrategyQuery.generateRequest();
@@ -529,6 +528,7 @@
           } else {
             this.strategyId = "";
             this.isRunning  = false;
+            this.strategy = {};
             
           }
         }

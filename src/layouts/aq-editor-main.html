@@ -84,6 +84,7 @@
         'newClicked':'openNewDialog',
         'cloneClicked':'openCloneDialog',
         'analyzeClicked':'goToAnalyze',
+        'close-action':'closeDialog',
       },
 
       isEqual: function(view1, view2) {
@@ -128,6 +129,11 @@
 
         //Open dialog for permission
         this.$.strategyCreateDialog.open();
+      },
+
+      closeDialog: function() {
+        this.$.strategyCreateDialog.close();
+        this.$.strategyCloneDialog.close();
       },
 
       openCloneDialog: function(e) {

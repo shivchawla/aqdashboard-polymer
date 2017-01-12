@@ -608,7 +608,7 @@
             _activeChanged: function(active, routeData, queryParams) {
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
-                    if(this.$.authItem.checkHasToken()) {
+                    if(this.$.authItem.checkHasToken() && this.displayMode != displayModes.resetpassword) {
                         this.fire('rt-changed',{route:'/dashboard'});
                         return;
                     }
@@ -632,8 +632,7 @@
                     }
 
                     if(this.displayMode == displayModes.resetpassword) {
-                        console.log(this.queryParams);
-                        //console.log(this.queryParams.resetcode);
+
                         if(this.queryParams && this.queryParams.resetcode) {
                             this.resetcode = this.queryParams.resetcode;
                         } else {
@@ -644,8 +643,6 @@
                     if(this.displayMode != displayModes.authMessage){
                         this.resetView();    
                     }
-
-
                 }
             },
 
@@ -740,7 +737,7 @@
                 this.displayMode = mode;
                 this.clearErrorMessages();
                 this.updateMessageStrings();
-
+                this.clearFields();
             },
 
             clearFields: function() {
@@ -947,13 +944,13 @@
 
             handleLoginError: function(data) {
                 this.clearErrorMessages();
-                this.actionFailed("Incorrect Username/Password");
+                this.actionFailed(data.detail.request.response);
                 this.enableAll();
             },
 
             handleSignupResponse: function(e) {
                 this.enableAll();
-                this.fire('rt-changed',{route:'/user/authMessage?mode=activation&emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
+                this.fire('rt-changed',{route:'/user/authMessage?mode=activationPending&emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
             },
 
             handleSignupError: function(e) {

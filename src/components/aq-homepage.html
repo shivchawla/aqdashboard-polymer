@@ -18,10 +18,10 @@
     	#section-home {
     		margin-top:0px;
     		background-color:#f6fcfa;
-        height:100%;
-        min-height:640px;
-        background: url(../../resources/images/bg1.jpg);
-        background-size: cover;
+        height:92vh;
+        --min-height:640px;
+        --background: url(../../resources/images/bg1.jpg);
+        --background-size: cover;
 	    }
 
       #ideas {
@@ -73,8 +73,8 @@
       paper-button.button2 {
         width: 20%;
         color: #cc6666;
-        margin-top: 100px;
-        margin-bottom: 30px;
+        --margin-top: 100px;
+        --margin-bottom: 30px;
         min-width: 200px;
         border-radius: 20px;
         border: 1px solid teal;
@@ -112,11 +112,10 @@
     	}
 
       #section-describe-code {
-        padding-top:50px;
+        --padding-top:50px;
         color: teal;--#24293d;
         background-color:#e3f6ed;--#f6fcfa;
-        height:100%;
-        min-height:640px;
+        height:92vh;
       }
 
       #codeContainer {
@@ -124,25 +123,33 @@
         height:310px;
         background: url(../../resources/images/code.png);
         background-size: cover;
+        margin-bottom: 5%;
       }
 
-      #btDiv{
-        margin-top: 100px;
-        margin-bottom: 50px;
+      #codeDesc {
+        --max-height:87%;
+        margin-bottom: 5%;
+      }
+
+      #btDiv {
+        --margin-top: 100px;
+        --margin-bottom: 50px;
+        margin-bottom:5%;
+        margin-top:5%;
       }
 
       #section-describe-backtest {
-        padding-top:50px;
+        --padding-top:50px;
         color:teal;--#0375b4;  
         background-color:#ecf6e3;--#f6fcfa;
-        height:100%;
-        min-height: 640px;
+        height:92vh;
       }
 
       #backtestDiv {
         margin-bottom:10px;
         margin-left: 20px;
         max-height: 200px;
+        margin-top:50px;
       }
 
       #analysisDiv {
@@ -156,8 +163,8 @@
       #anGraphDivision {
         background: url(../../resources/images/analyze.png);
         background-size: cover;
-        height: 200px;
-        width:388px;
+        height: 250px;
+        width:438px;
         margin-bottom:50px;
       }
 
@@ -201,10 +208,12 @@
 
     	#section-advantages {
     		padding-top:50px;
-    		height:100%;
-        min-height:690px;
+    		--height:100%;
+        --min-height:690px;
     		color:teal;
     		background-color:#e3f6ee;
+        height:92vh;
+
     	}
 
     	#advantages p{
@@ -253,75 +262,89 @@
         
     		<div id="section-home" class="layout vertical">
             
-            <div class="flex"></div>
+            <div class="self-center flex"></div>
+
         	  <div class="layout horizontal self-center">
               <p id="headerTagline">Invest in Y</p>
               <div id='ideas' class="self-end"></div>
               <p id="headerTagline">ur Ideas</p>        
             </div>
-      	    <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
+      	    
+            <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
         	
         	  <paper-button class="button self-center" noink on-tap='onJoin'>Start Now</paper-button>
-             <div class="flex"></div>
-  	      	<paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
+            
+            <div class="flex"></div>
+  	      	
+            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
     		</div>
 
         <div id="section-describe-code" class="layout vertical flex">
-            <div class="layout horizontal around-justified wrap">
+            <div class="layout horizontal around-justified wrap flex">
                  
               <div class="layout vertical self-center">
-                  <p class="self-center"> <i class="tagline">Testing an investment idea has never been simpler</i></p>
+
+                  <div id='codeDesc' class="layout vertical">
+                    <p class="self-center"> <i class="tagline">Testing an investment idea has never been simpler</i></p>
+                    <p class="self-center"><i>Embedded Code Editor</i></p>
+                    <p class="self-center"><i>Free Data for Indian Equity Markets</i></p>
+                    <p class="self-center"><i>Backtester in Julia to quickly implement your trade ideas
+                    </i></p>
+                  </div>
+
+                  <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button>
                   
-                  <p class="self-center"><i>Embedded Code Editor</i></p>
-                  <p class="self-center"><i>Free Data for Indian Equity Markets</i></p>
-                  <p class="self-center"><i>Backtester in Julia to quickly implement your trade ideas
-                  </i></p>
-                 
-                <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button> 
-                
-                <div class="layout vertical self-center" id='btDiv'>
-                  <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
-                  <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
-                </div>
+                  <div class="layout vertical self-center" id='btDiv'>
+                    <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
+                    <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
+                  </div>
 
               </div>
 
               <div class="layout vertical self-center">
+                <div class="flex"></div>
                 <div id='codeContainer'></div>
-              </div>  
+                <div class="flex"></div>
+              </div> 
+
             </div>
 
-            <div class="flex"></div>
-            
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageThree'></paper-icon-button>
            
         </div>
 
         <div id="section-describe-backtest" class="layout vertical"> 
 
-            <div class="layout horizontal wrap flex around-justified" id='backtestDiv'>
-              <div class="layout vertical self-center" id='analysisDiv'>
-                <iron-icon class="bigIcon self-center" icon="vaadin-icons:line-bar-chart"></iron-icon>
+            <div class="layout horizontal wrap flex around-justified">
 
-                <p class="self-center"><i class='tagline'>Detailed analysis of your backtests</i></p>
-                <i style="margin-top:0px"class="self-center">Analyze your idea with variety of trading and portfolio metrics. </i>
-              </div>
+              <div class="layout vertical self-center">
+                  <div class="layout vertical self-center" id='analysisDiv'>
+                    <!--iron-icon class="bigIcon self-center" icon="vaadin-icons:line-bar-chart"></iron-icon-->
 
-              <div id='anGraphDivision' class="self-center"></div>
-            
+                    <p class="self-center"><i class='tagline'>Detailed analysis of your backtests</i></p>
+                    <i style="margin-top:0px"class="self-center">Analyze your idea with variety of trading and portfolio metrics. </i>
+                    <div class="flex"></div>
+                  </div>
+
+                  <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
+
+                  <div class="layout vertical self-center">
+                      <div class="flex"></div>
+                      <!--iron-icon class="bigIcon self-center" icon="vaadin-icons:group"></iron-icon-->
+                      <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
+                      <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
+                      </i>
+                  </div>   
+              </div> 
+
+              <div class="layout vertical self-center">
+                  <div class="flex"></div>
+                  <div id='anGraphDivision'></div>
+                  <div class="flex"></div>
+              </div> 
+
             </div>
 
-            <div class="flex"></div>
-            
-            <div class="layout vertical self-center">
-                 <iron-icon class="bigIcon self-center" icon="vaadin-icons:group"></iron-icon>
-
-                <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
-                <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
-                </i>
-                <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
-            </div>    
-           
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageFour'>
             </paper-icon-button>
 

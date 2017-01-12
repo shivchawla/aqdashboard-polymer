@@ -51,7 +51,10 @@
       is:'aq-editor-edit-programmer',
 
       properties :{
-          code: String,
+          code: {
+            type:String,
+            observer:'_codeChanged',
+          }
       },
 
       listeners :{
@@ -59,12 +62,25 @@
       },
 
       getCodeContent: function() {
-        return this.$.codeEditor.value.trim(); 
+          return this.$.codeEditor.editor.getValue().trim(); 
       }, 
 
       isSelectedBarRun: function(sideBar) {
         return sideBar == 0;
-      },    
+      },  
+
+      onCodeChange: function(e) {
+          console.log(e.detail);
+      },
+
+      _codeChanged: function(ncode, old) {
+        if(!ncode) {
+          ncode = "";
+        }
+        
+        this.$.codeEditor.editor.setValue(ncode);
+          
+      }
 
     });
   </script>

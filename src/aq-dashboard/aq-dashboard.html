@@ -224,16 +224,12 @@
         attached: function() {
 
             this.listen(window, 'popstate', '_urlChanged');
-            
-            if(this.$.authItem.checkHasToken()) {
-                if(this.URLcontains('/user')) {
-                    this.fire('rt-changed',{route:'/dashboard'});
+            this.isURLResetPassword();
 
-                    //this.$$('#router').go('/dashboard');
-                }
-                var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-                this.$.webSocketConn.url = WSEndPoint;
-                this.$.webSocketConn.open();
+            if(this.$.authItem.checkHasToken()) {
+
+                this.openWebSocketConnection();
+                
             }
 
             var lastTab;
@@ -265,8 +261,16 @@
 
                 this.currentTab = lastTab;
                 this.hasToken = this.$.authItem.checkHasToken();
+
             } else {
-              this.changeTabOnURL();
+                this.changeTabOnURL();
+            }
+
+        },
+
+        isURLResetPassword: function() {
+            if(this.URLcontains('/dashboard/user/resetpassword')) {
+                this.removeToken();
             }
         },
 
@@ -352,16 +356,17 @@
                   '/about',
                   '/user/signin',
                   '/user/signup',
+                  '/user/signout',
                   '/user/resetpassword',
-                  '/user/signout'];
+                  '/user/authMessage'
+                  ];
 
           if (this.currentTab == 1) {
             this.drawerWidth ="200px;"
             this.view = 'home';
           }
 
-          if ((this.URLcontains(path[5]) || this.URLcontains(path[6])) && newTab==3) {
-              console.log("Returning");
+          if ((this.URLcontains(path[5]) || this.URLcontains(path[6]) || this.URLcontains(path[7])) && newTab==3) {
               return;
           }
 
@@ -381,10 +386,8 @@
           this.fire('rt-changed',{route:'/user/signin'});
         },
 
-        onSignOut: function() {
-          this.set('aimsquant.user','');
-          this.$.localStorage.save(); 
-          
+        onSignOut: function() {     
+          this.removeToken();
           this.hasToken = this.$.authItem.checkHasToken();
           this.fire('rt-changed',{route:'/user/signout'});
         },
@@ -470,9 +473,16 @@
         _onClose: function(e) {
         },
 
+        openWebSocketConnection: function() {
+          var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+          this.$.webSocketConn.url = WSEndPoint;
+          this.$.webSocketConn.open();
+        },
+
         requestExecution: function(e) {
 
           if(this.$.authItem.checkHasToken()) {
+            
             this.header = this.$.authItem.getHeader();
             var backtestId = e.detail.backtestId;
             this.backtestId = backtestId;
@@ -493,14 +503,11 @@
         onSubscription: function(e) {
           var backtestId = e.detail.backtestId;
           if(this.backtests[backtestId]) { 
-            console.log("Subscribing");
             this.backtests[backtestId].subscription = true;
             this.backtests[backtestId].bulksent = false;
             this.backtests[backtestId].currentIndex = 0;
-            console.log("Getting Ready");
             this.sendDataSlowly(backtestId);
             this.async(this.managesubscriptions, 60000);
-
           }
         },
 
@@ -508,7 +515,6 @@
           var backtestId = e.detail.backtestId; 
           
           if(this.backtests[backtestId]) {
-              console.log("Unsubscribing");
               this.backtests[backtestId].subscription = false;
               this.backtests[backtestId].bulksent = false;
               delete this.backtests[backtestId].currentIndex;
@@ -519,9 +525,6 @@
 
         sendDataSlowly: function(key) {
             var timeGap = 300;
-            //console.log(key);
-            //console.log(Date.now());
-
             if(this.backtests[key]) {
 
                 if(this.backtests[key].subscription) {
@@ -529,7 +532,6 @@
                   var currentLength = this.backtests[key].data.length;
                   if(currentIndex <  currentLength && currentLength > 0) {
                     var dataPoint = this.backtests[key].data[currentIndex];
-                    //console.log("Firing");
                     this.fire('iron-signal',{name:'point-data', data:dataPoint});
                     this.backtests[key].currentIndex = currentIndex + 1;
                   }
@@ -546,14 +548,23 @@
               "Content-Type": "application/json"};
         },
 
-        onTokenUpdate: function(e) {
+        removeToken: function() {
+            this.set('aimsquant.user','');
+            this.$.localStorage.save(); 
+        },
 
-            this.set('aimsquant.user',e.detail.user);
+        updateToken: function(user) {
+            this.set('aimsquant.user', user);
             this.$.localStorage.save();
+        },
 
+        onTokenUpdate: function(e) {
+            this.updateToken(e.detail.user);
             this.hasToken = this.$.authItem.checkHasToken();
             
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
+
+            this.openWebSocketConnection();
             
             if(lastRequest!='') {
               this.fire('rt-changed',{route:lastRequest});
@@ -618,7 +629,6 @@
         changeTabOnURL: function() {
 
           var pathname = window.location.pathname;
-          console.log(pathname);
           var ctab=0;
           var pathArray = ['/main', 
                   '/dashboard', 
@@ -636,15 +646,14 @@
             }
           }
 
-          if(ctab==5 || ctab==6) {
+          if(ctab>=5) { // || ctab==6) {
             ctab = 3;
           }
 
-          if(ctab==7) {
+          /*if(ctab==7) {
             return;
-          }
+          }*/
 
-          console.log("Changin tab");
           this.currentTab = ctab;
         },
 

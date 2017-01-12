@@ -11,10 +11,9 @@
   <style  include="iron-flex iron-flex-alignment iron-positioning">
   </style>
 	<style>
-		paper-dialog {
+		#sendInviteModalDialog {
     		width: 40%;
         min-width: 400px;
-    		--height: 250px;
     		margin-right:0px;
     		margin-left:0px;
     		padding-right: 0px;
@@ -22,6 +21,17 @@
     		border-radius: 5px;
     		border: 2px solid #cc6666;;--teal;
   		}
+
+      #sentMessageDialog {
+        --width: 40%;
+        width: 400px;
+        margin-right:0px;
+        margin-left:0px;
+        padding-right: 0px;
+        padding-left:0px;
+        border-radius: 5px;
+        border: 2px solid #cc6666;;--teal;
+      } 
 
   		.input-fields {
   			  padding-bottom: 20px;
@@ -119,6 +129,15 @@
 		 	
 		</paper-dialog>
 
+    <paper-dialog id='sentMessageDialog' modal>
+      <div><p style="font-weight: normal; font-size: 16px;"> Invitation Sent to [[userEmail]]</p></div>
+      <div id='buttons' class="layout vertical">    
+        <div class="layout horizontal self-end">
+          <paper-button noink dialog-dismiss>Close</paper-button> 
+        </div>
+      </div>
+    </paper-dialog>
+
 	</template>
 	
 	<script>
@@ -135,6 +154,7 @@
 				if(this.$.userEmailInput.validate()) {
 					   this.fire('send-invite-action',{address:this.userEmail});
              this.$.sendInviteModalDialog.close();
+             this.$.sentMessageDialog.open();
 				  } 		
 			},
 
