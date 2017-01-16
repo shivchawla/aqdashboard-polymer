@@ -228,9 +228,8 @@
             this.isURLResetPassword();
 
             if(this.$.authItem.checkHasToken()) {
-
                 this.openWebSocketConnection();
-                
+                this.hasToken = this.$.authItem.checkHasToken();
             }
 
             var lastTab;
@@ -265,7 +264,6 @@
                 }
 
                 this.currentTab = lastTab;
-                this.hasToken = this.$.authItem.checkHasToken();
 
             } else {
                 this.changeTabOnURL();

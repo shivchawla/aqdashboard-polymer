@@ -17,10 +17,8 @@
 
     	#section-home {
     		margin-top:0px;
-    		background-color:#f6fcfa;
         height:92vh;
-        --min-height:640px;
-        background: url(../../resources/images/bg1.jpeg);
+        background: url(../../resources/images/bg-home.jpeg);
         background-size: cover;
 	    }
 
@@ -36,13 +34,13 @@
     		font-size: 50px;
     		font-weight: bold;
     		margin-bottom: -10px;
-        color: teal;
+        color: #001b1b;
         opacity: 2.0;
         z-index: 2;
     	}
 
       #headerPara {
-        color:#cc6666;
+        color:#001b1b;
         font-style: italic;
         opacity: 2.0;
         z-index: 2;
@@ -58,48 +56,52 @@
 
     	paper-button.button {
     		width: 10%;
-    		color: white;
-        background-color: teal;
+    		color: #001b1b;
+        background-color: none;
     	  margin-top: 20px;
         margin-bottom: 30px;
     		min-width: 150px;
     		border-radius: 20px;
+        border: 1px solid #001b1b;
+        font-weight:bold;
     	}
 
       paper-button.button:hover {
-        background-color: #00a7a7;
+        background-color: #001b1b;
+        color:white;
       }
 
       paper-button.button2 {
         width: 20%;
-        color: #cc6666;
-        --margin-top: 100px;
-        --margin-bottom: 30px;
+        color: #001b1b;
         min-width: 200px;
         border-radius: 20px;
-        border: 1px solid teal;
+        border: 1px solid #001b1b;
+        background-color: none;
       }
 
       paper-button.button2:hover {
-        background-color: teal;
-        color: white;
-      } 
+        background-color: #001b1b;
+        color:white;
+      }
 
       paper-button.button3 {
         width: 10%;
-        color: #cc6666;
+        background-color: none;
         margin-top: 30px;
         margin-bottom: 30px;
         min-width: 150px;
         border-radius: 20px;
-        border: 1px solid teal;
+        border: 1px solid #001b1b;
+        color: #001b1b;
       }
 
       paper-button.button3:hover {
-        background-color: teal;
+        background-color: #001b1b;
         color: white;
       }
-	
+
+
     	paper-icon-button {
   			height:60px;
   			width:60px;
@@ -112,10 +114,11 @@
     	}
 
       #section-describe-code {
-        --padding-top:50px;
-        color: teal;--#24293d;
-        background-color:#e3f6ed;--#f6fcfa;
+        color:#001b1b;
+        background-color:#f2fbf7;
         height:92vh;
+        background: radial-gradient(#cbefdf, white);
+        background-size: cover;
       }
 
       #codeContainer {
@@ -127,22 +130,20 @@
       }
 
       #codeDesc {
-        --max-height:87%;
         margin-bottom: 5%;
       }
 
       #btDiv {
-        --margin-top: 100px;
-        --margin-bottom: 50px;
         margin-bottom:5%;
         margin-top:5%;
       }
 
       #section-describe-backtest {
-        --padding-top:50px;
-        color:teal;--#0375b4;  
-        background-color:#ecf6e3;--#f6fcfa;
+        color:#001b1b;
+        background-color:#f2fbf7;
         height:92vh;
+        background: radial-gradient(#cbefdf, white);
+        background-size: cover;
       }
 
       #backtestDiv {
@@ -170,62 +171,57 @@
 
       #communityDiv{
         margin-top:20px;
-        --height: 190px;
-        --width:400px;
-        --background: url(../../resources/images/Ideas/shareideas.jpg);
-        --background-size: cover;
       }
       
       .smallIcon {
         height: 30px;
         width: 30px;
-        color:teal;
+        color:#001b1b;
       }
 
       .mediumIcon {
         height: 40px;
         width: 40px;
-        color:teal;
+        color: #001b1b;
       }
 
     	.bigIcon {
     		height:50px;
     		width:50px;
-        color:teal;
+        color:#001b1b;
     	}
 
       .tagline {
-        color: #cc6666;
+        color:#001b1b;
         font-size: 26px;
         font-weight: bold;
+        font-style: normal;
       }
 
       .spTagline {
-        color: #cc6666;
+        color:#001b1b;
         font-size: 26px;
         margin-bottom: -30px !important;
       }
 
     	#section-advantages {
     		padding-top:50px;
-    		--height:100%;
-        --min-height:690px;
-    		color:teal;
-    		background-color:#e3f6ee;
-        height:92vh;
-
+    		color: #001b1b;
+    	  height:92vh;
+        background: radial-gradient(#cbefdf, white);
+        background-size: cover;
     	}
 
     	#advantages p{
     		margin-bottom: 35px;
     		font-size: 28px;
     		font-weight: bold;
-        color:#cc6666;
+        color:#001b1b;
     	}
 
     	a {
     		text-decoration: none;
-    		color:#cc6666;
+    		color:#001b1b;
     	}
 
     	a:hover {
@@ -236,7 +232,7 @@
       .footer {      
         bottom: 0px;
         background-color:#24293d;
-        color: white;     
+        color: white;
         padding: 19px 30px 20px;
       }
 
@@ -319,8 +315,7 @@
 
               <div class="layout vertical self-center">
                   <div class="layout vertical self-center" id='analysisDiv'>
-                    <!--iron-icon class="bigIcon self-center" icon="vaadin-icons:line-bar-chart"></iron-icon-->
-
+                    
                     <p class="self-center"><i class='tagline'>Detailed analysis of your backtests</i></p>
                     <i style="margin-top:0px"class="self-center">Analyze your idea with variety of trading and portfolio metrics. </i>
                     <div class="flex"></div>
@@ -330,7 +325,6 @@
 
                   <div class="layout vertical self-center">
                       <div class="flex"></div>
-                      <!--iron-icon class="bigIcon self-center" icon="vaadin-icons:group"></iron-icon-->
                       <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
                       <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
                       </i>
@@ -359,19 +353,19 @@
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="aq-icons:touch-app"></iron-icon>
     					<p class="self-center">EASY</p>
-    					<i class="self-center" style="color:#cc6666;--#de6238;;--#e2734e;--#cc6666;">Run backtest with very little code</i>
+    					<i class="self-center" style="color:#001b1b;">Run backtest with very little code</i>
     				</div>
 
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="vaadin-icons:paperplane"></iron-icon>
     					<p class="self-center">FAST</p>
-    					<i class="self-center" style="color:#cc6666;--#de6238;;--#e2734e;--#cc6666;">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
+    					<i class="self-center" style="color:#001b1b;">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
     				</div>
 
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
     					<p class="self-center">SECURE</p>
-    					<i class="self-center" style="color:#cc6666;--#de6238;;--#e2734e;--#cc6666;">Your ideas are your property</i>
+    					<i class="self-center" style="color:#001b1b;">Your ideas are your property</i>
     					
     				</div>
     			</div>
@@ -391,7 +385,7 @@
   				</div>
 
     				<div class="layout vertical adv-container">
-    					<adv-item class="self-center" advantage="Powerful Backtester"></adv-item>
+    					<adv-item class="self-center" advantage="Great Community"></adv-item>
     					
     					<adv-item class="self-center" advantage="Zero Setup"></adv-item>
 
@@ -399,7 +393,7 @@
     					</adv-item>
   				</div>
   				
-  				<div class="layout vertical adv-container">
+  				<!--div class="layout vertical adv-container">
     					<adv-item class="self-center" advantage="Great Community">
     					</adv-item>
 
@@ -408,7 +402,7 @@
 
     					<adv-item class="self-center" advantage="No Fees">
     					</adv-item>
-  				</div>
+  				</div-->
     			
     			</div>
 
@@ -427,7 +421,7 @@
         </div>
 
         <div class="flex"></div>
-        <p class="self-end">© 2016 AimsQuant</p>
+        <p class="self-end">© 2017 AimsQuant</p>
   	</div>
 
   
