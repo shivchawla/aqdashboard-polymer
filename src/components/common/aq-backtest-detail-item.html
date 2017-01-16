@@ -434,12 +434,59 @@
 						dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
 					}
 
-					this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, {color:colors[0],lineWidth:2});					
-					this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset, false, {color:colors[1],lineWidth:1});
+					this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, 
+							{
+								color:colors[0],
+								lineWidth:2,
+								compare:'percent', 
+								tooltip:{
+								 	pointFormatter: function() {
+									 	var series = this.series;
+									 	var color = series.color;
+									 	var y = (this.y - 100).toFixed(2);
+									 	var change = this.change.toFixed(2);
+
+									 	return '<span style="color:'+ color+'">' + series.name + '</span>: <b>' + change +'%</b><br/>';
+								 	},
+
+								},
+							}
+					);	
+
+					this.$$('aq-cumret-linechart').addSeries("Benchmark",dataset, false, 
+						{
+							color:colors[1],
+							lineWidth:1,
+							compare:'percent', 
+							tooltip:{
+							 	pointFormatter: function() {
+								 	var series = this.series;
+								 	var color = series.color;
+								 	var y = (this.y - 100).toFixed(2);
+								 	var change = this.change.toFixed(2);
+
+								 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
+								 	
+							 	},
+
+							},
+			                
+						}
+					);
 
 					if(this.hasTrackVarData) {
 						for (i=0; i<this.trackVarKeysArray.length; i++){
-							this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, {lineWidth:1, yAxis:1, color:colorsTrack[i]});
+							this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, 
+								{
+									lineWidth:1, 
+									yAxis:1, 
+									color:colorsTrack[i], 
+									tooltip:{
+										valueDecimals:2,
+
+									}
+								}
+							);
 						}
 					}
 

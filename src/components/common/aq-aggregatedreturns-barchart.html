@@ -114,7 +114,14 @@
 	      				dataset[i] = [Date.parse(v.substring(0, 4)+"-"+v.substring(4, 6)), aggregatedReturns[v]];
 	       			}); 
 
-		  			this.$$('#barChart').addSeries(legend[index], dataset, false, {color:colors[index]});	
+		  			this.$$('#barChart').addSeries(legend[index], dataset, false, {
+		  					color:colors[index], 
+		  					tooltip: {
+		  						valueSuffix:'%',
+		  						pointFormat:'<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
+		  					},
+		  				}
+	  				);	
 				}
 
 			},

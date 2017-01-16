@@ -65,7 +65,6 @@
 							height:30,
 							margin:10,
 						},
-					 	
 					},
 				},
 
@@ -192,11 +191,28 @@
 			
 					keys.sort()
 		  			.forEach(function(v, i) {
-		  				dataset[i] = [Date.parse(v), equityData[v]];
+		  				dataset[i] = [Date.parse(v), equityData[v] + 100.0];
 		   			}); 
 
-					this.$$('#cumRetLineChart').addSeries(legend[index], dataset, false, {lineWidth:width[index],color:colors[index]});	
-			  		}
+					this.$$('#cumRetLineChart').addSeries(legend[index], dataset, false, 
+						{lineWidth: width[index], 
+							color:colors[index], 
+							compare:'percent', 
+							tooltip:{
+								valueDecimals: 2,
+
+							 	pointFormatter: function(){
+								 	var series = this.series;
+								 	var color = series.color;
+								 	var y = (this.y - 100).toFixed(2);
+								 	var change = this.change.toFixed(2);
+
+								 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
+							 	},				                
+							},
+						}
+					);	
+		  		}	
 			},
 
 		 	createTrackVarLineChart: function(backtest) {
@@ -225,7 +241,18 @@
 
       				var i=0;
       				for (var key in dataArrays) {
-      					this.$$('#cumRetLineChart').addSeries(key, dataArrays[key], false, {color:colors[i++], lineWidth:1, yAxis:1});
+      					this.$$('#cumRetLineChart').addSeries(key, dataArrays[key], false, 
+  							{
+  								color:colors[i++], 
+  								lineWidth:1, 
+  								yAxis:1,
+  								tooltip:{
+  									valueDecimals: 2,
+  									pointFormat:'<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
+  									
+  								}
+							}
+						);
       				}
 
 				}
@@ -234,9 +261,16 @@
 			updateRealtime: function(counter, z, dataPoint) {
 				var el = this.$$('#cumRetLineChart'); 
 				var valid = el && el._chart && el._chart.series[z];
+				var nLabels = el._chart.series[0].data.length
 
-		 		this.$$('#cumRetLineChart')._chart.series[z].data[counter].update(dataPoint);
-				this.$$('#cumRetLineChart')._chart.redraw();	
+		 		this.$$('#cumRetLineChart')._chart.series[z].data[counter].update(dataPoint + 100.0, false);
+
+	 			this.debounce('redraw', function(){this.$$('#cumRetLineChart')._chart.redraw();}, 1000);
+
+	 			if(counter == nLabels-1) {
+		 			this.$$('#cumRetLineChart')._chart.redraw();
+		 		}
+				
 			},
 
 			resizeChart: function() {

@@ -257,10 +257,28 @@
 				
 				keys.sort()
       			.forEach(function(v, i) {
-      				dataset[i]= [Date.parse(v), equityData[v]];
+      				dataset[i]= [Date.parse(v), equityData[v] + 100.0];
        			}); 
 
-       			this.$$('aq-cumret-linechart').addSeries(data._id, dataset, false, {lineWidth:1, color: colors[this.counter]});
+       			this.$$('aq-cumret-linechart').addSeries(data._id, dataset, false, 
+       				{
+       					lineWidth:1, 
+       					color: colors[this.counter],
+       					compare:'percent', 
+						tooltip:{
+						 	pointFormatter: function() {
+							 	var series = this.series;
+							 	var color = series.color;
+							 	var y = (this.y - 100).toFixed(2);
+							 	var change = this.change.toFixed(2);
+
+							 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
+							 	
+						 	},
+
+						},
+       				}
+   				);
 
 			},
 
@@ -275,7 +293,14 @@
       				dataset[i] = [Date.parse(v.substring(0, 4)+"-"+v.substring(4, 6)), aggregatedReturns[v]];
        			}); 
 
-				this.$$('aq-aggregatedreturns-barchart').addSeries(data._id, dataset, false, {color: colors[this.counter]});
+				this.$$('aq-aggregatedreturns-barchart').addSeries(data._id, dataset, false, 
+					{
+						color: colors[this.counter],
+						tooltip: {
+	  						pointFormat:'<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y} %</b><br/>',
+	  					},
+					}
+				);
 			},
 
 			processMetricsData: function(data){
