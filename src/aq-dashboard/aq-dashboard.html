@@ -54,6 +54,7 @@
     
     
     <template>
+
       <aq-check-authentication id='authItem'></aq-check-authentication>
 
       <div id="main">
@@ -259,6 +260,10 @@
                     }
                 }
 
+                if(this.view == "editor") {
+                    this.showSidebar = false;
+                }
+
                 this.currentTab = lastTab;
                 this.hasToken = this.$.authItem.checkHasToken();
 
@@ -302,8 +307,12 @@
           this.view = newMenu.detail.menu; 
           this.fire('rt-changed',{route:'/dashboard/' + this.view});
           
+          if(this.view == "editor") {
+            this.showSidebar = false;
+          }
+
           if(this.narrow){
-            this.$.drawerpanel.closeDrawer();
+              this.$.drawerpanel.closeDrawer();
           }
         },
 
@@ -315,6 +324,10 @@
           } else {
             this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
             this.fire('rt-changed',{route:'/dashboard/' + newAction.detail.action});
+          }
+
+          if(this.view == "editor") {
+            this.showSidebar = false;
           }
 
           if(this.narrow){
@@ -524,16 +537,20 @@
         },
 
         sendDataSlowly: function(key) {
-            var timeGap = 300;
+            var timeGap = 1000;
             if(this.backtests[key]) {
 
                 if(this.backtests[key].subscription) {
                   var currentIndex = this.backtests[key].currentIndex;
                   var currentLength = this.backtests[key].data.length;
+                  
                   if(currentIndex <  currentLength && currentLength > 0) {
-                    var dataPoint = this.backtests[key].data[currentIndex];
-                    this.fire('iron-signal',{name:'point-data', data:dataPoint});
-                    this.backtests[key].currentIndex = currentIndex + 1;
+                      for(var i=currentIndex; i<currentLength;i++) { 
+                          var dataPoint = this.backtests[key].data[i];
+                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
+                          this.backtests[key].currentIndex = i+1;
+                      }
+
                   }
 
                   this.async(function(){this.sendDataSlowly(key);}, timeGap);
@@ -646,14 +663,11 @@
             }
           }
 
-          if(ctab>=5) { // || ctab==6) {
+          if(ctab>=5) {
             ctab = 3;
           }
 
-          /*if(ctab==7) {
-            return;
-          }*/
-
+    
           this.currentTab = ctab;
         },
 
