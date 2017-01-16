@@ -132,7 +132,7 @@
 
       <template is='dom-if' if='{{active}}'> 
        
-        <paper-drawer-panel drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
+        <paper-drawer-panel on-keydown=checkForKeys drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
             <paper-header-panel id='leftPanel' main mode="seamed"> 
               
               <template is='dom-if' if='[[!isRunning]]'>
@@ -171,9 +171,9 @@
                     <!--paper-tab>Quick Help</paper-tab-->
                     </template>
                     
-                    <template is="dom-if" if="[[isRunning]]">
+                    <!--template is="dom-if" if="[[isRunning]]"-->
                       <paper-tab>Log</paper-tab>
-                    </template>
+                    <!--/template-->
                   
                   </paper-tabs>
 
@@ -192,7 +192,7 @@
                 <iron-pages selected="{{selectedSidebar}}">
                
                   <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>  
-                  <div>This is quick help!!</div>
+                  <!--div>This is quick help!!</div-->
                   
                   <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
                   
@@ -222,6 +222,7 @@
           selectedSidebar:{
             type:Number,
             value:0,
+            observer:"_isSelectedSidebarChanged",
           },
 
           sideBarOpen:{
@@ -289,6 +290,7 @@
           'cloneClicked':'cloneStrategy',
           'backClicked-backtest':'toggleIsRunning',
           'scroll-log':'onScroll',
+          'save-request':'onSaveRequest',
         },
 
         /*attached: function() {
@@ -418,7 +420,7 @@
 
         onStrategySavedResponse: function(data) {
             // Check if save was initiated before RUN
-            if(this.runSwitch == 1) {
+            if(this.runSwitch == 1 && this.active) {
               
                 //reset the run switch to off
                 this.runSwitch = 0;
@@ -428,6 +430,11 @@
                   this.header = this.$.authItem.getHeader();
                   this.$.runStrategyQuery.generateRequest();
                 }
+            }
+
+            if(!this.active) {
+              this.strategy = {};
+              this.strategyId = "";
             }
         },
 
@@ -448,7 +455,9 @@
               "code": this.$$('#codeEditorPanel').getCodeContent(),
           };
 
-          if(this.$.authItem.checkHasToken()) {
+          //console.log(this.strategyId);
+
+          if(this.$.authItem.checkHasToken() && this.strategyId!="") {
               this.header = this.$.authItem.getHeader();
               this.$.saveStrategyQuery.generateRequest();
           }
@@ -492,14 +501,23 @@
 
           if(!this.isRunning) {
             this.selectedSidebar = 0;
+            
           } else {
-            this.selectedSidebar = 2;
+            this.selectedSidebar = 1;
           }
 
           if(this.$$('#logContainer')) {
             this.$$('#logContainer').resetLogs();
           }
 
+        },
+
+        _isSelectedSidebarChanged: function(nSelect, oSelect){
+            if(nSelect == 0 && this.$$('#rightPanel')) {
+               this.$$('#rightPanel').style.backgroundColor = 'white';
+            } else if(this.$$('#rightPanel')) {
+                this.$$('#rightPanel').style.backgroundColor = 'black';
+            }
         },
 
         onScroll: function() {
@@ -520,18 +538,40 @@
           }
 
           if(active && routeData) {
+            this.strategy = {};
             this.strategyId = routeData.strategyId;
             if(this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
               this.$.getStrategyQuery.generateRequest(); 
             }
-          } else {
-            this.strategyId = "";
-            this.isRunning  = false;
-            this.strategy = {};
-            
+          } 
+
+          if(!active && this.strategyId!="") {
+              this.isRunning  = false;  
+              
+              if(this.$$('#editorToolbar')) {
+                this.$$('#editorToolbar').onSave();
+              }
+          }          
+        },
+
+        checkForKeys: function(event) {
+          if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+            case 's':
+                event.preventDefault();
+                this.$$('#editorToolbar').onSave();
+                break;
+            }
           }
-        }
+        
+        },
+
+        onSaveRequest: function() {
+            if(this.$$('#editorToolbar')) {
+                this.$$('#editorToolbar').onSave();
+            }
+        },
 
       });
     </script>

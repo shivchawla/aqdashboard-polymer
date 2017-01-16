@@ -36,7 +36,7 @@
 
   <template>
        <div class="fit"> 
-        <juicy-ace-editor style="height:100%;" theme="ace/theme/monokai" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
+        <juicy-ace-editor on-change='onCodeChange' style="height:100%;" theme="ace/theme/monokai" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">{{code}}
         </juicy-ace-editor>  
         </div>
 
@@ -58,20 +58,17 @@
       },
 
       listeners :{
-        'editor-ready':'setCode',
+        'on-editor-ready':'setCode',
       },
 
       getCodeContent: function() {
-          return this.$.codeEditor.editor.getValue().trim(); 
+          //return this.$.codeEditor.editor.getValue().trim();
+          return this.$.codeEditor.editor.getValue().replace(/\s+$/,"");
       }, 
 
       isSelectedBarRun: function(sideBar) {
         return sideBar == 0;
       },  
-
-      onCodeChange: function(e) {
-          console.log(e.detail);
-      },
 
       _codeChanged: function(ncode, old) {
         if(!ncode) {
@@ -79,7 +76,26 @@
         }
         
         this.$.codeEditor.editor.setValue(ncode);
-          
+        this.async(function(){this.$.codeEditor.editor.gotoLine(1);}, 20);
+      },
+
+      onCodeChange: function(e) {
+          this.change = true;
+          //console.log(e.detail);
+      },
+
+      attached: function(){
+        this.async(function(){this.$.codeEditor.editor.gotoLine(1);}, 20);
+        this.sendSaveRequest();
+      },
+
+      sendSaveRequest: function() {
+        if(this.change) {
+            //console.log("Saving");
+            this.fire('save-request');
+            this.change = false;
+        }
+        this.async(this.sendSaveRequest, 5000)
       }
 
     });
