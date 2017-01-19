@@ -361,32 +361,18 @@
 				this.resetMetrics();
 				this.counter = 0;
 				this.hasTrackVarData = false;
-				this.realtimeXLabels = [];
-				this.trackVarKeysArray = [];
+				this.set('realtimeXLabels', []);
+				this.set('trackVarKeysArray', []);
+				this.graphsInitialized = false;
 			},
 
 			subscribeData: function() {
 				this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
-				this.reset();
-				this.updateCumRetLineChartOptions();
-			},
-
-			initializeTrackVarData: function(data) {
-				var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-
-				this.updateCumRetLineChartOptionsForTrackVars();
-				//Update chart height for accomodatin tracking variables
-
-				var dataset = new Array(this.realtimeXLabels.length);
+				//this.reset();
 				
-				for(var i=0; i<this.realtimeXLabels.length; i++) {
-					dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
-				}
-
-				this.trackVarKeysArray = Object.keys(data["variables"]).sort();
-				this.hasTrackVarData = true;
 			},
 
+			
 			onBacktestData: function(e) {
 				//process data obnly when element is active
 				if (!this.active) {
@@ -422,42 +408,117 @@
 			},
 		
 			addRealTimeData: function(data) {
-				var legends = ["Strategy", "Benchmark"]
-				var types = ["totalreturn","totalreturn_benchmark"];
-				var colors = ["#0375b4", "#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-				var colorsTrack = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-				if (data.outputtype=="labels") {
-					this.realtimeXLabels = Object.keys(data.labels).sort();
+				
+				if (data.outputtype == "labels") {
+					
+					var keys = Object.keys(data.labels);
+					var allDates = new Array(keys.length);
 
-					var dataset = new Array(this.realtimeXLabels.length);
-					for(var i=0; i<this.realtimeXLabels.length; i++) {
-						dataset[i] = [Date.parse(this.realtimeXLabels[i]), NaN];
+					for(var i=0; i<keys.length; i++) {
+						allDates[i] = Date.parse(keys[i]);
 					}
 
-					this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, 
-							{
-								color:colors[0],
-								lineWidth:2,
-								compare:'percent', 
-								tooltip:{
-								 	pointFormatter: function() {
-									 	var series = this.series;
-									 	var color = series.color;
-									 	var y = (this.y - 100).toFixed(2);
-									 	var change = this.change.toFixed(2);
+					this.set('realtimeXLabels', allDates.sort());
 
-									 	return '<span style="color:'+ color+'">' + series.name + '</span>: <b>' + change +'%</b><br/>';
-								 	},
+				} else { //Initialize the graphs based 
+					//for Strategy/Benchmark/(and Variable data if any) 
 
-								},
-							}
-					);	
+					if(!this.graphsInitialized) {
+						this.initializeCumRetGraphs(data);
+					} 
+						
+					this.updateCumRetGraphsWithData(data);
+					this.addMetricData(data);
+				}
+			},
 
-					this.$$('aq-cumret-linechart').addSeries("Benchmark",dataset, false, 
+			updateCumRetGraphsWithData: function(data) {
+				var types = ["totalreturn","totalreturn_benchmark"];
+				var legends = ["Strategy", "Benchmark"];
+				var ct = this.counter++;
+
+				if(this.hasTrackVarData && this.$$('aq-cumret-linechart') && this.active) {
+
+            		var keysArray = this.trackVarKeysArray;
+
+					for (var i=0; i<keysArray.length; i++) {
+						
+						this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
+					}
+				}
+
+				for (var i=0;i<types.length;i++) {
+					if(this.$$('aq-cumret-linechart') && this.active) {
+						
+						this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
+					}
+            	}
+
+    		},
+
+			initializeCumRetGraphs: function(data) {
+	
+				if (data["variables"] ) {
+					this.updateGraphProperties(true);
+					// Initialize the track variable variable graphs
+					this.initializeCumRetGraphData(data);
+					this.initializeTrackVarData(data);
+				} else {
+					this.updateGraphProperties(false);
+					this.initializeCumRetGraphData(data);
+				}
+
+				this.graphsInitialized = true;
+			},
+
+			initializeTrackVarData: function(data) {
+				var colors = ["#FFAA1D","#007849","#6e2667","#fc4a1a"];
+
+				//Update chart height for accomodatin tracking variables
+
+				var dataset = new Array(this.realtimeXLabels.length);
+				
+				for(var i=0; i<this.realtimeXLabels.length; i++) {
+					dataset[i] = [this.realtimeXLabels[i], NaN];
+				}
+
+				this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
+
+				
+				for (i=0; i<this.trackVarKeysArray.length; i++) {
+					this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, 
 						{
-							color:colors[1],
-							lineWidth:1,
-							compare:'percent', 
+							lineWidth:1, 
+							yAxis:1, 
+							color:colors[i], 
+							tooltip:{
+								valueDecimals:2,
+							},
+							pointStart: this.realtimeXLabels[0],
+						}
+					);
+				}
+
+				this.hasTrackVarData = true;
+			},
+
+			initializeCumRetGraphData: function(data) {
+
+				var legends = ["Strategy", "Benchmark"]
+				var colors = ["#0375b4", "#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
+			
+				var dataset = new Array(this.realtimeXLabels.length);
+				
+				for(var i=0; i<this.realtimeXLabels.length; i++) {
+					dataset[i] = [this.realtimeXLabels[i], NaN];
+					
+				}
+
+				this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, 
+						{
+							color:colors[0],
+							lineWidth:2,
+							compare:'percent',
 							tooltip:{
 							 	pointFormatter: function() {
 								 	var series = this.series;
@@ -466,65 +527,36 @@
 								 	var change = this.change.toFixed(2);
 
 								 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
-								 	
 							 	},
 
 							},
-			                
+							pointStart: this.realtimeXLabels[0],
+
 						}
-					);
+				);	
 
-					if(this.hasTrackVarData) {
-						for (i=0; i<this.trackVarKeysArray.length; i++){
-							this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, 
-								{
-									lineWidth:1, 
-									yAxis:1, 
-									color:colorsTrack[i], 
-									tooltip:{
-										valueDecimals:2,
+				this.$$('aq-cumret-linechart').addSeries("Benchmark",dataset, false, 
+					{
+						color:colors[1],
+						lineWidth:1,
+						compare:'percent',
+						tooltip:{
+						 	pointFormatter: function() {
+							 	var series = this.series;
+							 	var color = series.color;
+							 	var y = (this.y - 100.0).toFixed(2);
+							 	var change = this.change.toFixed(2);
 
-									}
-								}
-							);
-						}
+							 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
+							 	
+						 	},
+
+						},
+						pointStart: this.realtimeXLabels[0],
+
 					}
+				);
 
-					return;
-				}
-
-				var ct = this.counter++;
-				for (idx=0;idx<types.length;idx++) {
-					
-					if(this.$$('aq-cumret-linechart') && this.active) {
-						this.$$('aq-cumret-linechart').updateRealtime(ct, idx, data[types[idx]]);
-					}
-            	}
-
-        		this.addMetricData(data);
-           
-				if (data["variables"]) {
-					
-					// Add variable tracker data
-					if(this.hasTrackVarData) {
-						
-						var keysArray = Object.keys(data["variables"]).sort();
-						if(this.$$('aq-cumret-linechart') && this.active){
-							for (i=0; i<keysArray.length; i++) {
-								this.$$('aq-cumret-linechart').updateRealtime(ct, i+2, data["variables"][keysArray[i]]);
-							}
-						}
-						
-					} else {
-
-						//reset the current graph to accomodate the trackers
-						this.active = false;
-						this.fire('unsubscribe-data', {backtestId: this.backtestId});
-						this.reset();
-						this.initializeTrackVarData(data);
-						this.async(function(){this.active = true; this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
-					}
-				}
 			},
 
 			addMetricData: function(data) {
@@ -560,12 +592,12 @@
 				}
 			},
 
-			updateCumRetLineChartOptions: function() {
-				this.$$('aq-cumret-linechart').updateProperties();
-			},
-
-			updateCumRetLineChartOptionsForTrackVars: function() {
-				this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
+			updateGraphProperties: function(trackVarFlag){
+				if(trackVarFlag) {
+					this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
+				} else {
+					this.$$('aq-cumret-linechart').updateProperties();
+				}
 			},
 
 			onGetBacktestSuccess: function(e){
@@ -586,82 +618,13 @@
 				if(this.backtest.output.variables) {
 					// this variable is used because array changes are somehow not relaying back the template
 					this.hasTrackVarData = true;
-					this.updateCumRetLineChartOptionsForTrackVars();
-				} else {
-					this.updateCumRetLineChartOptions();
 				}
+
+				this.updateGraphProperties(this.hasTrackVarData);
 
 				this.async(this.createCumRetLineChart, 200);
 				this.async(this.createTrackVarLineChart, 200);
 				this.async(this.createMonthlyReturnBarChart, 500);
-			},
-
-			createNetValueChart: function() {
-				var equityData = this.backtest.output.equity;
-				var keys = Object.keys(equityData);
-				var linePoints = new Array(keys.length);
-				var i = 0;
-				
-				var min = Infinity; 
-				var max = 0;
-				keys.sort()
-      			.forEach(function(v, i) {
-      				linePoints[i++] = {x:v, 
-										y:equityData[v]};
-          			min = Math.min(equityData[v], min)
-          			max = Math.max(equityData[v], max) 
-       			});
-
-  				var scale = 5*Math.pow(10,Math.floor(Math.log10(max)) - 2);
-		
-				min = Math.floor(0.98*min/scale)*scale;
-
-				max = Math.ceil(1.02*max/scale)*scale;
-
-				var yAxisLabel = this.getYAxisLabel(max);
-				
-	  			this.push('netValueData', {"key":yAxisLabel,
-				  				"color": "#cc6666",
-					  			"values":linePoints});
-
-	  			
-	  			this.$$('#netValueLineChart')._chart
-	  			.x(function(d) {return new Date(d.x);});
-
-	  			this.$$('#netValueLineChart')._chart.xAxis
-  				.axisLabel('Date')
-				.tickFormat(function(d) {return d3.time.format('%d-%m-%Y')(new Date(d)); });
-
-				this.$$('#netValueLineChart')._chart.yAxis
-  				//.axisLabel(yAxisLabel)
-				.tickFormat(function(d){
-
-					formatMoneyValue = function(number) {
-
-			    		if (number < Math.pow(10,5)) {
-					    	return [number,""];
-					    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
-
-					    	number  = number / Math.pow(10,5); 
-					    	var plural = Math.round(number) > 1 ;
-					    	
-					    	return [number.toFixed(2), (plural ? " Lacs":"Lac")]; 
-					    } else {
-					    	number  = number / Math.pow(10,7); 
-					    	var plural = Math.round(number) > 1 ;
-					    	return [number.toFixed(2), (plural ? " Crores": " Crore")];
-					    }
-
-					};
-
-					formatValue = d3.format(".2f");
-					var x = formatMoneyValue(d);
-					return formatValue(x[0]);
-				});				
-
-				//₨
-				this.$$('#netValueLineChart')._chart.forceY([min,max]);
-				
 			},
 
 			createCumRetLineChart: function() {
