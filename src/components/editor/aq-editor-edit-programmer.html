@@ -62,7 +62,6 @@
       },
 
       getCodeContent: function() {
-          //return this.$.codeEditor.editor.getValue().trim();
           return this.$.codeEditor.editor.getValue().replace(/\s+$/,"");
       }, 
 
@@ -81,7 +80,6 @@
 
       onCodeChange: function(e) {
           this.change = true;
-          //console.log(e.detail);
       },
 
       attached: function(){
@@ -91,7 +89,6 @@
 
       sendSaveRequest: function() {
         if(this.change) {
-            //console.log("Saving");
             this.fire('save-request');
             this.change = false;
         }

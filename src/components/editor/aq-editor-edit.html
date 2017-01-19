@@ -19,8 +19,6 @@
 
 <dom-module id="aq-editor-edit">
   
-  <template>
-
     <style  include="iron-flex iron-flex-alignment iron-positioning">
     </style> 
 
@@ -84,6 +82,9 @@
   </style>
 
   <style  include="iron-flex iron-positioning"></style>
+
+  <template>
+
       <aq-check-authentication id='authItem'></aq-check-authentication>
       <app-location route="{{route}}"></app-location>
       <app-route
@@ -101,7 +102,8 @@
             on-response="onGetStrategyResponse"
             on-error="onGetStrategyError"
             headers='{{header}}'
-            debounce-duration="300">
+            debounce-duration="300"
+            loading='{{loading}}'>
       </iron-ajax> 
 
        <iron-ajax 
@@ -131,7 +133,9 @@
       </iron-ajax>
 
       <template is='dom-if' if='{{active}}'> 
-       
+
+      <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+
         <paper-drawer-panel on-keydown=checkForKeys drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
             <paper-header-panel id='leftPanel' main mode="seamed"> 
               
@@ -201,7 +205,7 @@
             </paper-header-panel>
         </paper-drawer-panel>
       </template>
-
+      
     </template>
 
     <script>
@@ -269,6 +273,7 @@
           },
 
           routeData: Object,
+          loading:Boolean,
 
         },
 

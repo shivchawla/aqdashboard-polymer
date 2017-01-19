@@ -12,6 +12,8 @@
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item2.html">
 <link rel='import' href='../common/aq-pagination.html'>
+<link rel="import" href="../common/aq-loading-progress.html">
+
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-community-home">
@@ -130,10 +132,13 @@
             on-response="onGetAllThreadsResponse"
             on-error="onGetAllThreadsError"
             headers='{{header}}'
-            debounce-duration="300">
+            debounce-duration="300"
+            loading='{{loading}}'>
         </iron-ajax>
 
         <template is='dom-if' if='{{isActive(active, subroute)}}'>
+            <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+
               <div id='container' class="layout vertical flex">
                 
                 <div class="layout horizontal wrap">
@@ -164,6 +169,9 @@
                     <paper-tab id="personal">Personal</paper-tab>
                 </paper-tabs>
 
+              <template is='dom-if' if='{{!loading}}'>
+            
+
                 <div clas="layout vertical" id='allposts'>
                     <template is="dom-repeat" items="{{threads}}">
                         <aq-community-home-post-item2 thread="[[item]]">
@@ -187,6 +195,7 @@
 
             <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
         </template>
+      </template>
         
     </template>
     <script>
@@ -254,6 +263,7 @@
 
                 subroute:Object,
                 routeData:Object,
+                loading:Boolean,
 
             },
 

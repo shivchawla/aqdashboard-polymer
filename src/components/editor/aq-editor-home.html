@@ -5,6 +5,8 @@
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
+<link rel="import" href="../common/aq-loading-progress.html">
+
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
 <link rel='import' href='./aq-editor-home-strategy-item.html'>
@@ -135,7 +137,8 @@
               on-response="onGetStrategiesResponse"
               on-error="onGetStrategiesError"
               headers='{{header}}'
-              debounce-duration="300">
+              debounce-duration="300"
+              loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax	
@@ -150,45 +153,50 @@
         </iron-ajax>
 
         <template is='dom-if' if='{{isActive(active, subroute)}}'>
-          <div id='container'>
-  	  		
-  	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
-  	  		<div id="ifsearch">
-  	  			<p>Strategy results for: 
-  	  				<i>"[[searchParam.search]]"</i>
-    				</p>
-  	  		</div>
+          <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
-  		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
-  		      <div class="name">Name<span class="narrow">/Description</span></div>
-  		      <div class="description">Description</div>
-  		      <div class="backtest">#Backtests</div>
-  		    </div>
-              
-  	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-    	    		<aq-editor-home-strategy-item	strategy-name = "[[item.name]]"
-    							num-backtest = "[[item.backtests]]"
-    							strategy-desc = "[[item.description]]"
-    							strategy-id = "[[item._id]]">
-    				  </aq-editor-home-strategy-item>	
-  	    	</template>
+          <template is='dom-if' if='{{!loading}}'>
+            <div id='container'>
+      	  		
+      	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
-          <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
-            <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
-          </template>
-  	
-  		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-  		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
-  		    						 cancel="Cancel"
-  		    						 accept="OK">
-  	    	</aq-delete-dialog>
+      	  		<div id="ifsearch">
+      	  			<p>Strategy results for: 
+      	  				<i>"[[searchParam.search]]"</i>
+        				</p>
+      	  		</div>
 
-  	    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+      		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
+      		      <div class="name">Name<span class="narrow">/Description</span></div>
+      		      <div class="description">Description</div>
+      		      <div class="backtest">#Backtests</div>
+      		    </div>
+                  
+      	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
+        	    		<aq-editor-home-strategy-item	strategy-name = "[[item.name]]"
+        							num-backtest = "[[item.backtests]]"
+        							strategy-desc = "[[item.description]]"
+        							strategy-id = "[[item._id]]">
+        				  </aq-editor-home-strategy-item>	
+      	    	</template>
 
-  	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
-  		    
-  		</div> 
+              <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
+                <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
+              </template>
+      	
+      		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
+      		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
+      		    						 cancel="Cancel"
+      		    						 accept="OK">
+      	    	</aq-delete-dialog>
+
+      	    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+
+      	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
+      		    
+      		  </div>
+        </template> 
     </template>
 		
   </template>
@@ -237,6 +245,7 @@
       routeData:Object,
       queryParams:Object,
       subroute:Object,
+      loading:Boolean,
 
 		},
 

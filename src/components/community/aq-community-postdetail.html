@@ -11,6 +11,8 @@
 
 <link rel="import" href="./aq-community-postdetail-content.html">
 <link rel="import" href="./aq-community-postdetail-reply.html">
+
+<link rel="import" href="../common/aq-loading-progress.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-community-postdetail">
@@ -58,7 +60,8 @@
           on-response="onGetThreadDetailResponse"
           on-error="onGetThreadDetailError"
           headers='{{header}}'
-          debounce-duration="300">
+          debounce-duration="300"
+          loading='{{loading}}'>
       </iron-ajax>
 
        <iron-ajax
@@ -71,6 +74,10 @@
       </iron-ajax>
 
       <template is="dom-if" if="{{active}}">
+          
+        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+
+        <template is='dom-if' if='{{!loading}}'>
           <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
               <div id='container'>
                 
@@ -95,6 +102,8 @@
 
               </div>
           </template>
+        </template>
+
       </template>
 
   </template>
@@ -127,6 +136,7 @@
         },
 
         routeData:Object,
+        loading:Boolean,
 
       },
 

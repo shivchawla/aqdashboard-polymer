@@ -1,0 +1,67 @@
+<link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
+
+<dom-module id='aq-loading-progress'>
+	
+	<style>
+		#content {
+			background-color:#f2fbf7;
+		}
+	</style>
+
+	<style is="custom-style">		
+		paper-progress {
+		   --paper-progress-active-color: #0375b4;
+		   --paper-progress-container-color:#f2fbf7;
+		   --paper-progress-height:2px;
+		   opacity: 0.5;
+		}
+
+	</style>
+
+	<template>
+		
+		<paper-progress id='progress' value="{{total}}" style="width:100%;"></paper-progress>
+		
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-loading-progress',
+			
+			properties:{
+				total:{
+					type: Number,
+					value:0,
+				},
+
+				loading:{
+					type:Boolean,
+					value:false,
+					observer:'_loadingChanged',
+				}
+			},
+
+			reset: function() {
+				if(this.loading && this.total < 98){
+					this.total += 2;
+					this.async(this.reset, 50);
+				} 
+			},
+
+			_loadingChanged: function(nLoading, oLoading){
+				if(nLoading){
+					this.total = 5;
+					this.async(this.reset, 50);
+				} else {
+					this.total = 100;
+					this.async(
+							function() {
+								this.total = 0;
+							},
+					 500);
+				}
+			}
+
+		});
+	</script>
+</dom-module>

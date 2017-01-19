@@ -134,14 +134,6 @@
 
 	<template>
 
-		<iron-ajax
-			url=""
-			method='GET'
-          	id='getTestDataQuery'
-          	handle-as="json"
-          	on-response="onTestData">
-        </iron-ajax>
-
 		<aq-check-authentication id='authItem'></aq-check-authentication>
 		
 			<paper-card class="flex detail layout vertical paper_body">
@@ -199,7 +191,8 @@
           	on-response="onGetBacktestSuccess"
           	on-error="onGetBacktestError"
           	headers='{{header}}'
-          	debounce-duration="300">
+          	debounce-duration="300"
+          	loading='{{loading}}'>
         </iron-ajax>
 			
 	</template>
@@ -255,6 +248,13 @@
 				header: Object,
 
 				APIEndPoint:String,
+
+				loading: {
+		          type: Boolean,
+		          readOnly: true,
+		          notify: true,
+		          value: false
+		        },
 
 			},
 
