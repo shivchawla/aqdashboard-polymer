@@ -500,7 +500,7 @@
             //Send message to web socket for execution
             var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
                   action: 'exec-backtest',
-                  backtest_id: backtestId};
+                  backtestId: backtestId};
 
             this.backtestId = backtestId
             this.backtests[backtestId] = {data:[], subscription:false,bulksent:false, currentIndex:0};
@@ -534,6 +534,7 @@
 
         },
 
+        // Updates every 1 seconds and updates maximum of 50 points at once.
         sendDataSlowly: function(key) {
             var timeGap = 1000;
             if(this.backtests[key]) {
@@ -542,12 +543,16 @@
                   var currentIndex = this.backtests[key].currentIndex;
                   var currentLength = this.backtests[key].data.length;
                   
-                  if(currentIndex <  currentLength && currentLength > 0) {
-                      for(var i=currentIndex; i<currentLength;i++) { 
+                  if(currentIndex <  currentLength && currentLength > 0) {  
+                      var j = 0;
+                      for(var i=currentIndex; i<currentLength && j <=50;i++) { 
                           var dataPoint = this.backtests[key].data[i];
                           this.fire('iron-signal',{name:'point-data', data:dataPoint});
                           this.backtests[key].currentIndex = i+1;
+                          j++;
                       }
+
+                      this.fire('iron-signal', {name:'redraw-chart', backtestId: key});
 
                   }
 

@@ -81,11 +81,6 @@
       --paper-tooltip-background: teal;
     }
 
-    #followIcon {
-      color: "#cc6666";
-      background-color: white;
-    }
-
   </style>
 
   <template>
@@ -101,26 +96,28 @@
       debounce-duration="300">
     </iron-ajax>
 
-          <div id='post-header'>
-            <div id='heading'>
-              <span>[[postHeader.title]]</span>
-            </div>
 
-            <div class="layout horizontal">
-              <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
-              <div class="flex"></div>
-
-              <template is="dom-if" if="[[hasFollowers(followers)]]">
-                <span id='followers' class="self-end">[[followers.length]] Followers</span>
-              </template>
-              <paper-icon-button id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
-            </div>
-
-            <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
-
+        <div id='post-header'>
+          <div id='heading'>
+            <span>[[postHeader.title]]</span>
           </div>
 
-          <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
+          <div class="layout horizontal">
+            <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
+            <div class="flex"></div>
+
+            <template is="dom-if" if="[[hasFollowers(followers)]]">
+              <span id='followers' class="self-end">[[followers.length]] Followers</span>
+            </template>
+            <paper-icon-button id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
+          </div>
+
+          <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
+
+        </div>
+
+        <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
+
   
   </template>
 
@@ -129,10 +126,7 @@
       is: 'aq-community-postdetail-header',
 
       properties :{
-        postHeader: {
-          type:Object,
-          observer:'_postHeaderChanged',
-        },
+        postHeader: Object,
         
         header:Object,
         
@@ -147,23 +141,32 @@
         },
       },
 
+      attached: function() {
+        console.log("attached header");
+        console.log(this.postHeader.followers);
+        
+        if (this.postHeader.followers) {
+          this.followers = this.postHeader.followers;
+        }
+      },
+
+      /*ready: function() {
+          var x = localStorage.getItem('my-app-storage');
+          var user = JSON.parse(x).user;
+          if (user.token) {
+            this.header = {
+              "aimsquant-token": user.token,
+              "Content-Type": "application/json"};  
+          }
+ 
+      },*/
+
       hasPostHeader: function(postHeader) {
           if (postHeader) {
-              if (postHeader.followers) {
-                this.followers = this.postHeader.followers;
-              }
-             return Object.keys(postHeader).length > 0;
+            return Object.keys(postHeader).length > 0;
           }
 
           return false;
-      },
-
-      _postHeaderChanged: function(nPh, oPh) {
-        if(nPh) {
-          if (nPh.followers) {
-              this.followers = nPh.followers;
-          }
-        }
       },
 
       computeFollowPostUrl: function(postHeader) {
@@ -172,7 +175,9 @@
       },
 
       onFollow: function() {
+        console.log("Hola Follow");
         if(this.$.authItem.checkHasToken()) {
+            console.log("Hola Follow2");
             this.header = this.$.authItem.getHeader();
             this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
             this.$.follows.generateRequest();
@@ -186,10 +191,13 @@
       },
 
       onFollowThreadResponse: function(e) {
+          console.log(e.detail.response);
           this.followers = e.detail.response;
       },
 
       computeFollowTitle: function(followers){
+          console.log(this.postHeader);
+          console.log(this.$$('#followIcon'));
           if(this.$.authItem.checkHasToken()) {
               var user = this.$.authItem.getUser(); 
              
@@ -201,13 +209,14 @@
                 this.$$('#followIcon').style.backgroundColor = '#cc6666';
                 this.$$('#followIcon').style.outlineColor = '#cc6666';
                 return "UnFollow";
+                //this.$.followIcon
 
-              } else {
-                  this.$$('#followIcon').style.color = '#cc6666';
-                  this.$$('#followIcon').style.backgroundColor = 'white';
-                  return "Follow";
               }
 
+              this.$$('#followIcon').style.color = '#cc6666';
+              this.$$('#followIcon').style.backgroundColor = 'white';
+
+              return "Follow";
           }
 
       },

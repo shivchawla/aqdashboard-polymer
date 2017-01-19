@@ -1,5 +1,7 @@
 
 <link rel='import' href='../../../bower_components/highcharts-chart/highcharts-stock.html'>
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+
 
 <dom-module id='aq-cumret-linechart'>
 	<template>
@@ -8,14 +10,53 @@
 	  			id="cumRetLineChart"
 	  			type="line"  
 	  			y-axis="{{yAxis}}"
+	  			x-axis="{{xAxis}}"
 	  			tooltip-options="[[tooltip]]"
 	  			highchart-options="[[chartOptions]]"
-	  			legend-options="[[legend]]">
+	  			legend-options="[[legend]]"
+	  			plot-options="[[plotOptions]]">
 	  		</highcharts-stock>
   		</template>
 	</template>
 
+	<iron-signals on-iron-signal-redraw-chart='onRedrawChart'></iron-signals>
+
 	<script>
+
+// Highcharts plugin for displaying value information in the legend
+// Author: Torstein Hønsi
+// License: MIT license
+// Last revision: 2013-07-29
+(function (H) {
+    H.Series.prototype.point = {}; // The active point
+    H.Chart.prototype.callbacks.push(function (chart) {
+        $(chart.container).bind('mousemove', function () {
+            var legendOptions = chart.legend.options,
+                hoverPoints = chart.hoverPoints;
+            
+            if (!hoverPoints && chart.hoverPoint) {
+                hoverPoints = [chart.hoverPoint];
+            }
+            if (hoverPoints) {
+                H.each(hoverPoints, function (point) {
+                    point.series.point = point;
+                });
+                H.each(chart.legend.allItems, function (item) {
+                    item.legendItem.attr({
+                        text: legendOptions.labelFormat ? 
+                            H.format(legendOptions.labelFormat, item) :
+                            legendOptions.labelFormatter.call(item)
+                    });
+                });
+                chart.legend.render();
+            }
+        });
+    });
+    // Hide the tooltip but allow the crosshair
+    H.Tooltip.prototype.defaultFormatter = function () { return false; };
+}(Highcharts));
+
+
 		Polymer({
 			is: 'aq-cumret-linechart',
 			properties:{
@@ -50,11 +91,19 @@
 			            }],
 				},
 
+				xAxis:{
+					type: Object,
+					value:{
+        				type: 'datetime',
+					},
+				},
+
 				tooltip:{
 					type:Object,
 					value:{
 				            xDateFormat:'%e-%b %Y',
 				            shared:true,
+
 				        },
 				},
 
@@ -79,11 +128,54 @@
 		          			fontSize:13,
 		          			fontWeight:"normal",
 		          		},
+		          		
 		          	},
 				},
 
 				axisReady: {
 					type: Boolean,
+				},
+
+				plotOptions:{
+					type:Object,
+					value:{
+						series: {
+							cropThreshold:2500,
+							turboThreshold:2500,
+							point: {
+			                    events: {
+			                        mouseOver: function () {
+			                        	var text = '<div style="border:1px solid black"> Date: ' + Highcharts.dateFormat('%e %b %Y', this.x) + '</div>';
+			                            var chart = this.series.chart;
+			                            if (!chart.lbl) {
+                                			chart.lbl = chart.renderer.label(text, 0, -15)
+                                    			.attr({
+                                    			padding: 15,
+                                        		
+                                    		})
+                                    		.css({
+                                        		color: 'black',
+                                        		align: 'right',
+                                    		})
+                                    		.add();
+                            			}
+			                            chart.lbl
+			                                .show()
+			                                .attr({
+			                                    text: text
+			                                });
+			                        }
+								}
+							}
+						},
+						
+						line:{
+							dataGrouping:{
+								enabled:false,
+							},
+						},
+				            
+					}
 				},
 
 			},
@@ -126,6 +218,21 @@
 			          			fontSize:13,
 			          			fontWeight:"normal",
 			          		},
+			          		
+			          		/*labelFormat: '<span style="color:{color}">{name}</span>: <b>{point.y:}</b> ({point.change:.2f}%)<br/>',*/
+
+			          		labelFormatter: function(){
+			          			
+			          			var name = this.name;
+							 	var color = this.color;
+							 	
+							 	var change = (this.point.change) ? this.point.change.toFixed(2) : 0.0;
+
+							 	//change = isNaN(change) ? '' : (': '+change.toString());
+							 	
+
+		          				return '<span style="color:'+ color+'">' + name + ': </span> <b>' + change +'%</b><br/>';
+		          			},
 			          	});
 
 			    this.axisReady = true;
@@ -165,6 +272,31 @@
 			          			fontSize:13,
 			          			fontWeight:"normal",
 			          		},
+			          	
+			          		labelFormatter: function() {
+
+			          			var v = (this.yData && this.yData.length > 0) ? (this.yData[this.yData.length - 1]) : 0.0;
+
+			          			v = isNaN(v) ? 100.0 : v;
+
+			          			var name = this.name;
+							 	var color = this.color;
+							 	
+							 	var y = (this.point.y) ? this.point.y.toFixed(2) : '';
+							 	
+							 	var change = (this.point.change) ? this.point.change.toFixed(2) : (v - 100.0).toFixed(2);
+
+							 	//y = isNaN(y) ? '' : (': '+y.toString());
+
+							 	//change = isNaN(change) ? '' : (': '+change.toString() + '%');
+							 	
+							 	if(name == "Strategy" || name=="Benchmark") {
+							 		
+		          					return '<span style="color:'+ color+'">' + name + ': </span> <b>' + change +'%</b><br/>';
+		          				} else {
+		          					return '<span style="color:'+ color+'">' + name + ': </span> <b>' + y +'</b><br/>';
+		          				}
+		          			},
 			          	});
 
   			 	this.axisReady = true;
@@ -173,7 +305,9 @@
 			},
 
 			addSeries: function(name, data, colorByPoint, options) {
-				this.$$('#cumRetLineChart').addSeries(name, data, colorByPoint, options);
+
+				this.$$('#cumRetLineChart').addSeries(name, data, false, options);
+
 				this.$$('#cumRetLineChart')._chart.redraw();
 			},
 
@@ -258,25 +392,59 @@
 				}
 			 },
 
-			updateRealtime: function(counter, z, dataPoint) {
+			updateRealtime: function(counter, name, dataPoint) {
 				var el = this.$$('#cumRetLineChart'); 
-				var valid = el && el._chart && el._chart.series[z];
-				var nLabels = el._chart.series[0].data.length
+				var valid = el && el._chart && el._chart.series.length > 0;
+				var nLabels = el._chart.series[0].data.length;
 
-		 		this.$$('#cumRetLineChart')._chart.series[z].data[counter].update(dataPoint + 100.0, false);
+				if(valid) {
+					
+					var seriesArray = this.$$('#cumRetLineChart')._chart.series;
 
-	 			this.debounce('redraw', function(){this.$$('#cumRetLineChart')._chart.redraw();}, 1000);
-
-	 			if(counter == nLabels-1) {
-		 			this.$$('#cumRetLineChart')._chart.redraw();
-		 		}
+					for (i=0; i<seriesArray.length; i++) {
+						if(seriesArray[i].name == name) {
+							
+							if(this.$$('#cumRetLineChart')._chart.series[i].data[counter]){	
+								this.$$('#cumRetLineChart')._chart.series[i].data[counter].update(dataPoint, false);
+							}
+							
+							break;
+						}
+					}
 				
+		 			this.waitAndRedrawChart();
+
+		 			if(counter == nLabels - 1) {
+			 			this.$$('#cumRetLineChart')._chart.redraw();
+			 		}
+		 		}
 			},
 
 			resizeChart: function() {
 				if(this.$$('#cumRetLineChart')) {
 					this.$$('#cumRetLineChart').resizeChart();
 				}
+			},
+
+			onRedrawChart: function(e) {
+				this.$$('#cumRetLineChart')._chart.redraw();
+			},
+
+			waitAndRedrawChart: function() {
+				this.debounce('redraw', this.onRedrawChart, 1000);
+			},
+
+			getSeriesNameToIndexMap: function() {
+				var map = {};
+
+				seriesArray = this.$$('#cumRetLineChart')._chart.series;
+
+				for (i=0; i<seriesArray.length; i++) {
+					map[seriesArray[i].name] = seriesArray[i].index;
+				}
+
+				return map;
+
 			},
 
 		});
