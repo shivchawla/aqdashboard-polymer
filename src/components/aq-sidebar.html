@@ -161,7 +161,7 @@
       
       <div id = 'content' class="fit">
       <div id='navigation'><span class='nav-header'>RESEARCH</span>
-        <paper-menu fallback-selection="home" 
+        <paper-menu fallback-selection="editor" 
                     selected="{{menuSelected}}" 
                     attr-for-selected="menu-panel">
           <!--paper-icon-item id='menu-home' class="menu" menu-panel="home" on-tap="onSelected" active="{{_isEqual(menuSelected, 'home')}}">Home
@@ -232,6 +232,7 @@
 
       menuSelected: {
         type: String,
+        observer:'_change',
       },
 
     },
@@ -252,7 +253,7 @@
       this.fire('change-view-action', {action: e.currentTarget.getAttribute('action-panel'), menu: e.currentTarget.getAttribute('menu-panel')});
     },  
 
-    selectPanel: function(newChoice){
+    selectPanel: function(newChoice) {
       if (newChoice === this.selected) {
         return;
       } 
@@ -261,7 +262,6 @@
     goToHome: function() {
         this.fire('rt-changed',{route: '/main'});
     },
-
 
   });
   </script>
