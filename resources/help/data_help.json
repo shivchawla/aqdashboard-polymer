@@ -245,13 +245,7 @@
 			
 			"text": " * History/Data API\n\n> This API helps in retrieving *price history* for an instrument or collection of instruments. This will make a backbone for a lot of price history based investment strategies like Momentum, Extreme Reversal, Mean Reversion amongst other. \n\n>We will soon add a lot of commonly used metrics to prevent unnecessary or redundant calculations in the trading strategy.\n```\n# Function to get price-history of stock \nhistory(tickers::Vector{String}, datatype::String, frequency::Symbol, horizon::Int)\nhistory(ticker, datatype::String, frequency::Symbol, horizon::Int)\n```\n##### 1. The above function returns data frame where columns names as tickers and row index as dates\n##### 2. Currently, the function only supports ':Daily' frequency data.\n##### 3. Supports 5 different datatypes, ['Open', 'High', 'Low', 'Close','Volume'].\n##### 4. All the data is ADJUSTED for corporate actions. "
 		},
-		{
-			"header": {"value":"Feedback","size":"Normal"},
-			"img_src1":"../../resources/src/components/help/help.jpg",
-			
-			"text": "## Feedback \n#### We encourage you to use the platform and help us in improving the platform. Please share your feedback with us. You can post in the community or send us a private message via [Send us Feedback](/dashboard/sendfeedback). Happy Backtesting!!!"
-		}
-
+		
 	],
 	"size": 200
 }
