@@ -4,6 +4,8 @@
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
+
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-check-authentication.html'>
@@ -130,6 +132,19 @@
 			margin-right:10px;
 		}
 
+		paper-progress {
+			--paper-progress-height:10px;
+			--paper-progress-active-color:#0375b4;
+			opacity:0.6;
+			width:120px;
+		}
+
+		#progressDiv p{
+			margin-bottom: 2px;
+			font-size: 12px;
+			color:#0375b4;
+		}
+
 	</style>
 
 	<template>
@@ -139,6 +154,17 @@
 			<paper-card class="flex detail layout vertical paper_body">
 				<div id='detail-header' class="layout horizontal">
 					<span class="self-center">Strategy vs Benchmark Performance</span>
+					
+					<div class="flex"></div>	
+
+					<template is='dom-if' if='{{active}}'>
+						<div class="layout vertical" id='progressDiv'>
+						<p>Progress: {{pctCompleted}}%</p>
+						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+						
+						</div>
+					</template>
+
 					<div class="flex"></div>	
 					
 					<paper-tabs noink selected="{{graphType}}">
@@ -256,6 +282,11 @@
 		          value: false
 		        },
 
+		        pctCompleted:{
+		        	type:Number,
+		        	value:0,
+		        },
+
 			},
 
 			//observers:['_isActiveOrBacktestIdChanged(active, backtestId)'],
@@ -357,7 +388,7 @@
 
 					},
 					 200);	
-
+				this.pctCompleted = 0;
 				this.resetMetrics();
 				this.counter = 0;
 				this.hasTrackVarData = false;
@@ -372,7 +403,6 @@
 				
 			},
 
-			
 			onBacktestData: function(e) {
 				//process data obnly when element is active
 				if (!this.active) {
@@ -382,6 +412,10 @@
 				data = e.detail;
 				if ((data.outputtype=="performance" || data.outputtype=="labels") && this.active) {
 					this.addRealTimeData(data);
+
+					if(this.realtimeXLabels && this.realtimeXLabels.length > 0){
+						this.pctCompleted = Math.round(this.counter*100/ this.realtimeXLabels.length, 0);
+					}
 				} 
 			},
 
