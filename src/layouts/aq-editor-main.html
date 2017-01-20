@@ -3,6 +3,8 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
+<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
+
 
 <link rel="import" href="../components/common/aq-check-authentication.html">
 <link rel="import" href="../components/aq-toolbar.html">
@@ -108,6 +110,7 @@
           //check for error
           var strategyId = data.detail.response._id
           this.fire('rt-changed', {route:'/dashboard/editor/'+ strategyId});
+          this.fire('iron-signal',{name:'strategy-added'});
       },
 
       onStrategyCreationError: function(data) {
