@@ -173,9 +173,7 @@
       },
 
       onFollow: function() {
-        console.log("Hola Follow");
         if(this.$.authItem.checkHasToken()) {
-            console.log("Hola Follow2");
             this.header = this.$.authItem.getHeader();
             this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
             this.$.follows.generateRequest();
@@ -189,13 +187,10 @@
       },
 
       onFollowThreadResponse: function(e) {
-          console.log(e.detail.response);
           this.followers = e.detail.response;
       },
 
       computeFollowTitle: function(followers){
-          console.log(this.postHeader);
-          console.log(this.$$('#followIcon'));
           if(this.$.authItem.checkHasToken()) {
               var user = this.$.authItem.getUser(); 
              

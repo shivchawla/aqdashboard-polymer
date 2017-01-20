@@ -230,7 +230,6 @@
 			},
 
 			onGetStrategy: function(data) {
-				console.log("Fetching");
 				this.strategyName = data.detail.response.name;
 				this.$.getBacktestsQuery.generateRequest();
 			},
@@ -330,6 +329,7 @@
 	        			this.set('backtests', []);
 		        		this.header = this.$.authItem.getHeader();
 	        			this.$.getStrategyQuery.generateRequest();
+	        			this.dirtyBit = 0;
 		        	} 
 	        			
         		} else {

@@ -10,6 +10,7 @@
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="./aq-help-marked-item.html">
 
 <dom-module id="aq-help-home">
@@ -123,10 +124,15 @@
         handle-as="json"
         id="getHelpContentQuery"
         on-response="onGetHelpContentSuccess"
-        debounce-duration="300">
+        debounce-duration="300"
+        loading='{{loading}}'>
       </iron-ajax>
 
       <template is='dom-if' if='{{active}}'>
+
+      <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+        
+        <template is='dom-if' if='[[!loading]]'>
         <paper-drawer-panel id="drawerPanel" right-drawer>
 
             <paper-header-panel id='mainPanel' mode="seamed" main>
@@ -165,6 +171,7 @@
 
         </paper-drawer-panel>
       </template>
+    </template>
 
   </template>
 
@@ -185,6 +192,11 @@
         active: {
           type: Boolean,
           observer: '_activeChanged',
+        },
+
+        loading: {
+          type: Boolean,
+          obsrver:'_loadingChanged',
         },
 
       },
@@ -215,7 +227,13 @@
         }
 
         this.set('categoriesArray', array); 
-        this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+
+      },
+
+      _loadingChanged: function() {
+        if(!this.loading && this.$$('#autoScrollSpy').scrollTarget && this.$$('#mainPanel').scroller){
+            this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+        }
       },
 
       _activeChanged: function(nAct, oAct) {

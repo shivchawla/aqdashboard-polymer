@@ -136,8 +136,11 @@
             loading='{{loading}}'>
         </iron-ajax>
 
+        <iron-signals on-iron-signal-post-added='onPostAdded'></iron-signals>
+
         <template is='dom-if' if='{{isActive(active, subroute)}}'>
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+
 
               <div id='container' class="layout vertical flex">
                 
@@ -169,9 +172,8 @@
                     <paper-tab id="personal">Personal</paper-tab>
                 </paper-tabs>
 
-              <template is='dom-if' if='{{!loading}}'>
+              <!--template is='dom-if' if='{{!loading}}'-->
             
-
                 <div clas="layout vertical" id='allposts'>
                     <template is="dom-repeat" items="{{threads}}">
                         <aq-community-home-post-item2 thread="[[item]]">
@@ -195,7 +197,7 @@
 
             <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
         </template>
-      </template>
+      <!--/template-->
         
     </template>
     <script>
@@ -306,6 +308,7 @@
             },
 
             onGetAllThreadsResponse: function(data) {
+                this.set('threads', []);
                 this.threads = data.detail.response.threads;
                 this.totalThreads = data.detail.response.count;
             },
@@ -332,6 +335,9 @@
 
               if (this.searchText=="") {
                   this.currentPage = 1;
+                  this.dirtyBit = 0;
+              } else {
+                  this.dirtyBit = 1;         
               }
             
               this.processparams();
@@ -418,12 +424,23 @@
                   }
                 }
 
-                if(active && !this.hasTail(subroute)) {
-
-                    this.processparams();   
-                } else {
-                  this.threads = [];
+                if(active && !this.hasTail(subroute)
+                    && (this.dirtyBit == 1 || !(this.dirtyBit + 1))) {
+                    
+                    this.processparams();
+                    this.dirtyBit = 0;   
+                    this.async(function(){this.setDirtyBit}, 120000);
                 }
+            },
+
+            setDirtyBit: function() {
+               this.dirtyBit = 1; 
+               this.async(function(){this.setDirtyBit}, 120000);
+            },
+
+            onPostAdded: function() {
+              console.log("Post Added");
+              this.dirtyBit = 1;
             },
 
         });

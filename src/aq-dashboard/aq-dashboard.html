@@ -642,6 +642,7 @@
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
             this.changeTabOnURL();
+            this.changeViewonURL();
         },
 
         _urlChanged: function(e) {
@@ -674,6 +675,24 @@
 
     
           this.currentTab = ctab;
+        },
+
+        changeViewonURL: function() {
+          var path = ['home','editor','community','analyze','help'];
+
+          for (i in path) {
+              var c = this.URLcontains('/dashboard/' + path[i]);
+          
+              if (c && this.view != path[i]) {  
+                
+                  if (path[i] == 'analyze') {
+                      this.view = 'editor';
+                  } else {
+                      this.view = path[i];  
+                  }
+              }
+          }
+
         },
 
         redirect: function(route) {
