@@ -121,6 +121,10 @@
         <app-location route="{{route}}" ></app-location>
         <iron-signals on-iron-signal-strategy-added='onStrategyAdded'></iron-signals>
 
+        <iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
+
+        <iron-signals on-iron-signal-backtest-deleted='onBacktestDeleted'></iron-signals>
+
         <app-route
             route="{{route}}"
             pattern="/dashboard/editor"
@@ -466,10 +470,6 @@
         return;
       }
 
-      console.log(this.searchParam.search=="");
-      console.log(searchtext=="");
-      console.log(this.dirtyBit);
-
     	this.set('searchParam.search', searchtext);
       this.fetchResults();
 
@@ -519,7 +519,6 @@
 
     fetchResults: function() {
         if (this.$.authItem.checkHasToken()) { 
-          console.log("Fetching");
           this.header = this.$.authItem.getHeader();
           var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
           this.$.getStrategiesQuery.url = APIEndPoint+'/strategy';
@@ -575,6 +574,14 @@
     onStrategyAdded: function() {
         this.dirtyBit = 1;
     },
+
+    onBacktestDeleted: function() {
+        this.dirtyBit = 1;
+    },
+
+    onBacktestAdded: function() {
+        this.dirtyBit = 1;
+    }
 
 	});
   </script>

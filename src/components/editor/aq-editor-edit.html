@@ -488,6 +488,8 @@
           // Send Execution request via web-sockets 
           this.isRunning  = true;
           this.fire('execute-backtest', {backtestId:this.activeBacktestId});
+
+          this.fire('iron-signal',{name:'backtest-added'});
         
         },
 

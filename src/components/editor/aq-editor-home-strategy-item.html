@@ -101,7 +101,10 @@
 	      	<paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
 	          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
 	          <div class="strategy-desc self-center">[[strategyDesc]]</div>
-	          <div on-click='goToAnalyze' class="strategy-bt self-center"><span>[[numBacktest]]</span></div>
+	          
+          		<div on-click='goToAnalyze' class="strategy-bt self-center"><span>[[numBacktest]]</span></div>
+	         
+
         </div>
 	</template>
 
@@ -130,12 +133,15 @@
 			},
 
 			goToAnalyze: function() {
-				this.fire('analyzeClicked',{id:this.strategyId});
+				if(this.numBacktest > 0){
+					this.fire('analyzeClicked',{id:this.strategyId});
+				}
 			},
 
 			onCheck: function() {
 				this.fire('check-action',{id:this.strategyId, checked:this.$.checkbox.checked})
 			},
+
 		});
 	</script>
 

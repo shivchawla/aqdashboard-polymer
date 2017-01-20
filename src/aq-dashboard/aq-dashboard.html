@@ -465,6 +465,8 @@
               return;
             }
               
+            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);
+          
             this.backtests[backtestId].data.push(e.detail);
             /*var bulksent = this.backtests[backtestId].bulksent;
             var subscription = this.backtests[backtestId].subscription;

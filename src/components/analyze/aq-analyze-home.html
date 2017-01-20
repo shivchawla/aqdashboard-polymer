@@ -2,6 +2,7 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
@@ -95,7 +96,10 @@
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 		
-    	
+	 	<iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
+
+	 	<iron-signals on-iron-signal-backtest-updated='onBacktestUpdated'></iron-signals>
+
 		<template is='dom-if' if='{{isActive(active, subroute)}}'>
 			<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 	
@@ -219,12 +223,14 @@
 			
 			onGetAllBacktestsForStrategy: function(data) {
 				this.backtests = data.detail.response;
+				this.dirtyBit = 0;
 			},
 
 			onGetAllBacktestsForStrategyError: function(data) {
 			},
 
 			onGetStrategy: function(data) {
+				console.log("Fetching");
 				this.strategyName = data.detail.response.name;
 				this.$.getBacktestsQuery.generateRequest();
 			},
@@ -278,6 +284,8 @@
         				this.splice('backtests', i, 1);
         				this.checkedCount -= 1;
         				delete this.checkedItems[deleteId];
+        				this.fire('iron-signal',{name:'backtest-deleted'});
+        				this.dirtyBit = 1;
         			}
         		}
 	        },
@@ -315,10 +323,11 @@
 		          }
 		      	}
 
-	        	if(active && !this.hasTail(subroute)) {
+	        	if(active && !this.hasTail(subroute) && (this.dirtyBit == 1 || !(this.dirtyBit + 1))) {
 	        		
 	        		this.strategyId = this.routeData.strategyId;
 	        		if(this.$.authItem.checkHasToken()) {
+	        			this.set('backtests', []);
 		        		this.header = this.$.authItem.getHeader();
 	        			this.$.getStrategyQuery.generateRequest();
 		        	} 
@@ -332,8 +341,15 @@
 	        	this.showComparison = false;
 	        	this.checkedCount = 0;
 	        	this.checkedItems = {};
-	        	this.backtests = [];
-	        }
+	        },
+
+	        onBacktestAdded: function() {
+	        	this.dirtyBit = 1;
+	        },
+
+	        onBacktestUpdated: function() {
+	        	this.dirtyBit = 1;
+	        },
 
     	});
     </script>
