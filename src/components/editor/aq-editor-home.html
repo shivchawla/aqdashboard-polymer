@@ -266,7 +266,12 @@
 
     onGetStrategiesResponse: function(data) {
     	 this.strategies = data.detail.response;
-       this.dirtyBit = 0;	
+       
+       if(!this.searchParam || (this.searchParam && this.searchParam.search=="")){
+          this.dirtyBit = 0;
+       } else {
+          this.dirtyBit = 1;
+       }
     },
 
 		onGetStrategiesError: function(data) {
@@ -449,12 +454,25 @@
     		this.$$('#ifsearch').style.display = 'none';
     	}
 
-      if(this.searchParam=="" && searchtext=="" && this.dirtyBit == 0){
+      if(!this.searchParam && searchtext==""){
+        return;
+      } else {
+        this.searchParam = {};
+        this.set('searchParam.search',"");
+      }
+
+
+      if(this.searchParam.search==""  && searchtext=="" && this.dirtyBit == 0){
         return;
       }
 
-    	this.searchParam = {"search":searchtext};
+      console.log(this.searchParam.search=="");
+      console.log(searchtext=="");
+      console.log(this.dirtyBit);
+
+    	this.set('searchParam.search', searchtext);
       this.fetchResults();
+
     },
 
     onDeletion: function() {

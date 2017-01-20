@@ -116,7 +116,7 @@
 	    		<paper-icon-button noink title="Go Back" icon="aq-icons:arrow-back" on-tap="toggle"></paper-icon-button>
       			<input id="searchbox" placeholder="Search your strategy" class="flex"
              	value="{{searchText::change}}" type="search"
-             	on-keydown="checkForKeys" on-blur='blur' on-search='search'>
+             	on-keydown="checkForKeys" on-blur='blur'>
         	</div>
 
 	      	<div id='menu-icons' class="layout horizontal">
@@ -192,7 +192,7 @@
                     this.$$('#searchbox').value="";
                     this.blur();
                 } else if (e.keyCode === 13) {
-                	this.search();
+                	this.debounce('search', this.search, 50);
                 } 
             },
 
@@ -200,7 +200,7 @@
             	if(this.$$('#searchbox').value=="") {
             		this.$$('#search').style.display = 'none';
 					this.$$('#menu-icons').style.display = 'inline';
-					this.search();
+					this.debounce('search', this.search, 50);
 				} 
             },
 
