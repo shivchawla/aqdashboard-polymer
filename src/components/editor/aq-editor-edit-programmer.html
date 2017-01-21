@@ -65,6 +65,10 @@
           return this.$.codeEditor.editor.getValue().replace(/\s+$/,"");
       }, 
 
+      resetCodeContent: function() {
+        this.$.codeEditor.editor.setValue('');
+      },
+
       isSelectedBarRun: function(sideBar) {
         return sideBar == 0;
       },  

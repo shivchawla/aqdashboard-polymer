@@ -196,7 +196,7 @@
 
         loading: {
           type: Boolean,
-          obsrver:'_loadingChanged',
+          observer:'_loadingChanged',
         },
 
       },
@@ -230,9 +230,11 @@
 
       },
 
-      _loadingChanged: function() {
-        if(!this.loading && this.$$('#autoScrollSpy').scrollTarget && this.$$('#mainPanel').scroller){
-            this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+      _loadingChanged: function(nLoading, oLoading) {
+        if(!nLoading) {
+            this.async(function(){
+              this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+            }, 200);
         }
       },
 

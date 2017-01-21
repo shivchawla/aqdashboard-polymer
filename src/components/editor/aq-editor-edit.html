@@ -474,7 +474,13 @@
           this.runStrategyData = this.$$('#runSidebar').getSettings();
 
           this.runSwitch = 1;
-          this.saveStrategy(e);  
+          this.saveStrategy(e); 
+
+          //Reset log container
+          if(this.$$('#logContainer')) {
+            this.$$('#logContainer').resetLogs();
+          }
+
         },
 
         onStrategyExecutionResponse: function(data) {
@@ -513,10 +519,6 @@
             this.selectedSidebar = 1;
           }
 
-          if(this.$$('#logContainer')) {
-            this.$$('#logContainer').resetLogs();
-          }
-
         },
 
         _isSelectedSidebarChanged: function(nSelect, oSelect){
@@ -551,6 +553,9 @@
               this.header = this.$.authItem.getHeader();
               this.$.getStrategyQuery.generateRequest(); 
             }
+
+            this.fire('close-menu');
+            this.selectedSidebar = 0;
           } 
 
           if(!active && this.strategyId!="") {
@@ -558,6 +563,11 @@
               
               if(this.$$('#editorToolbar')) {
                 this.$$('#editorToolbar').onSave();
+                
+              }
+
+              if(this.$$('#codeEditorPanel')) {
+                this.$$('#codeEditorPanel').resetCodeContent();
               }
           }          
         },

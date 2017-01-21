@@ -122,15 +122,15 @@
 
 	  			<div id="search" class="layout horizontal" on-keydown="checkForKeys">
 	  				
-  					<div id="searchdiv" on-keydown="checkForKeys">
-		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search" on-keydown="checkForKeys">
+  					<div id="searchdiv">
+		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search">
 
 		  				<div>
-		  				<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">
-				         	<template is='dom-repeat' items='{{categories}}'>
-								<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
-							</template>
-						</paper-radio-group>
+			  				<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">
+					         	<template is='dom-repeat' items='{{categories}}'>
+									<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
+								</template>
+							</paper-radio-group>
 						</div>
 					</div>
 
@@ -160,6 +160,16 @@
 					value:"",
 				},
 
+				lastSearchValue:{
+					type: String,
+					value: "",
+				},
+
+				lastSelectedCategory: {
+					type: Number,
+					value: 0,
+				},
+
 				active: Boolean,
 
 				categories:{
@@ -180,11 +190,18 @@
 
 			search: function() {
 				this.searchValue = this.$$('#searchbox').value;
-                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory >= 0 ? this.categories[this.selectedCategory].value : ""});
 
-             	if(this.$.searchbox.value=="") {
+				if (this.lastSelectedCategory != this.selectedCategory || this.lastSearchValue != this.searchValue) {
+
+	                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory >= 0 ? this.categories[this.selectedCategory].value : ""});
+                }
+
+             	if (this.searchValue=="") {
                 	this.toggle();
     			}
+
+    			this.lastSearchValue = this.searchValue;
+				this.lastSelectedCategory = this.selectedCategory;
            
 			},
 
@@ -219,6 +236,7 @@
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
                     this.$$('#searchbox').value="";
+                    this.selectedCategory = 0;
                     this.search();
                 } else if (e.keyCode === 13) {
                 	this.search();
