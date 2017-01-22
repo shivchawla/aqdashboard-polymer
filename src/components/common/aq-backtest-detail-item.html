@@ -613,7 +613,7 @@
 							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toString()+'%', "metricDescription":"Max Drawdown"},
 							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio, "metricDescription":"Calmar Ratio"},
 							{"metricName":"Beta", "metricValue":data.beta, "metricDescription":"Beta"},
-							{"metricName":"Stability", "metricValue":data.stability, "metricDescription":"Stability"},
+							{"metricName":"Stability", "metricValue":(data.stability) ? data.stability : "-", "metricDescription":"Stability"},
 							{"metricName":"Alpha", "metricValue":data.alpha.toString()+'%', "metricDescription":"Alpha"},
 							//{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
 							];

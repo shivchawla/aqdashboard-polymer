@@ -65,28 +65,43 @@
           return this.$.codeEditor.editor.getValue().replace(/\s+$/,"");
       }, 
 
-      resetCodeContent: function() {
-        this.$.codeEditor.editor.setValue('');
+      setCodeContent: function(code) {
+          this.code = code;
       },
 
       isSelectedBarRun: function(sideBar) {
         return sideBar == 0;
       },  
 
-      _codeChanged: function(ncode, old) {
+      _codeChanged: function(ncode, ocode) {
         if(!ncode) {
-          ncode = "";
+          ncode="";
         }
         
-        this.$.codeEditor.editor.setValue(ncode);
-        this.async(function(){this.$.codeEditor.editor.gotoLine(1);}, 20);
+        tgap = 0
+        
+        if(!this.$.codeEditor.editor) {
+            tgap = 50;
+            this.async(function() {
+              console.log(ncode);
+              this.$.codeEditor.editor.setValue(ncode);
+            }, tgap)
+        } else {
+            this.$.codeEditor.editor.setValue(ncode);
+        }
+
+        this.async(
+          function(){
+            this.$.codeEditor.editor.gotoLine(1);
+            this.$.codeEditor.editor.focus();
+          }, tgap + 20);
       },
 
-      onCodeChange: function(e) {
+      onCodeChange: function(e) {          
           this.change = true;
       },
 
-      attached: function(){
+      attached: function() {
         this.async(function(){this.$.codeEditor.editor.gotoLine(1);}, 20);
         this.sendSaveRequest();
       },
@@ -96,6 +111,7 @@
             this.fire('save-request');
             this.change = false;
         }
+
         this.async(this.sendSaveRequest, 5000)
       }
 

@@ -136,6 +136,7 @@
 
       <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
+      <template is='dom-if' if='{{isLoadedWithStrategy(loading, strategy)}}'>
         <paper-drawer-panel on-keydown=checkForKeys drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]" responsive-width='1200px' class="drawerpanel" id="drawerpanel" right-drawer narrow="{{narrow}}" force-narrow="{{!showSideBar}}">   
             <paper-header-panel id='leftPanel' main mode="seamed"> 
               
@@ -204,6 +205,7 @@
             
             </paper-header-panel>
         </paper-drawer-panel>
+      </template>
       </template>
       
     </template>
@@ -460,8 +462,6 @@
               "code": this.$$('#codeEditorPanel').getCodeContent(),
           };
 
-          //console.log(this.strategyId);
-
           if(this.$.authItem.checkHasToken() && this.strategyId!="") {
               this.header = this.$.authItem.getHeader();
               this.$.saveStrategyQuery.generateRequest();
@@ -547,11 +547,11 @@
           }
 
           if(active && routeData) {
-            this.strategy = {};
+            //this.strategy = {};
             this.strategyId = routeData.strategyId;
             if(this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
-              this.$.getStrategyQuery.generateRequest(); 
+              this.debounce('fetchStrategy', function() { this.$.getStrategyQuery.generateRequest();}, 300); 
             }
 
             this.fire('close-menu');
@@ -566,9 +566,6 @@
                 
               }
 
-              if(this.$$('#codeEditorPanel')) {
-                this.$$('#codeEditorPanel').resetCodeContent();
-              }
           }          
         },
 
@@ -585,9 +582,13 @@
         },
 
         onSaveRequest: function() {
-            if(this.$$('#editorToolbar')) {
+            if(this.$$('#editorToolbar') && this.active) {
                 this.$$('#editorToolbar').onSave();
             }
+        },
+
+        isLoadedWithStrategy: function(loading,  strategy) {
+          return !loading && strategy && Object.keys(strategy).length > 0;
         },
 
       });
