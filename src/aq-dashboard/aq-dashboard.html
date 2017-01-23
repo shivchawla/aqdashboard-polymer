@@ -401,6 +401,7 @@
           this.removeToken();
           this.hasToken = this.$.authItem.checkHasToken();
           this.fire('rt-changed',{route:'/user/signout'});
+          this.dirtyBit = 1;
         },
 
         openFeedbackDialog: function() {
@@ -583,6 +584,7 @@
         onTokenUpdate: function(e) {
             this.updateToken(e.detail.user);
             this.hasToken = this.$.authItem.checkHasToken();
+            this.fire('iron-signal',{name:'dirtybit', data:1});
             
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
 

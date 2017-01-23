@@ -125,7 +125,7 @@
 
         <iron-signals on-iron-signal-backtest-deleted='onBacktestDeleted'></iron-signals>
 
-        <iron-signals on-iron-signal-set-dirtybit='onSetDirtyBit'></iron-signals>
+        <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
         <app-route
             route="{{route}}"
@@ -550,7 +550,7 @@
       }
 
       if(active && !this.hasTail(subroute)) {
-        
+
         if(this.queryParams && this.queryParams.create) {
           this.create = this.queryParams.create;
         } else {
@@ -585,8 +585,8 @@
         this.dirtyBit = 1;
     },
 
-    onSetDirtyBit: function() {
-      this.dirtyBit = 1;
+    onSetDirtyBit: function(e) {
+      this.dirtyBit = e.detail;
     },
 
 	});

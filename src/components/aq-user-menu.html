@@ -1,5 +1,7 @@
 <link rel='import' href='../../bower_components/paper-button/paper-button.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
+
 
 <link rel="import" href="./profile-img.html">
 
@@ -64,6 +66,9 @@
     </style>
 
     <template>
+
+         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
+
         <paper-menu-button id = 'userMenu' on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=48>
             <profile-img letter="[[letter]]" class="dropdown-trigger"></profile-img>
 
@@ -123,7 +128,14 @@
                 letter: String,
                 email:String,
 
+                dirtyBit:{
+                    type:Number,
+                    value:0,
+                    observer:'_dirtyBitChanged',
+                },
+                
             },
+
             ready: function() {
     		  	var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
@@ -151,7 +163,24 @@
             onSignOut: function() {
                 this.$.userMenu.close();
                 this.fire('signout-action');
-                this.fire('iron-signal',{name:'set-dirtybit'});
+                //this.fire('iron-signal',{name:'set-dirtybit'});
+            },
+
+            onSetDirtyBit: function(e) {
+                this.dirtyBit = e.detail;
+            },
+
+            _dirtyBitChanged: function(nVal, oVal) {
+                if(nVal == 1) {
+                    var x = localStorage.getItem('my-app-storage');
+                    var user = JSON.parse(x).user;
+                    this.firstName = user.firstName;
+                    this.lastName = user.lastName;
+                    this.email = user.email;
+                    this.letter = this.firstName[0]+this.lastName[0]; 
+
+                    this.dirtyBit = 0;
+                }
             },
 		});
     </script>
