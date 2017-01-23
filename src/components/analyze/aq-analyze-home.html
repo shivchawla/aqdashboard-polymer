@@ -100,6 +100,9 @@
 
 	 	<iron-signals on-iron-signal-backtest-updated='onBacktestUpdated'></iron-signals>
 
+	 	<iron-signals on-iron-signal-set-dirtybit='onSetDirtyBit'></iron-signals>
+
+
 		<template is='dom-if' if='{{isActive(active, subroute)}}'>
 			<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 	
@@ -348,6 +351,10 @@
 	        },
 
 	        onBacktestUpdated: function() {
+	        	this.dirtyBit = 1;
+	        },
+
+	        onSetDirtyBit: function() {
 	        	this.dirtyBit = 1;
 	        },
 

@@ -282,7 +282,7 @@
 							
 		var resolutionOptions = [{index:0, value:'Day'}]
 
-		var investmentPlanOptions = [{index:0, value:'All-In'},
+		var investmentPlanOptions = [{index:0, value:'AllIn'},
 									{index:1, value:'Monthly'},
 									{index:2, value:'Yearly'},
 									{index:3, value:'Weekly'}]
@@ -388,7 +388,7 @@
 			getSettings: function() {
 				var settings = {startDate:this.startDate,
 						endDate:this.endDate,
-						initialCash:this.initialCash,
+						initialCash:parseInt(this.initialCash),
 						advanced: JSON.stringify({rebalance:this.rebalance,
 									cancelPolicy:this.cancelPolicy,
 									slippage:{model:this.slippageModel, value:this.slippageValue},

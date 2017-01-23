@@ -151,6 +151,7 @@
             onSignOut: function() {
                 this.$.userMenu.close();
                 this.fire('signout-action');
+                this.fire('iron-signal',{name:'set-dirtybit'});
             },
 		});
     </script>

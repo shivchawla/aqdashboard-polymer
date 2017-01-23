@@ -125,6 +125,8 @@
 
         <iron-signals on-iron-signal-backtest-deleted='onBacktestDeleted'></iron-signals>
 
+        <iron-signals on-iron-signal-set-dirtybit='onSetDirtyBit'></iron-signals>
+
         <app-route
             route="{{route}}"
             pattern="/dashboard/editor"
@@ -581,7 +583,11 @@
 
     onBacktestAdded: function() {
         this.dirtyBit = 1;
-    }
+    },
+
+    onSetDirtyBit: function() {
+      this.dirtyBit = 1;
+    },
 
 	});
   </script>

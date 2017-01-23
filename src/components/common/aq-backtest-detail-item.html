@@ -137,6 +137,7 @@
 			--paper-progress-active-color:#0375b4;
 			opacity:0.6;
 			width:120px;
+			--paper-progress-indeterminate-cycle-duration:5s;
 		}
 
 		#progressDiv p{
@@ -159,8 +160,22 @@
 
 					<template is='dom-if' if='{{active}}'>
 						<div class="layout vertical" id='progressDiv'>
-						<p>Progress: {{pctCompleted}}%</p>
-						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+						
+						<template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+							<p>Progress: {{pctCompleted}}%</p>
+							<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+						</template>
+
+						<template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
+							<p>Complete</p>
+							<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+						</template>
+
+						<template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+							<p>Warming up</p>
+							<paper-progress indeterminate class="self-center"></paper-progress>
+						</template>
+						
 						
 						</div>
 					</template>
@@ -712,6 +727,18 @@
 		    		this.$$('aq-aggregatedreturns-barchart').resizeChart();
 		    	}
 		    },
+
+		    isCompletionPositive: function(pctCompleted){
+		    	return pctCompleted > 0 && pctCompleted!=100;
+		    },
+
+		    isBacktestComplete: function(pctCompleted) {
+		    	return pctCompleted == 100;
+		    },
+
+			isBacktestWarmingUp: function(pctCompleted){
+				return pctCompleted==0;
+			}				    
 
 
 		});

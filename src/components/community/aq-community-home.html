@@ -138,6 +138,9 @@
 
         <iron-signals on-iron-signal-post-added='onPostAdded'></iron-signals>
 
+        <iron-signals on-iron-signal-set-dirtybit='onSetDirtyBit'></iron-signals>
+
+
         <template is='dom-if' if='{{isActive(active, subroute)}}'>
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
@@ -440,6 +443,10 @@
 
             onPostAdded: function() {
               console.log("Post Added");
+              this.dirtyBit = 1;
+            },
+
+            onSetDirtyBit: function() {
               this.dirtyBit = 1;
             },
 
