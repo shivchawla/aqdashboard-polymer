@@ -18,7 +18,7 @@
     	#section-home {
     		margin-top:0px;
         height:92vh;
-        background: url(../../resources/images/bg-home.jpeg);
+        background:linear-gradient(#f2fbf7, #dff5eb, #cbefdf);
         background-size: cover;
 	    }
 
@@ -31,16 +31,17 @@
       }
 
     	#headerTagline {
-    		font-size: 50px;
+    		font-size: 300%;
     		font-weight: bold;
     		margin-bottom: -10px;
-        color: #001b1b;
+        color: teal;
         opacity: 2.0;
         z-index: 2;
+
     	}
 
       #headerPara {
-        color:#001b1b;
+        color:#cc6666;
         font-style: italic;
         opacity: 2.0;
         z-index: 2;
@@ -49,55 +50,57 @@
       }
 
     	p,i {
-    		font-size: 18px;
+    		font-size: 15px;
     		margin-top: 10px;
     		margin-bottom: 0px;
     	}
+      
+
 
     	paper-button.button {
     		width: 10%;
-    		color: #001b1b;
-        background-color: none;
+    		color: white;
+        background-color: #004d4d;
     	  margin-top: 20px;
         margin-bottom: 30px;
     		min-width: 150px;
     		border-radius: 20px;
-        border: 1px solid #001b1b;
+        border: 1px solid #004d4d;
         font-weight:bold;
     	}
 
       paper-button.button:hover {
-        background-color: #001b1b;
+        background-color: teal;
         color:white;
       }
 
       paper-button.button2 {
         width: 20%;
-        color: #001b1b;
+        color: white;
         min-width: 200px;
         border-radius: 20px;
-        border: 1px solid #001b1b;
-        background-color: none;
+        border: 1px solid #004d4d;
+        background-color: #004d4d;
       }
 
       paper-button.button2:hover {
-        background-color: #001b1b;
+        background-color: teal;
         color:white;
       }
 
       paper-button.button3 {
         width: 10%;
-        background-color: none;
-        margin-top: 30px;
+        background-color: #004d4d;
+        --margin-top: 30px;
         margin-bottom: 30px;
         min-width: 150px;
         border-radius: 20px;
-        border: 1px solid #001b1b;
-        color: #001b1b;
+        border: 1px solid #004d4d;
+        color: white
       }
 
       paper-button.button3:hover {
-        background-color: #001b1b;
+        background-color: teal; 
         color: white;
       }
 
@@ -114,10 +117,10 @@
     	}
 
       #section-describe-code {
-        color:#001b1b;
+        color:teal;--#001b1b;
         background-color:#f2fbf7;
         height:92vh;
-        background: radial-gradient(#cbefdf, white);
+        background: linear-gradient(#ffffff, #f2fbf7);
         background-size: cover;
       }
 
@@ -139,11 +142,12 @@
       }
 
       #section-describe-backtest {
-        color:#001b1b;
+        color:teal;
         background-color:#f2fbf7;
         height:92vh;
-        background: radial-gradient(#cbefdf, white);
+        background: linear-gradient(#ffffff, #f2fbf7);
         background-size: cover;
+
       }
 
       #backtestDiv {
@@ -176,39 +180,39 @@
       .smallIcon {
         height: 30px;
         width: 30px;
-        color:#001b1b;
+        color:teal;
       }
 
       .mediumIcon {
         height: 40px;
         width: 40px;
-        color: #001b1b;
+        color: teal;
       }
 
     	.bigIcon {
     		height:50px;
     		width:50px;
-        color:#001b1b;
+        color:teal;
     	}
 
       .tagline {
-        color:#001b1b;
+        color: #cc6666;
         font-size: 26px;
-        font-weight: bold;
-        font-style: normal;
+        font-weight: 100 !important;
+        margin: auto 0;
       }
 
       .spTagline {
-        color:#001b1b;
+        color:#cc6666;
         font-size: 26px;
         margin-bottom: -30px !important;
       }
 
     	#section-advantages {
-    		padding-top:50px;
-    		color: #001b1b;
+    		--padding-top:50px;
+    		color: teal;
     	  height:92vh;
-        background: radial-gradient(#cbefdf, white);
+        background: linear-gradient(#ffffff, #f2fbf7);
         background-size: cover;
     	}
 
@@ -216,12 +220,17 @@
     		margin-bottom: 35px;
     		font-size: 28px;
     		font-weight: bold;
-        color:#001b1b;
+        color: #cc6666;
     	}
+
+      .adv-container i {
+          color:#cc6666;
+      }
+
 
     	a {
     		text-decoration: none;
-    		color:#001b1b;
+    		color:#cc6666;
     	}
 
     	a:hover {
@@ -238,11 +247,17 @@
 
       .footer p{
       	color: white;
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .footer-link:hover {
         cursor:pointer;
+      }
+
+      #blank {
+        height: 2px;
+        background-color: #cc6666;
+        width: 100%;
       }
 
     </style>
@@ -260,14 +275,12 @@
             
             <div class="self-center flex"></div>
 
-        	  <div class="layout horizontal self-center">
-              <p id="headerTagline">Invest in Y</p>
-              <div id='ideas' class="self-end"></div>
-              <p id="headerTagline">ur Ideas</p>        
-            </div>
-      	    
-            <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
-        	
+              <div class="layout horizontal self-center">
+                <div id="headerTagline">Invest in Your Ideas</div>
+              </div>
+        	    
+              <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
+           
         	  <paper-button class="button self-center" noink on-tap='onJoin'>Start Now</paper-button>
             
             <div class="flex"></div>
@@ -276,12 +289,13 @@
     		</div>
 
         <div id="section-describe-code" class="layout vertical flex">
+           
             <div class="layout horizontal around-justified wrap flex">
                  
               <div class="layout vertical self-center">
 
                   <div id='codeDesc' class="layout vertical">
-                    <p class="self-center"> <i class="tagline">Testing an investment idea has never been simpler</i></p>
+                    <p class="self-center tagline">Testing an investment idea has never been simpler</p>
                     <p class="self-center"><i>Embedded Code Editor</i></p>
                     <p class="self-center"><i>Free Data for Indian Equity Markets</i></p>
                     <p class="self-center"><i>Backtester in Julia to quickly implement your trade ideas
@@ -290,10 +304,10 @@
 
                   <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button>
                   
-                  <div class="layout vertical self-center" id='btDiv'>
+                  <!--div class="layout vertical self-center" id='btDiv'>
                     <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
                     <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
-                  </div>
+                  </div-->
 
               </div>
 
@@ -306,29 +320,32 @@
             </div>
 
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageThree'></paper-icon-button>
+
+            
            
         </div>
 
         <div id="section-describe-backtest" class="layout vertical"> 
-
+            <!--div id='blank'></div-->
             <div class="layout horizontal wrap flex around-justified">
 
               <div class="layout vertical self-center">
                   <div class="layout vertical self-center" id='analysisDiv'>
                     
-                    <p class="self-center"><i class='tagline'>Detailed analysis of your backtests</i></p>
-                    <i style="margin-top:0px"class="self-center">Analyze your idea with variety of trading and portfolio metrics. </i>
+                    <p class="self-center tagline">Detailed analysis of your backtests</p>
+                    <p class="self-center"><i>Run unlimited backtests</i></p>
+                    <p class="self-center">Analyze with variety of trading and portfolio metrics</i></p>
                     <div class="flex"></div>
                   </div>
 
                   <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
 
-                  <div class="layout vertical self-center">
+                  <!--div class="layout vertical self-center">
                       <div class="flex"></div>
                       <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
                       <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
                       </i>
-                  </div>   
+                  </div-->   
               </div> 
 
               <div class="layout vertical self-center">
@@ -344,33 +361,36 @@
 
         </div>
 
+
         	<div id="section-advantages" class="layout vertical flex">
-        		<div id='advantages' class="self-center">
-        			<p>ADVANTAGES</p>
+            <!--div id='blank'></div-->
+        		
+            <div style="margin-top:30px;" id='advantages' class="self-center">
+        			<p>Advantages</p>
         		</div>
 
     			<div class="layout horizontal around-justified wrap">
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="aq-icons:touch-app"></iron-icon>
     					<p class="self-center">EASY</p>
-    					<i class="self-center" style="color:#001b1b;">Run backtest with very little code</i>
+    					<i class="self-center">Run backtest with very little code</i>
     				</div>
 
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="vaadin-icons:paperplane"></iron-icon>
     					<p class="self-center">FAST</p>
-    					<i class="self-center" style="color:#001b1b;">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
+    					<i class="self-center">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
     				</div>
 
     				<div class="layout vertical adv-container">
     					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
     					<p class="self-center">SECURE</p>
-    					<i class="self-center" style="color:#001b1b;">Your ideas are your property</i>
+    					<i class="self-center">Your ideas are your property</i>
     					
     				</div>
     			</div>
 
-    			<iron-icon style="margin-top:20px; max-height:35px; max-width:35px;margin-bottom:20px;" class="smallIcon flex self-center" icon="aq-icons:add"></iron-icon>
+    			<div style="font-size:15px; margin-top:20px; max-height:35px; max-width:35px;margin-bottom:20px;" class="self-center"></div>
 
     			<div class="layout horizontal around-justified wrap">
     				<div class="layout vertical adv-container">
@@ -382,8 +402,9 @@
 
     					<adv-item class="self-center" advantage="Encrypted Strategy">
     					</adv-item>
-  				</div>
+  				  </div>
 
+            
     				<div class="layout vertical adv-container">
     					<adv-item class="self-center" advantage="Great Community"></adv-item>
     					
@@ -438,6 +459,11 @@
           observer:'_activeChanged',
         },
 
+      },
+
+      attached: function() {
+        this.$$('#section-home').style.background = "url('../../resources/images/bg-home.jpeg')";
+         this.$$('#section-home').style.backgroundSize = "cover";
       },
 
       _activeChanged: function() {
