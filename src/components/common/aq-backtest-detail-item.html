@@ -146,6 +146,10 @@
 			color:#0375b4;
 		}
 
+		#errProgress {
+			--paper-progress-active-color:#cc6666 !important;	
+		}
+
 	</style>
 
 	<template>
@@ -175,8 +179,14 @@
 							<p>Warming up</p>
 							<paper-progress indeterminate class="self-center"></paper-progress>
 						</template>
+
+						<template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
+							<p style="color:#cc6666">Exception</p>
+							<paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
+						</template>
 						
 						
+
 						</div>
 					</template>
 
@@ -424,6 +434,8 @@
 				if (!this.active) {
 					return
 				}
+
+
 				
 				data = e.detail;
 				if ((data.outputtype=="performance" || data.outputtype=="labels") && this.active) {
@@ -432,6 +444,8 @@
 					if(this.realtimeXLabels && this.realtimeXLabels.length > 0){
 						this.pctCompleted = Math.round(this.counter*100/ this.realtimeXLabels.length, 0);
 					}
+				} else if(data.outputtype=="log" && data.messagetype=="ERROR") {
+					this.pctCompleted = -1;
 				} 
 			},
 
@@ -738,8 +752,11 @@
 
 			isBacktestWarmingUp: function(pctCompleted){
 				return pctCompleted==0;
-			}				    
+			},
 
+			isBacktestException: function(pctCompleted) {
+				return pctCompleted == -1;
+			},				    
 
 		});
 	</script>

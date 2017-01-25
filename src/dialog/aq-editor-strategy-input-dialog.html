@@ -136,7 +136,8 @@
       onCancel: function() {
         this.reset();
         this.$.createStrategyModalDialog.close();
-        this.fire('rt-changed',{route:'/dashboard/editor'});
+        //console.log(window.history.back());
+        //this.fire('rt-changed',{route:'/dashboard/editor'});
       },  
 
 			open: function(type) {
