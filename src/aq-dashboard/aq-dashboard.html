@@ -636,7 +636,10 @@
         },
 
         onGetBacktestError: function(e){
-
+            if(e.request.response.id) {
+              var backtestId = e.request.response.id; 
+              delete this.backtests[backtestId];    
+            }
         },
 
         goToRoute: function(e) {
