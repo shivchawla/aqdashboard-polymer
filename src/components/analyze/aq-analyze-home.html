@@ -178,7 +178,10 @@
 					value: false,
 				},
 
-				routeData:Object,
+				routeData: {
+					type:Object,
+				},
+
 				subroute:Object,
 
 				loading:Boolean
@@ -325,14 +328,26 @@
 		          }
 		      	}
 
-	        	if(active && !this.hasTail(subroute) && (this.dirtyBit == 1 || !(this.dirtyBit + 1))) {
+	        	if(active && !this.hasTail(subroute)) {
+
+	        		if(!this.oldRouteData) {
+	        			this.oldRouteData = {strategyId:""};
+	        		}
+
+        			if(this.oldRouteData.strategyId != this.routeData.strategyId) {
+        				this.dirtyBit = 1;
+        				this.oldRouteData = this.routeData;
+        			}	
+
+        			if (this.dirtyBit == 1 || !(this.dirtyBit + 1)) {
 	        		
-	        		this.strategyId = this.routeData.strategyId;
-	        		if(this.$.authItem.checkHasToken()) {
-	        			this.set('backtests', []);
-		        		this.header = this.$.authItem.getHeader();
-	        			this.$.getStrategyQuery.generateRequest();
-	        			this.dirtyBit = 0;
+		        		this.strategyId = this.routeData.strategyId;
+		        		if(this.$.authItem.checkHasToken()) {
+		        			this.set('backtests', []);
+			        		this.header = this.$.authItem.getHeader();
+		        			this.$.getStrategyQuery.generateRequest();
+		        			this.dirtyBit = 0;
+			        	}
 		        	} 
 	        			
         		} else {
