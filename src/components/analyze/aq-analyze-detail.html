@@ -12,6 +12,28 @@
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
 
+	<style>
+		#container {
+			width:98%;
+			margin:0 auto;
+		    margin-top: 0px;
+		    color: #24293d; 
+	  	}
+
+		paper-icon-button {
+			width:35px;
+    		height:35px;
+    		margin-right: 10px;
+    		min-width:25px;
+    		max-width:35px;
+		}
+
+		#backButton {
+			margin:auto 0;
+			outline: none !important;
+		}
+  	</style>
+
 	<template>
 	 	<aq-check-authentication id='authItem'></aq-check-authentication>
 	 	<app-location route="{{route}}"></app-location>
@@ -25,16 +47,18 @@
 	    <template is='dom-if' if='{{active}}'>
 		
     		<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-		  
-		    <template is='dom-if' if='{{!loading}}'>
-		    	<div class="goBackButton layout horizontal">
-		            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
-		            </paper-icon-button>
-		            <p class="self-center">Back to All Backtests</p>
-		      	</div>
+		  	
+		  	<div id='container'>
+			    <template is='dom-if' if='{{!loading}}'>
+			    	<div class="goBackButton layout horizontal">
+			            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+			            </paper-icon-button>
+			            <p class="self-center">Back to All Backtests</p>
+			      	</div>
 
-		      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]"></aq-backtest-detail-item>
-	      	</template>
+			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]"></aq-backtest-detail-item>
+		      	</template>
+      		</div>
       	</template>
 	</template>
 

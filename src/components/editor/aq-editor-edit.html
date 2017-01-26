@@ -255,7 +255,6 @@
           isRunning: {
             type: Boolean,
             value: false,
-            observer:'_isRunningChanged',
           },
 
           counter:{
@@ -508,17 +507,6 @@
         cloneStrategy: function(e) {
             e.detail.strategy = this.strategy;
             //let the event propagate
-        },
-
-        _isRunningChanged: function() {
-
-          if(!this.isRunning) {
-            this.selectedSidebar = 0;
-            
-          } else {
-            this.selectedSidebar = 1;
-          }
-
         },
 
         _isSelectedSidebarChanged: function(nSelect, oSelect){

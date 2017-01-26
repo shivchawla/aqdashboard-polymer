@@ -12,6 +12,7 @@
 <link rel="import" href="../components/user/aq-user-login-panel.html">
 <link rel="import" href="../components/user/aq-authentication-message.html">
 <link rel="import" href='../components/common/aq-check-authentication.html'>
+<link rel='import' href='../components/common/aq-web-socket.html'>
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
@@ -86,14 +87,14 @@
 
       </div>
 
-      <web-socket 
+      <aq-web-socket 
           url=""
           id="webSocketConn"
           json
           on-open="_onOpen"
           on-message="_onMessage"
           on-error="_onError">
-      </web-socket>
+      </aq-web-socket>
 
        <iron-localstorage
           id='localStorage'  
@@ -199,6 +200,12 @@
           APIEndPoint:String,
 
           WSEndPoint:String,
+
+          wsRequests: {
+            type: Array,
+            value: [],
+          },
+
 
         },
 
@@ -456,8 +463,13 @@
           this.fire('rt-changed',{route:'/user/myaccount'});
         },
 
-        _onOpen: function(e){
+        _onOpen: function(e) {
+            for(var i=0;i<this.wsRequests.length;i++) {
+                var req = this.wsRequests[i];
+                this.$.webSocketConn.send(req);
+            }
 
+            this.set('wsRequests',[]);
         },
 
         _onMessage: function(e) { 
@@ -491,6 +503,8 @@
         openWebSocketConnection: function() {
           var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
           this.$.webSocketConn.url = WSEndPoint;
+
+          this.$.webSocketConn.close();
           this.$.webSocketConn.open();
         },
 
@@ -508,7 +522,18 @@
 
             this.backtestId = backtestId
             this.backtests[backtestId] = {data:[], subscription:false,bulksent:false, currentIndex:0};
-            this.$.webSocketConn.send(msgForWS);
+
+            //check if socket connection is open
+            //var rs = this.$.webSocketConn._webSocket.readyState;
+            if (this.$.webSocketConn.isOpen()) {
+                this.$.webSocketConn.send(msgForWS);  
+            } else if(this.$.webSocketConn.isClosed()) {    
+                this.push(wsRequests, msgForWS);
+                this.$.webSocketConn.open();
+            } else {
+                this.push(wsRequests, msgForWS);
+            }
+            
           } else {
             this.gotoSignin();
           }
