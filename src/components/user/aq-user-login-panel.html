@@ -13,6 +13,7 @@
 
 <link rel="import" href="../common/aq-check-authentication.html">
 <link rel="import" href="./aq-authentication-message.html">
+<link rel="import" href="../common/aq-loading-progress.html">
 
 <dom-module id="aq-user-login-panel">
     <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -185,7 +186,8 @@
             handle-as="json" 
             on-response="handleSignupResponse"
             on-error="handleSignupError"
-            headers='{"Content-Type": "application/json"}' debounce-duration="300">  
+            headers='{"Content-Type": "application/json"}' debounce-duration="300"
+            loading='{{loading}}'>  
         </iron-ajax>
 
         <iron-ajax
@@ -197,7 +199,8 @@
           on-response="handleLoginResponse"
           on-error="handleLoginError"
           headers='{"Content-Type": "application/json"}'
-          debounce-duration="300">
+          debounce-duration="300"
+          loading='{{loading}}'> 
         </iron-ajax>
 
         <iron-ajax
@@ -209,7 +212,8 @@
           on-response="handleForgotPasswordResponse"
           on-error="handleForgotPasswordError"
           headers='{"Content-Type": "application/json"}'
-          debounce-duration="300">
+          debounce-duration="300"
+          loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
@@ -221,15 +225,18 @@
           on-response="handleresetpasswordResponse"
           on-error="handleresetpasswordError"
           headers='{"Content-Type": "application/json"}'
-          debounce-duration="300">
+          debounce-duration="300"
+          loading='{{loading}}'>
         </iron-ajax>
+        
+        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{isAuthMessageMode(displayMode)}}'>
             <aq-authentication-message></aq-authentication-message>
         </template>
 
         <template is='dom-if' if='{{!isAuthMessageMode(displayMode)}}'>
-            <div id='containerr' class="layout vertical fit" >
+            <div id='containerr' class="layout vertical flex">
                 
                 <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
                 
@@ -524,6 +531,7 @@
                 active: Boolean,
                 routeData:Object,
                 queryParams: Object,
+                loading:Boolean,
 
             },
 
