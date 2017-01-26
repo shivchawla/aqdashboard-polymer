@@ -69,7 +69,8 @@
           	on-response="onGetStrategy"
           	on-error="onGetStrategyError"
           	headers='{{header}}'
-          	debounce-duration="300">
+          	debounce-duration="300"
+          	loading='{{strategyLoading}}'>
         </iron-ajax>
 		<iron-ajax
           	url="[[computeGetAllBacktestsUrl(strategyId)]]"
@@ -80,7 +81,7 @@
           	on-error="onGetAllBacktestsForStrategyError"
           	headers='{{header}}'
           	debounce-duration="500"
-          	loading='{{loading}}'>
+          	loading='{{backtestLoading}}'>
         </iron-ajax>
 		
 		<iron-ajax
@@ -102,11 +103,10 @@
 
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-
 		<template is='dom-if' if='{{isActive(active, subroute)}}'>
-			<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+			<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
 	
-	    	<template is='dom-if' if='{{!loading}}'>
+	    	<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 				<div id='container'>
 					<template is='dom-if' if="[[!showComparison]]">
 						<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
@@ -184,7 +184,10 @@
 
 				subroute:Object,
 
-				loading:Boolean
+				strategyLoading:Boolean,
+
+				backtestLoading:Boolean,
+
     		}, 
 
     		observers:['_activeChanged(active, subroute)'],
@@ -371,6 +374,10 @@
 
 	        onSetDirtyBit: function(e) {
 	        	this.dirtyBit = e.detail;
+	        },
+
+	        isLoading: function(strategyLoading, backtestLoading) {
+	        	return strategyLoading || backtestLoading;
 	        },
 
     	});
