@@ -300,7 +300,7 @@
 							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
 							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
 							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio.toFixed(2), "metricDescription":"Calmar Ratio"},
-							{"metricName":"Beta", "metricValue":data.beta.toFixed(2), "metricDescription":"beta"}]);
+							{"metricName":"Beta", "metricValue":data.beta ? data.beta.toFixed(2) : "-", "metricDescription":"beta"}]);
 				}
 								
 
