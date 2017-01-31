@@ -52,7 +52,7 @@
 		  color:#24293d;--#02558b;
 		}
 
-		#box {
+		.box {
 		  width:80%;	 
 		}
 	
@@ -179,20 +179,20 @@
 						
 						<span class="input-span">Start Date</span>
 						
-			    		<input id="box" placeholder="Start Date"
+			    		<input class="box" placeholder="Start Date"
 		             	value="{{startDate::change}}" type="date"
 		             	 on-blur='close'>
 		        	</div>
 
 		        	<div class="inputbox">	
 						<span class="input-span">End Date</span> 	
-			    		<input id="box" placeholder="End Date"
-		             	value="{{endDate::change}}" type="date"
+			    		<input id='endDateField' class="box" placeholder="End Date"
+		             	value="{{endDate::change}}" type="date" max="2017-01-01"
 		             	on-blur='close'>
 		        	</div>
 		    		<div class="inputbox">	
 						<span class="input-span">Initial Capital</span> 	
-			    		<input id="box" placeholder="Seed Capital"
+			    		<input class="box" placeholder="Seed Capital"
 			         	value="{{initialCash::change}}" type="number"
 			         	on-keydown="checkForKeys" on-blur='close'>
 			    	</div>
@@ -230,7 +230,7 @@
 						<span class="input-span">Commission</span> 	
 		    			<div class="layout horizontal">
 		    			<aq-dropdown selected="{{commissionModel}}" class="self-start smallDropdown" options="[[commissionOptions]]"></aq-dropdown>
-			    		<input id="box" placeholder="Commission" class="smallInputBox"
+			    		<input class="box" placeholder="Commission" class="smallInputBox"
 		             	value="{{commissionValue::change}}" type="number" default
 		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
 
@@ -240,7 +240,7 @@
 						<span class="input-span">Slippage</span>
 						<div class="layout horizontal">
 						<aq-dropdown selected="{{slippageModel}}" class="smallDropdown" options="[[slippageOptions]]"></aq-dropdown> 	
-			    		<input id="box" class="smallInputBox" placeholder="Slippage"
+			    		<input class="box" class="smallInputBox" placeholder="Slippage"
 		             	value="{{slippageValue::change}}" type="number"
 		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
 
@@ -370,7 +370,13 @@
 				this.resolutionOptions = resolutionOptions;
 				this.investmentPlanOptions = investmentPlanOptions;
 				this.startDate = this.getTodayDate(365)
-				this.endDate = this.getTodayDate(2);
+				this.endDate = this.getTodayDate(7);
+			},
+
+			attached: function(){
+				
+				this.$$('#endDateField').setAttribute("max", this.endDate);
+				
 			},
 
 			toggle: function() {
@@ -417,6 +423,7 @@
 				today = yyyy + '-' + mm + '-' + dd;
 				return today;
 			},
+
 
 		});
 	</script>

@@ -67,13 +67,20 @@
 					var array = [];
 					for (i in data) {
 						if (data[i].outputtype == "log") {
-							array.push(data[i]);
+							
+							if(!data[i].message.match("No document")) {
+								array.push(data[i]);
+							}
+
 						}
 					}
 
 					this.logs = array;
 				} else if(data.outputtype == "log") {
-					this.push('logs',data);
+					if(!data.message.match("No document")) {
+						this.push('logs',data);
+					}
+					
 				}
 				this.fire('scroll-log');
 				
