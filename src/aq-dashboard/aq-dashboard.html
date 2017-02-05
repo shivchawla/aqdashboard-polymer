@@ -566,6 +566,8 @@
         // Updates every 1 seconds and updates maximum of 50 points at once.
         sendDataSlowly: function(key) {
             var timeGap = 1000;
+            var maxLimit = 200;
+            
             if(this.backtests[key]) {
 
                 if(this.backtests[key].subscription) {
@@ -574,7 +576,7 @@
                   
                   if(currentIndex <  currentLength && currentLength > 0) {  
                       var j = 0;
-                      for(var i=currentIndex; i<currentLength && j <=50;i++) { 
+                      for(var i=currentIndex; i<currentLength && j<=maxLimit;i++) { 
                           var dataPoint = this.backtests[key].data[i];
                           this.fire('iron-signal',{name:'point-data', data:dataPoint});
                           this.backtests[key].currentIndex = i+1;
