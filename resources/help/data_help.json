@@ -3,53 +3,53 @@
 		{
 			"header": {"value":"Introduction","size":"Normal"},
 			"img_srcw1":"../../resources/src/components/help/help.jpg",
-			"text": "## Introduction\nAimsQuant brings you an easy to use platform to research your investment ideas. This platform will help in finding patterns in the stock market and testing variety of investment ideas. \n #### The *backtester* is written in [Julia](http://www.julialang.org)."
+			"text": "## Introduction\nAimsQuant offers an easy to use platform for researching  investment ideas. This platform helps in finding patterns in the stock market and testing variety of investment ideas. \n #### The *backtester* is written in [Julia](http://www.julialang.org)."
 			
 		},
 		{
 			"header": {"value":"What is Backtesting","size":"Normal"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 
-			"text": "## What is Backtesting?\n*Backtesting* is the process of testing a trading strategy or an investment strategy, by estimating the performance of a strategy or model if it had been employed during a past period.\nIt helps in analyzing the profitability along with risk and return characteristics of a strategy over an appropriate period of time. It is a widely used industry practice where trading strategies are thoroughly tested before allocating actual money. This makes it an integral part of developing an automated trading system."
+			"text": "## What is Backtesting?\n*Backtesting* is a testing process for trading and investment strategies. It estimates the performance of a strategy or model if employed during a past period.\nIt helps in analyzing the profitability along with risk and return characteristics of a strategy over a period of time. It is a widely used industry practice where trading strategies are thoroughly tested before allocation of actual money. This makes it an integral part of developing an automated trading system."
 		},
 		{
 			"header": {"value":"Research Platform","size":"Normal"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 
-			"text": "## Research Platform\nThis platform helps in screening investment models and trading strategies for Indian markets. The platform facilitates daily data for Indian equity markets starting 2007. The platform is currently geared towards slightly tech savvy audience but the choice of language, *Julia*, helps in building great investment ideas in very little time.\nThe platform displays the backtest performance as it runs (*realtime*) and on successful completion, a broad set of analytics are displayed to discover more about the profitability and overall performance of the strategy. There are no constraints in using the platform and you can run unlimited number of backtests as you test and improve your investment strategy."
+			"text": "## Research Platform\nThis platform helps in screening investment models and trading strategies for Indian markets. The platform facilitates daily price data for Indian equity markets starting 2007. Currently, the platform caters to slightly tech savvy audience but choice of programming language, *Julia*, helps in building great investment ideas in very little time.\nThe platform displays the backtest performance as it runs (*realtime*). On successful completion, it displays broad set of analytics to discover more about profitability and overall performance of the strategy. There are no constraints in using the platform and you can run unlimited number of backtests as you test and improve your investment strategy."
 		},
 		{
 			"header": {"value":"Data","size":"Normal"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "## Data\nCurrently, the platform only supports daily price data for Indian equity markets starting from a year 2007.  The daily data is adjusted for corporate actions like splits and dividend distributions. The backtester uses *exact* data for rebalancing the portfolio and adequately adjusts the portfolio and orders for any splits and dividends. However, *adjusted*  (for corporate actions) data is made available for historical analysis and finding patterns with technical analysis.\nIn the API section below, there is a list of functions which can be used to fetch price data from the data stores. \n\nWe understand that just the price data is not sufficient to create consistently profitable investment strategies so we are working with data vendors to quickly bring you adequate fundamental data. Also, we plan to add more history and higher frequency data as we evolve and grow.\n#### Summary\n* Only Equity data for Indian markets from 2007\n* Daily Frequency Only\n* Corporate actions adjusted data for analysis\n* Actual data (true close prices) to rebalance the portfolio"
+			"text": "## Data\nCurrently, we only supports daily price data for Indian equity markets starting from year 2007.  The daily data is adjusted for corporate actions like splits and dividend distributions. The backtester uses *exact* data for rebalancing the portfolio and adequately adjusts the portfolio and orders for any splits and dividends. However, *adjusted*  (for corporate actions) data is made available for historical analysis and finding patterns with technical analysis.\nIn the API section, there is a list of functions to fetch price data from the data stores. \n\nWe understand that just the price data is not sufficient to create consistently profitable investment strategies so we are working with data vendors to quickly bring to you adequate fundamental data. Also, we plan to add more history and higher frequency data as we evolve and grow.\n#### Summary\n* Only Equity data for Indian markets from 2007\n* Daily Frequency Only\n* Corporate actions adjusted data for analysis\n* Actual data (true close prices) to rebalance the portfolio"
 		},
 			
 		{
 			"header": {"value":"How to use the platform?","size":"Normal"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 
-			"text": "## How to use the platform?\nThe platform is very easy to use. Once you complete this quick tutorial, you will be ready to write complex investment ideas.\nThe platform has two major panels. *Code Editor* and *Settings Panel*. "
+			"text": "## How to use the platform?\nThe platform is very easy to use. You can Once you write complex investment ideas upon completing this quick tutorial.\nThe platform has two major panels. *Code Editor* and *Settings Panel*."
 		},
 		{
 			"header": {"value":"Code Editor","size":"Small"},
 			"img_src":"../../resources/images/editor/editor.png",
 
-			"text": "* ### Code Editor\nThe platform provides a *code editor* to write investment strategies. A user writes a *Julia*  script in the code editor detailing the logic of the trading strategy. The user is required to create two necessary functions for a successful backtest."
+			"text": "* ### Code Editor\nThe platform provides a *Code Editor* to write investment strategies. A *user* writes a *Julia*  script in the code editor detailing the logic of the trading strategy. The user must create two necessary functions for a successful backtest."
 		},
 
 		{
 			"header": {"value":"Editor Toolbar","size":"Small"},
 			"img_src":"../../resources/images/editor/toolbar.png",
 
-			"text": "* ### Editor Toolbar\n The toolbar provides quick functionalities to create, edit and save the strategy. A backest can be launched by pressing the play button and user can visualize  history of all the backtests by pressing the chart icon. Below is a descriptive picture of the editor toolbar"
+			"text": "* ### Editor Toolbar\n The toolbar provides quick functionalities to create, edit and save the strategy. The user can launch by pressing the Play button. The user can also visualize history of all backtests by pressing the Chart icon. Below is a descriptive picture of the editor toolbar"
 		},
 
 		{
 			"header": {"value":"Settings Panel","size":"Small"},
 			"img_src":"../../resources/images/editor/settings.png",
 
-			"text": "* ### Settings Panel\nThe panel on the right of code editor is called Settings Panel. The settings panel helps in easy selection of basic parameters of the trading strategy. Basic parameters like *start and end dates* of the backtester, *initial capital *of the strategy along with some advanced parameters like *commission and slippage models* and a static *universe* can be selected from the settings panel.\n\n **However, the parameters will be overwritten if redefined via the code editor in initialize().*"
+			"text": "* ### Settings Panel\nThe panel on the right of Code Editor is called Settings Panel. The settings panel helps in easy selection of basic parameters of the trading strategy. Basic Settings include parameters like *Start and End Date* of the backtester and; *Initial Capital *of the strategy. It show Advanced Settings with parameters like Rebalance Frequency, Cancel Policy, Resolution, Commission, Slippage and Investment Plan. Also, a static *Universe* can be selected from the settings panel.\n\n **However, the parameters will be overwritten if redefined via the code editor in initialize().*"
 		},
 
 		{
@@ -63,7 +63,7 @@
 			"header": {"value":"Algorithm State and Data","size":"Small"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 
-			"text": "* ### Algorithm State and Data\n Above in the user defined functions, two objects are passed to convey strategy information to the user. These two entities help in inspecting the latest data for the securities in the universe as well data about the strategy in general.\n\n\t* AlgorithmState: This object can be used to inspect the account, portfolio positions and portfolio metrics. It also exposes rolling performance of last 252 days along with total returns of the algorithm.\n\n It can also be used to set persistent user defined parameters.\n\n Below is an example that inspects the total cash in the account and adjusts a uniform portfolio to keep cash at a 5% of total portfolio value.\n```\n# Use of Algorithm State\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\t# Keep cash at 5% of the portfolio.\n\tcash  = state.account.cash\n\tnetvalue = state.account.netvalue\n\t# Check if cash is less than 5% of the portfolio value\n\tif(cash < 0.05*netvalue)\n\t\t# Get universe\n\t\tuniverse = getuniverse()\n\t\t# Allocate 95% of total wealth to stocks in the universe\n\t\tnstocks = length(universe)\n\t\tfor stock in universe\n\t\t\tsetholdinginpct(stock, 0.95/nstocks)\n\t\tend\n\tend\nend\n```\n Another example that sets user defined parameters in initialize() and uses it in ondata().\n```\nfunction initialize(state::AlgorithmState)\n\t# Set maximum leverage\n\tstate[\"maxLeverage\"] = 0.75\n\tsetuniverse([\"CNX_NIFTY\"])\nend\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\tpos = state.portfolio[\"CNX_NIFTY\"]\n\tposValuePct = pos.quantity*pos.lastprice/state.account.netvalue\n\n\t# Check if leverage exceeds maximum leverage\n\tif(posValuePct > state[\"maxLeverage\"])\n\t\tsetholdinginpct(\"CNX_NIFTY\", state[\"maxLeverage\"])\n\tend\nend```\n"
+			"text": "* ### Algorithm State and Data\n Above in the User Defined functions, two objects are passed to convey strategy information to the user. These two entities help in inspecting the latest data for securities in the Universe as well data about the strategy in general.\n\n\t* AlgorithmState: A user can use this object to inspect the account, portfolio positions and portfolio metrics. It also exposes rolling performance of last 252 days along with total returns of the algorithm.\n\n It can also be used to set persistent user defined parameters.\n\n Below is an example that inspects the total cash in the account and adjusts a uniform portfolio to keep cash at a 5% of total portfolio value.\n```\n# Use of Algorithm State\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\t# Keep cash at 5% of the portfolio.\n\tcash  = state.account.cash\n\tnetvalue = state.account.netvalue\n\t# Check if cash is less than 5% of the portfolio value\n\tif(cash < 0.05*netvalue)\n\t\t# Get universe\n\t\tuniverse = getuniverse()\n\t\t# Allocate 95% of total wealth to stocks in the universe\n\t\tnstocks = length(universe)\n\t\tfor stock in universe\n\t\t\tsetholdinginpct(stock, 0.95/nstocks)\n\t\tend\n\tend\nend\n```\n Another example that sets user defined parameters in initialize() and uses it in ondata().\n```\nfunction initialize(state::AlgorithmState)\n\t# Set maximum leverage\n\tstate[\"maxLeverage\"] = 0.75\n\tsetuniverse([\"CNX_NIFTY\"])\nend\nfunction ondata(data::DataFrame, state::AlgorithmState)\n\tpos = state.portfolio[\"CNX_NIFTY\"]\n\tposValuePct = pos.quantity*pos.lastprice/state.account.netvalue\n\n\t# Check if leverage exceeds maximum leverage\n\tif(posValuePct > state[\"maxLeverage\"])\n\t\tsetholdinginpct(\"CNX_NIFTY\", state[\"maxLeverage\"])\n\tend\nend```\n"
 		},
 
 		{
@@ -76,33 +76,33 @@
 			"header": {"value":"Objects in Trading Script","size":"Small"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "### I. Objects in Trading Script \nThere are several entities that naturally become a part of the trading or investment strategy.\nThis section details the objects that are directly available to the user for inspection. The entities listed here are *read-only* and any modifications to the entities is not reflected back to the trading strategy. The entities can ONLY be modified via API functions."
+			"text": "### I. Objects in Trading Script \nThere are several entities that naturally become part of the trading or investment strategy.\nThis section details objects directly available to the user for inspection. The entities listed are *read-only* and any modifications to the entities does not reflect back to the trading strategy. The entities can ONLY be modified via API functions."
 		},
 		{
 			"header": {"value":"Security","size":"Mini"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "* #### **Security**\nSecurity represents a trading instrument on an exchange. In the platform, a security can be uniquely identified by it's *symbol* which is a combination of string ticker and an integer identifier.\n\n\tSecurity is a building block of an instrument universe in a trading strategy. In the platform, it is used pervasively used to fetch prices, place orders and learn about positions in the portfolio.\n\n\tCurrently, only equity (\"EQ\") type securities are supported on the platform. \n```\n# Security Symbol : Combination of string ticker and an integer identifier\ntype SecuritySymbol\n\tid::Int64\n\tticker::String\nend\n```\n```\n# Security Object\ntype Security\n\tsymbol::SecuritySymbol\n\tname::String\n\texchange::String\n\tcountry::String\n\tsecuritytype::String\n\tstartdate::DateTime\n\tenddate::DateTime\nend\n```\nThe name, exchange, country and security type identifies the name of the security, exchange on which the security trades/traded, country of the security and type of instrument respectively.\n\n\tDEFAULT exchange is National Stock Exchange of India (identified by code \"NSE\")\n\n\tDEFAULT country is India (identified by code \"IN\")\n\n\tDEFAULT security type is Equity (identified by code \"EQ\")\n\n\t*All of the security based functions accept **Security**, **SecuritySymbol** or a **string ticker** as a valid input*.\n\n\t*In case, just a **string ticker** is provided to a security based function, above defaults are assumed to identify the security in the AimsQuant datastores.*"
+			"text": "* #### **Security**\nSecurity represents a trading instrument on an exchange. In the platform, a security can be uniquely identified by it's *symbol* which is a combination of string ticker and an integer identifier.\n\n\tSecurity is a building block of an instrument universe in a trading strategy. In the platform, it is used pervasively used to fetch prices, place orders and learn about positions in the portfolio.\n\n\tCurrently, the platform suports only equity (\"EQ\") type securities. \n```\n# Security Symbol : Combination of string ticker and an integer identifier\ntype SecuritySymbol\n\tid::Int64\n\tticker::String\nend\n```\n```\n# Security Object\ntype Security\n\tsymbol::SecuritySymbol\n\tname::String\n\texchange::String\n\tcountry::String\n\tsecuritytype::String\n\tstartdate::DateTime\n\tenddate::DateTime\nend\n```\nThe name, exchange, country and security type identifies the name of the security, exchange on which the security trades/traded, country of the security and type of instrument respectively.\n\n\tDEFAULT exchange is National Stock Exchange of India (identified by code \"NSE\")\n\n\tDEFAULT country is India (identified by code \"IN\")\n\n\tDEFAULT security type is Equity (identified by code \"EQ\")\n\n\t*All security based functions accept **Security**, **SecuritySymbol** or a **string ticker** as a valid input*.\n\n\t*In case, just a **string ticker** is provided to a security based function, above defaults are assumed to identify the security in the AimsQuant datastores.*"
 		},
 
 		{
 			"header": {"value":"Universe","size":"Mini"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "* #### **Universe**\nThis represents a collection of securities.  It tracks all the securities available in a trading strategy at all times. A security should only be stored and accessed from this collection to make any changes to the trading strategy."
+			"text": "* #### **Universe**\nThis represents a collection of securities.  It tracks all the securities available in a trading strategy at all times. A security must only be stored and accessed from this collection to make any changes to the trading strategy."
 		},
 
 		{
 			"header": {"value":"Order","size":"Mini"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "* #### **Order**\nIt is an instruction sent to a broker to enter, exit or change a position. It helps in modifying the quantity of shares held in an instrument.\n\n\tTo increase the quantity in instrument A from 100 shares to 200 shares, a ***BUY*** order is placed for 100 shares.  Similarly, in order to *reduce* the quantity in an instrument, a ***SELL*** order is placed. A SELL order of 50 shares aims to reduce the quantity by 50 shares.\n```\n# Order Object\ntype Order\n\tid::UInt64\n\tsecuritysymbol::SecuritySymbol\n\tquantity::Int64 \n\tremainingquantity::Int64\n\tprice::Float64\n\tordertype::OrderType\n\tdatetime::DateTime \n\torderstatus::OrderStatus \n\ttag::String\nend\n```\nEvery order is identified by a unique integer identifier inside AimsQuant platform. The user can inquire about the order status by inspecting the fields mentioned. In addition to *remainingquantity*, a quick look into *orderstatus* tells the current stage of the order cycle."
+			"text": "* #### **Order**\nIt is an instruction sent to a broker to enter, exit or change a position. It helps to modify the quantity of stocks held in an instrument.\n\n\tTo increase the quantity in instrument A from 100 shares to 200 shares, a ***BUY*** order is placed for 100 shares.  Similarly, in order to *reduce* the quantity in an instrument, a ***SELL*** order is placed. A SELL order of 50 shares aims to reduce the quantity by 50 shares.\n```\n# Order Object\ntype Order\n\tid::UInt64\n\tsecuritysymbol::SecuritySymbol\n\tquantity::Int64 \n\tremainingquantity::Int64\n\tprice::Float64\n\tordertype::OrderType\n\tdatetime::DateTime \n\torderstatus::OrderStatus \n\ttag::String\nend\n```\nEvery order is identified by a unique integer identifier inside AimsQuant platform. The user can inquire about the order status by inspecting the fields mentioned. In addition to *remainingquantity*, a quick look into *orderstatus* tells the current stage of the order cycle."
 		},
 		{
 			"header": {"value":"Order Status","size":"SMini"},
 			"img_src1":"../../resources/src/components/help/help.jpg",
 			
-			"text": "* #### **List of OrderStatus**:\n\n 1. #### *Filled*: When the order is complete. In this case, the *remaining quantity* of the order becomes 0.\n 2. #### *PartiallyFilled* : When the order is not complete yet but *remaining quantity* is less than the original *quantity*.\n 3. #### *Pending* : When order is submitted but remainigng quantity is same as original quantity.\n #### *As order quantities are signed (negative for SELL and positve for BUY), \"**less**\" or \"**greater**\" should be considered in terms of absolute values only!*"
+			"text": "* #### **List of OrderStatus**:\n\n 1. #### *Filled*: When the order is complete. In this case, the *remaining quantity* of the order becomes 0.\n 2. #### *PartiallyFilled* : When the order is not complete yet but *remaining quantity* is less than the original *quantity*.\n 3. #### *Pending* : When order is submitted but remaining quantity is same as original quantity.\n #### *As order quantities are signed (negative for SELL and positve for BUY), \"**less**\" or \"**greater**\" should be considered in terms of absolute values only!*"
 		},
 		{
 			"header": {"value":"Order Types","size":"SMini"},
