@@ -567,7 +567,7 @@
         sendDataSlowly: function(key) {
             var timeGap = 1000;
             var maxLimit = 200;
-            
+
             if(this.backtests[key]) {
 
                 if(this.backtests[key].subscription) {
@@ -656,7 +656,7 @@
 
         onGetBacktestSuccess: function(e){
           var id = e.detail.response._id;
-          var status = e.detail.response.status
+          var status = e.detail.response.status;
           if (this.backtests[id] && (status == "complete" || status=="exception")) {
             
             delete this.backtests[id];
