@@ -177,7 +177,7 @@
 			},
 
 			format: function(datetime) {
-				var today = new Date(datetime);
+				var today = new Date(Date(datetime));
 				var dd = today.getDate();
 				var mm = today.getMonth()+1; //January is 0!
 				var yyyy = today.getFullYear();
