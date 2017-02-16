@@ -1,6 +1,9 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+
 <link rel="import" href="../components/analyze/aq-analyze-home.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare-results.html">
@@ -18,17 +21,31 @@
   <template>
 
     <app-location route="{{route}}"></app-location>
+
     <app-route
         route="{{route}}"
-        pattern="/dashboard/analyze/"
-        active="{{active}}">
+        pattern="/dashboard/analyze/:strategyId/:backtestId"
+        data="{{detailData}}" 
+        active="{{detailActive}}">
     </app-route>
 
-    <!--template is='dom-if' if='{{active}}'-->
-        <aq-analyze-home></aq-analyze-home>
-        <aq-analyze-detail></aq-analyze-detail>   
-    <!--/template-->
+    <app-route
+        route="{{route}}"
+        pattern="/dashboard/analyze/:strategyId"
+        data="{{homeData}}" 
+        active="{{homeActive}}">
+    </app-route>
 
+    <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive)]]">
+        <template is="iron-lazy-page" page="home">
+            <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
+        </template>
+
+        <template is="iron-lazy-page" page="detail">
+            <aq-analyze-detail backtest-id='[[detailData.backtestId]]' strategy-id='[[detailData.strategyId]]'></aq-analyze-detail> 
+        </template>  
+
+    </iron-lazy-pages>
   </template>
 
   <script>
@@ -50,19 +67,22 @@
           value:false,
         },
 
-        active: Boolean,
+        homeActive: Boolean,
+        detailActive: Boolean,
       },
 
-      hasTail: function(tail) {
-        if (tail && tail.path) {
-          return tail.path.length > 0;
+    
+      computeAnalyzePage: function(homeActive, detailActive) {
+
+        var x = "";
+        if (detailActive){
+            x = "detail";
+        } else {
+            x = "home";
         }
 
-        return false;
-      },
-
-      isAnalyzeHomeActive: function(active, tail) {
-        return active && !this.hasTail(tail);
+        return x;
+      
       },
 
     });

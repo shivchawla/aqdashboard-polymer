@@ -5,6 +5,9 @@
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
 <link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+
 
 <link rel="import" href="../components/common/aq-check-authentication.html">
 <link rel="import" href="../components/aq-toolbar.html">
@@ -23,8 +26,23 @@
   <template>
     <aq-check-authentication id='authItem'></aq-check-authentication>
     
-    <aq-editor-home></aq-editor-home>
-    <aq-editor-edit></aq-editor-edit>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}"
+                pattern="/dashboard/editor/:strategyId"
+                data="{{routeData}}"
+                active="{{active}}">
+    </app-route>
+
+    <iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(active)}}" fallback-selection="home">
+         
+        <template is='iron-lazy-page' page="home">
+            <aq-editor-home></aq-editor-home>
+        </template>
+
+        <template is='iron-lazy-page' page="edit">
+            <aq-editor-edit strategy-id="[[routeData.strategyId]]"></aq-editor-edit>
+        </template>
+    </iron-lazy-pages>
 
      <aq-editor-strategy-input-dialog id="strategyCreateDialog" 
                                      header="Create Strategy">
@@ -78,6 +96,11 @@
         strategyData:Object,
 
         header:Object,
+
+        routeData: {
+          type:Object,
+          observer:'_routeDataChanged',
+        },
 
       },
 
@@ -183,7 +206,23 @@
       isEditorHomeActive: function(active, tail) {
         return active && !this.hasTail(tail);
 
-      }
+      },
+
+      _routeDataChanged: function(nRoute, oRoute) {
+          //console.log(nRoute);
+          //console.log(oRoute);
+          var x =  nRoute.strategyId ? "true" : "false";
+          //console.log(x);
+      },
+
+      hasRouteData: function(routeData) {
+        console.log(routeData);
+        return routeData && Object.keys(routeData).length > 0 && routeData.strategyId;
+      } ,
+
+      computeSelectedPage: function(active) {
+          return active ? "edit" : "home";
+      },
 
     });
   </script>

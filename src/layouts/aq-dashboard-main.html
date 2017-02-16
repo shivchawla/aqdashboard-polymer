@@ -3,6 +3,10 @@
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
 
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+
+
 <link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
 <link rel="import" href="./aq-analyze-main.html">
@@ -45,20 +49,33 @@
 
   </style>
 
-  <app-location route="{{route}}"></app-location>
-  <app-route path="{{route}}"
-              pattern="/dashboard/sendfeedback"
-              active="{{active}}">
-  </app-route>
-
+  
   <template>
-        
+
+        <app-location route="{{route}}"></app-location>
+        <app-route route="{{route}}"
+                    pattern="/dashboard/:page"
+                    data="{{routeData}}">
+        </app-route>
+
         <div id="content" class="fit">
-          <aq-editor-main></aq-editor-main>
-          <aq-analyze-main></aq-analyze-main>
-          <aq-community-main></aq-community-main>
-          <aq-help-main></aq-help-main>
-          <!--aq-home-main></aq-home-main-->
+          <iron-lazy-pages attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
+            <template is="iron-lazy-page" page="editor">
+                <aq-editor-main></aq-editor-main>
+            </template>
+
+            <template is="iron-lazy-page" page="analyze">
+                <aq-analyze-main></aq-analyze-main>
+            </template>
+
+            <template is="iron-lazy-page" page="community">
+                <aq-community-main></aq-community-main>
+            </template>
+            
+            <template is="iron-lazy-page" page="help">
+                <aq-help-main></aq-help-main>
+            </template>
+          </iron-lazy-pages>
         </div>
 
   </template>
@@ -66,24 +83,19 @@
   <script>
   Polymer({
     is:'aq-dashboard-main',
+    
     properties:{
 
-      active: {
-        type:Boolean,
-        observer:'_activeChanged',
+      routeData:{
+        type:Object,
       },
       
     },
 
     attached: function() {
-      this.fire('tabChanged',{tab:1});
+      //this.fire('tabChanged',{tab:1});
     },
 
-    _activeChanged: function(nAct, oAct) {
-        if (nAct) {
-          this.fire('take-feedback-action');
-        }
-    },
 
   });
   </script>

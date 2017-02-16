@@ -5,6 +5,8 @@
 <link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+
 
 <link rel='import' href='../common/aq-backtest-metric-item.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
@@ -115,6 +117,7 @@
 	</style>
 
 	<template>
+
 		<paper-card class="self-center flex">
 			<div id='content' class="card-content flex">
 				<div class="container-int layout horizontal">
@@ -214,8 +217,13 @@
 					value:{},
 				},
 
+				backtestId: String,
+
 			},
 
+			attached: function() {
+				this.backtestId = this.backtest._id;
+			},
 
 			ready: function() {
 

@@ -36,16 +36,7 @@
 
 	<template>
 	 	<aq-check-authentication id='authItem'></aq-check-authentication>
-	 	<app-location route="{{route}}"></app-location>
-	    <app-route
-	        route="{{route}}"
-	        pattern="/dashboard/analyze/:strategyId/:backtestId"
-	        data="{{routeData}}"
-	        active="{{active}}">
-	    </app-route>
-
-	    <template is='dom-if' if='{{active}}'>
-		
+	
     		<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 		  	
 		  	<div id='container'>
@@ -59,7 +50,6 @@
 			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]"></aq-backtest-detail-item>
 		      	</template>
       		</div>
-      	</template>
 	</template>
 
 	<script>
@@ -70,10 +60,6 @@
 				strategyId:String,
 				backtestId:String,
 
-				active:{
-					type:Boolean,
-				},
-
 				routeData:Object,
 
 				loading:{
@@ -82,35 +68,18 @@
 				},
 			},
 
-			observers:['_activeChanged(active, routeData)'],
-
 			goBackAllBacktests: function() {
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 				this.fire('rt-changed',{route:'/dashboard/analyze/' + this.strategyId});
 			},
 
-			_activeChanged: function(active, routeData) {
-				if(active){
-					if(!this.$.authItem.checkHasToken()) {
-	         	 		this.fire('rt-changed',{route:'/user/signin'});
-		          		return;
-		          }
-
-		      	}
-
-				if (active && routeData) {
-					this.strategyId = routeData.strategyId;
-					this.backtestId = routeData.backtestId;
-				} else {
-					this.resetView();
-				}
+			attached: function() {
+				if(!this.$.authItem.checkHasToken()) {
+         	 		this.fire('rt-changed',{route:'/user/signin'});
+	          		return;
+	          	} 
 			},
 
-			resetView : function() {
-				this.strategyId = "";
-				this.backtestId = "";	
-			}
-				
 		});
 			
 	</script>

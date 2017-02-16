@@ -142,8 +142,6 @@
         </iron-ajax>
         
 
-        <template is='dom-if' if='{{active}}'>
-
             <template is='dom-if' if="[[preview]]">
               <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>  
             </template>
@@ -187,7 +185,6 @@
                 </div>
 
             </template>
-        </template>
         
     </template>
     <script>
@@ -380,13 +377,6 @@
             _backtestIdChanged: function(nId, oId) {
                 this.async(this.handleAttachedBacktest, 500);
             }
-
-            /*_previewChanged: function(nPreview, oPreview) {
-                if(!nPreview) {
-
-                }
-            },*/
-
 
         });
     </script>

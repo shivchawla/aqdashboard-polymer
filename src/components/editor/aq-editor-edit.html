@@ -81,19 +81,12 @@
       
   </style>
 
-  <style  include="iron-flex iron-positioning"></style>
+  <style include="iron-flex iron-positioning"></style>
 
   <template>
 
       <aq-check-authentication id='authItem'></aq-check-authentication>
-      <app-location route="{{route}}"></app-location>
-      <app-route
-            route="{{route}}"
-            pattern="/dashboard/editor/:strategyId"
-            data="{{routeData}}"
-            active="{{active}}">
-      </app-route>  
-
+ 
       <iron-ajax
             url="[[computeGetStrategyUrl(strategyId)]]"
             method='GET'
@@ -132,8 +125,6 @@
           debounce-duration="300">
       </iron-ajax>
 
-      <template is='dom-if' if='{{active}}'> 
-
       <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
       <template is='dom-if' if='{{isLoadedWithStrategy(loading, strategy)}}'>
@@ -167,7 +158,6 @@
 
             </paper-header-panel>
 
-            
             <paper-header-panel atTop=false id='rightPanel' drawer mode="seamed">
               <paper-toolbar >
                   <paper-tabs selected="{{selectedSidebar}}" noink>
@@ -206,7 +196,6 @@
             </paper-header-panel>
         </paper-drawer-panel>
       </template>
-      </template>
       
     </template>
 
@@ -243,6 +232,7 @@
 
           strategyId: {
             type: String,
+            observer:'_strategyIdChanged',
           },
 
           strategy: Object,
@@ -268,17 +258,9 @@
 
           activeBacktestId:String,
 
-          active: {
-            type:Boolean,
-            //observer:'_activeChanged',
-          },
-
-          routeData: Object,
           loading:Boolean,
 
         },
-
-        observers:['_activeChanged(active, routeData)'],
 
         listeners: {
           'close-all':'closeAll',
@@ -299,22 +281,18 @@
           'save-request':'onSaveRequest',
         },
 
-        /*attached: function() {
-         
-            var x = localStorage.getItem('my-app-storage');
-            var user = JSON.parse(x).user;
-      
-            if (user && user.token && user.token!="") {
-              this.header = {
-                "aimsquant-token": user.token,
-                "Content-Type": "application/json"}; 
+        attached: function() {
+            
+            if(!this.$.authItem.checkHasToken()) {
+                this.fire('rt-changed',{route:'/user/signin'});
+                return;
             } else {
-              this.fire('rt-changed', {route:'/user/signin'});
+              this.header = this.$.authItem.getHeader();
+              this.$.getStrategyQuery.generateRequest();
+              this.fire('close-menu');
+              this.selectedSidebar = 0;
             }
-
-            this.fire('close-menu');
-            this.$.getStrategyQuery.generateRequest();
-        },*/
+        },
 
         computeGetStrategyUrl: function(strategyId) {
           var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
@@ -426,7 +404,7 @@
 
         onStrategySavedResponse: function(data) {
             // Check if save was initiated before RUN
-            if(this.runSwitch == 1 && this.active) {
+            if(this.runSwitch == 1) {
               
                 //reset the run switch to off
                 this.runSwitch = 0;
@@ -438,10 +416,6 @@
                 }
             }
 
-            if(!this.active) {
-              this.strategy = {};
-              this.strategyId = "";
-            }
         },
 
         onStrategySavedError: function(data) {
@@ -493,11 +467,11 @@
           // Send Execution request via web-sockets 
           this.isRunning  = true;
           this.selectedSidebar = 1;
-          
+
           this.fire('execute-backtest', {backtestId:this.activeBacktestId});
 
           this.fire('iron-signal',{name:'backtest-added'});
-          
+      
 
         },
 
@@ -528,36 +502,15 @@
           return !isRunning && isProgrammer;
         },
 
-        _activeChanged: function(active, routeData) {
-
-          if(active){
-            if(!this.$.authItem.checkHasToken()) {
-                this.fire('rt-changed',{route:'/user/signin'});
-                return;
-            }
-          }
-
-          if(active && routeData) {
-            //this.strategy = {};
-            this.strategyId = routeData.strategyId;
-            if(this.$.authItem.checkHasToken()) {
+        _strategyIdChanged: function(nId, oId) {
+          
+          if(nId && this.$.authItem.checkHasToken()) {
               this.header = this.$.authItem.getHeader();
-              this.debounce('fetchStrategy', function() { this.$.getStrategyQuery.generateRequest();}, 300); 
-            }
+              this.$.getStrategyQuery.generateRequest();
 
-            this.fire('close-menu');
-            this.selectedSidebar = 0;
-          } 
-
-          if(!active && this.strategyId!="") {
-              this.isRunning  = false;  
-              
-              if(this.$$('#editorToolbar')) {
-                this.$$('#editorToolbar').onSave();
-                
-              }
-
-          }          
+              this.fire('close-menu');
+              this.selectedSidebar = 0;
+          }
         },
 
         checkForKeys: function(event) {
@@ -573,7 +526,7 @@
         },
 
         onSaveRequest: function() {
-            if(this.$$('#editorToolbar') && this.active) {
+            if(this.$$('#editorToolbar')) {
                 this.$$('#editorToolbar').onSave();
             }
         },

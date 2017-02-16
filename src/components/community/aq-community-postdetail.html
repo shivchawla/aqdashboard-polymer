@@ -43,13 +43,6 @@
   <template>
       <aq-check-authentication id='authItem'></aq-check-authentication>
       
-      <app-location route="{{route}}"></app-location>
-
-      <app-route
-          route="{{route}}"
-          pattern="/dashboard/community/topics/:threadId"
-          data="{{routeData}}"
-          active="{{active}}">
       </app-route>
 
       <iron-ajax      
@@ -73,8 +66,6 @@
           debounce-duration="300">
       </iron-ajax>
 
-      <template is="dom-if" if="{{active}}">
-          
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{!loading}}'>
@@ -104,8 +95,6 @@
           </template>
         </template>
 
-      </template>
-
   </template>
 
   <script>
@@ -130,12 +119,6 @@
           type: Object,
         },
 
-        active:{
-          type: Boolean,
-          observer:'_activeChanged',
-        },
-
-        routeData:Object,
         loading:Boolean,
 
       },
@@ -183,35 +166,19 @@
           return false;
       },
 
-      _activeChanged: function(nAct, oAct) {
-          
-         if(nAct){
-            if(!this.$.authItem.checkHasToken()) {
-                this.fire('rt-changed',{route:'/user/signin'});
-                return;
-            }
-          }
+      attached: function() {
 
-          this.resetView();
+        if(!this.$.authItem.checkHasToken()) {
+            this.fire('rt-changed',{route:'/user/signin'});
+            return;
+        } else {
+            this.user = this.$.authItem.getUser();
+            this.header = this.$.authItem.getHeader();
+            this.$.views.generateRequest();
+            this.$.getThreadQuery.generateRequest();
+        }
 
-          if(nAct) {
-              this.threadId = this.routeData.threadId;
-              if(this.$.authItem.checkHasToken()) {
-                this.user = this.$.authItem.getUser();
-                this.header = this.$.authItem.getHeader();
-                this.$.views.generateRequest();
-                this.$.getThreadQuery.generateRequest();  
-              }
-          }
       },
-
-      resetView: function() {
-          this.threadId = "";
-          this.user = {};
-          this.header = {};
-          this.threadDetails = {};
-      },
-
 
     });
 

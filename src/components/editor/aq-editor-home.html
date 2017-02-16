@@ -130,9 +130,6 @@
         <app-route
             route="{{route}}"
             pattern="/dashboard/editor"
-            data="{{routeData}}"
-            tail="{{subroute}}"
-            active="{{active}}"
             query-params="{{queryParams}}">
         </app-route>
 
@@ -160,7 +157,7 @@
               debounce-duration="300">
         </iron-ajax>
 
-        <template is='dom-if' if='{{isActive(active, subroute)}}'>
+        <!--template is='dom-if' if='{{isActive(active, subroute)}}'-->
 
           <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
@@ -205,7 +202,7 @@
       		    
       		  </div>
         </template> 
-    </template>
+    <!--/template-->
 		
   </template>
 
@@ -257,17 +254,25 @@
 
 		},
 
-    observers:['_activeChanged(active, subroute, queryParams)'],
+    //observers:['_activeChanged(subroute, queryParams)'],
 
 		attached: function() {
+      if(!this.$.authItem.checkHasToken()) {
+          this.fire('rt-changed',{route:'/user/signin'});
+          return;
+      } else {
+          this.fetchResults();
+      }
+
+      this.create = (this.queryParams) ? this.queryParams.create : 0;
       if (this.create == 1){
 				this.fire('newClicked');
 			}
 		},
 
     computPostDeleteStrategyUrl: function(deleteId) {
-      var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-      return APIEndPoint+'/strategy/'+deleteId;
+        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+        return APIEndPoint+'/strategy/'+deleteId;
     },
 
     onGetStrategiesResponse: function(data) {
@@ -540,8 +545,9 @@
       return active && !this.hasTail(subroute);
     },
 
-    _activeChanged: function(active, subroute, queryParams) {
+    _activeChanged: function(subroute, queryParams) {
 
+      console.log("Current Active: " + active);
       if(active){
         if(!this.$.authItem.checkHasToken()) {
             this.fire('rt-changed',{route:'/user/signin'});

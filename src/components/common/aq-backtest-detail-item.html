@@ -156,79 +156,80 @@
 
 		<aq-check-authentication id='authItem'></aq-check-authentication>
 		
-			<paper-card class="flex detail layout vertical paper_body">
-				<div id='detail-header' class="layout horizontal">
-					<span class="self-center">Strategy vs Benchmark Performance</span>
+		<paper-card class="flex detail layout vertical paper_body">
+			<div id='detail-header' class="layout horizontal">
+				<span class="self-center">Strategy vs Benchmark Performance</span>
+				
+				<div class="flex"></div>	
+
+				<template is='dom-if' if='{{active}}'>
+					<div class="layout vertical" id='progressDiv'>
 					
-					<div class="flex"></div>	
-
-					<template is='dom-if' if='{{active}}'>
-						<div class="layout vertical" id='progressDiv'>
-						
-						<template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
-							<p>Progress: {{pctCompleted}}%</p>
-							<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-						</template>
-
-						<template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
-							<p>Complete</p>
-							<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-						</template>
-
-						<template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
-							<p>Warming up</p>
-							<paper-progress indeterminate class="self-center"></paper-progress>
-						</template>
-
-						<template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
-							<p style="color:#cc6666">Exception</p>
-							<paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
-						</template>
-						
-						
-
-						</div>
+					<template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+						<p>Progress: {{pctCompleted}}%</p>
+						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
 					</template>
 
-					<div class="flex"></div>	
+					<template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
+						<p>Complete</p>
+						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+					</template>
+
+					<template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+						<p>Warming up</p>
+						<paper-progress indeterminate class="self-center"></paper-progress>
+					</template>
+
+					<template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
+						<p style="color:#cc6666">Exception</p>
+						<paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
+					</template>
+
+					</div>
+				</template>
+
+				<div class="flex"></div>	
+				
+				<paper-tabs noink selected="{{graphType}}">
+					<paper-tab>Cumulative Return</paper-tab>
+					<template is='dom-if' if='[[!active]]'>
+						<paper-tab>Monthly Returns</paper-tab>
+					</template>
+				</paper-tabs>
 					
-					<paper-tabs noink selected="{{graphType}}">
-						<paper-tab>Cumulative Return</paper-tab>
-						<template is='dom-if' if='[[!active]]'>
-							<paper-tab>Monthly Returns</paper-tab>
-						</template>
-					</paper-tabs>
-						
+			</div>
+			
+			<iron-pages on-iron-resize='onResize' selected="{{graphType}}">
+				<div id='cumRetLineChartDiv'>
+					<!--aq-cumret-linechart></aq-cumret-linechart-->
 				</div>
 				
-				<iron-pages on-iron-resize='onResize' selected="{{graphType}}">
+				<template is='dom-if' if='[[!active]]'>
+					<div id='barChartDiv'>
+						<!--aq-aggregatedreturns-barchart></aq-aggregatedreturns-barchart-->
+					</div>
+				</template>
 
-					<div id='cumRetLineChartDiv'></div>
-					
-					<template is='dom-if' if='[[!active]]'>
-						<div id='barChartDiv'></div>
-					</template>
+	  		</iron-pages>
+		      
+		    <div class='card-actions'>  
+			<div id='detail-header-bottom' class="layout horizontal flex">
+				<span class="self-center">Risk Metrics</span>
+				<div class="flex"></div>	
+			</div>
 
-		  		</iron-pages>
-			      
-			    <div class='card-actions'>  
-				<div id='detail-header-bottom' class="layout horizontal flex">
-					<span class="self-center">Risk Metrics</span>
-					<div class="flex"></div>	
-				</div>
-
-				<div class="wrap flex_container">
-					<template is="dom-repeat" items="{{metrics}}">
-						<div class="layout horizontal flex mdcontainer">
-							<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}} 
-								metric-value={{item.metricValue}}
-								metric-desc={{item.metricDescription}}>
-							</aq-backtest-metric-item>
-						</div>
-					</template>			
-				</div>
-				</div>
-			</paper-card>	
+			<div class="wrap flex_container">
+				<template is="dom-repeat" items="{{metrics}}">
+					<div class="layout horizontal flex mdcontainer">
+						<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}} 
+							metric-value={{item.metricValue}}
+							metric-desc={{item.metricDescription}}>
+						</aq-backtest-metric-item>
+					</div>
+				</template>			
+			</div>
+			</div>
+		</paper-card>	
 
 		<iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
 
@@ -291,7 +292,7 @@
 
 				backtestId: {
 					type:String,
-					observer: '_backtestIdChanged',
+					observer:'_backtestIdChanged',
 				},
 
 				backtest:Object,
@@ -314,7 +315,12 @@
 
 			},
 
-			//observers:['_isActiveOrBacktestIdChanged(active, backtestId)'],
+			_backtestIdChanged: function(nId, oId) {
+				if(nId) {	
+					this.reset();
+					this.requestStaticData();
+				}
+			},
 
 			computeGetBacktestUrl: function(backtestId) {
 				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -413,6 +419,7 @@
 
 					},
 					 200);	
+
 				this.pctCompleted = 0;
 				this.resetMetrics();
 				this.counter = 0;
@@ -430,13 +437,10 @@
 
 			onBacktestData: function(e) {
 				//process data obnly when element is active
-				
 				if (!this.active) {
 					return
 				}
 
-
-				
 				data = e.detail;
 				if ((data.outputtype=="performance" || data.outputtype=="labels") && this.active) {
 					this.addRealTimeData(data);
@@ -650,6 +654,7 @@
 			},
 
 			requestStaticData: function() {
+				
 				if(this.backtestId && this.$.authItem.checkHasToken()) {
 					this.header = this.$.authItem.getHeader();
 					this.$.getBacktestsQuery.generateRequest();
@@ -670,7 +675,7 @@
 
 				if(this.backtest.status=="active") {
 					this.active = true;
-					this.reset();
+					//this.reset();
 					this.subscribeData();
 					return;
 				}
@@ -707,6 +712,7 @@
 			},
 
 			onGetBacktestError: function(e) {
+				console.log(e);
 			},
 
 			getYAxisLabel: function(number){
@@ -721,15 +727,6 @@
 			    }
 
 			    return label(max);
-		    },
-
-		    _backtestIdChanged: function(nId, oId) {
-		    	if(nId) {
-		    		this.reset();
-					this.requestStaticData();
-				} else {
-					this.active = false;
-				}	
 		    },
 
 		    onResize: function() {

@@ -52,15 +52,6 @@
 
 	<template>
 
-	    <app-location route="{{route}}"></app-location>
-	    <app-route
-	        route="{{route}}"
-	        pattern="/dashboard/analyze/:strategyId"
-	        data="{{routeData}}"
-	        tail="{{subroute}}"
-	        active="{{active}}">
-	    </app-route>
-
 		<iron-ajax	
           	url="[[computeGetStrategyUrl(strategyId)]]"
      	 	method='GET'
@@ -99,45 +90,42 @@
 		
 	 	<iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
 
-	 	<iron-signals on-iron-signal-backtest-updated='onBacktestUpdated'></iron-signals>
+	 	<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'></iron-signals>
 
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-		<template is='dom-if' if='{{isActive(active, subroute)}}'>
-			<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
-	
-	    	<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
-				<div id='container'>
-					<template is='dom-if' if="[[!showComparison]]">
-						<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
 
-						<p>All Backtests for <i>{{strategyName}}</i></p>
-						<div class="layout horizontal wrap flex around-justified itemcontainer" >
-						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-							<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
-						</template>
-						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
-							<div class="spacer"></div>
-						</template>
-						</div>
+    	<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+			<div id='container'>
+				<template is='dom-if' if="[[!showComparison]]">
+					<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+
+					<p>All Backtests for <i>{{strategyName}}</i></p>
+					<div class="layout horizontal wrap flex around-justified itemcontainer" >
+					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
+						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 					</template>
-
-					<template is='dom-if' if="[[showComparison]]">
-						<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
-						</aq-analyze-backtest-comparison-item>
+					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
+						<div class="spacer"></div>
 					</template>
+					</div>
+				</template>
 
-				</div>	
+				<template is='dom-if' if="[[showComparison]]">
+					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
+					</aq-analyze-backtest-comparison-item>
+				</template>
 
-			    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
-					 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
-					 cancel="Cancel"
-					 accept="OK">
-		    	</aq-delete-dialog>
-			</template>
+			</div>	
+
+		    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
+				 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
+				 cancel="Cancel"
+				 accept="OK">
+	    	</aq-delete-dialog>
 		</template>
-
-    </template>
+	</template>
 
     <script>
     	Polymer({
@@ -149,7 +137,7 @@
 
     			strategyId: {
 					type:String,
-    				//observer:'_strategyIdChanged',
+					observer:'_strategyIdChanged',
 				},
 
     			backtests: {
@@ -188,9 +176,13 @@
 
 				backtestLoading:Boolean,
 
-    		}, 
+				dirtyBit: {
+					type: Number,
+					value: 1,
+					observer:'_dirtyBitChanged',
+				},
 
-    		observers:['_activeChanged(active, subroute)'],
+    		}, 
     		
 			listeners: {
 				'backClicked':'goToEditor',
@@ -201,6 +193,33 @@
 				'comparison-off':'toggleComparison',
 				'delete-action':'onDeletion',
 				'detail-action':'onDetail',
+			},
+
+			_strategyIdChanged: function(nId, oId) {
+				
+				if(nId && nId!= "") {
+					this.fetchBacktests();
+	        	}
+			},
+
+			_dirtyBitChanged: function(nBit, oBit) {
+				if(this.dirtyBit == 1 && this.strategyId) {
+					this.fetchBacktests();
+				}
+			},
+
+			fetchBacktests: function() {
+				if(!this.$.authItem.checkHasToken()) {
+         	 		this.fire('rt-changed',{route:'/user/signin'});
+	          		return;
+	          	} else {
+	          		
+					this.set('backtests', []);
+	        		this.header = this.$.authItem.getHeader();
+        			this.$.getStrategyQuery.generateRequest();
+        			this.dirtyBit = 0;
+	        	
+	        	}
 			},
 
 	      	computeGetStrategyUrl: function(strategyId) {
@@ -293,7 +312,7 @@
         				this.checkedCount -= 1;
         				delete this.checkedItems[deleteId];
         				this.fire('iron-signal',{name:'backtest-deleted'});
-        				this.dirtyBit = 1;
+        				//this.dirtyBit = 1;
         				break;
         			}
         		}
@@ -323,42 +342,6 @@
 	        	return active && !this.hasTail(subroute);
 	        },
 
-	        _activeChanged: function(active, subroute) {
-
-	        	if(active){
-					if(!this.$.authItem.checkHasToken()) {
-	         	 		this.fire('rt-changed',{route:'/user/signin'});
-		          		return;
-		          }
-		      	}
-
-	        	if(active && !this.hasTail(subroute)) {
-
-	        		if(!this.oldRouteData) {
-	        			this.oldRouteData = {strategyId:""};
-	        		}
-
-        			if(this.oldRouteData.strategyId != this.routeData.strategyId) {
-        				this.dirtyBit = 1;
-        				this.oldRouteData = this.routeData;
-        			}	
-
-        			if (this.dirtyBit == 1 || !(this.dirtyBit + 1)) {
-	        		
-		        		this.strategyId = this.routeData.strategyId;
-		        		if(this.$.authItem.checkHasToken()) {
-		        			this.set('backtests', []);
-			        		this.header = this.$.authItem.getHeader();
-		        			this.$.getStrategyQuery.generateRequest();
-		        			this.dirtyBit = 0;
-			        	}
-		        	} 
-	        			
-        		} else {
-        			this.resetView();
-        		}
-	        },
-
 	        resetView: function() {
 	        	this.showComparison = false;
 	        	this.checkedCount = 0;
@@ -369,7 +352,7 @@
 	        	this.dirtyBit = 1;
 	        },
 
-	        onBacktestUpdated: function() {
+	        onBacktestCompleted: function() {
 	        	this.dirtyBit = 1;
 	        },
 

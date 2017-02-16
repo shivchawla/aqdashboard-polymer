@@ -113,16 +113,7 @@
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        <app-location route="{{route}}"></app-location>
-
-        <app-route
-            route="{{route}}"
-            pattern="/dashboard/community"
-            data="{{routeData}}"
-            tail="{{subroute}}"
-            active="{{active}}">
-        </app-route>
-
+      
         <iron-ajax
             url=""
             method='GET'
@@ -140,10 +131,7 @@
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-
-        <template is='dom-if' if='{{isActive(active, subroute)}}'>
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-
 
               <div id='container' class="layout vertical flex">
                 
@@ -175,8 +163,6 @@
                     <paper-tab id="personal">Personal</paper-tab>
                 </paper-tabs>
 
-              <!--template is='dom-if' if='{{!loading}}'-->
-            
                 <div clas="layout vertical" id='allposts'>
                     <template is="dom-repeat" items="{{threads}}">
                         <aq-community-home-post-item2 thread="[[item]]">
@@ -199,12 +185,8 @@
             <paper-fab id='fab' noink icon="aq-icons:add" on-tap='createPost'></paper-fab>
 
             <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
-        </template>
-      <!--/template-->
-        
     </template>
     <script>
-
         
         Polymer({
             is: 'aq-community-home',
@@ -262,13 +244,12 @@
                   computed: 'isSelected(selected, 2)'
                 },
 
-                active:{
-                  type:Boolean,
-                },
-
-                subroute:Object,
-                routeData:Object,
                 loading:Boolean,
+
+                dirtyBit:{
+                  type:Number,
+                  value:1,
+                },
 
             },
 
@@ -277,7 +258,7 @@
               'view-action':'onView',
             },
 
-            observers:['_activeChanged(active, subroute)'],
+            //observers:['_activeChanged(active, subroute)'],
 
             attached: function() {
               var x = localStorage.getItem('my-app-storage');
@@ -291,6 +272,12 @@
                       this.currentPage = community.lastPage;
                   } 
               }
+
+              if(!this.isSearchActive(this.searchText, this.searchCategory) || this.dirtyBit == 1){
+                 this.processparams(); 
+                 this.dirtyBit = 0;
+              }
+              
             },
 
             isSelected: function(selected, selection) {
@@ -298,12 +285,13 @@
             },
 
             onActivateTab: function() {
-              
                 if(this.selected != this.oldselected) {
                   this.oldselected = this.selected;
 
                   if(this.currentPage == 1) {
-                    this.processparams();
+                    if (this.isAttached) {
+                        this.processparams();
+                    }
                   } else {
                     this.currentPage = 1;
                   }
@@ -342,8 +330,10 @@
               } else {
                   this.dirtyBit = 1;         
               }
-            
-              this.processparams();
+              
+              if(this.isAttached) {
+                 this.processparams();
+              }
             },
 
             isFollowing: function() {
@@ -363,10 +353,12 @@
                 }
 
               this.updateCommunityState();
-              
+
+              var currentPage = (this.currentPage) ? this.currentPage : 1;
+
               var category = this.searchCategory=="All" ? "":this.searchCategory;
 
-              this.searchParam = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": category};
+              this.searchParam = {"skip":this.perPage*(currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": category};
   
               this.fetchResults();
             
@@ -382,20 +374,18 @@
             },
 
             _currentPageChanged: function(newPage, oldPage) {      
-                if(this.active) {
+                if(this.isAttached) {
                   this.processparams();
                   this.$$('#community-tabs').scrollIntoView(true); 
                 }
             },
 
             updateCommunityState: function() {
-              if(this.aimsquant) {
-                  this.aimsquant.community.searchText = this.searchText;
-                  this.aimsquant.community.searchCategory = this.searchCategory;
-                  this.aimsquant.community.lastPage = this.currentPage;
-                  this.aimsquant.community.searchTab = this.selected;
-                  this.$.localStorage.save();
-              }
+                this.fire('update-localstorage-community', {
+                                    searchText: this.searchText, 
+                                    searchCategory:this.searchCategory,
+                                    lastPage: (this.currentPage) ? this.currentPage : 1,
+                                    searchTab: (this.selected) ? this.selected : 0 });
             },
 
             isSearchActive: function(searchText, searchCategory) {
@@ -404,36 +394,6 @@
 
             hasThreads: function(threads) {
               return threads.length > 0;
-            },
-
-            hasTail: function(tail) {
-              if(tail && tail.path) {
-                return tail.path.length > 0;
-              }
-
-              return false;
-            },
-
-            isActive: function(active, subroute) {
-              return active && !this.hasTail(subroute);
-            },
-
-            _activeChanged: function(active, subroute) {
-
-                if(active){
-                  if(!this.$.authItem.checkHasToken()) {
-                      this.fire('rt-changed',{route:'/user/signin'});
-                      return;
-                  }
-                }
-
-                if(active && !this.hasTail(subroute)
-                    && (this.dirtyBit == 1 || !(this.dirtyBit + 1))) {
-                    
-                    this.processparams();
-                    this.dirtyBit = 0;   
-                    this.async(function(){this.setDirtyBit}, 120000);
-                }
             },
 
             setDirtyBit: function() {

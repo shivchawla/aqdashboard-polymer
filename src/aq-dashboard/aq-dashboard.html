@@ -1,6 +1,8 @@
 <!--link rel="import" href="../../bower_components/app-router/app-router.html"-->
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
 
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
@@ -67,13 +69,27 @@
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-                <iron-pages selected="{{currentTab}}">
-                  <aq-homepage></aq-homepage>
-                  <aq-dashboard-main></aq-dashboard-main>
-                  <aq-aboutpage></aq-aboutpage>
-                  <aq-user-login-panel></aq-user-login-panel>                    
-                  <aq-user-login-panel></aq-user-login-panel>                    
-                </iron-pages>
+                <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
+                  <template is="iron-lazy-page" m="0">
+                      <aq-homepage></aq-homepage>
+                  </template>
+
+                  <template is="iron-lazy-page" m="1">
+                      <aq-dashboard-main></aq-dashboard-main>
+                  </template>
+
+                  <template is="iron-lazy-page" m="2">
+                      <aq-aboutpage></aq-aboutpage>
+                  </template>
+
+                  <template is="iron-lazy-page" m="3">
+                      <aq-user-login-panel></aq-user-login-panel>
+                  </template>       
+
+                  <template is="iron-lazy-page" m="4">
+                      <aq-user-login-panel></aq-user-login-panel>
+                  </template>                    
+                </iron-lazy-pages>
                 
                 
           </paper-header-panel>
@@ -228,6 +244,7 @@
             'update-token':'onTokenUpdate',
             'scroll-top':'scrollToTop',
             'rt-changed':'goToRoute',
+            'update-localstorage-community':'updateCommunityState',
         },
 
         attached: function() {
@@ -658,7 +675,7 @@
           var id = e.detail.response._id;
           var status = e.detail.response.status;
           if (this.backtests[id] && (status == "complete" || status=="exception")) {
-            
+            this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
             delete this.backtests[id];
           } 
         },
@@ -746,6 +763,14 @@
               return route;
               break 
           }
+        },
+
+        updateCommunityState: function(e) {
+            this.aimsquant.community.searchText = e.detail.searchText;
+            this.aimsquant.community.searchCategory = e.detail.searchCategory;
+            this.aimsquant.community.lastPage  = e.detail.lastPage;
+            this.aimsquant.community.searchTab = e.detail.searchTab;
+            this.$.localStorage.save();
         },
 
     });

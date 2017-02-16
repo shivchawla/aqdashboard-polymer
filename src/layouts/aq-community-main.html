@@ -1,6 +1,10 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/iron-pages/iron-pages.html'>
 
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+
+
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
 <link rel='import' href='../../bower_components/app-route/app-route-converter.html'>
@@ -14,9 +18,27 @@
 
   <template>
 
-    <aq-community-home></aq-community-home>
-    <aq-community-postdetail></aq-community-postdetail>
-    <aq-community-createpost></aq-community-createpost>
+      <app-location route="{{route}}"></app-location>
+      <app-route route="{{route}}"
+                pattern="/dashboard/community/:threadId"
+                data="{{routeData}}"
+                active="{{active}}">
+      </app-route>
+
+      <iron-lazy-pages attr-for-selected = "page" selected="[[computeCommunityPage(active, routeData)]]">
+          <template is='iron-lazy-page' page="home">
+              <aq-community-home></aq-community-home>
+          </template>
+
+          <template is='iron-lazy-page' page="detail">
+              <aq-community-postdetail thread-id="[[routeData.threadId]]"></aq-community-postdetail>
+          </template>
+
+          <template is='iron-lazy-page' page="create">
+              <aq-community-createpost></aq-community-createpost>
+          </template>
+          
+      </iron-lazy-pages>
 
   </template>
 
@@ -25,9 +47,8 @@
       is: 'aq-community-main',
 
       properties:{
-        subrouteData:{
+        routeData:{
           type:Object,
-          //observer:'_subrouteDataChanged',
         },
       },
 
@@ -35,57 +56,16 @@
         'postdetail-action':'onDetail',
       },
 
-      attached: function() {
-        //console.log(this.routeData);
-        
-        //console.log(this.subroute);
-       // console.log(this.path);
-        //console.log(this.queryParams);
-        //console.log(this.newroute);
-       // console.log(this.subrouteData);
-      },
-
-      isObjectEmpty: function(routeData) {
-        
-        if(routeData) {
-          return !(Object.keys(routeData).length > 0);
+      computeCommunityPage: function(active, routeData) {
+        if (active) {
+            if (routeData.threadId == "create") {
+                return "create";
+            } else {
+                return "detail"; 
+            }
+        } else {
+            return "home";
         }
-
-        //console.log("Wohooooo");
-        return true;
-      },
-
-      hasTail: function(tail) {
-          if (tail && tail.path) {
-            return tail.path.length > 0;
-          }
-
-          return false;
-      },
-
-      _routeDataChanged: function(e) {
-
-      },
-
-      _subrouteDataChanged: function(e) {
-        //console.log("subrouteData changed");
-        //console.log(e);
-      },
-
-      getBacktestId: function(backtestId){
-        if (backtestId) {
-          return backtestId;
-        }
-
-        return "";
-      },
-
-      hasRouteData: function(routeData) {
-        return !this.isObjectEmpty(routeData);
-      },
-
-      isCommunityHomeActive: function(active, tail) {
-          return active && !this.hasTail(tail);
       },
 
     });
