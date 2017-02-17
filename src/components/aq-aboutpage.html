@@ -49,7 +49,7 @@
 
     <template>
 
-        <app-location route="{{route}}"></app-location>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
 
         <app-route
             route="{{route}}"
@@ -123,11 +123,16 @@
             type:Boolean,
             observer:'_activeChanged',
           },
+
+          selected:{
+            type:Number,
+            value:0,
+          },
       },
 
       _sectionChanged: function(nSect, oSect) {
           if(nSect) {
-              var dict =  {"home":0,"people":1, "careers":2, "contact":3};
+              var dict =  {"home":0, "people":1, "careers":2, "contact":3};
               if(dict[nSect.section]) {
                   this.selected = dict[nSect.section];
               } else {
@@ -145,10 +150,6 @@
         if(nAct && emptyRoute) {
           this.selected = 0;
         }
-      },
-
-      attached: function(){
-        this.selected = 0;
       },
 
     });

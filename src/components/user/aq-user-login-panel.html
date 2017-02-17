@@ -167,7 +167,7 @@
 
     <template>
 
-        <app-location route="{{route}}"></app-location>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route
             route="{{route}}"
             pattern="/user/:displayMode"
@@ -614,6 +614,7 @@
             },
 
             _activeChanged: function(active, routeData, queryParams) {
+                
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
                     if(this.$.authItem.checkHasToken() && this.displayMode != displayModes.resetpassword) {

@@ -118,7 +118,7 @@
 	<template>
 		<!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        <app-location route="{{route}}" ></app-location>
+        <app-location route="{{route}}"  use-hash-as-path></app-location>
         <iron-signals on-iron-signal-strategy-added='onStrategyAdded'></iron-signals>
 
         <iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>

@@ -415,7 +415,7 @@
         },
 
         URLcontains: function(path) {
-          return (window.location.pathname.match(path)) ? true : false;
+          return (location.hash.match(path)) ? true : false;
         },
 
         gotoSignin: function() {
@@ -688,7 +688,17 @@
         },
 
         goToRoute: function(e) {
+
             var route = this.redirect(e.detail.route);
+
+            var idx = route.indexOf('?');
+            
+            if(idx >=0) {
+                route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
+            } else {
+                route = '/#' + route;
+            }
+            
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
             this.changeTabOnURL();
