@@ -7,7 +7,7 @@
         }
     </style>
     <template>
-        <polymer-quill id="poly_quill_content" class="full" store-as="delta" save-interval="1000" toolbar-type="full" content="">
+        <polymer-quill id="poly_quill_content" class="full" store-as="delta" save-interval="10" content="">
         </polymer-quill>
     </template>
     <script>
@@ -15,6 +15,9 @@
             is: "aq-html-editor",
             getContent: function () {
                 return this.$.poly_quill_content.html;
+            },
+            clearContent: function () {
+                this.$.poly_quill_content.clearEditor();
             }
         });
     </script>
