@@ -1,4 +1,4 @@
-<link rel="import" href="../bower_components/polymer-quill/polymer-quill.html">
+<link rel="import" href="../../../bower_components/polymer-quill/polymer-quill.html">
 <dom-module id="aq-html-editor">
     <style>
         polymer-quill.full {
@@ -7,6 +7,7 @@
         }
     </style>
     <template>
+        <h1>Hello World</h1>
         <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="" content="">
         </polymer-quill>
     </template>
@@ -14,7 +15,6 @@
         Polymer({
             is: "aq-html-editor",
             ready:function () {
-                this.$.poly_quill_content.setContent("Hello Dude");
             },
             getContent: function () {
                 return this.$.poly_quill_content.getHTML();
