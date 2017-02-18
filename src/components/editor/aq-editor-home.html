@@ -239,6 +239,11 @@
         observer:'_createChanged',
 			},
 
+      dirtyBit:{
+        type:Number,
+        value:1,
+      },
+
 			deleteId: String,
 
 			searchParam:Object,
@@ -260,7 +265,7 @@
       if(!this.$.authItem.checkHasToken()) {
           this.fire('rt-changed',{route:'/user/signin'});
           return;
-      } else {
+      } else if(this.dirtyBit == 1) {
           this.fetchResults();
       }
 
