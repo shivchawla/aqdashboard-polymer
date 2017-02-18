@@ -5,9 +5,10 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="elements/aq-html-editor.html">
 <dom-module id="app-element">
     <template>
-        <h1>AimsQuant</h1>
+        <!--<h1>AimsQuant</h1>
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route
                 route="{{route}}"
@@ -26,7 +27,8 @@
             <home-page name="home" route="{{subroute}}" ></home-page>
             <about-page name="about" route="{{subroute}}"></about-page>
             <login-page name="login" route="{{subroute}}"></login-page>
-        </iron-pages>
+        </iron-pages>-->
+        <aq-html-editor></aq-html-editor>
     </template>
     <script>
         Polymer({

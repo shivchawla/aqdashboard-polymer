@@ -1,0 +1,20 @@
+<link rel="import" href="../../../bower_components/polymer-quill/polymer-quill-bubble.html">
+<link rel="import" href="../../../bower_components/polymer-quill/polymer-quill.html">
+<dom-module id="aq-html-editor">
+    <style is="custom-style">
+        polymer-quill.full {
+            --polymer-quill-editor-max-height: 300px;
+            --polymer-quill-editor-min-height: 150px;
+        }
+    </style>
+    <template>
+        <h1>Hello from html editor</h1>
+        <polymer-quill id="demo1" class="full" store-as="delta" save-interval="1000" toolbar-type="full" content="{&quot;ops&quot;:[{&quot;insert&quot;:&quot;Hello World! - Store as Delta - &quot;},{&quot;attributes&quot;:{&quot;link&quot;:&quot;//proplanr.com&quot;},&quot;insert&quot;:&quot;proplanr.com&quot;},{&quot;attributes&quot;:{&quot;header&quot;:2},&quot;insert&quot;:&quot;\n&quot;}]}">
+        </polymer-quill>
+    </template>
+    <script>
+        Polymer({
+            is:"aq-html-editor"
+        })
+    </script>
+</dom-module>
