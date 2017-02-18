@@ -1,0 +1,22 @@
+<link rel="import" href="list-element.html">
+<link rel="import" href="table-element.html">
+<dom-module id="home-page">
+    <template>
+        <h4>This is the home page</h4>
+        <a href="#/{{name}}/list">List</a>
+        <a href="#/{{name}}/table">Table</a>
+        <app-route
+                route="{{route}}"
+                pattern="/:user_id"
+                data="{{routeData}}"></app-route>
+        <iron-pages selected="[[routeData.user_id]]" attr-for-selected="name">
+            <list-element name="list"></list-element>
+            <table-element name="table"></table-element>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: "home-page"
+        })
+    </script>
+</dom-module>

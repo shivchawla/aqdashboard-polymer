@@ -1,61 +1,64 @@
-
 <link rel="import" href="./simplemde.html">
- 
+
 <dom-module id="aq-markdown-editor">
 
-  <style>
-    
-    .CodeMirror .CodeMirror-scroll {
-        min-height: 100px !important;
-    }
+    <style>
 
-    .CodeMirror {
-        --min-height: 100px;
-    }
-
-    .CodeMirror {
-      height: 300px;
-    }
-
-  </style>
-
-  <template>
-    <textarea id="MyID" name="content" class="te"></textarea> 
-  </template>
-
-  <script>
-    Polymer({
-      is: 'aq-markdown-editor',
-      
-      properties:{
-        
-        toolbar:{
-          type:Array,
-          value:["bold","italic","heading","strikethrough","|",
-                  "code", "quote", "link", "|", "unordered-list","ordered-list", "table","|","preview","side-by-side", "fullscreen"],
-        },
-        
-        placeHolder: {
-          type:String,
-          value:"Share your thoughts",
-        },
-      },
-      
-      ready: function() {
-        this.simplemde = new SimpleMDE({element: this.$.MyID, toolbar:this.toolbar                              ,placeholder:this.placeHolder});
-      },
-    
-      getContent: function(){
-        return this.simplemde.value();
-      },
-      
-      setContent: function(content){
-        if (this.simplemde){
-          this.simplemde.value(content);
+        .CodeMirror .CodeMirror-scroll {
+            min-height: 100px !important;
         }
-      },
-    });
-  </script>
+
+        .CodeMirror {
+            --min-height: 100px;
+        }
+
+        .CodeMirror {
+            height: 300px;
+        }
+
+    </style>
+
+    <template>
+        <textarea id="MyID" name="content" class="te"></textarea>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'aq-markdown-editor',
+
+            properties: {
+
+                toolbar: {
+                    type: Array,
+                    value: ["bold", "italic", "heading", "strikethrough", "|",
+                        "code", "quote", "link", "|", "unordered-list", "ordered-list", "table", "|", "preview", "side-by-side", "fullscreen"],
+                },
+
+                placeHolder: {
+                    type: String,
+                    value: "Share your thoughts",
+                },
+            },
+
+            ready: function () {
+                this.simplemde = new SimpleMDE({
+                    element: this.$.MyID,
+                    toolbar: this.toolbar,
+                    placeholder: this.placeHolder
+                });
+            },
+
+            getContent: function () {
+                return this.simplemde.value();
+            },
+
+            setContent: function (content) {
+                if (this.simplemde) {
+                    this.simplemde.value(content);
+                }
+            },
+        });
+    </script>
 
 </dom-module>
 

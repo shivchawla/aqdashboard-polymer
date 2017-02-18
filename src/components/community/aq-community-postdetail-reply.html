@@ -5,235 +5,239 @@
 
 <link rel="import" href="../common/aq-check-authentication.html">
 <link rel="import" href="../aq-markdown-editor.html">
+<link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
 <dom-module id="aq-community-postdetail-reply">
 
-   <style  include="iron-flex iron-flex-alignment iron-positioning">
-   </style>
-   
-  <style>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
 
-    #attachButton {    
-        margin-bottom: -40px;
-        margin-right: 7px;
-        color:teal;
-        border:none !important;
-        z-index: 2;
-    }
+    <style>
 
-    paper-button {
-        border: 1px solid #24293d;
-        height:30px;
-        font-size: 13px;
-    }
+        #attachButton {
+            margin-bottom: -40px;
+            margin-right: 7px;
+            color: teal;
+            border: none !important;
+            z-index: 2;
+        }
 
-    #buttons{
-        margin-bottom: 10px;
-        margin-top:10px;
-    }
+        paper-button {
+            border: 1px solid #24293d;
+            height: 30px;
+            font-size: 13px;
+        }
 
-    #errorMessage {
-      color:#cc6666;
-    }
+        #buttons {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
 
-    #attachedMessageDiv {
-        --display: none;
-        color:#cc6666;
-        font-size:14px;
-        height:32px;
-        margin-bottom: 10px;
-    }
+        #errorMessage {
+            color: #cc6666;
+        }
 
-    #removeIcon {
-        width:25px;
-        height:25px;
-        display: none;
-        padding:5px;
-    }
+        #attachedMessageDiv {
+            --display: none;
+            color: #cc6666;
+            font-size: 14px;
+            height: 32px;
+            margin-bottom: 10px;
+        }
+
+        #removeIcon {
+            width: 25px;
+            height: 25px;
+            display: none;
+            padding: 5px;
+        }
 
 
-  </style>
+    </style>
 
-  <template>
-      <aq-check-authentication id='authItem'></aq-check-authentication>
-      <template is='dom-if' if="[[preview]]">
-          <aq-community-previewpost reply=1 thread-data="[[threadData]]"></aq-community-previewpost>  
-      </template>
+    <template>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+        <template is='dom-if' if="[[preview]]">
+            <aq-community-previewpost reply=1 thread-data="[[threadData]]"></aq-community-previewpost>
+        </template>
 
-      <template is='dom-if' if="[[!preview]]">           
-        
-        <div id="replybox" class="flex layout vertical">
+        <template is='dom-if' if="[[!preview]]">
 
-          <div id="attachedMessageDiv" class="layout horizontal self-end">
-              <i class="self-end">[[attachedMessage]]</i>
-              <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="aq-icons:remove-circle"></paper-icon-button>
-          </div>
+            <div id="replybox" class="flex layout vertical">
 
-          <paper-button id='attachButton' class="self-end" raised noink on-tap='onAttach'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
-          
-          <aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>
-          
-          <div class="layout horizontal" id='buttons'>
-              <div id='errorMessage'><i>[[error]]</i></div>
-              <div class="flex"></div>
-              <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
-              <paper-button raised noink on-tap="postThread">Reply</paper-button>
-          </div>
-        </div>
-      </template>
+                <div id="attachedMessageDiv" class="layout horizontal self-end">
+                    <i class="self-end">[[attachedMessage]]</i>
+                    <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached'
+                                       icon="aq-icons:remove-circle"></paper-icon-button>
+                </div>
 
-      <aq-community-attachbacktest-dialog id='btDialog'>
-        </aq-community-attachbacktest-dialog>  
-             
-      <iron-ajax 
-          url="[[computePostReplyThreadUrl(threadId)]]" 
-          body="{{threadData}}" 
-          method='POST' 
-          id='postThreadQuery' 
-          headers='{{header}}' 
-          handle-as="json" 
-          on-response="onPostReplyResponse"
-          on-error="onPostReplyError" 
-          debounce-duration="300">
-      </iron-ajax>
-  </template>
+                <paper-button id='attachButton' class="self-end" raised noink on-tap='onAttach'>Attach
+                    <iron-icon icon="aq-icons:attach-file"></iron-icon>
+                </paper-button>
 
-  <script>
-    Polymer({
-      is: 'aq-community-postdetail-reply',
+                <!--<aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>-->
+                <aq-html-editor id="editor"></aq-html-editor>
+                <div class="layout horizontal" id='buttons'>
+                    <div id='errorMessage'><i>[[error]]</i></div>
+                    <div class="flex"></div>
+                    <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
+                    <paper-button raised noink on-tap="postThread">Reply</paper-button>
+                </div>
+            </div>
+        </template>
 
-      properties:{
-        
-        header:Object,
-        
-        error: String,
-        
-        threadId: {
-          type: String,
-          observer: "_threadIdChanged",
-        },
-        
-        threadData: Object,
-        
-        attachedMessage:String,
-        
-        attachedBacktestId:String,
-        
-        preview:{
-          type:Boolean,
-          value:false,
-        },
+        <aq-community-attachbacktest-dialog id='btDialog'>
+        </aq-community-attachbacktest-dialog>
 
-      },
+        <iron-ajax
+                url="[[computePostReplyThreadUrl(threadId)]]"
+                body="{{threadData}}"
+                method='POST'
+                id='postThreadQuery'
+                headers='{{header}}'
+                handle-as="json"
+                on-response="onPostReplyResponse"
+                on-error="onPostReplyError"
+                debounce-duration="300">
+        </iron-ajax>
+    </template>
 
-      listeners :{
-        'backtest-attached':'onBacktestAttached',
-        'edit-clicked':'onEdit',
-        'submit-clicked':'postThread',
-      },
+    <script>
+        Polymer({
+            is: 'aq-community-postdetail-reply',
 
-      computePostReplyThreadUrl: function(threadId) {
-          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value; 
-          return APIEndPoint+'/thread/'+threadId; 
-      },
+            properties: {
 
-      postThread: function() {
+                header: Object,
 
-          if (!this.$.authItem.checkHasToken()) {
-              this.fire('rt-changed', {route:'user/signin'});
-          }
-          
-          if(this.processInput()) {
-              this.header = this.$.authItem.getHeader();
-              this.$.postThreadQuery.generateRequest();
-              this.onRemoveAttached();
-              this.preview = false;
-          } else {
-              this.error = "Cannot post an empty reply. Please create a valid reply.";
-          }
-      },
+                error: String,
 
-      onPostReplyResponse: function(e) {
-        var replies = e.detail.response.replies;
-        if (replies.length > 0) {
-          this.fire('reply-added',{reply:replies[replies.length - 1]});  
-        }      
-      },
+                threadId: {
+                    type: String,
+                    observer: "_threadIdChanged",
+                },
 
-      onPostReplyError: function(e) {
-      },
+                threadData: Object,
 
-      clearEditor: function() {
-        this.$$('#editor').setContent("");
-      },
+                attachedMessage: String,
 
-      processInput: function() {
-          const markdownText = this.$$('#editor').getContent();
-          var x = localStorage.getItem('my-app-storage');
-          var user = JSON.parse(x).user;
+                attachedBacktestId: String,
 
-          var threadData = {
-              "markdownText": markdownText,
-              "user":{"firstName":user.firstName,"lastName":user.lastName},
-              "updatedAt": new Date(),
-          };
+                preview: {
+                    type: Boolean,
+                    value: false,
+                },
 
-          if(this.attachedBacktestId && this.attachedBacktestId!="") {
-             threadData["backtestId"] = this.attachedBacktestId;
-          }
+            },
 
-          if(threadData["markdownText"]!="") {
-            this.threadData = threadData;
-              this.error = "";
-              return true;
-          } else {
-            return false;
-          }
-      },
+            listeners: {
+                'backtest-attached': 'onBacktestAttached',
+                'edit-clicked': 'onEdit',
+                'submit-clicked': 'postThread',
+            },
 
-      onPreview: function() { 
-          this.preview = this.processInput();
-          if(!this.preview) {
-              this.error = "No preview available for empty reply. Please create a valid reply.";
-          }
-      },
+            computePostReplyThreadUrl: function (threadId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/thread/' + threadId;
+            },
 
-      onEdit: function() {
-          this.preview = false;
-      },
+            postThread: function () {
 
-      onAttach: function() {
-          this.$.btDialog.open();
-      },
+                if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed', {route: 'user/signin'});
+                }
 
-      onBacktestAttached: function(e) {
-          this.attachedBacktestId = e.detail.id;
-          this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
-          this.$$('#removeIcon').style.display = 'inline';
-      },
+                if (this.processInput()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.postThreadQuery.generateRequest();
+                    this.onRemoveAttached();
+                    this.preview = false;
+                } else {
+                    this.error = "Cannot post an empty reply. Please create a valid reply.";
+                }
+            },
 
-      onRemoveAttached: function() {
-          this.attachedBacktestId = "";
-          this.attachedMessage = "";
-          this.threadData = {};
-          this.$$('#removeIcon').style.display = 'none';
-      },
+            onPostReplyResponse: function (e) {
+                var replies = e.detail.response.replies;
+                if (replies.length > 0) {
+                    this.fire('reply-added', {reply: replies[replies.length - 1]});
+                }
+            },
 
-      _threadIdChanged: function(nThreadId, oThreadId) {
-          if(!nThreadId || nThreadId == "") {
-              this.resetView();
-          }
-      },
+            onPostReplyError: function (e) {
+            },
 
-      resetView: function() {
-        this.preview = false;
-        this.$$('#editor').setContent("");
-        this.$$('#editor').focus();
-        this.onRemoveAttached(); 
-      },
+            clearEditor: function () {
+                this.$$('#editor').clearContent();
+            },
 
-    });
-  </script>
+            processInput: function () {
+                const markdownText = this.$$('#editor').getContent();
+                var x = localStorage.getItem('my-app-storage');
+                var user = JSON.parse(x).user;
+
+                var threadData = {
+                    "markdownText": markdownText,
+                    "user": {"firstName": user.firstName, "lastName": user.lastName},
+                    "updatedAt": new Date(),
+                };
+
+                if (this.attachedBacktestId && this.attachedBacktestId != "") {
+                    threadData["backtestId"] = this.attachedBacktestId;
+                }
+
+                if (threadData["markdownText"] != "") {
+                    this.threadData = threadData;
+                    this.error = "";
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
+            onPreview: function () {
+                this.preview = this.processInput();
+                if (!this.preview) {
+                    this.error = "No preview available for empty reply. Please create a valid reply.";
+                }
+            },
+
+            onEdit: function () {
+                this.preview = false;
+            },
+
+            onAttach: function () {
+                this.$.btDialog.open();
+            },
+
+            onBacktestAttached: function (e) {
+                this.attachedBacktestId = e.detail.id;
+                this.attachedMessage = "Attached Backtest ID: " + this.attachedBacktestId;
+                this.$$('#removeIcon').style.display = 'inline';
+            },
+
+            onRemoveAttached: function () {
+                this.attachedBacktestId = "";
+                this.attachedMessage = "";
+                this.threadData = {};
+                this.$$('#removeIcon').style.display = 'none';
+            },
+
+            _threadIdChanged: function (nThreadId, oThreadId) {
+                if (!nThreadId || nThreadId == "") {
+                    this.resetView();
+                }
+            },
+
+            resetView: function () {
+                this.preview = false;
+                this.$$('#editor').setContent("");
+                this.$$('#editor').focus();
+                this.onRemoveAttached();
+            },
+
+        });
+    </script>
 </dom-module>
