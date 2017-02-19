@@ -81,7 +81,7 @@ Custom property | Description | Default
     <style include="polymer-quill-styles-snow">
       :host {
         --calculated-polymer-quill-editor-max-height: var(--polymer-quill-editor-max-height, 400px);
-        --calculated-polymer-quill-editor-min-height: var(--polymer-quill-editor-min-height, 150px);
+        --calculated-polymer-quill-editor-min-height: var(--polymer-quill-editor-min-height, 250px);
         --calculated-polymer-quill-editor-border: var(--polymer-quill-editor-border, solid 1px #ccc);
         --calculated-polymer-quill-editor-overflow: var(--polymer-quill-editor-overflow, scroll);
         display: block;
@@ -118,9 +118,9 @@ Custom property | Description | Default
           <option value="7">Normal</option>
         </select>
         <select class="ql-header"  hidden$="{{!standardToolbar}}">
-          <option value="1">Header 1</option>
-          <option value="2">Header 2</option>
           <option value="3">Header 3</option>
+          <option value="4">Header 4</option>
+          <option value="5">Header 5</option>
           <option value="7">Normal</option>
         </select>
       </span>
@@ -130,10 +130,10 @@ Custom property | Description | Default
         <button class="ql-underline" title="Underline"></button>
         <button class="ql-strike" title="strike" hidden$="{{standardToolbar}}"></button>
       </span>
-      <span class="ql-formats" hidden$="{{!standardToolbar}}">
-        <select class="ql-color" title="Text Color"></select>
-        <select class="ql-background" title="Text Background Color"></select>
-      </span>
+      <!--<span class="ql-formats" hidden$="{{!standardToolbar}}">-->
+        <!--<select class="ql-color" title="Text Color"></select>-->
+        <!--<select class="ql-background" title="Text Background Color"></select>-->
+      <!--</span>-->
       <!-- <span class="ql-formats">
       <button class="ql-script" value="sub"></button>
       <button class="ql-script" value="super"></button>
