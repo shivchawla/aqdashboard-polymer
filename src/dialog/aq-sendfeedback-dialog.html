@@ -5,7 +5,8 @@
 <link rel='import' href='../../bower_components/paper-input/paper-textarea.html'>
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
-<link rel='import' href='../components/aq-markdown-editor.html'>
+<!--<link rel='import' href='../components/aq-markdown-editor.html'>-->
+<link rel="import" href="../components/aq-html-editor.html">
 <link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id='aq-sendfeedback-dialog'>
@@ -115,7 +116,8 @@
                          char-counter> 
      	</paper-input>
  				
-			<aq-markdown-editor id='mkdEditor' place-holder="Share your feedback"></aq-markdown-editor>
+			<!--<aq-markdown-editor id='mkdEditor' place-holder="Share your feedback"></aq-markdown-editor>-->
+                <aq-html-editor id="mkdEditor"></aq-html-editor>
       </div>
      	
       
@@ -178,7 +180,7 @@
 			},
 
       onCancel: function() {
-        this.$.mkdEditor.setContent("");
+        this.$.mkdEditor.clearContent();
         this.error = false; 
         this.feedbackSubject = "Feedback or Feature Request";
       },
