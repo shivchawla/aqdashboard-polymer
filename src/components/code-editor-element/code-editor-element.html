@@ -3,39 +3,35 @@
 <!--<!doctype html>-->
 <!--<html>-->
 <!--<head>-->
-    <!--<meta charset="utf-8">-->
-    <!--<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">-->
+<!--<meta charset="utf-8">-->
+<!--<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">-->
 
-    <!--<title>sauravb-element</title>-->
+<!--<title>sauravb-element</title>-->
 
-    <!--<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
-    <!--<link rel="import" href="bower_components/polymer/polymer.html">-->
+<!--<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
+<!--<link rel="import" href="bower_components/polymer/polymer.html">-->
 
-    <!--&lt;!&ndash; Importing the element and diff-pathch &ndash;&gt;-->
-    <!--<link rel="import" href="custom_components/code-editor-element/code-editor-element.html">-->
-    <!--<script src="custom_components/code-editor-element/diff-match-patch.js"></script>-->
+<!--&lt;!&ndash; Importing the element and diff-pathch &ndash;&gt;-->
+<!--<link rel="import" href="custom_components/code-editor-element/code-editor-element.html">-->
+<!--<script src="custom_components/code-editor-element/diff-match-patch.js"></script>-->
 
 
-    <!--<style>-->
-        <!--#ce_element #flex-container{-->
-        <!--}-->
-        <!--#ce_element #flex-container{-->
-            <!--margin-top: 50px;-->
-        <!--}-->
-    <!--</style>-->
+<!--<style>-->
+
+<!--</style>-->
 <!--</head>-->
 <!--<body>-->
-<!--<code-editor-element id="ce_element"></code-editor-element>-->
+<!--<code-editor-element id="ce_element" theme="ace/theme/github"></code-editor-element>-->
 <!--<button onclick="handleClick()">Get Content</button>-->
 <!--<script type="text/javascript">-->
-    <!--var code_editor= document.querySelector('code-editor-element');-->
-    <!--var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";-->
-    <!--var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";-->
-    <!--code_editor.setCodeLeft(codeLeft);-->
-    <!--code_editor.setCodeRight(codeRight);-->
-    <!--function handleClick() {-->
-        <!--console.log(code_editor.getCode());-->
-    <!--}-->
+<!--var code_editor= document.querySelector('code-editor-element');-->
+<!--var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";-->
+<!--var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";-->
+<!--code_editor.setCodeLeft(codeLeft);-->
+<!--code_editor.setCodeRight(codeRight);-->
+<!--function handleClick() {-->
+<!--console.log(code_editor.getCode());-->
+<!--}-->
 <!--</script>-->
 <!--</body>-->
 <!--</html>-->
@@ -66,6 +62,18 @@
                 codeRight:{
                     type:String,
                     //value: "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}"
+                },
+                mode:{
+                    type:String,
+                    value:"ace/mode/javascript"
+                },
+                theme:{
+                    type:String,
+                    value:"ace/theme/github"
+                },
+                editable:{
+                    type:Boolean,
+                    value:false
                 }
             },
             ready: function () {
@@ -79,17 +87,17 @@
                     left: {
                         id: 'editor-left',
                         content: null,
-                        mode: "ace/mode/javascript",
-                        theme: "ace/theme/github",
-                        editable: true,
+                        mode: this.mode,
+                        theme: this.theme,
+                        editable: this.editable,
                         copyLinkEnabled: true
                     },
                     right: {
                         id: 'editor-right',
                         content: null,
-                        mode: "ace/mode/javascript",
-                        theme: "ace/theme/xcode",
-                        editable: true,
+                        mode: this.mode,
+                        theme: this.theme,
+                        editable: this.editable,
                         copyLinkEnabled: true
                     },
                     classes: {
