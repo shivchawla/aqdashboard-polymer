@@ -1,20 +1,36 @@
+<<<<<<< HEAD
 <link rel="import" href="../../bower_components/polymer-quill/polymer-quill.html">
+=======
+<link rel="import" href="../../my_bower_components/polymer-quill/polymer-quill.html">
+>>>>>>> f09608eebce503ed7cd0c324925a218b1ae85298
 <dom-module id="aq-html-editor">
     <style>
         polymer-quill.full {
             --polymer-quill-editor-max-height: 300px;
+<<<<<<< HEAD
             --polymer-quill-editor-min-height: 150px;
         }
     </style>
     <template>
         <polymer-quill id="poly_quill_content" class="full" store-as="delta" save-interval="10" content="">
+=======
+            --polymer-quill-editor-min-height: 250px;
+        }
+    </style>
+    <template>
+        <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="standard" content="">
+>>>>>>> f09608eebce503ed7cd0c324925a218b1ae85298
         </polymer-quill>
     </template>
     <script>
         Polymer({
             is: "aq-html-editor",
             getContent: function () {
+<<<<<<< HEAD
                 return this.$.poly_quill_content.html;
+=======
+                return this.$.poly_quill_content.getHTML();
+>>>>>>> f09608eebce503ed7cd0c324925a218b1ae85298
             },
             clearContent: function () {
                 this.$.poly_quill_content.clearEditor();

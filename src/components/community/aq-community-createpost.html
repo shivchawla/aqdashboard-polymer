@@ -7,7 +7,8 @@
 
 <link rel="import" href="../common/aq-check-authentication.html">
 
-<link rel="import" href="../aq-markdown-editor.html">
+<!--<link rel="import" href="../aq-markdown-editor.html">-->
+<link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
@@ -172,8 +173,8 @@
                         <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
                     </div>
                     
-                    <aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>
-
+                    <!--<aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>-->
+                    <aq-html-editor id="editor"></aq-html-editor>
                     <div id='buttons' class="layout horizontal">
                         <div id='errorMessage'><i>[[error]]</i></div>
                         <div class="flex"></div>
@@ -364,7 +365,7 @@
                 this.threadData = {};
 
                 if (this.$$('#editor')) {
-                    this.$$('#editor').setContent("");
+                    this.$$('#editor').clearContent();
                     this.$$('#editor').focus();
                 }
 
