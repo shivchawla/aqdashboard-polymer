@@ -14,19 +14,79 @@
 <link rel="import" href="../common/aq-check-authentication.html">
 <link rel="import" href="./aq-authentication-message.html">
 <link rel="import" href="../common/aq-loading-progress.html">
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
 
 <dom-module id="aq-user-login-panel">
-    <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
-
+        h1,h2,h3,h4,h5 {
+            padding: 0;
+            margin: 0;
+        }
+        :host {
+            --paper-input-container-input: {
+                font-size: 14px;
+            };
+            --paper-input-container-label:{
+                font-size: 14px;
+            }
+        }
         paper-card {
-            width:370px;
-            --margin-top:100px;
-            --color:white;
-            margin:auto 0;
+            border-radius: 4px;
+            padding-top: 20px;
+            top:10%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: 340px;
+            --margin-top: 100px;
+            --color: white;
+            margin: auto 0;
+            margin-bottom: 20px;
             z-index: 2;
-            --background-color: #24293d;
             opacity: 2 !important;
+            --paper-card-header-color: teal;
+            --paper-card-header: {
+                text-align: center;
+            };
+            --paper-card-header:{
+                display: flex;
+                flex-direction: column;
+            };
+            --paper-card-header-text: {
+                font-size: 30px;
+            };
+            --paper-card-header-image: {
+                background-size: cover;
+                height: 60px;
+                width: 60px;
+
+                margin: 0 auto;
+            }
+        }
+        .header-container{
+            text-align: center;
+            display: inline-block;
+        }
+        .header-text {
+            font-size: 30px;
+            color: teal;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+        .header-quant{
+            color:#F44336;
+        }
+        .sub-header{
+            color:#37474F;
+            font-size: 15px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            font-style: italic;
+        }
+        a {
+            text-decoration: none;
         }
 
         #containerr {
@@ -34,8 +94,8 @@
             margin: 0 auto;
             --padding-top: 50px;
             --margin-top: 50px;
-            background-color: #f4f9f7;
-            height:100%;
+            background-color: #fff;
+            height: 100%;
             --margin-top: -30px;
             opacity: 1.0;
 
@@ -43,23 +103,25 @@
 
         .dialog-fields {
             padding: 1em 2em;
+            position: relative;
+
+
         }
 
         #userEmailInput {
-            --width: 340px;
+            --width: 320px;
             --margin-left: -17px;
             --margin-top: -50px;
-            --width:100%;
+            --width: 100%;
         }
 
-        .forgot-password {
-            padding-top: 0.75em;
-            font-size: small;
-        }
+
 
         .input-fields {
-            margin-top: 0.1em;
             padding-top: 0.1em;
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 1.2em;
         }
 
         paper-checkbox {
@@ -74,29 +136,40 @@
             border-color: #4285f4;
         }
 
-        .signinButton {
-            background-color: #4285f4;
-            margin-top: 1em;
-            margin-bottom: 1em;
-        }
 
         .actionFailed {
             color: #cc6666;
             padding: 0.75em 0 0;
             margin: 0 auto;
-            margin-bottom: 10px;
-            text-align:center;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
         }
 
         .footer {
-            --margin-top: 10px;
-            margin-bottom: 30px;
-        }
 
-        .footer a {
+            display: flex;
+            justify-content: space-between;
+            padding: 1em 2em;
+        }
+        .footer-text {
+            color:#37474F;
+            font-size: 13px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+        }
+        .footer-link{
+            color:#F44336;
             margin-left: 5px;
+            font-size: 13px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
         }
 
+        .signup,.forgotPassword{
+            display: flex;
+            justify-content: center;
+        }
         #tclabel {
             padding-top: 0.75em;
             padding-bottom: 0.75em;
@@ -107,61 +180,45 @@
             color: #0375b4;
         }
 
-        paper-card {
-            --paper-card-header-color:teal;--#24293d;
-            --paper-card-header:{
-                text-align:center;
-            };
-
-            border: 2px solid teal;
-        }
-
-        paper-card {
-            --paper-card-header-text: { font-size: 30px; }
-        }
-        
         paper-input {
-            --paper-input-container-focus-color :teal;
+            --paper-input-container-focus-color: teal;
+
         }
+
 
         gold-email-input {
-            --paper-input-container-focus-color :teal;
+            --paper-input-container-focus-color: teal;
         }
 
         paper-button.signinButton {
-            margin-top: 20px !important;
-            background: white;teal;--#24293d;
-            color: #cc6666;--white;
-            width:200px;
+            position: relative;
+            margin-top: 40px !important;
+            background: teal;
+            color: #fff;
+            width: 100%;
             margin: 0 auto;
-            border-radius: 20px;
-            border: 1px solid teal;
             font-weight: bold;
         }
 
         #signoutMessage {
             margin-bottom: -50px;
-            color:teal;
+            color: teal;
         }
 
-       #logo {
-          background: url(../../../resources/images/Logo-bg.png);
-          background-size:cover;
-          height:90px;
-          width:114px;
+        #logo {
+            background: url(../../../resources/images/Logo-bg.png);
+            background-size: cover;
+            height: 90px;
+            width: 114px;
         }
 
         #tagline {
             font-size: 18px;
             color: teal;
-            margin-top:-20px;
+            margin-top: -20px;
         }
 
-        #logoContainer {
-            padding-top:60px;
-            margin-bottom:
-        }
-    }
+
 
     </style>
 
@@ -169,66 +226,66 @@
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route
-            route="{{route}}"
-            pattern="/user/:displayMode"
-            data="{{routeData}}"
-            query-params="{{queryParams}}"
-            active="{{active}}">
+                route="{{route}}"
+                pattern="/user/:displayMode"
+                data="{{routeData}}"
+                query-params="{{queryParams}}"
+                active="{{active}}">
         </app-route>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        
-        <iron-ajax 
-            url="[[APIEndPoint]]/user" 
-            body="{{signupBody}}" 
-            method='POST' 
-            id='signup' 
-            handle-as="json" 
-            on-response="handleSignupResponse"
-            on-error="handleSignupError"
-            headers='{"Content-Type": "application/json"}' debounce-duration="300"
-            loading='{{loading}}'>  
+
+        <iron-ajax
+                url="[[APIEndPoint]]/user"
+                body="{{signupBody}}"
+                method='POST'
+                id='signup'
+                handle-as="json"
+                on-response="handleSignupResponse"
+                on-error="handleSignupError"
+                headers='{"Content-Type": "application/json"}' debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
-          url="[[APIEndPoint]]/user/login"
-          body="{{signinBody}}"
-          method='POST'
-          id='login'
-          handle-as="json"
-          on-response="handleLoginResponse"
-          on-error="handleLoginError"
-          headers='{"Content-Type": "application/json"}'
-          debounce-duration="300"
-          loading='{{loading}}'> 
+                url="[[APIEndPoint]]/user/login"
+                body="{{signinBody}}"
+                method='POST'
+                id='login'
+                handle-as="json"
+                on-response="handleLoginResponse"
+                on-error="handleLoginError"
+                headers='{"Content-Type": "application/json"}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
-          url="[[APIEndPoint]]/user/forgotpassword"
-          params="{{forgotPasswordParams}}"
-          method='GET'
-          id='forgotPasswordQuery'
-          handle-as="json"
-          on-response="handleForgotPasswordResponse"
-          on-error="handleForgotPasswordError"
-          headers='{"Content-Type": "application/json"}'
-          debounce-duration="300"
-          loading='{{loading}}'>
+                url="[[APIEndPoint]]/user/forgotpassword"
+                params="{{forgotPasswordParams}}"
+                method='GET'
+                id='forgotPasswordQuery'
+                handle-as="json"
+                on-response="handleForgotPasswordResponse"
+                on-error="handleForgotPasswordError"
+                headers='{"Content-Type": "application/json"}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
-          url="[[APIEndPoint]]/user/resetpasswordcall"
-          body="{{resetpasswordParams}}"
-          method='POST'
-          id='resetpasswordQuery'
-          handle-as="json"
-          on-response="handleresetpasswordResponse"
-          on-error="handleresetpasswordError"
-          headers='{"Content-Type": "application/json"}'
-          debounce-duration="300"
-          loading='{{loading}}'>
+                url="[[APIEndPoint]]/user/resetpasswordcall"
+                body="{{resetpasswordParams}}"
+                method='POST'
+                id='resetpasswordQuery'
+                handle-as="json"
+                on-response="handleresetpasswordResponse"
+                on-error="handleresetpasswordError"
+                headers='{"Content-Type": "application/json"}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
-        
+
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{isAuthMessageMode(displayMode)}}'>
@@ -237,125 +294,130 @@
 
         <template is='dom-if' if='{{!isAuthMessageMode(displayMode)}}'>
             <div id='containerr' class="layout vertical flex">
-                
+
                 <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
-                
-                <div id='logoContainer' class="layout vertical">
-                    <div class="self-center" id='logo'></div>            
-                    <div id='tagline' class="self-center"><p>Invest in your Ideas</p></div> 
-                </div>
 
-                <paper-card class="self-center" heading="{{aRsrc.headerText}}">
-
+                <paper-card class="self-center"
+                            image="../../../resources/images/Logo.png">
+                    <div class="header-container">
+                        <!--<h3 class="header-text">{{aRsrc.headerText}}</h3>-->
+                        <h3 class="header-text">Aims<span class="header-quant">Quant</span></h3>
+                        <h5 class="sub-header">Invest in your ideas</h5>
+                    </div>
                     <div class="dialog-fields" class="layout vertical">
 
                         <template is="dom-if" if="{{isSignupMode(displayMode)}}">
 
                             <paper-input
-                                id='firstNameInput'
-                                class='input-fields'
-                                label="{{aRsrc.firstNameFieldLabel}}"
-                                value="{{firstName}}"
-                                error-message="{{firstNameErrorMessage}}"
-                                type="text"
-                                on-focus='onUserFirstNameFocus'
-                                on-blur='onUserFirstNameFocusOut'
-                                no-label-float
-                                required
-                                max-length=15
-                                invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'
-                                on-keydown="checkForKeys">  
+                                    id='firstNameInput'
+                                    class='input-fields'
+                                    label="{{aRsrc.firstNameFieldLabel}}"
+                                    value="{{firstName}}"
+                                    error-message="{{firstNameErrorMessage}}"
+                                    type="text"
+                                    on-focus='onUserFirstNameFocus'
+                                    on-blur='onUserFirstNameFocusOut'
+                                    no-label-float
+                                    required
+                                    max-length=15
+                                    invalid='{{!isFirstNameValid(firstName, firstNameInFocus)}}'
+                                    on-keydown="checkForKeys">
                             </paper-input>
 
                             <paper-input
-                                id='lastNameInput'
-                                class='input-fields'
-                                label="{{aRsrc.lastNameFieldLabel}}"
-                                value="{{lastName}}"
-                                error-message="{{lastNameErrorMessage}}"
-                                type="text"
-                                on-focus='onUserLastNameFocus'
-                                on-blur='onUserLastNameFocusOut'
-                                no-label-float
-                                required
-                                max-length=15
-                                invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'
-                                on-keydown="checkForKeys">
+                                    id='lastNameInput'
+                                    class='input-fields'
+                                    label="{{aRsrc.lastNameFieldLabel}}"
+                                    value="{{lastName}}"
+                                    error-message="{{lastNameErrorMessage}}"
+                                    type="text"
+                                    on-focus='onUserLastNameFocus'
+                                    on-blur='onUserLastNameFocusOut'
+                                    no-label-float
+                                    required
+                                    max-length=15
+                                    invalid='{{!isLastNameValid(lastName, lastNameInFocus)}}'
+                                    on-keydown="checkForKeys">
                             </paper-input>
 
                         </template>
 
                         <template is='dom-if' if=[[!isresetpasswordMode(displayMode)]]>
                             <gold-email-input
-                                id='userEmailInput'
-                                class='input-fields'
-                                auto-complete='on'
-                                label="{{aRsrc.userEmailFieldLabel}}"
-                                value="{{userEmail}}"
-                                error-message="{{userEmailErrorMessage}}"
-                                no-label-float
-                                required
-                                on-focus='onUserEmailFocus'
-                                on-blur='onUserEmailFocusOut'
-                                invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'
-                                on-keydown="checkForKeys">    
+                                    id='userEmailInput'
+                                    class='input-fields'
+                                    auto-complete='on'
+                                    label="{{aRsrc.userEmailFieldLabel}}"
+                                    value="{{userEmail}}"
+                                    error-message="{{userEmailErrorMessage}}"
+                                    no-label-float
+                                    required
+                                    on-focus='onUserEmailFocus'
+                                    on-blur='onUserEmailFocusOut'
+                                    invalid='{{!isUserEmailValid(userEmail, userEmailInFocus)}}'
+                                    on-keydown="checkForKeys">
                             </gold-email-input>
                         </template>
 
                         <template is='dom-if' if="{{!isForgotPasswordMode(displayMode)}}">
                             <paper-input
-                                id='passwordInput'
-                                class='input-fields'
-                                label="{{aRsrc.passwordFieldLabel}}"
-                                value="{{password}}"
-                                error-message="{{passwordErrorMessage}}"
-                                type="password"
-                                minLength=8
-                                no-label-float
-                                required
-                                on-blur="onPasswordFocusOut"
-                                on-focus="onPasswordFocus"
-                                invalid='{{!isPasswordValid(password,passwordInFocus)}}'
-                                on-keydown="checkForKeys">
+                                    id='passwordInput'
+                                    class='input-fields'
+                                    label="{{aRsrc.passwordFieldLabel}}"
+                                    value="{{password}}"
+                                    error-message="{{passwordErrorMessage}}"
+                                    type="password"
+                                    minLength=8
+                                    no-label-float
+                                    required
+                                    on-blur="onPasswordFocusOut"
+                                    on-focus="onPasswordFocus"
+                                    invalid='{{!isPasswordValid(password,passwordInFocus)}}'
+                                    on-keydown="checkForKeys">
                             </paper-input>
                         </template>
 
                         <template is="dom-if" if="{{isSignupOrResetMode(displayMode)}}">
                             <paper-input
-                                id='confirmPasswordInput'
-                                class='input-fields'
-                                label="{{aRsrc.confirmPasswordFieldLabel}}"
-                                value="{{confirmPassword}}"
-                                error-message="{{confirmPasswordErrorMessage}}"
-                                type="password"
-                                no-label-float
-                                required
-                                on-focus="onConfirmPasswordFocus"
-                                on-blur="onConfirmPasswordFocusOut"
-                                invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'
-                                on-keydown="checkForKeys"></paper-input>
+                                    id='confirmPasswordInput'
+                                    class='input-fields'
+                                    label="{{aRsrc.confirmPasswordFieldLabel}}"
+                                    value="{{confirmPassword}}"
+                                    error-message="{{confirmPasswordErrorMessage}}"
+                                    type="password"
+                                    no-label-float
+                                    required
+                                    on-focus="onConfirmPasswordFocus"
+                                    on-blur="onConfirmPasswordFocusOut"
+                                    invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'
+                                    on-keydown="checkForKeys"></paper-input>
                         </template>
 
+
+
+                        <paper-button raised class="signinButton center-justified horizontal layout"
+                                      on-tap="onInvokeAction">{{actionButtonLabel}}
+                        </paper-button>
+
+                    </div>
+
+                    <div class$="footer {{displayMode}} ">
                         <template is="dom-if" if="{{isSigninMode(displayMode)}}">
-                            <div class="forgot-password">{{aRsrc.resetpasswordText}}
-                                <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap">{{aRsrc.resetpasswordLinkText}}
+                            <div class="forgot-password">
+                                <a href="javascript:void(0);" on-tap="onForgotPasswordLinkTap"><span class="footer-text">FORGOT PASSWORD</span>
                                 </a>
                             </div>
 
                         </template>
-
-                        <paper-button raised class="signinButton center-justified horizontal layout" on-tap="onInvokeAction">{{actionButtonLabel}}
-                        </paper-button>
-
+                        <template is="dom-if" if="{{isSignupOrResetMode(displayMode)}}">
+                            <span class="footer-text">{{aRsrc.footerText}}</span>
+                        </template>
+                        <a href="javascript:void(0);" class="footer-link" on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
+                        </a>
                     </div>
-                
-                <div class="footer center-justified horizontal layout">{{aRsrc.footerText}}
-                    <a href="javascript:void(0);" on-tap="onFooterLinkTap">{{aRsrc.footerLinkText}}
-                    </a>
-                </div>
 
-                <div class='actionFailed self-center'>[[actionFailedMessage]]</div>
-                
+                    <div class='actionFailed self-center'>[[actionFailedMessage]]</div>
+
                 </paper-card>
 
                 <div class="flex"></div>
@@ -371,9 +433,9 @@
             signin: 'signin',
             signup: 'signup',
             forgotPassword: 'forgotPassword',
-            signout:'signout',
-            resetpassword:'resetpassword',
-            authMessage:'authMessage',
+            signout: 'signout',
+            resetpassword: 'resetpassword',
+            authMessage: 'authMessage',
         };
 
         Polymer({
@@ -435,7 +497,7 @@
                     value: false
                 },
 
-            
+
                 confirmPasswordInFocus: {
                     type: Boolean,
                     value: false
@@ -467,15 +529,15 @@
                     value: ""
                 },
 
-                
+
                 confirmPasswordErrorMessage: {
                     type: String,
                     value: ""
                 },
 
-                signoutMessage:{
-                    type:String,
-                    value:'',
+                signoutMessage: {
+                    type: String,
+                    value: '',
                 },
 
                 rememberMe: {
@@ -503,54 +565,54 @@
                     computed: 'computeSignupBody(firstName, lastName, userEmail, password)',
                 },
 
-                forgotPasswordParams:{
-                    type:Object,
-                    computed:'computeForgotPasswordParams(userEmail)',
+                forgotPasswordParams: {
+                    type: Object,
+                    computed: 'computeForgotPasswordParams(userEmail)',
                 },
 
-                resetpasswordParams:{
-                    type:Object,
-                    computed:'computeresetpasswordParams(password, confirmPassword, resetcode)'
+                resetpasswordParams: {
+                    type: Object,
+                    computed: 'computeresetpasswordParams(password, confirmPassword, resetcode)'
                 },
 
-                actionFailedMessage:{
-                    type:String,
-                    value:'',
+                actionFailedMessage: {
+                    type: String,
+                    value: '',
                 },
 
-                aimsquant:{
-                    type:Object,
-                    value:{},
-                    notify:true,
+                aimsquant: {
+                    type: Object,
+                    value: {},
+                    notify: true,
                 },
 
                 aRsrc: Object,
 
                 resetcode: String,
-                APIEndPoint:String,
+                APIEndPoint: String,
                 active: Boolean,
-                routeData:Object,
+                routeData: Object,
                 queryParams: Object,
-                loading:Boolean,
+                loading: Boolean,
 
             },
 
-            observers:['_activeChanged(active, routeData, queryParams)'],
+            observers: ['_activeChanged(active, routeData, queryParams)'],
 
             /**
-           * Resource strings. If you do I18N this will make sense. If not, just run with it :~)
-           * Changing these after creation time will have no _predictable_ effect unless you call #updateMessageStrings() afterwords.
-           * If you are doing I18N you should just replace this value on this component's prototype. If you _really_ care about performance lots you might want
-           * to replace the below with an empty object initializer: "rsrc: {},"
-           *
-           * @attribute rsrc
-           * @type Object
-           */
+             * Resource strings. If you do I18N this will make sense. If not, just run with it :~)
+             * Changing these after creation time will have no _predictable_ effect unless you call #updateMessageStrings() afterwords.
+             * If you are doing I18N you should just replace this value on this component's prototype. If you _really_ care about performance lots you might want
+             * to replace the below with an empty object initializer: "rsrc: {},"
+             *
+             * @attribute rsrc
+             * @type Object
+             */
             rsrc: {
                 signup: {
                     headerText: "Sign up",
                     footerText: "Already have an account?",
-                    footerLinkText: " Log in here ",
+                    footerLinkText: "LOGIN",
                     firstNameFieldLabel: "First Name",
                     lastNameFieldLabel: "Last Name",
                     userEmailFieldLabel: "Email",
@@ -568,7 +630,7 @@
                 signin: {
                     headerText: "Sign in",
                     footerText: "Don't have an account? ",
-                    footerLinkText: " Sign up now",
+                    footerLinkText: " SIGN UP",
                     userEmailFieldLabel: "Email",
                     firstNameErrorMessage: "Please enter a valid first name",
                     lastNameErrorMessage: "Please enter a valid last name",
@@ -604,31 +666,30 @@
                     confirmPasswordErrorMessage: "Passwords don't match",
                     actionButtonLabel: "Send Request",
                     actionButtonInProgressLabel: "Sending...",
-                    
+
                 },
 
             },
 
-            attached: function() {
+            attached: function () {
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
+            _activeChanged: function (active, routeData, queryParams) {
 
-            _activeChanged: function(active, routeData, queryParams) {
-                
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
-                    if(this.$.authItem.checkHasToken() && this.displayMode != displayModes.resetpassword) {
-                        this.fire('rt-changed',{route:'/dashboard'});
+                    if (this.$.authItem.checkHasToken() && this.displayMode != displayModes.resetpassword) {
+                        this.fire('rt-changed', {route: '/dashboard'});
                         return;
                     }
 
-                    if (this.displayMode != displayModes.signin && 
-                        this.displayMode != displayModes.signup &&
-                        this.displayMode != displayModes.forgotPassword &&
-                        this.displayMode != displayModes.signout && 
-                        this.displayMode != displayModes.resetpassword &&
-                        this.displayMode != displayModes.authMessage) {
-                        
+                    if (this.displayMode != displayModes.signin &&
+                            this.displayMode != displayModes.signup &&
+                            this.displayMode != displayModes.forgotPassword &&
+                            this.displayMode != displayModes.signout &&
+                            this.displayMode != displayModes.resetpassword &&
+                            this.displayMode != displayModes.authMessage) {
+
                         this.displayMode = displayModes.signin;
                         this.signoutMessage = "";
                     }
@@ -637,95 +698,94 @@
                         this.signoutMessage = "Successfully signed out!!";
                         this.displayMode = displayModes.signin;
                     } else {
-                        this.signoutMessage ="";
+                        this.signoutMessage = "";
                     }
 
-                    if(this.displayMode == displayModes.resetpassword) {
+                    if (this.displayMode == displayModes.resetpassword) {
 
-                        if(this.queryParams && this.queryParams.resetcode) {
+                        if (this.queryParams && this.queryParams.resetcode) {
                             this.resetcode = this.queryParams.resetcode;
                         } else {
                             this.displayMode = displayModes.signin;
                         }
                     }
-                    
-                    if(this.displayMode != displayModes.authMessage){
-                        this.resetView();    
+
+                    if (this.displayMode != displayModes.authMessage) {
+                        this.resetView();
                     }
                 }
             },
 
-            resetView: function() {
+            resetView: function () {
                 this.clearFields();
                 this.clearErrorMessages();
                 this.updateMessageStrings();
-
             },
 
-            checkHasToken: function() {
+            checkHasToken: function () {
                 var x = localStorage.getItem('my-app-storage');
                 var user = JSON.parse(x).user;
-                if (user && user.token && user.token!="") {   
+                if (user && user.token && user.token != "") {
                     return true;
-                } 
+                }
 
                 return false;
             },
 
-            computeSigninBody: function(email, password) {
+            computeSigninBody: function (email, password) {
                 return {email: email, password: password}
             },
 
-            computeSignupBody: function(firstName, lastName, email, password) {
+            computeSignupBody: function (firstName, lastName, email, password) {
                 return {email: email, password: password, firstName: firstName, lastName: lastName}
             },
 
-            computeForgotPasswordParams: function(userEmail) {
+            computeForgotPasswordParams: function (userEmail) {
                 return {email: userEmail};
             },
 
-            computeresetpasswordParams: function(password, newPassword, resetcode) {
-                return {code:resetcode, password:password, newpassword:newPassword};
+            computeresetpasswordParams: function (password, newPassword, resetcode) {
+                return {code: resetcode, password: password, newpassword: newPassword};
             },
 
-            isSigninMode: function(displayMode) {
-                
+            isSigninMode: function (displayMode) {
+
                 return displayMode == displayModes.signin;
             },
 
-            isSignupMode: function(displayMode) {
-               
+            isSignupMode: function (displayMode) {
+
                 return displayMode == displayModes.signup;
             },
 
-            isSignupOrResetMode: function(displayMode) {
-                
+            isSignupOrResetMode: function (displayMode) {
+
                 return displayMode == displayModes.signup || displayMode == displayModes.resetpassword;
             },
 
-            isForgotPasswordMode: function(displayMode) {
-                
+            isForgotPasswordMode: function (displayMode) {
+
                 return displayMode == displayModes.forgotPassword;
             },
 
-            isresetpasswordMode: function(displayMode) {
-                
+            isresetpasswordMode: function (displayMode) {
+
                 return displayMode == displayModes.resetpassword;
             },
 
-            isAuthMessageMode: function(displayMode) {
+            isAuthMessageMode: function (displayMode) {
                 return displayMode == displayModes.authMessage && this.active;
             },
 
-            onFooterLinkTap: function(e) {
+            onFooterLinkTap: function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 switch (this.displayMode) {
                     case displayModes.signin:
-                        this.fire('rt-changed',{route:'/user/signup'});
+                        this.fire('rt-changed', {route: '/user/signup'});
                         break;
                     case displayModes.signup:
-                        this.fire('rt-changed',{route:'/user/signin'});
+                        this.fire('rt-changed', {route: '/user/signin'});
                         break;
                     case displayModes.forgotPassword:
                         this.setDisplayMode(displayModes.signin);
@@ -738,18 +798,18 @@
                 }
             },
 
-            onForgotPasswordLinkTap: function() {
+            onForgotPasswordLinkTap: function () {
                 this.setDisplayMode(displayModes.forgotPassword);
             },
 
-            setDisplayMode: function(mode) {
+            setDisplayMode: function (mode) {
                 this.displayMode = mode;
                 this.clearErrorMessages();
                 this.updateMessageStrings();
                 this.clearFields();
             },
 
-            clearFields: function() {
+            clearFields: function () {
                 this.userEmail = '';
                 this.password = '';
                 this.confirmPassword = '';
@@ -758,45 +818,45 @@
                 this.acceptPolicy = true;
             },
 
-            clearErrorMessages: function() {
+            clearErrorMessages: function () {
                 this.clearFields();
                 this.actionFailedMessage = '';
                 this.passwordErrorMessage = '';
                 this.newPasswordErrorMessage = '';
                 this.confirmPasswordErrorMessage = '';
                 this.userEmailErrorMessage = '';
-                this.firstNameErrorMessage='';
-                this.lastNameErrorMessage='';
+                this.firstNameErrorMessage = '';
+                this.lastNameErrorMessage = '';
                 this.userEmailInFocus = !this.userEmailInFocus;
                 this.passwordInFocus = !this.passwordInFocus;
                 this.confirmPasswordInFocus = !this.confirmPasswordInFocus;
             },
 
-            isConfirmPasswordValid: function(confirmPassword, confirmPasswordInFocus) {
+            isConfirmPasswordValid: function (confirmPassword, confirmPasswordInFocus) {
                 return confirmPasswordInFocus | this.confirmPasswordValid | confirmPassword == '';
             },
 
-            isFirstNameValid: function(firstName, firstNameInFocus) {       
-                return firstNameInFocus | firstName=='' | this.firstNameValid;
+            isFirstNameValid: function (firstName, firstNameInFocus) {
+                return firstNameInFocus | firstName == '' | this.firstNameValid;
             },
 
-            isLastNameValid: function(lastName, lastNameInFocus) {
-                return lastNameInFocus | lastName=='' | this.lastNameValid;
+            isLastNameValid: function (lastName, lastNameInFocus) {
+                return lastNameInFocus | lastName == '' | this.lastNameValid;
             },
 
-            isPasswordValid: function(password, passwordInFocus) {
+            isPasswordValid: function (password, passwordInFocus) {
                 return passwordInFocus | password == '' | this.passwordValid;
             },
 
-            isNewPasswordValid: function(newPassword, newPasswordInFocus) {
+            isNewPasswordValid: function (newPassword, newPasswordInFocus) {
                 return newPasswordInFocus | newPassword == '' | this.newPasswordValid;
             },
 
-            isUserEmailValid: function(userEmail, userEmailInFocus) {
+            isUserEmailValid: function (userEmail, userEmailInFocus) {
                 return userEmailInFocus | userEmail == '' | this.userEmailValid;
             },
 
-            updateMessageStrings: function() {
+            updateMessageStrings: function () {
                 this.aRsrc = this.rsrc[this.displayMode];
                 this.headerText = this.aRsrc.headerText;
                 this.actionButtonLabel = this.aRsrc.actionButtonLabel;
@@ -809,9 +869,9 @@
 
             },
 
-            updateValidity: function() {
+            updateValidity: function () {
 
-                if (this.displayMode !=displayModes.resetpassword) {
+                if (this.displayMode != displayModes.resetpassword) {
                     this.$$('#userEmailInput').invalid = false;
                 }
 
@@ -830,84 +890,84 @@
                 }
 
                 if (this.displayMode != displayModes.resetpassword) {
-                     if (this.$$('#confirmPasswordInput')) {
+                    if (this.$$('#confirmPasswordInput')) {
                         this.$$('#confirmPasswordInput').invalid = false;
                     }
                 }
 
             },
 
-            onUserLastNameFocusOut: function() {
+            onUserLastNameFocusOut: function () {
 
                 this.lastNameValid = this.$$('#lastNameInput').validate();
                 this.lastNameInFocus = false;
             },
 
-            onUserLastNameFocus: function() {
+            onUserLastNameFocus: function () {
                 this.lastNameInFocus = true;
-            },            
+            },
 
-            onUserFirstNameFocusOut: function() {
+            onUserFirstNameFocusOut: function () {
                 this.firstNameValid = this.$$('#firstNameInput').validate();
                 this.firstNameInFocus = false;
             },
 
-            onUserFirstNameFocus: function() {
+            onUserFirstNameFocus: function () {
                 this.firstNameInFocus = true;
             },
 
-            onUserEmailFocusOut: function() {
+            onUserEmailFocusOut: function () {
                 this.userEmailValid = this.$$('#userEmailInput').validate();
                 this.userEmailInFocus = false;
             },
 
-            onUserEmailFocus: function() {
-                this.signoutMessage ='';
+            onUserEmailFocus: function () {
+                this.signoutMessage = '';
                 this.actionFailedMessage = '';
                 this.userEmailInFocus = true;
             },
 
-            onPasswordFocusOut: function() {
+            onPasswordFocusOut: function () {
                 this.passwordValid = this.$$('#passwordInput').validate();
                 this.confimPassworValid = this.confirmPassword != ''
-                    ? this.checkPasswordsMatch()
-                    : true;
+                        ? this.checkPasswordsMatch()
+                        : true;
 
                 this.passwordInFocus = false;
             },
 
-            onPasswordFocus: function() {
+            onPasswordFocus: function () {
                 this.actionFailedMessage = '';
                 this.passwordInFocus = true;
             },
 
-            onNewPasswordFocusOut: function() {
+            onNewPasswordFocusOut: function () {
                 this.newPasswordValid = this.$$('#newPasswordInput').validate();
-                
+
                 this.newPasswordValid = this.password != ''
-                    ? (!this.checkPasswordsMatch())
-                    : true;
+                        ? (!this.checkPasswordsMatch())
+                        : true;
                 this.newPasswordInFocus = false;
             },
 
-            onNewPasswordFocus: function() {
+            onNewPasswordFocus: function () {
                 this.actionFailedMessage = '';
                 this.newPasswordInFocus = true;
             },
 
-            onConfirmPasswordFocusOut: function() {
+            onConfirmPasswordFocusOut: function () {
                 this.actionFailedMessage = '';
 
                 this.confirmPasswordValid = this.checkPasswordsMatch();
                 this.confirmPasswordInFocus = false;
             },
 
-            onConfirmPasswordFocus: function() {
+            onConfirmPasswordFocus: function () {
                 this.actionFailedMessage = '';
                 this.confirmPasswordInFocus = true;
             },
 
-            checkPasswordsMatch: function() {
+            checkPasswordsMatch: function () {
                 if (this.displayMode == displayModes.signup) {
                     return this.password == this.confirmPassword;
                 } else if (this.displayMode == displayModes.resetpassword) {
@@ -917,7 +977,7 @@
                 }
             },
 
-            checkvalidity: function(firstNameValid, lastNameValid, userEmailValid, passwordValid, confirmPasswordValid, acceptPolicy, displayMode) {
+            checkvalidity: function (firstNameValid, lastNameValid, userEmailValid, passwordValid, confirmPasswordValid, acceptPolicy, displayMode) {
 
                 var valid = true;
 
@@ -944,50 +1004,50 @@
                 return valid;
             },
 
-            handleLoginResponse: function(data) {
-            
-                this.fire('update-token',{user:data.detail.response});
+            handleLoginResponse: function (data) {
+
+                this.fire('update-token', {user: data.detail.response});
                 this.actionSucceeded();
                 this.enableAll();
             },
 
-            handleLoginError: function(data) {
+            handleLoginError: function (data) {
                 this.clearErrorMessages();
                 this.actionFailed(data.detail.request.response);
                 this.enableAll();
             },
 
-            handleSignupResponse: function(e) {
+            handleSignupResponse: function (e) {
                 this.enableAll();
-                this.fire('rt-changed',{route:'/user/authMessage?mode=activationPending&emailId=' + this.userEmail+'&name='+this.firstName+" "+this.lastName});
+                this.fire('rt-changed', {route: '/user/authMessage?mode=activationPending&emailId=' + this.userEmail + '&name=' + this.firstName + " " + this.lastName});
             },
 
-            handleSignupError: function(e) {
+            handleSignupError: function (e) {
                 this.actionFailed("Email address already registered!! Sign up with a different email.");
                 this.clearFields();
                 this.enableAll();
             },
 
-            handleForgotPasswordResponse: function(e) {
+            handleForgotPasswordResponse: function (e) {
                 this.enableAll();
-                this.fire('rt-changed',{route:'/user/authMessage?mode=forgotpassword&emailId=' + this.userEmail});
+                this.fire('rt-changed', {route: '/user/authMessage?mode=forgotpassword&emailId=' + this.userEmail});
             },
 
-            handleForgotPasswordError: function(e) {
+            handleForgotPasswordError: function (e) {
                 this.enableAll();
             },
 
-            handleresetpasswordResponse: function(e) {
+            handleresetpasswordResponse: function (e) {
                 this.enableAll();
-                this.fire('rt-changed',{route:'/user/authMessage?mode=reset&emailId=' + this.userEmail});
+                this.fire('rt-changed', {route: '/user/authMessage?mode=reset&emailId=' + this.userEmail});
             },
 
-            handleresetpasswordError: function(e) {
+            handleresetpasswordError: function (e) {
                 this.enableAll();
                 //this.errorMessage = ""
             },
 
-            onInvokeAction: function() {
+            onInvokeAction: function () {
 
                 this.updateValidity();
                 if (!this.checkvalidity(this.firstNameValid, this.lastNameValid, this.userEmailValid, this.passwordValid, this.confirmPasswordValid, this.acceptPolicy, this.displayMode)) {
@@ -1015,7 +1075,7 @@
                 }
 
                 this.disableAll();
-                
+
                 switch (this.displayMode) {
                     case displayModes.signin:
                         this.$.login.generateRequest();
@@ -1035,7 +1095,7 @@
                 }
             },
 
-            enableAll: function() {
+            enableAll: function () {
                 this.$$('.signinButton').disabled = false;
                 switch (this.displayMode) {
                     case displayModes.signin:
@@ -1059,7 +1119,7 @@
                 }
             },
 
-            disableAll: function() {
+            disableAll: function () {
                 this.$$('.signinButton').disabled = true;
 
                 switch (this.displayMode) {
@@ -1083,17 +1143,17 @@
                         break;
                 }
             },
-            
-            actionSucceeded: function() {
+
+            actionSucceeded: function () {
                 this.actionButtonLabel = this.aRsrc.actionButtonSuccessLabel;
                 this.clearErrorMessages();
             },
 
-            actionFailed: function(errorMessage) {
+            actionFailed: function (errorMessage) {
                 this.actionFailedMessage = errorMessage;
             },
 
-            checkForKeys: function(e) {
+            checkForKeys: function (e) {
                 if (e.keyCode === 13) {
                     this.$$('.signinButton').focus();
                     this.onInvokeAction();

@@ -23,9 +23,9 @@
   }
   
   paper-toolbar{
-      border-bottom: 1px solid teal;--#cc6666;
       height:8vh;
-      color:teal;
+      color:#546E7A;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
   
   paper-toolbar {
@@ -55,7 +55,9 @@
     .title #quant{
       color: #cc6666;
     }
-
+    #aims{
+        color:teal;
+    }
     #logo {
       background: url(../../../resources/images/Logo.png);
       background-size: cover;
@@ -85,7 +87,7 @@
           
           <template is ='dom-if' if="[[showMenu]]"> 
             <div on-tap='goToHome' class="title layout horizontal">
-            <p>Aims</p><p id='quant'>Quant</p>
+            <p id="aims">Aims</p><p id='quant'>Quant</p>
             <div id='logo'></div>
             </div>
           </template>

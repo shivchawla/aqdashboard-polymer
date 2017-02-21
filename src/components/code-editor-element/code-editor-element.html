@@ -87,27 +87,54 @@
     <script>
         Polymer({
             is: "code-editor-element",
-            properties:{
-                codeLeft:{
-                    type:String
+            properties: {
+                codeLeft: {
+                    type: String,
+                    //value: "var a = {\n propertyA: 12,\n propertyB: 123, \n propertyC: 321, \n}"
                 },
-                codeRight:{
-                    type:String
+                codeRight: {
+                    type: String,
+                    //value: "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}"
                 },
-                mode:{
-                    type:String,
-                    value:"ace/mode/javascript"
+                mode: {
+                    type: String,
+                    value: "ace/mode/javascript"
                 },
-                theme:{
-                    type:String,
-                    value:"ace/theme/github"
+                theme: {
+                    type: String,
+                    value: "ace/theme/github"
                 },
-                editable:{
-                    type:Boolean,
-                    value:false
+                editable: {
+                    type: Boolean,
+                    value: false
+                },
+                editors: {
+                    type: Object
                 }
             },
-            ready: function () {
+            init:function () {
+                var aceDiffer = this.getAceDiff();
+                this.editors = aceDiffer.getEditors();
+            },
+            setCodeLeft: function (codeLeft) {
+                this.codeLeft = codeLeft;
+                this.editors.left.setValue(this.codeLeft, 1);
+                // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
+                this.editors.left.getSession().setUndoManager(new ace.UndoManager());
+            },
+            setCodeRight: function (codeRight) {
+                this.codeRight = codeRight;
+                this.editors.right.setValue(this.codeRight, 1);
+                // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
+                this.editors.right.getSession().setUndoManager(new ace.UndoManager());
+            },
+            getCode: function () {
+                return {
+                    left: this.editors.left.getValue(),
+                    right: this.editors.right.getValue()
+                };
+            },
+            getAceDiff: function () {
                 var aceDiffer = new AceDiff({
                     mode: null,
                     theme: null,
@@ -143,27 +170,47 @@
                         copyLeftContainer: 'acediff-copy-left'
                     }
                 });
-                this.editors = aceDiffer.getEditors();
-            },
-            setCodeLeft: function (codeLeft) {
-                this.codeLeft = codeLeft;
-                this.editors.left.setValue(this.codeLeft, 1);
-                // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
-                this.editors.left.getSession().setUndoManager(new ace.UndoManager());
-            },
-            setCodeRight: function (codeRight) {
-                this.codeRight = codeRight;
-                this.editors.right.setValue(this.codeRight , 1);
-                // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
-                this.editors.right.getSession().setUndoManager(new ace.UndoManager());
-            },
-            getCode: function () {
-                return {
-                    left: this.editors.left.getValue(),
-                    right: this.editors.right.getValue()
-                };
+                return aceDiffer;
             }
-        })
+        });
+        function getAceDiff(mode, theme, editable) {
+            var aceDiffer = new AceDiff({
+                mode: null,
+                theme: null,
+                diffGranularity: 'broad',
+                showDiffs: true,
+                showConnectors: true,
+                maxDiffs: 5000,
+                left: {
+                    id: 'editor-left',
+                    content: null,
+                    mode: mode,
+                    theme: theme,
+                    editable: editable,
+                    copyLinkEnabled: true
+                },
+                right: {
+                    id: 'editor-right',
+                    content: null,
+                    mode: mode,
+                    theme: theme,
+                    editable: editable,
+                    copyLinkEnabled: true
+                },
+                classes: {
+                    gutterID: 'acediff-gutter',
+                    diff: 'acediff-diff',
+                    connector: 'acediff-connector',
+                    newCodeConnectorLink: 'acediff-new-code-connector-copy',
+                    newCodeConnectorLinkContent: '&#8594;',
+                    deletedCodeConnectorLink: 'acediff-deleted-code-connector-copy',
+                    deletedCodeConnectorLinkContent: '&#8592;',
+                    copyRightContainer: 'acediff-copy-right',
+                    copyLeftContainer: 'acediff-copy-left'
+                }
+            });
+            return aceDiffer;
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"
             charset="utf-8"></script>
