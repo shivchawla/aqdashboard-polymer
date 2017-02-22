@@ -490,25 +490,16 @@
         },
 
         _onMessage: function(e) { 
-            
             var backtestId = e.detail.backtestId;
+            
             if (!this.backtests[backtestId]) {
               return;
             }
               
+            this.backtests[backtestId].data = e.detail.data;            
+
             this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);
           
-            this.backtests[backtestId].data.push(e.detail);
-            /*var bulksent = this.backtests[backtestId].bulksent;
-            var subscription = this.backtests[backtestId].subscription;
-            var alldata = this.backtests[backtestId].data;    
-                 
-            if(subscription && !bulksent) {
-              this.fire('iron-signal',{name:'bulk-data', data:alldata});
-              this.backtests[backtestId].bulksent = true;
-            } else if (subscription){
-                this.fire('iron-signal',{name:'point-data', data:e.detail});
-            }*/
         },
 
         _onError: function(e) {

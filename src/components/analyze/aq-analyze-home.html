@@ -26,6 +26,7 @@
 			margin:0 auto;
 		    margin-top: 0px;
 		    color: #24293d; 
+		    overflow-y:scroll;
 	  	}
 
 	  	#dialog{
@@ -63,6 +64,7 @@
           	debounce-duration="300"
           	loading='{{strategyLoading}}'>
         </iron-ajax>
+
 		<iron-ajax
           	url="[[computeGetAllBacktestsUrl(strategyId)]]"
      	 	method='GET'
@@ -71,6 +73,7 @@
           	on-response="onGetAllBacktestsForStrategy"
           	on-error="onGetAllBacktestsForStrategyError"
           	headers='{{header}}'
+          	params='[[searchParams]]'
           	debounce-duration="500"
           	loading='{{backtestLoading}}'>
         </iron-ajax>
@@ -102,13 +105,16 @@
 					<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
 					<p>All Backtests for <i>{{strategyName}}</i></p>
+
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
+				
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 					</template>
 					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 						<div class="spacer"></div>
 					</template>
+
 					</div>
 				</template>
 
@@ -182,6 +188,21 @@
 					observer:'_dirtyBitChanged',
 				},
 
+				searchParams:{
+					type:Object,
+					value:{},
+				},
+
+				perPage:{
+					type:Number,
+					value:0,
+				},
+
+				currentPage:{
+					type:Number,
+					value:1,
+				},
+
     		}, 
     		
 			listeners: {
@@ -250,15 +271,24 @@
 			},
 			
 			onGetAllBacktestsForStrategy: function(data) {
-				this.backtests = data.detail.response;
+				
+				if(this.backtests.length == 0) {
+					this.backtests =  data.detail.response;
+				} else {
+					this.backtests.push(data.detail.response);
+				}
+
 				this.dirtyBit = 0;
 			},
 
-			onGetAllBacktestsForStrategyError: function(data) {
+			onGetAllBacktestsForStrategyError: function(err) {
 			},
 
 			onGetStrategy: function(data) {
 				this.strategyName = data.detail.response.name;
+				
+				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
+
 				this.$.getBacktestsQuery.generateRequest();
 			},
 
