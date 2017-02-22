@@ -1,4 +1,3 @@
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
@@ -17,108 +16,112 @@
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
 
 <dom-module id="aq-editor-home">
- 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
-  
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+
     <style>
-      
-      :host(.hidden) {
-        transition: none;
-        opacity: 0;
 
-      }
+        :host(.hidden) {
+            transition: none;
+            opacity: 0;
 
-      .header {
-      	border: 1px solid #9ecbda;--#d0d0d0;
-        --padding: 0 55px;
-        line-height: 56px;
-        font-size: 18px;
-        font-weight: bold;
-        background-color:#e3f6ed;--#9ecbda;--#90c3d4;--#acd2df;
-        min-width:600px;
+        }
 
-      }
+        .header {
+            border: 1px solid #9ecbda;
+            -- #d0d0d0;
+            --padding: 0 55px;
+            line-height: 56px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #e3f6ed;
+            -- #9ecbda;
+            -- #90c3d4;
+            -- #acd2df;
+            min-width: 600px;
 
-      :host([narrow-viewport]) .header .description {
-        display: none;
-      }
+        }
+        :host([narrow-viewport]) .header .description {
+            display: none;
+        }
 
-      :host(:not([narrow-viewport])) .header{
-        @apply(--layout-horizontal);
-      }
+        :host(:not([narrow-viewport])) .header {
+            @apply(--layout-horizontal);
+        }
 
-      :host([narrow-viewport]) .header{
-        @apply(--layout-horizontal);
-      }
+        :host([narrow-viewport]) .header {
+            @apply(--layout-horizontal);
+        }
 
-      :host([narrow-viewport]) .hea {
-        @apply(--layout-vertical);
-      }
+        :host([narrow-viewport]) .hea {
+            @apply(--layout-vertical);
+        }
 
+        :host([narrow-viewport]) .a,
+        :host([narrow-viewport]) .backtest {
+            @apply(--layout-horizontal);
+        }
 
-      :host([narrow-viewport]) .a,
-      :host([narrow-viewport]) .backtest {
-        @apply(--layout-horizontal);
-      }
+        .name {
+            min-width: 190px;
+            width: 36%;
+            font-weight: bold;
+            margin-right: 30px;
+            margin-left: 55px;
+        }
 
-      .name {
-        min-width:190px;
-        width:36%;
-        font-weight: bold;
-        margin-right: 30px;
-        margin-left:55px;
-      }
+        .description {
+            width: 36%;
+            min-width: 190px;
+            margin-right: 30px;
+            padding-left: 0px;
+        }
 
-      .description {
-      	width:36%;
-      	min-width: 190px;
-      	margin-right: 30px;
-      	padding-left: 0px;
-      }
+        .backtest {
+            --width: 250px;
+            min-width: 140px;
+        }
 
-      .backtest {
-      	--width: 250px;
-      	min-width: 140px;
-      }
+        .name .narrow {
+            display: none;
+        }
 
-      .name .narrow {
-        display: none;
-      }
+        :host([narrow-viewport]) .name .narrow {
+            display: inline;
+        }
 
-      :host([narrow-viewport])  .name .narrow {
-        display: inline;
-      }
+        .toolbar {
+            height: 60px;
+        }
 
-      .toolbar {
-      	height:60px;
-      }
+        #container {
+            margin: 0 auto;
+            color: #24293d;
+            width: 100%;
 
-      #container {
-      	margin:0 auto;
-      	margin-top: 20px;
-      	color: #24293d;
-      	width: 95%;
+        }
 
-      }
+        #actions aq-editor-home-elementmenu {
+            right: 5%;
+        }
 
-      #actions aq-editor-home-elementmenu {
-        right: 5%;
-      }
+        #ifsearch {
+            display: none;
+        }
 
-      #ifsearch {
-      	display: none;
-      }
-
-      a{
-        color:teal;
-        font-style: italic;
-      }
-
+        a {
+            color: teal;
+            font-style: italic;
+        }
+        .strategy-container{
+            width: 95%;
+            margin: 0 auto;
+        }
     </style>
 
-	<template>
-		<!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
+    <template>
+        <!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        <app-location route="{{route}}"  use-hash-as-path></app-location>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
         <iron-signals on-iron-signal-strategy-added='onStrategyAdded'></iron-signals>
 
         <iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
@@ -128,480 +131,480 @@
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
         <app-route
-            route="{{route}}"
-            pattern="/dashboard/editor"
-            query-params="{{queryParams}}">
+                route="{{route}}"
+                pattern="/dashboard/editor"
+                query-params="{{queryParams}}">
         </app-route>
 
         <iron-ajax
-              url=""
-              method='GET'
-              params="[[searchParam]]"
-              id='getStrategiesQuery'
-              handle-as="json"
-              on-response="onGetStrategiesResponse"
-              on-error="onGetStrategiesError"
-              headers='{{header}}'
-              debounce-duration="300"
-              loading='{{loading}}'>
+                url=""
+                method='GET'
+                params="[[searchParam]]"
+                id='getStrategiesQuery'
+                handle-as="json"
+                on-response="onGetStrategiesResponse"
+                on-error="onGetStrategiesError"
+                headers='{{header}}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
 
-        <iron-ajax	
-              url="[[computPostDeleteStrategyUrl(deleteId)]]"
-              method='DELETE'
-              id='deleteStrategyQuery'
-              handle-as="json"
-              on-response="onDeleteStrategyResponse"
-              on-error="onDeleteStrategyError"
-              headers='{{header}}'
-              debounce-duration="300">
+        <iron-ajax
+                url="[[computPostDeleteStrategyUrl(deleteId)]]"
+                method='DELETE'
+                id='deleteStrategyQuery'
+                handle-as="json"
+                on-response="onDeleteStrategyResponse"
+                on-error="onDeleteStrategyError"
+                headers='{{header}}'
+                debounce-duration="300">
         </iron-ajax>
 
         <!--template is='dom-if' if='{{isActive(active, subroute)}}'-->
 
-          <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
-          <template is='dom-if' if='{{!loading}}'>
+        <template is='dom-if' if='{{!loading}}'>
             <div id='container'>
-      	  		
-      	  		<aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
-
-      	  		<div id="ifsearch">
-      	  			<p>Strategy results for: 
-      	  				<i>"[[searchParam.search]]"</i>
-        				</p>
-      	  		</div>
-
-      		    <div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>
-      		      <div class="name">Name<span class="narrow">/Description</span></div>
-      		      <div class="description">Description</div>
-      		      <div class="backtest">#Backtests</div>
-      		    </div>
-                  
-      	    	<template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-        	    		<aq-editor-home-strategy-item	strategy-name = "[[item.name]]"
-        							num-backtest = "[[item.backtests]]"
-        							strategy-desc = "[[item.description]]"
-        							strategy-id = "[[item._id]]">
-        				  </aq-editor-home-strategy-item>	
-      	    	</template>
-
-              <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
-                <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
-              </template>
-      	
-      		    <aq-delete-dialog id ="dialog" heading="Delete Strategies"
-      		    						 message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"	
-      		    						 cancel="Cancel"
-      		    						 accept="OK">
-      	    	</aq-delete-dialog>
-
-      	    	<aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
-
-      	    	<aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
-      		    
-      		  </div>
-        </template> 
-    <!--/template-->
-		
-  </template>
-
-  <script>
-  	Polymer({
-		
-		is: 'aq-editor-home',
-		
-		properties: {
-			strategies: {
-				type: Array,
-			},
-			
-			color: { type: String },
-
-			checkedCount: {
-				type: Number,
-				value:0,
-			},
-
-			checkedItems: {
-				type:Object,
-				value:{},
-			},
-			
-			narrowViewport: {
-				type: Boolean,
-				reflectToAttribute: true
-			},
-
-			create: {
-				type:Number,
-				value:0,
-        observer:'_createChanged',
-			},
-
-      dirtyBit:{
-        type:Number,
-        value:1,
-      },
-
-			deleteId: String,
-
-			searchParam:Object,
-
-      active:{
-        type: Boolean,
-      },
-
-      routeData:Object,
-      queryParams:Object,
-      subroute:Object,
-      loading:Boolean,
-
-		},
-
-    //observers:['_activeChanged(subroute, queryParams)'],
-
-		attached: function() {
-      if(!this.$.authItem.checkHasToken()) {
-          this.fire('rt-changed',{route:'/user/signin'});
-          return;
-      } else if(this.dirtyBit == 1) {
-          this.fetchResults();
-      }
-
-      this.create = (this.queryParams) ? this.queryParams.create : 0;
-      if (this.create == 1){
-				this.fire('newClicked');
-			}
-		},
-
-    computPostDeleteStrategyUrl: function(deleteId) {
-        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        return APIEndPoint+'/strategy/'+deleteId;
-    },
-
-    onGetStrategiesResponse: function(data) {
-    	 this.strategies = data.detail.response;
-       
-       if(!this.searchParam || (this.searchParam && this.searchParam.search=="")){
-          this.dirtyBit = 0;
-       } else {
-          this.dirtyBit = 1;
-       }
-    },
-
-		onGetStrategiesError: function(data) {
-    },        
-
-		listeners: {
-			//'mouseover': '_mouseOver',
-			//'mouseleave': '_mouseLeave',
-			'deleteClicked':'openDeletionDialog',
-			'compareClicked':'openCompareDialog',
-			'previewClicked':'openPreview',
-			'analyzeClicked':'goToAnalyze',
-			'shareClicked':'goToShare',
-			'cloneClicked':'goToClone',
-			'editorClicked':'goToEditor',
-			//'create-action':'createStrategy',
-			'check-action':'checkStrategy',
-			'delete-action':'onDeletion',
-			'search-action':'onSearch',
-		},
-
-		_currentRowIndex: -1,
-		
-		_sharedActionMenu: null,
-		
-		_findAncestor: function (node, fn) {
-			while (node && fn.call(this, node)) {
-				node = node.parentNode;
-			}
-			return node;
-		},
-
-		_mouseOver: function(e) {
-			var row = this._findAncestor(e.target, function (node) {
-				return node != this && !node.classList.contains('row') && node.id !== 'actions';
-			});
-
-			if (row && row.classList.contains('row')) {
-					this._hideActions();
-					this._showActions(row);
-				
-			} else if (row.id !== 'actions') {
-					this._hideActions();
-			}
-		},
-		
-		_mouseLeave: function() {
-			this._hideActions();
-		},
-		
-		_showActions: function(row) {
-			var sharedActionMenu = this._sharedActionMenu;
-			var rowOffsetTop = row.offsetTop;
-			if (!sharedActionMenu) {
-				this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
-				this._sharedActionMenu.classList.add('hidden');
-				Polymer.dom(this.$$('#actions')).appendChild(this._sharedActionMenu);
-				sharedActionMenu = this._sharedActionMenu;
-			}
-			sharedActionMenu.iconsOnly = true;
-			//sharedActionMenu.strategyId = this.
-			sharedActionMenu.element = "aa";//this.elements[index].name;
-			sharedActionMenu.style.top = rowOffsetTop + 'px';
-			this._layoutIfNeeded(sharedActionMenu);
-			sharedActionMenu.classList.remove('hidden');
-			row.classList.add('hover');
-			//this._currentRowIndex = index;
-			this._currentRow = row;
-		},
-		
-		_hideActions: function() {
-			var row = this._currentRow;
-			var sharedActionMenu = this._sharedActionMenu;
-			if (row) {
-				if (sharedActionMenu) {
-					sharedActionMenu.classList.add('hidden');
-				}
-				row.classList.remove('hover');
-				this._currentRowIndex = -1;
-				this._currentRow = null;
-			}
-		},
-
-		_elementLink: function(name) {
-			return '/elements/' + name;
-		},
-
-		_getHeaderStyle: function(color) {
-		return 'background-color: ' + color + ';';
-		},
-
-		_elementsChanged: function() {
-			this.classList.add('hidden');
-			this.async(function() {
-				this.classList.remove('hidden');
-			}, 1);
-		},
-		
-		_layoutIfNeeded: function(el) {
-			return el.offsetTop;
-		},
-
-		openDeletionDialog: function() {
-			this.$$('#dialog').open();
-		},
-
-		openCompareDialog: function() {
-			this.$$('#strategyCompareDialog').open();
-		},
-
-		openPreview: function() {
-  			this.$$('#strategyPreviewDialog').open();
-		},
-
-		click: function() {
-			this.fire('rt-changed',{route:'/dashboard'});
-		},
-
-	 	goToAnalyze: function(e) {
-        
-    	if(!e.detail.id) {
-	 		  e.detail.id = this._currentRow.id;
-    	}
-    	
-    },
-
-    goToClone: function(e) {
-    	var strategyId = this._currentRow.id;
-
-    	for (i in this.strategies) {
-    		if(strategyId == this.strategies[i]._id) {
-    			e.detail["strategy"] = this.strategies[i]
-    			break;
-    		}
-    	}
-    	//Let the event propagate. It's handled in editor-main.   	
-    },
-
-    goToShare: function() {
-    	strategyId = this._currentRow.id;
-    	this.fire('rt-changed', {route:'/dashboard/community/create/'+strategyId+"?share=strategy"});
-    },
-
-    goToEditor: function(e) {
-    	var strategyId = e.detail.id;
-    	this.fire('rt-changed',{route:'/dashboard/editor/' + strategyId});
-    },
-
-    checkStrategy: function(e) {
-    	var checked = e.detail.checked;
-
-    	this.checkedItems[e.detail.id] = e.detail.checked;
-
-    	if (checked == true) {
-    		this.checkedCount += 1;
-    	} else {
-    		this.checkedCount -= 1;
-    	}
-    },
-
-    hasCheckedStrategies: function(checkedCount) {
-    	return checkedCount > 0;
-    },
-
-    getMessageSuffix: function(checkedCount) {
-    	return checkedCount > 1 ? "ies" :"y";
-    },
-
-    onSearch: function(e) {
-
-      if (!this.$.authItem.checkHasToken()) {
-          this.fire('rt-changed',{route:'/user/signin'});
-      }
-
-    	searchtext = e.detail.searchtext;
-    	
-    	if(searchtext!="") {
-    		this.$$('#ifsearch').style.display = 'block';
-    	} else {
-    		this.$$('#ifsearch').style.display = 'none';
-    	}
-
-      if(!this.searchParam && searchtext==""){
-        return;
-      } else {
-        this.searchParam = {};
-        this.set('searchParam.search',"");
-      }
-
-
-      if(this.searchParam.search==""  && searchtext=="" && this.dirtyBit == 0){
-        return;
-      }
-
-    	this.set('searchParam.search', searchtext);
-      this.fetchResults();
-
-    },
-
-    onDeletion: function() {
-    	//Send DELETE request to backend
-    	for (key in this.checkedItems) {
-    		for (i in this.strategies) {		
-    			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
-    				this.deleteId = this.strategies[i]._id;
-    				this.$.deleteStrategyQuery.generateRequest();
-    			}
-    		}
-		  }
-
-		this.deleteId = "";	 
-
-    },
-
-    onDeleteStrategyError: function() {
-
-    },
-
-    onDeleteStrategyResponse: function(data) {
-    	var idDeleted = data.detail.response.id;
-    	for (i in this.strategies) {	
-  			if (idDeleted == this.strategies[i]._id) {
-          this.splice('strategies', i, 1);
-          
-          if(this.strategies.length == 0) {
-            this.strategies = [];
-          }
-
-  				this.checkedCount -= 1;
-          this.dirtyBit = 1;
-  			}
-  		}
-  	},
-
-    _createChanged: function(nCreate, oCreate) {
-      if(nCreate=="1") {
-        this.fire('newClicked');
-        this.create = 0; 
-      }
-    },
-
-    fetchResults: function() {
-        if (this.$.authItem.checkHasToken()) { 
-          this.header = this.$.authItem.getHeader();
-          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-          this.$.getStrategiesQuery.url = APIEndPoint+'/strategy';
-          this.$.getStrategiesQuery.generateRequest();
-        }
-    },
-
-    hasTail: function(tail) {
-      if(tail && tail.path) {
-        return tail.path.length > 0;
-      }
-
-      return false;
-    },
-
-    isActive: function(active, subroute) {
-      return active && !this.hasTail(subroute);
-    },
-
-    _activeChanged: function(subroute, queryParams) {
-
-      console.log("Current Active: " + active);
-      if(active){
-        if(!this.$.authItem.checkHasToken()) {
-            this.fire('rt-changed',{route:'/user/signin'});
-            return;
-        }
-      }
-
-      if(active && !this.hasTail(subroute)) {
-
-        if(this.queryParams && this.queryParams.create) {
-          this.create = this.queryParams.create;
-        } else {
-          this.fire('close-action');
-        }
-
-        if (this.dirtyBit == 1 || !(this.dirtyBit+1)) {
-          this.set('strategies', []);
-          this.fetchResults();
-        }
-
-      } else {
-
-        this.checkedItems = {};
-        this.checkedCount = 0;
-      }
-    },
-
-    hasStrategies: function(strategies, searchParam) {
-        return (strategies && strategies.length > 0) || (searchParam && searchParam.search!="");
-    },
-
-    onStrategyAdded: function() {
-        this.dirtyBit = 1;
-    },
-
-    onBacktestDeleted: function() {
-        this.dirtyBit = 1;
-    },
-
-    onBacktestAdded: function() {
-        this.dirtyBit = 1;
-    },
-
-    onSetDirtyBit: function(e) {
-      this.dirtyBit = e.detail;
-    },
-
-	});
-  </script>
+
+                <aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
+
+                <div id="ifsearch">
+                    <p>Strategy results for:
+                        <i>"[[searchParam.search]]"</i>
+                    </p>
+                </div>
+
+                <!--<div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>-->
+                <!--<div class="name">Name<span class="narrow">/Description</span></div>-->
+                <!--<div class="description">Description</div>-->
+                <!--<div class="backtest">#Backtests</div>-->
+                <!--</div>-->
+                <div class="strategy-container">
+                    <template is="dom-repeat" items="{{strategies}}" id='strategyList'>
+                        <aq-editor-home-strategy-item strategy-name="[[item.name]]"
+                                                      num-backtest="[[item.backtests]]"
+                                                      strategy-desc="[[item.description]]"
+                                                      strategy-id="[[item._id]]">
+                        </aq-editor-home-strategy-item>
+                    </template>
+                </div>
+                <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
+                    <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
+                </template>
+
+                <aq-delete-dialog id="dialog" heading="Delete Strategies"
+                                  message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"
+                                  cancel="Cancel"
+                                  accept="OK">
+                </aq-delete-dialog>
+
+                <aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+
+                <aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
+
+            </div>
+        </template>
+        <!--/template-->
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'aq-editor-home',
+
+            properties: {
+                strategies: {
+                    type: Array,
+                },
+
+                color: {type: String},
+
+                checkedCount: {
+                    type: Number,
+                    value: 0,
+                },
+
+                checkedItems: {
+                    type: Object,
+                    value: {},
+                },
+
+                narrowViewport: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
+
+                create: {
+                    type: Number,
+                    value: 0,
+                    observer: '_createChanged',
+                },
+
+                dirtyBit: {
+                    type: Number,
+                    value: 1,
+                },
+
+                deleteId: String,
+
+                searchParam: Object,
+
+                active: {
+                    type: Boolean,
+                },
+
+                routeData: Object,
+                queryParams: Object,
+                subroute: Object,
+                loading: Boolean,
+
+            },
+
+            //observers:['_activeChanged(subroute, queryParams)'],
+
+            attached: function () {
+                if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                    return;
+                } else if (this.dirtyBit == 1) {
+                    this.fetchResults();
+                }
+
+                this.create = (this.queryParams) ? this.queryParams.create : 0;
+                if (this.create == 1) {
+                    this.fire('newClicked');
+                }
+            },
+
+            computPostDeleteStrategyUrl: function (deleteId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/strategy/' + deleteId;
+            },
+
+            onGetStrategiesResponse: function (data) {
+                this.strategies = data.detail.response;
+                console.log(this.strategies);
+                if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
+                    this.dirtyBit = 0;
+                } else {
+                    this.dirtyBit = 1;
+                }
+            },
+
+            onGetStrategiesError: function (data) {
+            },
+
+            listeners: {
+                //'mouseover': '_mouseOver',
+                //'mouseleave': '_mouseLeave',
+                'deleteClicked': 'openDeletionDialog',
+                'compareClicked': 'openCompareDialog',
+                'previewClicked': 'openPreview',
+                'analyzeClicked': 'goToAnalyze',
+                'shareClicked': 'goToShare',
+                'cloneClicked': 'goToClone',
+                'editorClicked': 'goToEditor',
+                //'create-action':'createStrategy',
+                'check-action': 'checkStrategy',
+                'delete-action': 'onDeletion',
+                'search-action': 'onSearch',
+            },
+
+            _currentRowIndex: -1,
+
+            _sharedActionMenu: null,
+
+            _findAncestor: function (node, fn) {
+                while (node && fn.call(this, node)) {
+                    node = node.parentNode;
+                }
+                return node;
+            },
+
+            _mouseOver: function (e) {
+                var row = this._findAncestor(e.target, function (node) {
+                    return node != this && !node.classList.contains('row') && node.id !== 'actions';
+                });
+
+                if (row && row.classList.contains('row')) {
+                    this._hideActions();
+                    this._showActions(row);
+
+                } else if (row.id !== 'actions') {
+                    this._hideActions();
+                }
+            },
+
+            _mouseLeave: function () {
+                this._hideActions();
+            },
+
+            _showActions: function (row) {
+                var sharedActionMenu = this._sharedActionMenu;
+                var rowOffsetTop = row.offsetTop;
+                if (!sharedActionMenu) {
+                    this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
+                    this._sharedActionMenu.classList.add('hidden');
+                    Polymer.dom(this.$$('#actions')).appendChild(this._sharedActionMenu);
+                    sharedActionMenu = this._sharedActionMenu;
+                }
+                sharedActionMenu.iconsOnly = true;
+                //sharedActionMenu.strategyId = this.
+                sharedActionMenu.element = "aa";//this.elements[index].name;
+                sharedActionMenu.style.top = rowOffsetTop + 'px';
+                this._layoutIfNeeded(sharedActionMenu);
+                sharedActionMenu.classList.remove('hidden');
+                row.classList.add('hover');
+                //this._currentRowIndex = index;
+                this._currentRow = row;
+            },
+
+            _hideActions: function () {
+                var row = this._currentRow;
+                var sharedActionMenu = this._sharedActionMenu;
+                if (row) {
+                    if (sharedActionMenu) {
+                        sharedActionMenu.classList.add('hidden');
+                    }
+                    row.classList.remove('hover');
+                    this._currentRowIndex = -1;
+                    this._currentRow = null;
+                }
+            },
+
+            _elementLink: function (name) {
+                return '/elements/' + name;
+            },
+
+            _getHeaderStyle: function (color) {
+                return 'background-color: ' + color + ';';
+            },
+
+            _elementsChanged: function () {
+                this.classList.add('hidden');
+                this.async(function () {
+                    this.classList.remove('hidden');
+                }, 1);
+            },
+
+            _layoutIfNeeded: function (el) {
+                return el.offsetTop;
+            },
+
+            openDeletionDialog: function () {
+                this.$$('#dialog').open();
+            },
+
+            openCompareDialog: function () {
+                this.$$('#strategyCompareDialog').open();
+            },
+
+            openPreview: function () {
+                this.$$('#strategyPreviewDialog').open();
+            },
+
+            click: function () {
+                this.fire('rt-changed', {route: '/dashboard'});
+            },
+
+            goToAnalyze: function (e) {
+
+                if (!e.detail.id) {
+                    e.detail.id = this._currentRow.id;
+                }
+
+            },
+
+            goToClone: function (e) {
+                var strategyId = this._currentRow.id;
+
+                for (i in this.strategies) {
+                    if (strategyId == this.strategies[i]._id) {
+                        e.detail["strategy"] = this.strategies[i]
+                        break;
+                    }
+                }
+                //Let the event propagate. It's handled in editor-main.
+            },
+
+            goToShare: function () {
+                strategyId = this._currentRow.id;
+                this.fire('rt-changed', {route: '/dashboard/community/create/' + strategyId + "?share=strategy"});
+            },
+
+            goToEditor: function (e) {
+                var strategyId = e.detail.id;
+                this.fire('rt-changed', {route: '/dashboard/editor/' + strategyId});
+            },
+
+            checkStrategy: function (e) {
+                var checked = e.detail.checked;
+
+                this.checkedItems[e.detail.id] = e.detail.checked;
+
+                if (checked == true) {
+                    this.checkedCount += 1;
+                } else {
+                    this.checkedCount -= 1;
+                }
+            },
+
+            hasCheckedStrategies: function (checkedCount) {
+                return checkedCount > 0;
+            },
+
+            getMessageSuffix: function (checkedCount) {
+                return checkedCount > 1 ? "ies" : "y";
+            },
+
+            onSearch: function (e) {
+
+                if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                }
+
+                searchtext = e.detail.searchtext;
+
+                if (searchtext != "") {
+                    this.$$('#ifsearch').style.display = 'block';
+                } else {
+                    this.$$('#ifsearch').style.display = 'none';
+                }
+
+                if (!this.searchParam && searchtext == "") {
+                    return;
+                } else {
+                    this.searchParam = {};
+                    this.set('searchParam.search', "");
+                }
+
+
+                if (this.searchParam.search == "" && searchtext == "" && this.dirtyBit == 0) {
+                    return;
+                }
+
+                this.set('searchParam.search', searchtext);
+                this.fetchResults();
+
+            },
+
+            onDeletion: function () {
+                //Send DELETE request to backend
+                for (key in this.checkedItems) {
+                    for (i in this.strategies) {
+                        if (key == this.strategies[i]._id && this.checkedItems[key] == true) {
+                            this.deleteId = this.strategies[i]._id;
+                            this.$.deleteStrategyQuery.generateRequest();
+                        }
+                    }
+                }
+
+                this.deleteId = "";
+
+            },
+
+            onDeleteStrategyError: function () {
+
+            },
+
+            onDeleteStrategyResponse: function (data) {
+                var idDeleted = data.detail.response.id;
+                for (i in this.strategies) {
+                    if (idDeleted == this.strategies[i]._id) {
+                        this.splice('strategies', i, 1);
+
+                        if (this.strategies.length == 0) {
+                            this.strategies = [];
+                        }
+
+                        this.checkedCount -= 1;
+                        this.dirtyBit = 1;
+                    }
+                }
+            },
+
+            _createChanged: function (nCreate, oCreate) {
+                if (nCreate == "1") {
+                    this.fire('newClicked');
+                    this.create = 0;
+                }
+            },
+
+            fetchResults: function () {
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.getStrategiesQuery.url = APIEndPoint + '/strategy';
+                    this.$.getStrategiesQuery.generateRequest();
+                }
+            },
+
+            hasTail: function (tail) {
+                if (tail && tail.path) {
+                    return tail.path.length > 0;
+                }
+
+                return false;
+            },
+
+            isActive: function (active, subroute) {
+                return active && !this.hasTail(subroute);
+            },
+
+            _activeChanged: function (subroute, queryParams) {
+
+                console.log("Current Active: " + active);
+                if (active) {
+                    if (!this.$.authItem.checkHasToken()) {
+                        this.fire('rt-changed', {route: '/user/signin'});
+                        return;
+                    }
+                }
+
+                if (active && !this.hasTail(subroute)) {
+
+                    if (this.queryParams && this.queryParams.create) {
+                        this.create = this.queryParams.create;
+                    } else {
+                        this.fire('close-action');
+                    }
+
+                    if (this.dirtyBit == 1 || !(this.dirtyBit + 1)) {
+                        this.set('strategies', []);
+                        this.fetchResults();
+                    }
+
+                } else {
+
+                    this.checkedItems = {};
+                    this.checkedCount = 0;
+                }
+            },
+
+            hasStrategies: function (strategies, searchParam) {
+                return (strategies && strategies.length > 0) || (searchParam && searchParam.search != "");
+            },
+
+            onStrategyAdded: function () {
+                this.dirtyBit = 1;
+            },
+
+            onBacktestDeleted: function () {
+                this.dirtyBit = 1;
+            },
+
+            onBacktestAdded: function () {
+                this.dirtyBit = 1;
+            },
+
+            onSetDirtyBit: function (e) {
+                this.dirtyBit = e.detail;
+            },
+
+        });
+    </script>
 </dom-module>
 
  

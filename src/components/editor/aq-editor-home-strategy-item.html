@@ -1,148 +1,169 @@
-
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<dom-module id='aq-editor-home-strategy-item'>
 
-<dom-module id = 'aq-editor-home-strategy-item'>
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
-  
-	<style>
-
-		:host([narrow-viewport]) .strategy-name ,
-      	:host([narrow-viewport]) .strategy-desc {
-        	@apply(--layout-vertical);
-      	}
-
-		:host(not([narrow-viewport])) .strategy-name ,
-      	:host(not([narrow-viewport])) .strategy-desc {
-        	@apply(--layout-horizontal);
-      	}
-
-	    .row {
-	        --border-bottom: 1px solid #e5e5e5;
-	        border: 1px solid #9ecbda;
-	        border-top: none;
-	        background-color: white;
-	        color:#24293d;
-	      }
+    <style>
 
         .row {
-	        box-sizing: border-box;
-	        overflow: hidden;
-	        font-weight: 400;
-	        font-size: 13px;
-	        min-width: 600px;
-	    }
+            display: flex;
+            flex-direction: column;
+            --border-bottom: 1px solid #e5e5e5;
+            background-color: white;
+            color: #24293d;
+            box-sizing: border-box;
+            overflow: hidden;
+            font-weight: 400;
+            font-size: 13px;
+            min-width: 600px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease-in-out;
+            border-radius: 2px;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 1;
 
-     	.row paper-checkbox {
-	        box-sizing: border-box; 
-	        cursor: pointer;
-	        margin:15px;
+        }
+
+        .row:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .row paper-checkbox {
+            box-sizing: border-box;
+            cursor: pointer;
+            margin: 15px;
         }
 
         paper-checkbox {
-	        --paper-checkbox-checked-color: #cc6666;--#24293d; --#99ced4;
+            --paper-checkbox-checked-color: #cc6666;
+            -- #24293d;
+            -- #99ced4;
+            z-index: 10;
         }
-	    
-        .row.hover {
-	        background:#bbdae5;
-	    }
-   
-        .strategy-name {
-	        width:36%;
-	        min-width:190px;
-	        --font-weight: bold;
-	        --max-width: 250px;
-	        margin-right: 30px;
-	    }
 
-	    .strategy-name span:hover{
-	    	text-decoration: underline;
-	    	cursor: pointer;
-	    }
+        .row-upper-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .strategy-bt {
+            position: absolute;
+            right: 10px;
+            margin-top: 15px;
+            z-index: 20;
+            cursor: pointer;
+        }
 
         .strategy-desc {
-	      	width:36%;
-	      	--width: 350px;   	
-	      	margin-right:30px;
-	      	min-width:190px;
-
-	    }
-
-	    .strategy-bt{
-	    	min-width: 150px;
-	    }
-
-	    .strategy-bt span {
-	    	margin-left: 30px;
-	    }
-
-        .strategy-bt:hover {
-	      	cursor: pointer;
-	    	text-decoration: underline;
+            width: 100%;
+            position: relative;
+            margin-bottom: 15px;
         }
 
-
-        .strategy-name .narrow {
-	        display: none;
+        .strategy-created-date {
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+            margin-top: 15px;
         }
 
+        .strategy-desc-text {
+            margin-left: 55px;
 
-	    .row:hover {
-	    	background:#e3f6ed;--#bbdae5;
-	    }
+        }
 
-	    
- 
-	</style>
+        .bar {
+            height: 100%;
+            width: 5px;
+            background-color: #fff;
+            position: absolute;
+            margin-right: 10px;
+            transition: all 0.3s ease-in-out;
+        }
 
-	<template>
-		<div id$="[[strategyId]]" class="row layout horizontal">
-	      	<paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
-	          <div class="strategy-name self-center"><span on-click = 'goToEditor'>[[strategyName]]</span></div>  
-	          <div class="strategy-desc self-center">[[strategyDesc]]</div>
-	          
-          		<div on-click='goToAnalyze' class="strategy-bt self-center"><span>[[numBacktest]]</span></div>
-	         
+        .strategy-name {
+            z-index: 20;
+            cursor: pointer;
+        }
 
+        iron-icon {
+            position: absolute;
+            right: 15px;
+
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+        paper-button{
+            width: 245px;
+            border: none;
+        }
+    </style>
+
+    <template>
+        <div id$="[[strategyId]]" class="row">
+
+            <div  class="row-upper-container">
+                <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
+                <div class="strategy-name self-center"><span on-click='goToEditor'>[[strategyName]]</span></div>
+                <div class="strategy-created-date"><span>Created At 09/01/2017 9:53PM</span></div>
+                <!--<div on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span></div>-->
+                <!--<iron-icon icon="arrow-forward" on-click='goToAnalyze' ></iron-icon>-->
+                <paper-button on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span>
+                    <iron-icon icon="arrow-forward"></iron-icon>
+                </paper-button>
+            </div>
+            <div class="strategy-desc"><span class="strategy-desc-text">[[strategyDesc]]</span></div>
+            <div class="bar"></div>
         </div>
-	</template>
 
-	<script>
-		Polymer({
-			is:'aq-editor-home-strategy-item',
-			
-			properties: {
-				strategyName: {
-					type:String,
-				},
+    </template>
 
-				strategyDesc: {
-					type:String,
-				},
+    <script>
+        Polymer({
+            is: 'aq-editor-home-strategy-item',
 
-				numBacktest: {
-					type:Number,
-				},
+            properties: {
+                strategyName: {
+                    type: String,
+                },
 
-				strategyId :String,
-			},
+                strategyDesc: {
+                    type: String,
+                },
 
-			goToEditor: function() {
-				this.fire('editorClicked', {id:this.strategyId});
-			},
+                numBacktest: {
+                    type: Number,
+                },
 
-			goToAnalyze: function() {
-				if(this.numBacktest > 0){
-					this.fire('analyzeClicked',{id:this.strategyId});
-				}
-			},
+                strategyId: String,
+            },
 
-			onCheck: function() {
-				this.fire('check-action',{id:this.strategyId, checked:this.$.checkbox.checked})
-			},
+            goToEditor: function () {
+                this.fire('editorClicked', {id: this.strategyId});
+            },
 
-		});
-	</script>
+            goToAnalyze: function () {
+                if (this.numBacktest > 0) {
+                    this.fire('analyzeClicked', {id: this.strategyId});
+                }
+            },
+
+            onCheck: function () {
+                this.fire('check-action', {id: this.strategyId, checked: this.$.checkbox.checked});
+                if (this.$.checkbox.checked) {
+                    this.$$('.bar').style.backgroundColor = "teal";
+                } else {
+                    this.$$('.bar').style.backgroundColor = "#fff";
+                }
+            },
+
+        });
+    </script>
 
 </dom-module>
