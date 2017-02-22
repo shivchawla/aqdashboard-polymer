@@ -4,7 +4,7 @@ var crisper = require('gulp-crisper');
 var htmlmin = require('gulp-html-minifier');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
- 
+
 gulp.task('vulcanize', function () {
     return gulp.src('src/aq-dashboard/aq-dashboard.html')
         .pipe(vulcanize({
