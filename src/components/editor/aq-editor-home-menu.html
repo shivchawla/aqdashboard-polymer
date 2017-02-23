@@ -169,7 +169,7 @@
 			<input id="searchbox" placeholder="Search your strategy" class="flex"
 				   value="{{searchText::change}}"
 				   on-keydown="checkForKeys" on-blur='blur'>
-            <paper-button raised class="btn search-btn">Search</paper-button>
+            <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
 		</div>
 
 	</template>

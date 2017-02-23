@@ -13,7 +13,7 @@
 <link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
 
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
-
+<link rel="import" href="strategy-item.html">
 <dom-module id="aq-analyze-home">
 	
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -105,6 +105,7 @@
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+						<!--<strategy-item></strategy-item>-->
 					</template>
 					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 						<div class="spacer"></div>

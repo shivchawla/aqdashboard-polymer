@@ -1,11 +1,25 @@
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 <dom-module id='aq-editor-home-strategy-item'>
 
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
     <style>
+        :host {
+            display: inline-block;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease-in-out;
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            border-radius:2px;
+        }
+
+        :host:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
 
         .row {
             display: flex;
@@ -16,20 +30,11 @@
             box-sizing: border-box;
             overflow: hidden;
             font-weight: 400;
-            font-size: 13px;
             min-width: 600px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease-in-out;
             border-radius: 2px;
             justify-content: flex-start;
             position: relative;
             z-index: 1;
-
-        }
-
-        .row:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
         .row paper-checkbox {
@@ -99,9 +104,22 @@
             height: 22px;
             cursor: pointer;
         }
-        paper-button{
-            width: 245px;
+
+        paper-button {
+            width: 200px;
             border: none;
+        }
+        .st-li-header {
+            font-weight: 300;
+            font-size: 0.8em;
+        }
+        .st-li-detail {
+            font-weight: 400;
+            font-size: 1em;
+        }
+        .st-header{
+            font-size: 0.8em;
+            font-weight: 700;
         }
     </style>
 
@@ -110,20 +128,20 @@
 
             <div class="row-upper-container">
                 <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
-                <div class="strategy-name self-center"><span on-click='goToEditor'>[[strategyName]]</span></div>
-                <div class="strategy-created-date"><span>Created At 09/01/2017 9:53PM</span></div>
+                <div class="strategy-name self-center"><h4 class="st-header" on-click='goToEditor'>
+                    [[strategyName]]</h4></div>
+                <div class="strategy-created-date"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
                 <!--<div on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span></div>-->
                 <!--<iron-icon icon="arrow-forward" on-click='goToAnalyze' ></iron-icon>-->
-                <paper-button on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span>
-                    <iron-icon icon="arrow-forward"></iron-icon>
+                <paper-button on-tap='goToAnalyze' class="strategy-bt">
+                    <h4 class="st-li-header">Number of Backtest: <span class="st-li-detail">[[numBacktest]]</span></h4>
                 </paper-button>
             </div>
-            <div class="strategy-desc"><span class="strategy-desc-text">[[strategyDesc]]</span></div>
+            <div class="strategy-desc"><span class="st-li-header strategy-desc-text">[[strategyDesc]]</span></div>
             <div class="bar"></div>
         </div>
 
     </template>
-
     <script>
         Polymer({
             is: 'aq-editor-home-strategy-item',
@@ -157,7 +175,7 @@
             onCheck: function () {
                 this.fire('check-action', {id: this.strategyId, checked: this.$.checkbox.checked});
                 if (this.$.checkbox.checked) {
-                    this.$$('.bar').style.backgroundColor = "teal";
+                    this.$$('.bar').style.backgroundColor = "#cc6666";
                 } else {
                     this.$$('.bar').style.backgroundColor = "#fff";
                 }

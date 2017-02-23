@@ -14,6 +14,7 @@
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
+<link rel="import" href="strategy-item.html">
 
 <dom-module id="aq-editor-home">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -116,6 +117,9 @@
             width: 95%;
             margin: 0 auto;
         }
+        strategy-item{
+            width: 100%;
+        }
     </style>
 
     <template>
@@ -187,6 +191,7 @@
                                                       strategy-desc="[[item.description]]"
                                                       strategy-id="[[item._id]]">
                         </aq-editor-home-strategy-item>
+                        <!--<strategy-item></strategy-item>-->
                     </template>
                 </div>
                 <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">

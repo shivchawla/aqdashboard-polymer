@@ -1,0 +1,241 @@
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<dom-module id="strategy-item">
+    <style>
+        span, h1, h2, h3, h4, h5, p {
+            padding: 0;
+            margin: 0;
+        }
+
+        :host {
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            display: inline-block;
+            margin-bottom: 25px;
+            background-color: #fff;
+            width: 100%;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            float: left;
+        }
+
+        .st-item-li1 {
+            margin-right: 40px;
+        }
+
+        .st-row-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            padding: 0 20px 20px 0;
+            transition: all 0.4s ease-in-out;
+            border-radius: 2px;
+        }
+
+        .st-item-div {
+            text-align: center;
+        }
+
+        .st-item-li2 {
+            margin-right: 48px;
+        }
+
+        .st-li-header {
+            font-weight: 300;
+            font-size: 0.8em;
+        }
+
+        .st-li-detail {
+            font-weight: 400;
+            font-size: 1em;
+        }
+
+        hr {
+            margin: 0;
+            margin-top: 10px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .li2-header, .li2-detail {
+            transition: all 0.3s ease-in-out 0.3s;
+        }
+
+        .st-header-div {
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            padding: 20px 20px 0 20px;
+
+        }
+
+        .st-content-div {
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            height: 100%;
+            max-height: 45px;
+            transition: all 0.5s ease-in-out;
+            margin-bottom: 35px;
+            margin-left: 20px;
+        }
+
+
+        #expand-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            transition: all 0.4s ease-in-out;
+        }
+        .side-bar{
+            background-color: #cc6666;
+            width: 5px;
+            height: 100%;
+            position: absolute;
+            top:0;
+            border-bottom-left-radius: 2px;
+            border-top-left-radius: 2px;
+        }
+        #share-btn{
+            position: absolute;
+            right: 15px;
+            top:10px;
+
+        }
+        #trending-btn{
+            position: absolute;
+            right: 65px;
+            top:10px;
+        }
+        paper-icon-button {
+            color: teal;
+        }
+
+    </style>
+    <template>
+        <div class="st-row-item">
+            <div class="side-bar"></div>
+            <div class="st-header-div">
+                <paper-checkbox></paper-checkbox>
+                <span class="st-item-header">BackTest 1</span>
+                <paper-icon-button id="share-btn" class="st-toolbar-icon" icon="social:share" title="Share"></paper-icon-button>
+                <paper-icon-button id="trending-btn" class="st-toolbar-icon" icon="trending-up" title="Trending"></paper-icon-button>
+            </div>
+            <div class="st-content-div">
+                <ul class="st-item-ul1">
+                    <li class="st-item-li1"><h4 class="st-li-header">Created: <span
+                            class="st-li-detail">09/01/2017 09:53 PM</span></h4></li>
+                    <li class="st-item-li1"><h4 class="st-li-header">Date Range: <span class="st-li-detail">10/01/2017 - 07/01/2017</span>
+                    </h4></li>
+                    <li class="st-item-li1"><h4 class="st-li-header">Running Time: <span class="st-li-detail">52s</span>
+                    </h4></li>
+                    <li class="st-item-li1"><h4 class="st-li-header">Status: <span class="st-li-detail">Complete</span>
+                    </h4>
+                    </li>
+                    <li class="st-item-li1"><h4 class="st-li-header">Information Ratio: <span
+                            class="st-li-detail">0.79</span></h4></li>
+                </ul>
+                <hr class="hr1">
+                <ul class="strategy-item-ul2">
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Total Return</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Annual Return</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Volatility</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Sharp Ratio</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Information Ratio</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Max Drawdon</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Calmar Ratio</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                    <li class="st-item-li2">
+                        <div class="st-item-div ">
+                            <h3 class="st-li-header li2-header">Beta</h3>
+                            <h5 class="st-li-detail li2-detail">-10.45%</h5>
+                        </div>
+                    </li>
+                </ul>
+                <hr class="bottom-header">
+            </div>
+            <paper-icon-button id="expand-btn" class="pink" icon="expand-more" title="Expand"></paper-icon-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "strategy-item",
+            ready: function () {
+                var expand = true;
+                var row = this.$$('.st-content-div');
+                var h3 = Polymer.dom(this.root).querySelectorAll('.li2-header');
+                var h5 = Polymer.dom(this.root).querySelectorAll('.li2-detail');
+                var expandBtn = this.$$('#expand-btn');
+                changeColor(h3, "transparent");
+                changeColor(h5, "transparent");
+                expandBtn.addEventListener('click', function () {
+                    if (expand) {
+                        row.style.maxHeight = "400px";
+                        changeColor(h3, "#000");
+                        changeColor(h5, "#000");
+                        expandBtn.style.transform="rotate(180deg)";
+                        expand = false;
+                    } else {
+                        row.style.maxHeight = "45px";
+                        changeColor(h3, "transparent");
+                        changeColor(h5, "transparent");
+                        expandBtn.style.transform="rotate(0deg)";
+                        expand = true;
+                    }
+                });
+            }
+        });
+        function changeColor(items, color) {
+            for (var i = 0; i < items.length; i++) {
+                items[i].style.color = color;
+            }
+        }
+    </script>
+</dom-module>
