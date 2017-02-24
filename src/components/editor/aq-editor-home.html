@@ -171,7 +171,7 @@
         <template is='dom-if' if='{{!loading}}'>
             <div id='container'>
 
-                <aq-editor-home-menu active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
+                <aq-editor-home-menu check-all="{{checkAll}}"" active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
                 <div id="ifsearch">
                     <p>Strategy results for:
@@ -186,7 +186,8 @@
                 <!--</div>-->
                 <div class="strategy-container">
                     <template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-                        <aq-editor-home-strategy-item strategy-name="[[item.name]]"
+                        <aq-editor-home-strategy-item 
+                                                      strategy-name="[[item.name]]"
                                                       num-backtest="[[item.backtests]]"
                                                       strategy-desc="[[item.description]]"
                                                       strategy-id="[[item._id]]">
@@ -265,18 +266,33 @@
                 subroute: Object,
                 loading: Boolean,
 
+                checkAll: {
+                  type: Boolean,
+                  value: false,
+                },
+
             },
-            ready:function () {
-                this.selected = false;
-                this.addEventListener('all-selected',function (e) {
-                    if(!this.selected){
-                        this.fire('select-strategy',{content:"ALL",color:"#cc6666",checked:true});
-                        this.selected = true;
-                    }else{
-                        this.fire('select-strategy',{content:"ALL",color:"#fff",checked:false});
-                        this.selected = false;
-                    }
-                });
+
+            listeners: {
+                //'mouseover': '_mouseOver',
+                //'mouseleave': '_mouseLeave',
+                'deleteClicked': 'openDeletionDialog',
+                'compareClicked': 'openCompareDialog',
+                'previewClicked': 'openPreview',
+                'analyzeClicked': 'goToAnalyze',
+                'shareClicked': 'goToShare',
+                'cloneClicked': 'goToClone',
+                'editorClicked': 'goToEditor',
+                //'create-action':'createStrategy',
+                'check-action': 'checkStrategy',
+                'delete-action': 'onDeletion',
+                'search-action': 'onSearch',
+               // 'check-all-strategies': 'onCheckAllStrategies',
+            },
+
+            onCheckAllStrategies : function() {
+                //console.log("Helllooosss");
+                //this.fire('iron-signal', {name:'select-strategy'}); 
             },
 
             //observers:['_activeChanged(subroute, queryParams)'],
@@ -313,21 +329,6 @@
             onGetStrategiesError: function (data) {
             },
 
-            listeners: {
-                //'mouseover': '_mouseOver',
-                //'mouseleave': '_mouseLeave',
-                'deleteClicked': 'openDeletionDialog',
-                'compareClicked': 'openCompareDialog',
-                'previewClicked': 'openPreview',
-                'analyzeClicked': 'goToAnalyze',
-                'shareClicked': 'goToShare',
-                'cloneClicked': 'goToClone',
-                'editorClicked': 'goToEditor',
-                //'create-action':'createStrategy',
-                'check-action': 'checkStrategy',
-                'delete-action': 'onDeletion',
-                'search-action': 'onSearch',
-            },
 
             _currentRowIndex: -1,
 
@@ -466,6 +467,10 @@
                 } else {
                     this.checkedCount -= 1;
                 }
+
+                console.log("Hola");
+
+                this.checkAll = this.checkedCount == this.strategies.length;
                 console.log(e.detail);
             },
 
@@ -620,6 +625,7 @@
             onSetDirtyBit: function (e) {
                 this.dirtyBit = e.detail;
             },
+
 
         });
     </script>

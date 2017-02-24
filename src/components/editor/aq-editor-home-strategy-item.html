@@ -1,6 +1,9 @@
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
+
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 <dom-module id='aq-editor-home-strategy-item'>
 
@@ -124,6 +127,8 @@
     </style>
 
     <template>
+    	<iron-signals on-iron-signal-select-strategy='onSelectStrategy'></iron-signals>
+
         <div id$="[[strategyId]]" class="row">
 
             <div class="row-upper-container">
@@ -161,14 +166,6 @@
 
                 strategyId: String,
             },
-            ready:function () {
-                var element = this;
-                document.querySelector('aq-editor-home').addEventListener('select-strategy',function (e) {
-                    Polymer.dom(element.root).querySelector('.bar').style.backgroundColor=e.detail.color;
-                    Polymer.dom(element.root).querySelector('paper-checkbox').checked = e.detail.checked;
-                    element.fire('check-action', {id: element.strategyId, checked: element.$.checkbox.checked});
-                });
-            },
             goToEditor: function () {
                 this.fire('editorClicked', {id: this.strategyId});
             },
@@ -187,6 +184,11 @@
                     this.$$('.bar').style.backgroundColor = "#fff";
                 }
             },
+
+            onSelectStrategy: function() {
+            	this.$.checkbox.checked = !this.$.checkbox.checked;
+            	this.onCheck(); 
+            }
 
         });
     </script>
