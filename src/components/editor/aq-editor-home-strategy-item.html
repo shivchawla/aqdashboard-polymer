@@ -59,9 +59,9 @@
         .strategy-bt {
             position: absolute;
             right: 10px;
-            margin-top: 15px;
             z-index: 20;
             cursor: pointer;
+            top:11px;
         }
 
         .strategy-desc {
@@ -75,7 +75,6 @@
             z-index: 1;
             width: 100%;
             text-align: center;
-            margin-top: 15px;
         }
 
         .strategy-desc-text {
@@ -162,7 +161,14 @@
 
                 strategyId: String,
             },
-
+            ready:function () {
+                var element = this;
+                document.querySelector('aq-editor-home').addEventListener('select-strategy',function (e) {
+                    Polymer.dom(element.root).querySelector('.bar').style.backgroundColor=e.detail.color;
+                    Polymer.dom(element.root).querySelector('paper-checkbox').checked = e.detail.checked;
+                    element.fire('check-action', {id: element.strategyId, checked: element.$.checkbox.checked});
+                });
+            },
             goToEditor: function () {
                 this.fire('editorClicked', {id: this.strategyId});
             },

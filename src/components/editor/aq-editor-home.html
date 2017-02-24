@@ -266,6 +266,18 @@
                 loading: Boolean,
 
             },
+            ready:function () {
+                this.selected = false;
+                this.addEventListener('all-selected',function (e) {
+                    if(!this.selected){
+                        this.fire('select-strategy',{content:"ALL",color:"#cc6666",checked:true});
+                        this.selected = true;
+                    }else{
+                        this.fire('select-strategy',{content:"ALL",color:"#fff",checked:false});
+                        this.selected = false;
+                    }
+                });
+            },
 
             //observers:['_activeChanged(subroute, queryParams)'],
 
@@ -454,6 +466,7 @@
                 } else {
                     this.checkedCount -= 1;
                 }
+                console.log(e.detail);
             },
 
             hasCheckedStrategies: function (checkedCount) {
@@ -507,7 +520,7 @@
                 }
 
                 this.deleteId = "";
-
+                this.fire('deletion-successful',{content:'success'});
             },
 
             onDeleteStrategyError: function () {

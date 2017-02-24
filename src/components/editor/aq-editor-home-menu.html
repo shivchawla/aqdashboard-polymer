@@ -131,6 +131,9 @@
             position: relative;
             margin-left:30px;
         }
+		paper-checkbox{
+            --paper-checkbox-checked-color: #cc6666;
+		}
 		
 	</style>
 	
@@ -138,7 +141,7 @@
 		<aq-check-authentication id='authItem'></aq-check-authentication>
 
 	    <div class="toolbar layout horizontal">
-            <paper-checkbox class="checkbox-all"></paper-checkbox>
+            <paper-checkbox noink class="checkbox-all" on-change="handleChange"></paper-checkbox>
 	    	<div class="flex self-center"><p class="strategy-header">ALL STRATEGIES</p></div>
 	      	<!--<div id="search" class="flex">-->
 	    		<!--<paper-icon-button noink title="Go Back" icon="aq-icons:arrow-back" on-tap="toggle"></paper-icon-button>-->
@@ -189,6 +192,13 @@
 					value:"",
 				},
 			},
+            ready:function () {
+                var element = this;
+                document.querySelector('aq-editor-home').addEventListener('deletion-successful',function (e) {
+                    element.$$('paper-checkbox').checked=false;
+                });
+
+            },
 
 			toggle: function() {
 				var d = this.$$('#search').style.display;
@@ -224,7 +234,7 @@
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
                     this.$$('#searchbox').value="";
-                    this.blur();
+                    this.$$('#searchbox').blur();
                 } else if (e.keyCode === 13) {
                 	this.debounce('search', this.search, 50);
                 } 
@@ -242,6 +252,9 @@
             	this.searchText = this.$$('#searchbox').value;
             	this.fire('search-action',{searchtext: this.searchText});
             },
+            handleChange: function () {
+                this.fire('all-selected',{content:"All Items Selected"});
+            }
 
 		});
 		
