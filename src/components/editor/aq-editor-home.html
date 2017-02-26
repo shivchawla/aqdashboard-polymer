@@ -15,6 +15,7 @@
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
 <link rel="import" href="strategy-item.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
 <dom-module id="aq-editor-home">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -107,6 +108,9 @@
 
         #ifsearch {
             display: none;
+            position: relative;
+            width: 95%;
+            margin: 0 auto;
         }
 
         a {
@@ -116,9 +120,24 @@
         .strategy-container{
             width: 95%;
             margin: 0 auto;
+            position: relative;
+            margin-top: 30px;
         }
         strategy-item{
             width: 100%;
+        }
+        .strategy-result{
+            font-family: 'Lato' , sans-serif;
+            font-weight: 700;
+            color:#424242;
+        }
+        .search-string{
+            font-family: 'Lato' , sans-serif;
+            font-weight: 400;
+            color:#757575;
+        }
+        hr{
+            border: 1px solid #BDBDBD;
         }
     </style>
 
@@ -174,9 +193,11 @@
                 <aq-editor-home-menu check-all="{{checkAll}}" active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
                 <div id="ifsearch">
-                    <p>Strategy results for:
-                        <i>"[[searchParam.search]]"</i>
+                    <p class="strategy-result">Strategy results for
+                        <!--<i>"[[searchParam.search]]"</i>-->
+                        <span class="search-string">"[[searchParam.search]]"</span>
                     </p>
+                    <hr>
                 </div>
 
                 <!--<div class="header" on-mouseover='_mouseOver' on-mouseout='_mouseLeave'>-->
@@ -468,10 +489,13 @@
                     this.checkedCount -= 1;
                 }
 
-                console.log("Hola");
-
+                //console.log("Hola");
+                console.log(this.checkedCount);
+                if(this.checkedCount > this.strategies.length){
+                    this.checkedCount = this.strategies.length;
+                }
                 this.checkAll = this.checkedCount == this.strategies.length;
-                console.log(e.detail);
+                //console.log(e.detail);
             },
 
             hasCheckedStrategies: function (checkedCount) {

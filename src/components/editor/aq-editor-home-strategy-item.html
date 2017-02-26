@@ -186,8 +186,9 @@
                 }
             },
 
-            onSelectStrategy: function() {
-            	this.$.checkbox.checked = !this.$.checkbox.checked;
+            onSelectStrategy: function(e) {
+            	//this.$.checkbox.checked = !this.$.checkbox.checked;
+                this.$.checkbox.checked = e.detail.checked;
             	this.onCheck(); 
             }
 

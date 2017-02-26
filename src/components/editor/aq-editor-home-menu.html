@@ -196,10 +196,11 @@
 					type: Boolean,
 					value: false,
 					notify: true,
-				},
+				}
 			},
             ready:function () {
                 this.$$('#searchbox').focus();
+                console.log("Searchbox element intiialized");
             },
 			toggle: function() {
 				var d = this.$$('#search').style.display;
@@ -255,10 +256,14 @@
             	this.fire('search-action',{searchtext: this.searchText});
 
             },
-
             onCheckAllStrategies: function() {
+                this.checkAll = this.$$('paper-checkbox').checked;
             	console.log("Firing signal");
-                this.fire('iron-signal', {name:'select-strategy'});
+                console.log(this.$$('paper-checkbox').checked);
+                this.fire('iron-signal', {name:'select-strategy',data:{checked:this.$$('paper-checkbox').checked}});
+            },
+            focusInputBox:function () {
+                this.$$('#searchbox').focus();
             }
 
 		});
