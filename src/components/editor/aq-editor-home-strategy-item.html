@@ -171,6 +171,7 @@
             },
 
             goToAnalyze: function () {
+                console.log("Hello");
                 if (this.numBacktest > 0) {
                     this.fire('analyzeClicked', {id: this.strategyId});
                 }
