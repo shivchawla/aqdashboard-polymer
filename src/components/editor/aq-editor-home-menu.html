@@ -1,272 +1,187 @@
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../common/aq-sub-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <dom-module id='aq-editor-home-menu'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
-  
-	<style>
-
-		#search {
-		  	height: 60px;
-		  	line-height: 48px;
-		  	position: relative;
-		  	display:none;
-		  	z-index:2;
-		}
-	
-		#search iron-icon {
-		  	margin-left: 16px;
-		  	margin-right: 8px;
-		  	position: absolute;
-		  	top: 12px;
-		  	left: 2px;
-		}
-
-		#search paper-icon-button {
-		  	margin-left: 8px;
-		  	margin-right: 8px;
-		  	position: absolute;
-		  	top: 6px;
-		  	left: 2px;
-		}
-
-		#searchbox {
-		  	height: 32px;
-		    -webkit-appearance: none;
-		  	line-height: 46px;
-		  	border: 0;
-		  	margin: 0;
-		  	padding-left: 30px;
-		  	border: 1px solid #e5e5e5;
-		  	@apply(--paper-font-body1);
-		  	width:80%;
-		  	font-size: 14px;
-		  	z-index: 2;
-			background-color: #fff;
-            box-shadow:0 1px 4px rgba(0,0,0,0.2);
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style>
+        #searchbox {
+            height: 32px;
+            -webkit-appearance: none;
+            line-height: 46px;
+            border: 0;
+            margin: 0;
+            padding-left: 30px;
+            border: 1px solid #e5e5e5;
+            @apply(--paper-font-body1);
+            width: 80%;
+            font-size: 14px;
+            z-index: 2;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
             transition: all 0.4s ease-in-out;
-		}
+        }
 
-		#searchbox:focus {
-	  		outline: 0;
-		  	background-color: #f7f7f7;
-		}
+        #searchbox:focus {
+            outline: 0;
+            background-color: #f7f7f7;
+        }
 
-		#searchbox::-webkit-search-cancel-button{
-		  	position: relative;
-		  	right: 15px;
-		}
-
-		.toolbar {
-			height: 42px;
-			width: 100%;
-		    margin-bottom: 20px;
-		    margin-top:0px;
-			background-color: #e9e9e9;
-            box-shadow:0 4px 8px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-		}
-
-		#menu-icons {
-			position:relative;
-			float:right;
-			margin: auto 0;
-		}
-
-		.iconButton {
-			padding:5px;
-			width:35px;
-    		margin-right: 5px;
-    		margin-left: 5px;
-    		color: #cc6666;;
-    		--paper-icon-button-disabled:{
-				color: #cacaca !important;
-			};
-			--paper-icon-button-disabled-text:grey;
-		}
-
-		.iconButton:active {
-			padding: 8px;
-		}
-
-		p {
-			font-size: 28px;
-			margin:0px;
-		}
-
-		paper-tooltip.iconTooltip {
-        	--paper-tooltip: {
-          		font-size: 13px;
-          		min-width: 40px;
-          		text-align: center;
-        	}
-
-        	--paper-tooltip-opacity: 1.0;
-			--paper-tooltip-background: teal;
-		}
-        .search-bar{
+        #searchbox::-webkit-search-cancel-button {
+            position: relative;
+            right: 15px;
+        }
+        .search-bar {
             width: 95%;
             margin: 0 auto;
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
-        paper-button{
-            border:none;
+
+        paper-button {
+            border: none;
             font-size: 13px;
             background-color: teal;
-            color:#fff;
+            color: #fff;
             padding: 0 20px;
             border-radius: 2px;
-            height:35px;
+            height: 35px;
         }
-        .strategy-header{
-            font-size: 14px;
-            margin-left: 20px;
-        }
-        .toolbar .checkbox-all{
-            position: relative;
-            margin-left:30px;
-        }
-		paper-checkbox{
+        paper-checkbox{
             --paper-checkbox-checked-color: #cc6666;
-		}
-		
-	</style>
-	
-	<template>
-		<aq-check-authentication id='authItem'></aq-check-authentication>
+        }
+        .iconTooltip {
+            --paper-tooltip: {
+                font-size: 13px;
+                min-width: 40px;
+                text-align: center;
+            };
+            --paper-tooltip-opacity: 1.0;
+            --paper-tooltip-background: teal;
+        }
 
-	    <div class="toolbar layout horizontal">
-            <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}" on-change='onCheckAllStrategies'></paper-checkbox>
-	    	<div class="flex self-center"><p class="strategy-header">ALL STRATEGIES</p></div>
-	      	<!--<div id="search" class="flex">-->
-	    		<!--<paper-icon-button noink title="Go Back" icon="aq-icons:arrow-back" on-tap="toggle"></paper-icon-button>-->
-      			<!--<input id="searchbox" placeholder="Search your strategy" class="flex"-->
-             	<!--value="{{searchText::change}}" type="search"-->
-             	<!--on-keydown="checkForKeys" on-blur='blur'>-->
-        	<!--</div>-->
+    </style>
 
-	      	<div id='menu-icons' class="layout horizontal">
-	      		<!--<paper-icon-button id= 'searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised>-->
-	      		<!--</paper-icon-button>-->
+    <template>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+        <aq-sub-toolbar>
+            <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
+                            on-change='onCheckAllStrategies'></paper-checkbox>
+            <p class="strategy-header">ALL STRATEGIES</p>
+            <div id='menu-icons'>
+                <paper-icon-button id='newIcon' noink class="iconButton" icon="aq-icons:add" on-tap="createNew">
+                </paper-icon-button>
 
-	      		<paper-icon-button id= 'newIcon' noink class="iconButton" icon="aq-icons:add" on-tap="createNew">
-	      		</paper-icon-button>
+                <paper-icon-button id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
+                </paper-icon-button>
+            </div>
+            <paper-tooltip for='newIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>New</paper-tooltip>
 
-	  			<paper-icon-button id= 'deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
-	  			</paper-icon-button>
-			</div>
+            <paper-tooltip for='deleteIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
 
-			<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>
-
-        	<paper-tooltip for='newIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>New</paper-tooltip>
-
-        	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
-
-  		</div>
-		<div class="search-bar">
-			<input id="searchbox" placeholder="Search your strategy" class="flex"
-				   value="{{searchText::change}}"
-				   on-keydown="checkForKeys" on-blur='blur'>
+        </aq-sub-toolbar>
+        <div class="search-bar">
+            <input id="searchbox" placeholder="Search your strategy" class="flex"
+                   value="{{searchText::change}}"
+                   on-keydown="checkForKeys" on-blur='blur'>
             <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
-		</div>
+        </div>
 
-	</template>
-	
-	<script>
-		Polymer ({
-			is: 'aq-editor-home-menu',
+    </template>
 
-			properties :{
-				activeDelete: {
-					type:Boolean,
-					value:false,
-				},
+    <script>
+        Polymer({
+            is: 'aq-editor-home-menu',
 
-				searchText:{
-					type:String,
-					value:"",
-				},
+            properties: {
+                activeDelete: {
+                    type: Boolean,
+                    value: false,
+                },
 
-				checkAll:{
-					type: Boolean,
-					value: false,
-					notify: true,
-				}
-			},
-            ready:function () {
+                searchText: {
+                    type: String,
+                    value: "",
+                },
+
+                checkAll: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                }
+            },
+            ready: function () {
                 this.$$('#searchbox').focus();
                 console.log("Searchbox element intiialized");
             },
-			toggle: function() {
-				var d = this.$$('#search').style.display;
-				if(d == 'block') {
-					this.$$('#search').style.display = 'none';
-					this.$$('#menu-icons').style.display = 'inline';
-				} else {
-	            	if (!this.$.authItem.checkHasToken()) {
-                  		this.fire('rt-changed',{route:'/user/signin'});
-                  		return;
-              		}
+            toggle: function () {
+                var d = this.$$('#search').style.display;
+                if (d == 'block') {
+                    this.$$('#search').style.display = 'none';
+                    this.$$('#menu-icons').style.display = 'inline';
+                } else {
+                    if (!this.$.authItem.checkHasToken()) {
+                        this.fire('rt-changed', {route: '/user/signin'});
+                        return;
+                    }
 
-					this.$$('#search').style.display = 'block';
-					this.$$('#searchbox').focus();
-					this.$$('#searchbox').value = "";
-					this.$$('#menu-icons').style.display = 'none';				
-				}			
-			},
+                    this.$$('#search').style.display = 'block';
+                    this.$$('#searchbox').focus();
+                    this.$$('#searchbox').value = "";
+                    this.$$('#menu-icons').style.display = 'none';
+                }
+            },
 
-			onDelete: function() {
-				this.fire('deleteClicked');
-			},
+            onDelete: function () {
+                this.fire('deleteClicked');
+            },
 
-			createNew: function() {
-				this.fire('newClicked');
-			},
+            createNew: function () {
+                this.fire('newClicked');
+            },
 
-			onCompare: function() {
-				this.fire('compareClicked');
-			},
+            onCompare: function () {
+                this.fire('compareClicked');
+            },
 
-			checkForKeys: function(e) {
+            checkForKeys: function (e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
-                    this.$$('#searchbox').value="";
+                    this.$$('#searchbox').value = "";
                     this.$$('#searchbox').blur();
-					//this.blur();
+                    //this.blur();
                 } else if (e.keyCode === 13) {
-                	this.debounce('search', this.search, 50);
-                } 
+                    this.debounce('search', this.search, 50);
+                }
             },
 
-            blur: function() {
-            	if(this.$$('#searchbox').value=="") {
-            		//this.$$('#search').style.display = 'none';
-					this.$$('#menu-icons').style.display = 'inline';
-					this.debounce('search', this.search, 50);
-				} 
+            blur: function () {
+                if (this.$$('#searchbox').value == "") {
+                    //this.$$('#search').style.display = 'none';
+                    this.$$('#menu-icons').style.display = 'inline';
+                    this.debounce('search', this.search, 50);
+                }
             },
 
-            search: function() {
-            	this.searchText = this.$$('#searchbox').value;
-            	this.fire('search-action',{searchtext: this.searchText});
+            search: function () {
+                this.searchText = this.$$('#searchbox').value;
+                this.fire('search-action', {searchtext: this.searchText});
 
             },
-            onCheckAllStrategies: function() {
+            onCheckAllStrategies: function () {
                 this.checkAll = this.$$('paper-checkbox').checked;
-            	console.log("Firing signal");
+                console.log("Firing signal");
                 console.log(this.$$('paper-checkbox').checked);
-                this.fire('iron-signal', {name:'select-strategy',data:{checked:this.$$('paper-checkbox').checked}});
+                this.fire('iron-signal', {name: 'select-strategy', data: {checked: this.$$('paper-checkbox').checked}});
             },
-            focusInputBox:function () {
+            focusInputBox: function () {
                 this.$$('#searchbox').focus();
             }
 
-		});
-		
-	</script>
+        });
+
+    </script>
 </dom-module>

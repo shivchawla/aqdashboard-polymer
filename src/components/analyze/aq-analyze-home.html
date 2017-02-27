@@ -22,11 +22,13 @@
 	<style>
 		
 		#container {
-			width:95%;
 			margin:0 auto;
 		    margin-top: 0px;
 		    color: #24293d; 
 	  	}
+		.backtest-item{
+			width: 95%;
+		}
 
 	  	#dialog{
 			width:80%;
@@ -99,12 +101,12 @@
     	<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 			<div id='container'>
 				<template is='dom-if' if="[[!showComparison]]">
-					<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+					<aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
-					<p>All Backtests for <i>{{strategyName}}</i></p>
+					<!--<p>All Backtests for <i>{{strategyName}}</i></p>-->
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+						<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 						<!--<strategy-item></strategy-item>-->
 					</template>
 					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
@@ -182,9 +184,17 @@
 					value: 1,
 					observer:'_dirtyBitChanged',
 				},
+                checkAll:{
+				    type:Boolean,
+                    value:false
+                }
 
     		}, 
-    		
+            ready:function () {
+                if(this.checkedCount == 0){
+                    this.checkAll = false;
+                }
+            },
 			listeners: {
 				'backClicked':'goToEditor',
 				'compareClicked':'toggleComparison',
@@ -276,6 +286,10 @@
 	        	} else {
 	        		this.checkedCount -= 1;
 	        	}
+	        	if(this.checkedCount > this.backtests.length)
+	        	    this.checkedCount = this.backtests.length;
+	        	this.checkAll = this.checkedCount == this.backtests.length;
+                console.log(this.checkedCount);
 	        },
 
 	        numCheckedBacktests: function(checkedCount) {
@@ -303,6 +317,7 @@
 	    		}
 
 	    		this.deleteId="";
+                this.checkAll = false;
 	        },
 
 	        onDeleteBacktestForStrategySuccess: function(data) {

@@ -88,9 +88,11 @@
         .bar {
             height: 100%;
             width: 5px;
-            background-color: #fff;
+            background-color: #cc6666;
             position: absolute;
             margin-right: 10px;
+            transform: scale(0,1);
+
             transition: all 0.3s ease-in-out;
         }
 
@@ -180,9 +182,9 @@
             onCheck: function () {
                 this.fire('check-action', {id: this.strategyId, checked: this.$.checkbox.checked});
                 if (this.$.checkbox.checked) {
-                    this.$$('.bar').style.backgroundColor = "#cc6666";
+                    this.$$('.bar').style.transform = "scale(1,1)";
                 } else {
-                    this.$$('.bar').style.backgroundColor = "#fff";
+                    this.$$('.bar').style.transform = "scale(0,1)";
                 }
             },
 
