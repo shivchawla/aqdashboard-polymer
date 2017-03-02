@@ -165,10 +165,10 @@
                 <div class="lower-container">
                     <ul>
                         <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
-                            <li><aq-backtest-metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></aq-backtest-metric-item></li>
+                            <li><aq-backtest-metric-item metric-name="{{item.metricName}}" metric-value="{{item.metricValue}}"></aq-backtest-metric-item></li>
                         </template>
                         <template is='dom-repeat' items="{{processedBacktest.metrics2}}">
-                            <li><aq-backtest-metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></aq-backtest-metric-item></li>
+                            <li><aq-backtest-metric-item metric-name="{{item.metricName}}" metric-value="{{item.metricValue}}"></aq-backtest-metric-item></li>
                         </template>
                     </ul>
 

@@ -5,7 +5,7 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../bower_components/paper-progress/paper-progress.html'>
-
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-check-authentication.html'>
@@ -13,750 +13,843 @@
 <link rel='import' href='./aq-aggregatedreturns-barchart.html'>
 
 <dom-module id='aq-backtest-detail-item'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
-  
-	<style> 
-		#netValueLineChart {
-			--width:100%;
-			--height:70%;
-		}
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
 
-		#cumRetLineChart {
-			--height:250px;
-			width:100%;
-			--margin-bottom: 20px;
-			margin-left:5px;
-			--highcharts-container:{
-				width:98%;
-			};
-		}
+    <style>
+        #netValueLineChart {
+            --width: 100%;
+            --height: 70%;
+        }
 
-		#trackVarLineChart {
-			margin-bottom: 20px;
-			height:160px;
-			width:100%;
-			width:98%;
-		}
+        #cumRetLineChart {
+            --height: 250px;
+            width: 100%;
+            --margin-bottom: 20px;
+            margin-left: 5px;
+            --highcharts-container: {
+                width: 98%;
+            };
+        }
 
-		#barChart {
-			height:400px;
-			width:100%;
-		}
+        #trackVarLineChart {
+            margin-bottom: 20px;
+            height: 160px;
+            width: 100%;
+            width: 98%;
+        }
 
-		.detail {
-			margin:10px;
-			--margin-bottom:0px !important;
-			--height:250px;
-			width:50%;
-		}	
+        #barChart {
+            height: 400px;
+            width: 100%;
+        }
 
-		.detailmetric {
-			--border:1px solid teal;
-			height:73px;
-			--border-bottom:1px solid teal;
-			--border-right:1px solid teal;
-		}
+        .detail {
+            margin: 10px;
+            --margin-bottom: 0px !important;
+            --height: 250px;
+            width: 50%;
+        }
 
-		.detailmetric span {
-			vertical-align: center;
-			text-align: center;
-			margin-top:15px;
-		}
+        .detailmetric {
+            --border: 1px solid teal;
+            height: 73px;
+            --border-bottom: 1px solid teal;
+            --border-right: 1px solid teal;
+        }
 
-		.mdcontainer {
-			margin-left:10px;
-			margin-right:10px;
-			--margin-top:5px;
-			margin-bottom:8px;
-			height:62px;
-		}
+        .detailmetric span {
+            vertical-align: center;
+            text-align: center;
+            margin-top: 15px;
+        }
 
-		#detail-header {
-			--margin-top:20px;
-			--margin-bottom: 20px;
-			margin-left:10px;
-			font-weight: bold;
-		}
-	
-		#detail-header-bottom {
-			margin-top:5px;
-			margin-bottom: 15px;
-			margin-left:10px;
-			font-weight: bold;
-		}
+        .mdcontainer {
+            margin-left: 10px;
+            margin-right: 10px;
+            --margin-top: 5px;
+            margin-bottom: 8px;
+            height: 62px;
+        }
 
-		.chart {
-			width:95%;
-		}
+        #detail-header {
+            --margin-top: 20px;
+            --margin-bottom: 20px;
+            margin-left: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+        }
 
-		.tooltip:{
-			margin-top: -10px;
+        #detail-header-bottom {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
 
-		}
-		.width_tab{
-			width: 144px;
-		}
-		.wrap    { 
-		  -webkit-flex-wrap: wrap;
-		  flex-wrap: wrap;
-		}  
+        .chart {
+            width: 95%;
+        }
 
-		.paper_body {
-			width: 98%;
-		    text-align: -webkit-center;
-		    color:#24293d;
-		    border:1px solid teal;
-		}
+        .tooltip: {
+            margin-top: -10px;
 
-		.flex_container{
-			display: flex;
-			display: -webkit-flex; /* Safari */
-            -webkit-flex-wrap: wrap; 
+        }
+
+        .width_tab {
+            width: 144px;
+        }
+
+        .wrap {
+            -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
         }
 
-        .card-actions{
-			background-color: #f2fbf7;
-        
-		}
-		
-		paper-tabs {
-			--paper-tabs-selection-bar-color:teal;
+        .paper_body {
+            width: 98%;
+            text-align: -webkit-center;
+            color: #24293d;
+        }
 
-			--paper-tabs:{
-				--height:100%;
-				margin-bottom:10px;
-			};
+        .flex_container {
+            display: flex;
+            display: -webkit-flex; /* Safari */
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
 
-			margin-right:10px;
-		}
+        .card-actions {
+            background-color: #fff;
 
-		paper-progress {
-			--paper-progress-height:10px;
-			--paper-progress-active-color:#0375b4;
-			opacity:0.6;
-			width:120px;
-			--paper-progress-indeterminate-cycle-duration:5s;
-		}
+        }
 
-		#progressDiv p{
-			margin-bottom: 2px;
-			font-size: 12px;
-			color:#0375b4;
-		}
+        paper-tabs {
+            --paper-tabs-selection-bar-color: teal;
 
-		#errProgress {
-			--paper-progress-active-color:#cc6666 !important;	
-		}
+            --paper-tabs: {
+                --height: 100%;
+                margin-bottom: 10px;
+            };
 
-	</style>
+            margin-right: 10px;
+        }
 
-	<template>
+        paper-progress {
+            --paper-progress-height: 10px;
+            --paper-progress-active-color: #0375b4;
+            opacity: 0.6;
+            width: 120px;
+            --paper-progress-indeterminate-cycle-duration: 5s;
+        }
 
-		<aq-check-authentication id='authItem'></aq-check-authentication>
-		
-		<paper-card class="flex detail layout vertical paper_body">
-			<div id='detail-header' class="layout horizontal">
-				<span class="self-center">Strategy vs Benchmark Performance</span>
-				
-				<div class="flex"></div>	
+        #progressDiv p {
+            margin-bottom: 2px;
+            font-size: 12px;
+            color: #0375b4;
+        }
 
-				<template is='dom-if' if='{{active}}'>
-					<div class="layout vertical" id='progressDiv'>
-					
-					<template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
-						<p>Progress: {{pctCompleted}}%</p>
-						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-					</template>
+        #errProgress {
+            --paper-progress-active-color: #cc6666 !important;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .lower-container {
+            padding: 0 20px;
+            margin-top: 10px;
+            background-color: #f5f5f5;
+        }
 
-					<template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
-						<p>Complete</p>
-						<paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-					</template>
+        .lower-container ul {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+        }
+        .middle-container {
+            padding-top: 10px;
+        }
 
-					<template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
-						<p>Warming up</p>
-						<paper-progress indeterminate class="self-center"></paper-progress>
-					</template>
+        .middle-container ul {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-					<template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
-						<p style="color:#cc6666">Exception</p>
-						<paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
-					</template>
+        li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .text-label {
+            font-size: 0.8em;
+            font-weight: 300;
+        }
 
-					</div>
-				</template>
+        .text-content {
+            font-weight: 400;
+            font-size: 1em;
+            margin-left: 5px;
+        }
+        .text-content-bold{
+            font-weight: 700;
+        }
+    </style>
 
-				<div class="flex"></div>	
-				
-				<paper-tabs noink selected="{{graphType}}">
-					<paper-tab>Cumulative Return</paper-tab>
-					<template is='dom-if' if='[[!active]]'>
-						<paper-tab>Monthly Returns</paper-tab>
-					</template>
-				</paper-tabs>
-					
-			</div>
-			
-			<iron-pages on-iron-resize='onResize' selected="{{graphType}}">
-				<div id='cumRetLineChartDiv'>
-					<!--aq-cumret-linechart></aq-cumret-linechart-->
-				</div>
-				
-				<template is='dom-if' if='[[!active]]'>
-					<div id='barChartDiv'>
-						<!--aq-aggregatedreturns-barchart></aq-aggregatedreturns-barchart-->
-					</div>
-				</template>
+    <template>
 
-	  		</iron-pages>
-		      
-		    <div class='card-actions'>  
-			<div id='detail-header-bottom' class="layout horizontal flex">
-				<span class="self-center">Risk Metrics</span>
-				<div class="flex"></div>	
-			</div>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
 
-			<div class="wrap flex_container">
-				<template is="dom-repeat" items="{{metrics}}">
-					<div class="layout horizontal flex mdcontainer">
-						<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}} 
-							metric-value={{item.metricValue}}
-							metric-desc={{item.metricDescription}}>
-						</aq-backtest-metric-item>
-					</div>
-				</template>			
-			</div>
-			</div>
-		</paper-card>	
+        <paper-card class="flex detail layout vertical paper_body">
+            <div class='card-actions'>
+                <div id='detail-header-bottom' class="layout horizontal flex">
+                    <!--<span class="self-center">Risk Metrics</span>-->
+                    <div class="flex"></div>
+                </div>
 
-		<iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
+                <!--<div class="wrap flex_container">-->
+                <!--<template is="dom-repeat" items="{{metrics}}">-->
+                <!--<div class="layout horizontal flex mdcontainer">-->
+                <!--<aq-backtest-metric-item class="flex width_tab" metric-name={{item.metricName}}-->
+                <!--metric-value={{item.metricValue}}-->
+                <!--metric-desc={{item.metricDescription}}>-->
+                <!--</aq-backtest-metric-item>-->
+                <!--</div>-->
+                <!--</template>-->
+                <!--</div>-->
+                <div class="middle-container">
+                    <ul class="upper-list">
+                        <li class="text-label">Name:<span class="text-content text-content-bold">Backtest 2</span></li>
+                        <li class="text-label">Created: <span class="text-content">10/02/2017</span></li>
+                        <li class="text-label">Date Range: <span class="text-content">10/02/2017 - 14/10/2017</span></li>
+                        <li class="text-label">Running Time:<span class="text-content">52s</span></li>
+                        <li class="text-label">Status:<span class="text-content">Complete</span></li>
+                    </ul>
+                    <div class="bar"></div>
+                </div>
+                <div class="lower-container">
+                    <ul>
+                        <template is="dom-repeat" items="{{metrics}}">
+                            <li>
+                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
+                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
 
-		<iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
+                <div id='detail-header' class="layout horizontal">
+                    <!--<span class="self-center">Strategy vs Benchmark Performance</span>-->
 
-		<iron-ajax
-          	url="[[computeGetBacktestUrl(backtestId)]]"
-     	 	method='GET'
-          	id='getBacktestsQuery'
-          	handle-as="json"
-          	on-response="onGetBacktestSuccess"
-          	on-error="onGetBacktestError"
-          	headers='{{header}}'
-          	debounce-duration="300"
-          	loading='{{loading}}'>
+
+                    <template is='dom-if' if='{{active}}'>
+                        <div class="layout vertical" id='progressDiv'>
+
+                            <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+                                <p>Progress: {{pctCompleted}}%</p>
+                                <paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+                            </template>
+
+                            <template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
+                                <p>Complete</p>
+                                <paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
+                            </template>
+
+                            <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+                                <p>Warming up</p>
+                                <paper-progress indeterminate class="self-center"></paper-progress>
+                            </template>
+
+                            <template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
+                                <p style="color:#cc6666">Exception</p>
+                                <paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
+                            </template>
+
+                        </div>
+                    </template>
+
+                    <!--<div class="flex"></div>-->
+
+                    <paper-tabs noink selected="{{graphType}}">
+                        <paper-tab>Cumulative Return</paper-tab>
+                        <template is='dom-if' if='[[!active]]'>
+                            <paper-tab>Monthly Returns</paper-tab>
+                        </template>
+                    </paper-tabs>
+
+                </div>
+
+                <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
+                    <div id='cumRetLineChartDiv'>
+                        <!--aq-cumret-linechart></aq-cumret-linechart-->
+                    </div>
+
+                    <template is='dom-if' if='[[!active]]'>
+                        <div id='barChartDiv'>
+                            <!--aq-aggregatedreturns-barchart></aq-aggregatedreturns-barchart-->
+                        </div>
+                    </template>
+
+                </iron-pages>
+
+
+            </div>
+        </paper-card>
+
+        <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
+
+        <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
+
+        <iron-ajax
+                url="[[computeGetBacktestUrl(backtestId)]]"
+                method='GET'
+                id='getBacktestsQuery'
+                handle-as="json"
+                on-response="onGetBacktestSuccess"
+                on-error="onGetBacktestError"
+                headers='{{header}}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
-			
-	</template>
-	<script>
-		Polymer ({
-			is:'aq-backtest-detail-item',
-			
-			properties:{
-				hide: {
-					type: Boolean,
-					value: true,
-				},
-
-				active:{
-					type:Boolean,
-					value:false,
-				},
-
-				metrics:Object,
-
-				graphType: {
-					type:Number,
-					value:0,
-				},
-
-				netValueData: {
-					type:Object, 
-					value:{},
-				},
-
-				hasTrackVarData:{
-					type:Boolean,
-					value:false,
-				},
-
-				counter:{
-					type:Number,
-					value:0,
-				},
-
-				count:{
-					type:Number,
-					value:0,
-				},
-
-				backtestId: {
-					type:String,
-					observer:'_backtestIdChanged',
-				},
-
-				backtest:Object,
-
-				header: Object,
-
-				APIEndPoint:String,
-
-				loading: {
-		          type: Boolean,
-		          readOnly: true,
-		          notify: true,
-		          value: false
-		        },
-
-		        pctCompleted:{
-		        	type:Number,
-		        	value:0,
-		        },
-
-			},
-
-			_backtestIdChanged: function(nId, oId) {
-				if(nId) {	
-					this.reset();
-					this.requestStaticData();
-				}
-			},
-
-			computeGetBacktestUrl: function(backtestId) {
-				var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-				return APIEndPoint+'/backtest/'+backtestId;
-			},
-
-			resetMetrics: function() {
-				this.metrics = [{
-				            		"metricName":"Total Return", 
-				            		"metricValue":"-", 
-				            		"metricDescription":"Total Return"
-				            	},
-								{
-									"metricName":"Annual Return",
-									"metricValue":"-",
-									"metricDescription":"Annual Return",
-								},
-								{
-									"metricName":"Volatility",
-								 	"metricValue":"-", 
-								 	"metricDescription":"Volatility"
-								},
-								{
-									"metricName":"Sharpe Ratio", 
-									"metricValue":"-",
-									"metricDescription":"Sharpe Ratio"
-								},
-								{
-									"metricName":"Information Ratio",
-									"metricValue":"-",
-								 	"metricDescription":"Information Ratio"
-								},
-								{	
-									"metricName":"Sortino Ratio",
-									"metricValue":"-",
-									"metricDescription":"Sortino Ratio"
-								},
-								{	
-									"metricName":"Avg. Drawdown",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Avg. Drawdown"
-						 	 	},
-								{
-									"metricName":"Max Drawdown",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Max Drawdown"
-						 	 	},
-								{	
-									"metricName":"Calmar Ratio",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Calmar Ratio"
-						 	 	},
-								{
-									"metricName":"Beta",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Beta"
-						 	 	},
-								{
-									"metricName":"Stability",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Stability"
-						 	 	},
-								{
-									"metricName":"Avg. Concentration", 
-									"metricValue":"-",
-								 	"metricDescription":"Avg. Concentration"
-							 	},];
-
-			},
-
-			reset: function() {
-
-				var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
-				if(child) {
-					Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
-				} 
-
-				var el = document.createElement('aq-cumret-linechart');
-				Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
-				
-				Polymer.dom.flush();
-
-				this.async(
-					function() {
-						if(!this.active) {
-							var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
-							
-							if(child) {
-								Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
-							} 
-
-							var el = document.createElement('aq-aggregatedreturns-barchart');
-							Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
-							Polymer.dom.flush();
-						}
-
-					},
-					 200);	
-
-				this.pctCompleted = 0;
-				this.resetMetrics();
-				this.counter = 0;
-				this.hasTrackVarData = false;
-				this.set('realtimeXLabels', []);
-				this.set('trackVarKeysArray', []);
-				this.graphsInitialized = false;
-			},
-
-			subscribeData: function() {
-				this.async(function(){this.fire('subscribe-data', {backtestId: this.backtestId})}, 1000);
-				//this.reset();
-				
-			},
-
-			onBacktestData: function(e) {
-				//process data obnly when element is active
-				if (!this.active) {
-					return
-				}
-
-				data = e.detail;
-				if ((data.outputtype=="performance" || data.outputtype=="labels") && this.active) {
-					this.addRealTimeData(data);
-
-					if(this.realtimeXLabels && this.realtimeXLabels.length > 0){
-						this.pctCompleted = Math.round(this.counter*100/ this.realtimeXLabels.length, 0);
-					}
-				} else if(data.outputtype=="log" && data.messagetype=="ERROR") {
-					this.pctCompleted = -1;
-				} 
-			},
-
-			onBacktestBulkData: function(e) {
-				//process data obnly when element is active
-				if (!this.active) {
-					return;
-				}
-
-				var data = e.detail;
-				if(data && data.length > 0) {
-					this.addLineBulkData(e.detail);	
-				}
-			},		
-
-			addLineBulkData: function(data) {
-				//this.addRealTimeBulkData(data);
-				for(i in data) {
-					if ((data[i].outputtype=="performance" || data[i].outputtype=="labels") && this.active) {
-						this.addRealTimeData(data[i]);
-					} 
-				}
-
-			},
-		
-			addRealTimeData: function(data) {
-				
-				if (data.outputtype == "labels") {
-					
-					var keys = Object.keys(data.labels);
-					var allDates = new Array(keys.length);
-
-					for(var i=0; i<keys.length; i++) {
-						allDates[i] = Date.parse(keys[i]);
-					}
-
-					this.set('realtimeXLabels', allDates.sort());
-
-				} else { //Initialize the graphs based 
-					//for Strategy/Benchmark/(and Variable data if any) 
-
-					if(!this.graphsInitialized) {
-						this.initializeCumRetGraphs(data);
-					} 
-						
-					this.updateCumRetGraphsWithData(data);
-					this.addMetricData(data);
-				}
-			},
-
-			updateCumRetGraphsWithData: function(data) {
-				var types = ["totalreturn","totalreturn_benchmark"];
-				var legends = ["Strategy", "Benchmark"];
-				var ct = this.counter++;
-
-				if(this.hasTrackVarData && this.$$('aq-cumret-linechart') && this.active) {
-
-            		var keysArray = this.trackVarKeysArray;
-
-					for (var i=0; i<keysArray.length; i++) {
-						
-						this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
-					}
-				}
-
-				for (var i=0;i<types.length;i++) {
-					if(this.$$('aq-cumret-linechart') && this.active) {
-						
-						this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
-					}
-            	}
-
-    		},
-
-			initializeCumRetGraphs: function(data) {
-	
-				if (data["variables"] ) {
-					this.updateGraphProperties(true);
-					// Initialize the track variable variable graphs
-					this.initializeCumRetGraphData(data);
-					this.initializeTrackVarData(data);
-				} else {
-					this.updateGraphProperties(false);
-					this.initializeCumRetGraphData(data);
-				}
-
-				this.graphsInitialized = true;
-			},
-
-			initializeTrackVarData: function(data) {
-				var colors = ["#FFAA1D","#007849","#6e2667","#fc4a1a"];
-
-				//Update chart height for accomodatin tracking variables
-
-				var dataset = new Array(this.realtimeXLabels.length);
-				
-				for(var i=0; i<this.realtimeXLabels.length; i++) {
-					dataset[i] = [this.realtimeXLabels[i], NaN];
-				}
-
-				this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
-
-				
-				for (i=0; i<this.trackVarKeysArray.length; i++) {
-					this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false, 
-						{
-							lineWidth:1, 
-							yAxis:1, 
-							color:colors[i], 
-							tooltip:{
-								valueDecimals:2,
-							},
-							pointStart: this.realtimeXLabels[0],
-						}
-					);
-				}
-
-				this.hasTrackVarData = true;
-			},
-
-			initializeCumRetGraphData: function(data) {
-
-				var legends = ["Strategy", "Benchmark"]
-				var colors = ["#0375b4", "#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-			
-				var dataset = new Array(this.realtimeXLabels.length);
-				
-				for(var i=0; i<this.realtimeXLabels.length; i++) {
-					dataset[i] = [this.realtimeXLabels[i], NaN];
-					
-				}
-
-				this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false, 
-						{
-							color:colors[0],
-							lineWidth:2,
-							compare:'percent',
-							tooltip:{
-							 	pointFormatter: function() {
-								 	var series = this.series;
-								 	var color = series.color;
-								 	var y = (this.y - 100).toFixed(2);
-								 	var change = this.change.toFixed(2);
-
-								 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
-							 	},
-
-							},
-							pointStart: this.realtimeXLabels[0],
-
-						}
-				);	
-
-				this.$$('aq-cumret-linechart').addSeries("Benchmark",dataset, false, 
-					{
-						color:colors[1],
-						lineWidth:1,
-						compare:'percent',
-						tooltip:{
-						 	pointFormatter: function() {
-							 	var series = this.series;
-							 	var color = series.color;
-							 	var y = (this.y - 100.0).toFixed(2);
-							 	var change = this.change.toFixed(2);
-
-							 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
-							 	
-						 	},
-
-						},
-						pointStart: this.realtimeXLabels[0],
-
-					}
-				);
-
-			},
-
-			addMetricData: function(data) {
-				this.metrics = [{
-				            		"metricName":"Total Return", 
-				            		"metricValue":data.totalreturn.toString()+'%', 
-				            		"metricDescription":"Total Return"
-				            	},
-								{
-									"metricName":"Annual Return",
-									"metricValue":data.annualreturn.toString()+'%',
-									"metricDescription":"Annual Return",
-								},
-							{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toString()+'%', "metricDescription":"Volatility"},
-							{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio, "metricDescription":"Sharpe Ratio"},
-							{"metricName":"Information Ratio", "metricValue":data.informationratio, "metricDescription":"Information Ratio"},
-							//{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
-							//{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
-							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toString()+'%', "metricDescription":"Max Drawdown"},
-							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio, "metricDescription":"Calmar Ratio"},
-							{"metricName":"Beta", "metricValue":data.beta, "metricDescription":"Beta"},
-							{"metricName":"Stability", "metricValue":(data.stability) ? data.stability : "-", "metricDescription":"Stability"},
-							{"metricName":"Alpha", "metricValue":data.alpha.toString()+'%', "metricDescription":"Alpha"},
-							//{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
-							];
-
-			},
-
-			requestStaticData: function() {
-				
-				if(this.backtestId && this.$.authItem.checkHasToken()) {
-					this.header = this.$.authItem.getHeader();
-					this.$.getBacktestsQuery.generateRequest();
-				}
-			},
-
-			updateGraphProperties: function(trackVarFlag){
-				if(trackVarFlag) {
-					this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
-				} else {
-					this.$$('aq-cumret-linechart').updateProperties();
-				}
-			},
-
-			onGetBacktestSuccess: function(e){
-
-				this.set('backtest', e.detail.response);
-
-				if(this.backtest.status=="active") {
-					this.active = true;
-					//this.reset();
-					this.subscribeData();
-					return;
-				}
-
-				if(this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
-					this.addMetricData(this.backtest.output.analytics.rolling);
-				}
-
-				if(this.backtest.output.variables) {
-					// this variable is used because array changes are somehow not relaying back the template
-					this.hasTrackVarData = true;
-				}
-
-				this.updateGraphProperties(this.hasTrackVarData);
-
-				this.async(this.createCumRetLineChart, 200);
-				this.async(this.createTrackVarLineChart, 200);
-				this.async(this.createMonthlyReturnBarChart, 500);
-			},
-
-			createCumRetLineChart: function() {
-				this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest);
-			},
-
-			createMonthlyReturnBarChart: function() {
-				if(!this.active) {
-					this.$$('aq-aggregatedreturns-barchart').updateProperties();
-					this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest);
-				}
-			},
-
-			createTrackVarLineChart: function() {
-				this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest);
-			},
-
-			onGetBacktestError: function(e) {
-				console.log(e);
-			},
-
-			getYAxisLabel: function(number){
-				var x = "Net Value" 
-				if (number < Math.pow(10,5)) {
-			    	return x;
-			    } else if (number > Math.pow(10,5) && number < Math.pow(10,7) ) {
-
-			    	return x + " (Lacs)";
-			    } else {
-			    	return x +" (Crores)";
-			    }
-
-			    return label(max);
-		    },
-
-		    onResize: function() {
-		    	if(this.$$('aq-cumret-linechart')) {
-		    		this.$$('aq-cumret-linechart').resizeChart();
-		    	}
-		    	
-		    	if(this.$$('aq-aggregatedreturns-barchart')) {
-		    		this.$$('aq-aggregatedreturns-barchart').resizeChart();
-		    	}
-		    },
-
-		    isCompletionPositive: function(pctCompleted){
-		    	return pctCompleted > 0 && pctCompleted!=100;
-		    },
-
-		    isBacktestComplete: function(pctCompleted) {
-		    	return pctCompleted == 100;
-		    },
-
-			isBacktestWarmingUp: function(pctCompleted){
-				return pctCompleted==0;
-			},
-
-			isBacktestException: function(pctCompleted) {
-				return pctCompleted == -1;
-			},				    
-
-		});
-	</script>
-			
+
+    </template>
+    <script>
+        Polymer({
+            is: 'aq-backtest-detail-item',
+
+            properties: {
+                hide: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                active: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                metrics: Object,
+
+                graphType: {
+                    type: Number,
+                    value: 0,
+                },
+
+                netValueData: {
+                    type: Object,
+                    value: {},
+                },
+
+                hasTrackVarData: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                counter: {
+                    type: Number,
+                    value: 0,
+                },
+
+                count: {
+                    type: Number,
+                    value: 0,
+                },
+
+                backtestId: {
+                    type: String,
+                    observer: '_backtestIdChanged',
+                },
+
+                backtest: Object,
+
+                header: Object,
+
+                APIEndPoint: String,
+
+                loading: {
+                    type: Boolean,
+                    readOnly: true,
+                    notify: true,
+                    value: false
+                },
+
+                pctCompleted: {
+                    type: Number,
+                    value: 0,
+                },
+
+            },
+
+            _backtestIdChanged: function (nId, oId) {
+                if (nId) {
+                    this.reset();
+                    this.requestStaticData();
+                }
+            },
+
+            computeGetBacktestUrl: function (backtestId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/backtest/' + backtestId;
+            },
+
+            resetMetrics: function () {
+                this.metrics = [{
+                    "metricName": "Total Return",
+                    "metricValue": "-",
+                    "metricDescription": "Total Return"
+                },
+                    {
+                        "metricName": "Annual Return",
+                        "metricValue": "-",
+                        "metricDescription": "Annual Return",
+                    },
+                    {
+                        "metricName": "Volatility",
+                        "metricValue": "-",
+                        "metricDescription": "Volatility"
+                    },
+                    {
+                        "metricName": "Sharpe Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Sharpe Ratio"
+                    },
+                    {
+                        "metricName": "Information Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Information Ratio"
+                    },
+                    {
+                        "metricName": "Sortino Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Sortino Ratio"
+                    },
+                    {
+                        "metricName": "Avg. Drawdown",
+                        "metricValue": "-",
+                        "metricDescription": "Avg. Drawdown"
+                    },
+                    {
+                        "metricName": "Max Drawdown",
+                        "metricValue": "-",
+                        "metricDescription": "Max Drawdown"
+                    },
+                    {
+                        "metricName": "Calmar Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Calmar Ratio"
+                    },
+                    {
+                        "metricName": "Beta",
+                        "metricValue": "-",
+                        "metricDescription": "Beta"
+                    },
+                    {
+                        "metricName": "Stability",
+                        "metricValue": "-",
+                        "metricDescription": "Stability"
+                    },
+                    {
+                        "metricName": "Avg. Concentration",
+                        "metricValue": "-",
+                        "metricDescription": "Avg. Concentration"
+                    },];
+
+            },
+
+            reset: function () {
+
+                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
+                if (child) {
+                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+                }
+
+                var el = document.createElement('aq-cumret-linechart');
+                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+
+                Polymer.dom.flush();
+
+                this.async(
+                        function () {
+                            if (!this.active) {
+                                var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
+
+                                if (child) {
+                                    Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
+                                }
+
+                                var el = document.createElement('aq-aggregatedreturns-barchart');
+                                Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+                                Polymer.dom.flush();
+                            }
+
+                        },
+                        200);
+
+                this.pctCompleted = 0;
+                this.resetMetrics();
+                this.counter = 0;
+                this.hasTrackVarData = false;
+                this.set('realtimeXLabels', []);
+                this.set('trackVarKeysArray', []);
+                this.graphsInitialized = false;
+            },
+
+            subscribeData: function () {
+                this.async(function () {
+                    this.fire('subscribe-data', {backtestId: this.backtestId})
+                }, 1000);
+                //this.reset();
+
+            },
+
+            onBacktestData: function (e) {
+                //process data obnly when element is active
+                if (!this.active) {
+                    return
+                }
+
+                data = e.detail;
+                if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
+                    this.addRealTimeData(data);
+
+                    if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
+                        this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
+                    }
+                } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
+                    this.pctCompleted = -1;
+                }
+            },
+
+            onBacktestBulkData: function (e) {
+                //process data obnly when element is active
+                if (!this.active) {
+                    return;
+                }
+
+                var data = e.detail;
+                if (data && data.length > 0) {
+                    this.addLineBulkData(e.detail);
+                }
+            },
+
+            addLineBulkData: function (data) {
+                //this.addRealTimeBulkData(data);
+                for (i in data) {
+                    if ((data[i].outputtype == "performance" || data[i].outputtype == "labels") && this.active) {
+                        this.addRealTimeData(data[i]);
+                    }
+                }
+
+            },
+
+            addRealTimeData: function (data) {
+
+                if (data.outputtype == "labels") {
+
+                    var keys = Object.keys(data.labels);
+                    var allDates = new Array(keys.length);
+
+                    for (var i = 0; i < keys.length; i++) {
+                        allDates[i] = Date.parse(keys[i]);
+                    }
+
+                    this.set('realtimeXLabels', allDates.sort());
+
+                } else { //Initialize the graphs based
+                    //for Strategy/Benchmark/(and Variable data if any)
+
+                    if (!this.graphsInitialized) {
+                        this.initializeCumRetGraphs(data);
+                    }
+
+                    this.updateCumRetGraphsWithData(data);
+                    this.addMetricData(data);
+                }
+            },
+
+            updateCumRetGraphsWithData: function (data) {
+                var types = ["totalreturn", "totalreturn_benchmark"];
+                var legends = ["Strategy", "Benchmark"];
+                var ct = this.counter++;
+
+                if (this.hasTrackVarData && this.$$('aq-cumret-linechart') && this.active) {
+
+                    var keysArray = this.trackVarKeysArray;
+
+                    for (var i = 0; i < keysArray.length; i++) {
+
+                        this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
+                    }
+                }
+
+                for (var i = 0; i < types.length; i++) {
+                    if (this.$$('aq-cumret-linechart') && this.active) {
+
+                        this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
+                    }
+                }
+
+            },
+
+            initializeCumRetGraphs: function (data) {
+
+                if (data["variables"]) {
+                    this.updateGraphProperties(true);
+                    // Initialize the track variable variable graphs
+                    this.initializeCumRetGraphData(data);
+                    this.initializeTrackVarData(data);
+                } else {
+                    this.updateGraphProperties(false);
+                    this.initializeCumRetGraphData(data);
+                }
+
+                this.graphsInitialized = true;
+            },
+
+            initializeTrackVarData: function (data) {
+                var colors = ["#FFAA1D", "#007849", "#6e2667", "#fc4a1a"];
+
+                //Update chart height for accomodatin tracking variables
+
+                var dataset = new Array(this.realtimeXLabels.length);
+
+                for (var i = 0; i < this.realtimeXLabels.length; i++) {
+                    dataset[i] = [this.realtimeXLabels[i], NaN];
+                }
+
+                this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
+
+
+                for (i = 0; i < this.trackVarKeysArray.length; i++) {
+                    this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false,
+                            {
+                                lineWidth: 1,
+                                yAxis: 1,
+                                color: colors[i],
+                                tooltip: {
+                                    valueDecimals: 2,
+                                },
+                                pointStart: this.realtimeXLabels[0],
+                            }
+                    );
+                }
+
+                this.hasTrackVarData = true;
+            },
+
+            initializeCumRetGraphData: function (data) {
+
+                var legends = ["Strategy", "Benchmark"]
+                var colors = ["#0375b4", "#cc6666", "#FFAA1D", "#007849", "#6e2667", "#fc4a1a"];
+
+                var dataset = new Array(this.realtimeXLabels.length);
+
+                for (var i = 0; i < this.realtimeXLabels.length; i++) {
+                    dataset[i] = [this.realtimeXLabels[i], NaN];
+
+                }
+
+                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false,
+                        {
+                            color: colors[0],
+                            lineWidth: 2,
+                            compare: 'percent',
+                            tooltip: {
+                                pointFormatter: function () {
+                                    var series = this.series;
+                                    var color = series.color;
+                                    var y = (this.y - 100).toFixed(2);
+                                    var change = this.change.toFixed(2);
+
+                                    return '<span style="color:' + color + '">\u25CF ' + series.name + '</span>: <b>' + change + '%</b><br/>';
+                                },
+
+                            },
+                            pointStart: this.realtimeXLabels[0],
+
+                        }
+                );
+
+                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset, false,
+                        {
+                            color: colors[1],
+                            lineWidth: 1,
+                            compare: 'percent',
+                            tooltip: {
+                                pointFormatter: function () {
+                                    var series = this.series;
+                                    var color = series.color;
+                                    var y = (this.y - 100.0).toFixed(2);
+                                    var change = this.change.toFixed(2);
+
+                                    return '<span style="color:' + color + '">\u25CF ' + series.name + '</span>: <b>' + change + '%</b><br/>';
+
+                                },
+
+                            },
+                            pointStart: this.realtimeXLabels[0],
+
+                        }
+                );
+
+            },
+
+            addMetricData: function (data) {
+                this.metrics = [{
+                    "metricName": "Total Return",
+                    "metricValue": data.totalreturn.toString() + '%',
+                    "metricDescription": "Total Return"
+                },
+                    {
+                        "metricName": "Annual Return",
+                        "metricValue": data.annualreturn.toString() + '%',
+                        "metricDescription": "Annual Return",
+                    },
+                    {
+                        "metricName": "Volatility",
+                        "metricValue": data.annualstandarddeviation.toString() + '%',
+                        "metricDescription": "Volatility"
+                    },
+                    {
+                        "metricName": "Sharpe Ratio",
+                        "metricValue": data.sharperatio,
+                        "metricDescription": "Sharpe Ratio"
+                    },
+                    {
+                        "metricName": "Information Ratio",
+                        "metricValue": data.informationratio,
+                        "metricDescription": "Information Ratio"
+                    },
+                    //{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
+                    //{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
+                    {
+                        "metricName": "Max Drawdown",
+                        "metricValue": data.maxdrawdown.toString() + '%',
+                        "metricDescription": "Max Drawdown"
+                    },
+                    {
+                        "metricName": "Calmar Ratio",
+                        "metricValue": data.calmarratio,
+                        "metricDescription": "Calmar Ratio"
+                    },
+                    {"metricName": "Beta", "metricValue": data.beta, "metricDescription": "Beta"},
+                    {
+                        "metricName": "Stability",
+                        "metricValue": (data.stability) ? data.stability : "-",
+                        "metricDescription": "Stability"
+                    },
+                    {"metricName": "Alpha", "metricValue": data.alpha.toString() + '%', "metricDescription": "Alpha"},
+                    //{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
+                ];
+
+            },
+
+            requestStaticData: function () {
+
+                if (this.backtestId && this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.getBacktestsQuery.generateRequest();
+                }
+            },
+
+            updateGraphProperties: function (trackVarFlag) {
+                if (trackVarFlag) {
+                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
+                } else {
+                    this.$$('aq-cumret-linechart').updateProperties();
+                }
+            },
+
+            onGetBacktestSuccess: function (e) {
+
+                this.set('backtest', e.detail.response);
+                console.log(e.detail.response);
+                if (this.backtest.status == "active") {
+                    this.active = true;
+                    //this.reset();
+                    this.subscribeData();
+                    return;
+                }
+
+                if (this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
+                    this.addMetricData(this.backtest.output.analytics.rolling);
+                }
+
+                if (this.backtest.output.variables) {
+                    // this variable is used because array changes are somehow not relaying back the template
+                    this.hasTrackVarData = true;
+                }
+
+                this.updateGraphProperties(this.hasTrackVarData);
+
+                this.async(this.createCumRetLineChart, 200);
+                this.async(this.createTrackVarLineChart, 200);
+                this.async(this.createMonthlyReturnBarChart, 500);
+            },
+
+            createCumRetLineChart: function () {
+                this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest);
+            },
+
+            createMonthlyReturnBarChart: function () {
+                if (!this.active) {
+                    this.$$('aq-aggregatedreturns-barchart').updateProperties();
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest);
+                }
+            },
+
+            createTrackVarLineChart: function () {
+                this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest);
+            },
+
+            onGetBacktestError: function (e) {
+                console.log(e);
+            },
+
+            getYAxisLabel: function (number) {
+                var x = "Net Value"
+                if (number < Math.pow(10, 5)) {
+                    return x;
+                } else if (number > Math.pow(10, 5) && number < Math.pow(10, 7)) {
+
+                    return x + " (Lacs)";
+                } else {
+                    return x + " (Crores)";
+                }
+
+                return label(max);
+            },
+
+            onResize: function () {
+                if (this.$$('aq-cumret-linechart')) {
+                    this.$$('aq-cumret-linechart').resizeChart();
+                }
+
+                if (this.$$('aq-aggregatedreturns-barchart')) {
+                    this.$$('aq-aggregatedreturns-barchart').resizeChart();
+                }
+            },
+
+            isCompletionPositive: function (pctCompleted) {
+                return pctCompleted > 0 && pctCompleted != 100;
+            },
+
+            isBacktestComplete: function (pctCompleted) {
+                return pctCompleted == 100;
+            },
+
+            isBacktestWarmingUp: function (pctCompleted) {
+                return pctCompleted == 0;
+            },
+
+            isBacktestException: function (pctCompleted) {
+                return pctCompleted == -1;
+            },
+
+        });
+    </script>
+
 </dom-module>
 

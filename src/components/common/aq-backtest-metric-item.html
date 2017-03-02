@@ -107,19 +107,19 @@
 			}
 		</style>
 		<div class="li-container">
-			<h3 class="text-label">{{label}}</h3>
-			<span class="text-content">{{text}}</span>
+			<h3 class="text-label">{{metricName}}</h3>
+			<span class="text-content">{{metricValue}}</span>
 		</div>
 	</template>
 	<script>
 		Polymer({
 			is:"aq-backtest-metric-item",
 			properties:{
-				label:{
+				metricName:{
 					type:String,
 					notify:true
 				},
-				text:{
+				metricValue:{
 					type:String,
 					notify:true,
 					value:"-"
