@@ -10,7 +10,7 @@
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
-<link rel="import" href="../common/metric-item.html">
+<link rel="import" href="../common/aq-backtest-metric-item.html">
 <dom-module id='aq-analyze-home-backtest-item2'>
     <template>
         <style>
@@ -45,6 +45,7 @@
                 position: relative;
             }
 
+
             ul {
                 list-style: none;
                 padding-left: 0;
@@ -57,6 +58,8 @@
 
             .middle-container ul {
                 padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
             }
 
             li {
@@ -133,6 +136,9 @@
             #share-icon{
                 transform: scale(0.9,0.9);
             }
+            iron-collapse{
+                --iron-collapse-transition-duration:100ms;
+            }
         </style>
         <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
         <iron-signals on-iron-signal-select-backtest="selectBacktest"></iron-signals>
@@ -159,17 +165,17 @@
                 <div class="lower-container">
                     <ul>
                         <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
-                            <li><metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></metric-item></li>
+                            <li><aq-backtest-metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></aq-backtest-metric-item></li>
                         </template>
                         <template is='dom-repeat' items="{{processedBacktest.metrics2}}">
-                            <li><metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></metric-item></li>
+                            <li><aq-backtest-metric-item label="{{item.metricName}}" text="{{item.metricValue}}"></aq-backtest-metric-item></li>
                         </template>
                     </ul>
 
                 </div>
                 <div class="bar"></div>
             </iron-collapse>
-            <paper-icon-button id="expand" on-click="toggle" icon="expand-more"></paper-icon-button>
+            <paper-icon-button noink id="expand" on-click="toggle" icon="expand-more"></paper-icon-button>
             <div class="side-bar"></div>
         </div>
 

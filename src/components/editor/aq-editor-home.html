@@ -186,12 +186,10 @@
         <!--template is='dom-if' if='{{isActive(active, subroute)}}'-->
 
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+        <aq-editor-home-menu check-all="{{checkAll}}" active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
 
         <template is='dom-if' if='{{!loading}}'>
             <div id='container'>
-
-                <aq-editor-home-menu check-all="{{checkAll}}" active-delete="[[hasCheckedStrategies(checkedCount)]]"></aq-editor-home-menu>
-
                 <div id="ifsearch">
                     <p class="strategy-result">Strategy results for
                         <span class="search-string">"[[searchParam.search]]"</span>

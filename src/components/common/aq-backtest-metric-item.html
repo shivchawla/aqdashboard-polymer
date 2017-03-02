@@ -1,83 +1,130 @@
-<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
-<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<!--<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>-->
+<!--<link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>-->
+<!--<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>-->
 
 
-<dom-module id='aq-backtest-metric-item'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
-  	
-	<style>
-		span {
-			margin-top: 5px;
-			text-align: center;
-		}
-		
-		paper-card{
-			width:100%;
-			border-top: 2px solid #cc6666;;
-			color:#24293d;
-			display: -webkit-flex; 
-            -webkit-flex-wrap: wrap;
-            -webkit-flex-direction: row;
-		}
+<!--<dom-module id='aq-backtest-metric-item'>-->
+	<!--<style  include="iron-flex iron-flex-alignment iron-positioning">-->
+	<!--</style>-->
+  	<!---->
+	<!--<style>-->
+		<!--span {-->
+			<!--margin-top: 5px;-->
+			<!--text-align: center;-->
+		<!--}-->
+		<!---->
+		<!--paper-card{-->
+			<!--width:100%;-->
+			<!--border-top: 2px solid #cc6666;;-->
+			<!--color:#24293d;-->
+			<!--display: -webkit-flex; -->
+            <!-- -webkit-flex-wrap: wrap;-->
+            <!-- -webkit-flex-direction: row;-->
+		<!--}-->
 
-		#metric {
-			margin-bottom:5px;
-			font-size: var(--font-size-metric, 14px);
-		}
+		<!--#metric {-->
+			<!--margin-bottom:5px;-->
+			<!--font-size: var(&#45;&#45;font-size-metric, 14px);-->
+		<!--}-->
 
-		#metric-value {
-			font-size: var(--font-size-metric-value, 20px);
-			color: #24293d;
-			font-weight: bold;
-		}
-    	
-     	paper-tooltip {
-	        --paper-tooltip-background: teal; 
-	
-      	}
+		<!--#metric-value {-->
+			<!--font-size: var(&#45;&#45;font-size-metric-value, 20px);-->
+			<!--color: #24293d;-->
+			<!--font-weight: bold;-->
+		<!--}-->
+    	<!---->
+     	<!--paper-tooltip {-->
+	        <!--&#45;&#45;paper-tooltip-background: teal; -->
+	<!---->
+      	<!--}-->
 
-	</style>
+	<!--</style>-->
 
-    <style >
-      paper-tooltip.giant {
-        --paper-tooltip: {
-          font-size: 15px;
-        }
-      }
-    </style>
+    <!--<style >-->
+      <!--paper-tooltip.giant {-->
+        <!--&#45;&#45;paper-tooltip: {-->
+          <!--font-size: 15px;-->
+        <!--}-->
+      <!--}-->
+    <!--</style>-->
 
-	
+	<!---->
+	<!--<template>-->
+	<!---->
+		<!--<paper-card class="flex" id='metric-card'>-->
+			<!--<div id='cont' class="layout vertical flex">-->
+				<!--<span id='metric-value'>[[metricValue]]</span>-->
+				<!--<span id='metric'>[[metricName]]</span>-->
+			<!--</div>-->
+		<!--</paper-card>-->
+
+		<!--<paper-tooltip fit-to-visible-bounds class="giant" for='metric-card' offset="0" position="top">{{metricDesc}}</paper-tooltip>-->
+	<!--</template>-->
+
+	<!--<script>-->
+		<!--Polymer ({-->
+			<!--is:'aq-backtest-metric-item',-->
+			<!--properties: {-->
+				<!--metricName:{-->
+					<!--type:String,-->
+				<!--},-->
+				<!--metricValue:{-->
+					<!--type:String,-->
+					<!--value:'-',-->
+				<!--},-->
+				<!--metricDesc:{-->
+					<!--type:String,-->
+				<!--},-->
+			<!--},	-->
+
+		<!--});-->
+	<!--</script>-->
+<!--</dom-module>-->
+
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<dom-module id="aq-backtest-metric-item">
 	<template>
-	
-		<paper-card class="flex" id='metric-card'>
-			<div id='cont' class="layout vertical flex">
-				<span id='metric-value'>[[metricValue]]</span>
-				<span id='metric'>[[metricName]]</span>
-			</div>
-		</paper-card>
+		<style>
+			:host{
+				color:#646464;
+				display: inline-block;
+				font-family: 'Lato', sans-serif;
+				font-size: 16px;
 
-		<paper-tooltip fit-to-visible-bounds class="giant" for='metric-card' offset="0" position="top">{{metricDesc}}</paper-tooltip>
+			}
+			h1, h2, h3, h4, h5 {  margin: 0;  }
+			.text-label{
+				font-size: 0.8em;
+				font-weight: 300;
+			}
+			.text-content{
+				font-weight: 400;
+				font-size: 1.1em;
+				margin-left: 5px;
+			}
+			.li-container {
+				text-align: center;
+			}
+		</style>
+		<div class="li-container">
+			<h3 class="text-label">{{label}}</h3>
+			<span class="text-content">{{text}}</span>
+		</div>
 	</template>
-
 	<script>
-		Polymer ({
-			is:'aq-backtest-metric-item',
-			properties: {
-				metricName:{
+		Polymer({
+			is:"aq-backtest-metric-item",
+			properties:{
+				label:{
 					type:String,
+					notify:true
 				},
-				metricValue:{
+				text:{
 					type:String,
-					value:'-',
-				},
-				metricDesc:{
-					type:String,
-				},
-			},	
-
-		});
+					notify:true,
+					value:"-"
+				}
+			}
+		})
 	</script>
 </dom-module>
-
