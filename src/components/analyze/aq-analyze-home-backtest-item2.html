@@ -24,10 +24,12 @@
                 color: #646464;
                 margin-bottom: 30px;
             }
+
             paper-checkbox {
                 --paper-checkbox-checked-color: #cc6666;
 
             }
+
             h1, h2, h3, h4, h5 {
                 margin: 0;
             }
@@ -44,7 +46,6 @@
                 padding: 5px 20px;
                 position: relative;
             }
-
 
             ul {
                 list-style: none;
@@ -75,6 +76,7 @@
                 margin: 0 auto;
                 margin-top: 7px;
             }
+
             .lower-container {
                 padding: 0 20px;
                 margin-top: 10px;
@@ -105,9 +107,10 @@
                 color: #474747;
                 font-size: 14px;
             }
-            .side-bar{
+
+            .side-bar {
                 left: 0;
-                top:0;
+                top: 0;
                 width: 5px;
                 height: 100%;
                 background-color: #cc6666;
@@ -116,28 +119,33 @@
                 border-bottom-left-radius: 2px;
                 transition: all 0.2s ease-in-out;
                 transform-origin: left;
-                transform: scale(0,1);
+                transform: scale(0, 1);
             }
-            #expand{
+
+            #expand {
                 transition: all 0.4s ease-in-out 0.3s;
-                right:5px;
+                right: 5px;
                 position: absolute;
                 margin-right: 5px;
                 bottom: -2px;
             }
-            .topbar-icon-container{
+
+            .topbar-icon-container {
                 position: absolute;
-                right:10px;
-                top:-5px;
+                right: 10px;
+                top: -5px;
             }
-            paper-icon-button{
+
+            paper-icon-button {
                 color: teal;
             }
-            #share-icon{
-                transform: scale(0.9,0.9);
+
+            #share-icon {
+                transform: scale(0.9, 0.9);
             }
-            iron-collapse{
-                --iron-collapse-transition-duration:100ms;
+
+            iron-collapse {
+                --iron-collapse-transition-duration: 100ms;
             }
         </style>
         <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
@@ -148,13 +156,16 @@
                 <h1 class="header-text">BackTest [[formatIndex(index)]]</h1>
                 <div class="topbar-icon-container">
                     <paper-icon-button id="share-icon" on-tap="onShare" icon="social:share"></paper-icon-button>
-                    <paper-icon-button id="trending-icon" on-tap="onBacktestDetail" icon="trending-up"></paper-icon-button>
+                    <paper-icon-button id="trending-icon" on-tap="onBacktestDetail"
+                                       icon="trending-up"></paper-icon-button>
                 </div>
             </div>
             <div class="middle-container">
                 <ul class="upper-list">
-                    <li class="text-label">Created: <span class="text-content">[[processedBacktest.createdAt]]</span></li>
-                    <li class="text-label">Date Range: <span class="text-content">[[processedBacktest.startDate]] - [[processedBacktest.endDate]]</span></li>
+                    <li class="text-label">Created: <span class="text-content">[[processedBacktest.createdAt]]</span>
+                    </li>
+                    <li class="text-label">Date Range: <span class="text-content">[[processedBacktest.startDate]] - [[processedBacktest.endDate]]</span>
+                    </li>
                     <li class="text-label">Running Time:<span class="text-content">52s</span></li>
                     <li class="text-label">Status:<span class="text-content">[[processedBacktest.status]]</span></li>
                     <li class="text-label">Information Ratio:<span class="text-content">20.5%</span></li>
@@ -165,10 +176,16 @@
                 <div class="lower-container">
                     <ul>
                         <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
-                            <li><aq-backtest-metric-item metric-name="{{item.metricName}}" metric-value="{{item.metricValue}}"></aq-backtest-metric-item></li>
+                            <li>
+                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
+                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                            </li>
                         </template>
                         <template is='dom-repeat' items="{{processedBacktest.metrics2}}">
-                            <li><aq-backtest-metric-item metric-name="{{item.metricName}}" metric-value="{{item.metricValue}}"></aq-backtest-metric-item></li>
+                            <li>
+                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
+                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                            </li>
                         </template>
                     </ul>
 
@@ -340,10 +357,13 @@
                 //this.set('metrics1', metricsArray1);
                 //this.set('metrics2', metricsArray2);
 
-                this.set('processedBacktest.startDate', this.formatDate(this.backtest.settings.startDate));
-                this.set('processedBacktest.endDate', this.formatDate(this.backtest.settings.endDate));
+                //this.set('processedBacktest.startDate', this.formatDate(this.backtest.settings.startDate));
+                this.set('processedBacktest.startDate', date.formatDate(this.backtest.settings.startDate));
+                //this.set('processedBacktest.endDate', this.formatDate(this.backtest.settings.endDate));
+                this.set('processedBacktest.endDate', date.formatDate(this.backtest.settings.endDate));
                 this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
-                this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
+                //this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
+                this.set('processedBacktest.createdAt', date.formatDateTime(this.backtest.createdAt));
 
             },
 
@@ -387,7 +407,7 @@
                 return false;
             },
             onBacktestDetail: function () {
-                this.fire('detail-action', {id: this.backtest._id});
+                this.fire('detail-action', {id: this.backtest._id, index: this.index});
             },
 
             onShare: function () {
@@ -395,9 +415,9 @@
             },
             toggle: function () {
                 this.ironCollapse.toggle();
-                if(this.ironCollapse.opened){
+                if (this.ironCollapse.opened) {
                     this.expandBtn.style.transform = "rotate(180deg)";
-                }else{
+                } else {
                     this.expandBtn.style.transform = "rotate(0deg)";
                 }
             },
@@ -405,9 +425,9 @@
                 this.fire('backtestChecked', {id: this.backtest._id, checked: this.paperCheckBox.checked});
                 this.toggleSidebar();
             },
-            toggleSidebar:function () {
-                if(this.paperCheckBox.checked)
-                    this.sideBar.style.transform="scale(1,1)";
+            toggleSidebar: function () {
+                if (this.paperCheckBox.checked)
+                    this.sideBar.style.transform = "scale(1,1)";
                 else
                     this.sideBar.style.transform = "scale(0,1)";
             },
@@ -419,4 +439,5 @@
         });
 
     </script>
+    <script type="text/javascript" src="../common/DateTime.js"></script>
 </dom-module>

@@ -78,7 +78,8 @@
             margin-left: 10px;
             font-weight: bold;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         #detail-header-bottom {
@@ -221,11 +222,11 @@
                 <!--</div>-->
                 <div class="middle-container">
                     <ul class="upper-list">
-                        <li class="text-label">Name:<span class="text-content text-content-bold">Backtest 2</span></li>
-                        <li class="text-label">Created: <span class="text-content">10/02/2017</span></li>
-                        <li class="text-label">Date Range: <span class="text-content">10/02/2017 - 14/10/2017</span></li>
+                        <li class="text-label">Name:<span class="text-content text-content-bold">Backtest [[index]]</span></li>
+                        <li class="text-label">Created: <span class="text-content">{{backtest.createdAt}}</span></li>
+                        <li class="text-label">Date Range: <span class="text-content">{{backtest.settings.startDate}} - {{backtest.settings.endDate}}</span></li>
                         <li class="text-label">Running Time:<span class="text-content">52s</span></li>
-                        <li class="text-label">Status:<span class="text-content">Complete</span></li>
+                        <li class="text-label">Status:<span class="text-content">{{backtest.status}}</span></li>
                     </ul>
                     <div class="bar"></div>
                 </div>
@@ -320,6 +321,9 @@
             is: 'aq-backtest-detail-item',
 
             properties: {
+                index:{
+                    type:String
+                },
                 hide: {
                     type: Boolean,
                     value: true,
@@ -765,7 +769,10 @@
             onGetBacktestSuccess: function (e) {
 
                 this.set('backtest', e.detail.response);
-                console.log(e.detail.response);
+                this.set('backtest.createdAt',date.formatDateTime(this.backtest.createdAt));
+                this.set('backtest.settings.startDate' , date.formatDate(this.backtest.settings.startDate));
+                this.set('backtest.settings.endDate' , date.formatDate(this.backtest.settings.endDate));
+                console.log(this.backtest);
                 if (this.backtest.status == "active") {
                     this.active = true;
                     //this.reset();
@@ -850,6 +857,6 @@
 
         });
     </script>
-
+    <script type="text/javascript" src="DateTime.js"></script>
 </dom-module>
 

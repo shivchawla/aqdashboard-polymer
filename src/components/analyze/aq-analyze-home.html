@@ -346,7 +346,7 @@
 
 	        onDetail: function(e) {
 	        	e.stopPropagation();
-	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id});
+	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id , index:e.detail.index});
 	        },
 
 	        hasTail: function(tail) {

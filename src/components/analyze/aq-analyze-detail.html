@@ -47,7 +47,7 @@
 			            <p class="self-center">Back to All Backtests</p>
 			      	</div>
 
-			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]"></aq-backtest-detail-item>
+			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
 		      	</template>
       		</div>
 	</template>
@@ -66,6 +66,9 @@
 					type:Boolean,
 					value:false,
 				},
+				index:{
+					type:String
+				}
 			},
 
 			goBackAllBacktests: function() {
