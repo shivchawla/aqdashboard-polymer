@@ -20,21 +20,26 @@
 		    color: #24293d; 
 	  	}
 
-		paper-icon-button {
-			width:35px;
-    		height:35px;
-    		margin-right: 10px;
-    		min-width:25px;
-    		max-width:35px;
-		}
+		/*paper-icon-button {*/
+			/*width:55px;*/
+    		/*height:55px;*/
+    		/*min-width:25px;*/
+    		/*max-width:35px;*/
+		/*}*/
 
 		#backButton {
 			margin:auto 0;
 			outline: none !important;
+            color:#cc4444;
+            transform: scale(1.6,1.6);
 		}
-        p{
+        p.self-center{
             padding: 0;
             margin: 0;
+            font-size: 14px;
+            color:#cc4444;
+            position: relative;
+            left: -5px;
         }
   	</style>
 
@@ -46,9 +51,9 @@
 		  	<div id='container'>
 			    <template is='dom-if' if='{{!loading}}'>
 			    	<div class="goBackButton layout horizontal">
-			            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBackAllBacktests">
+			            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="chevron-left" on-tap="goBackAllBacktests">
 			            </paper-icon-button>
-			            <p class="self-center">Back to All Backtests</p>
+			            <p class="self-center">Back</p>
 			      	</div>
 
 			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
