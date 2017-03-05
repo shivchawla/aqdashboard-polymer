@@ -13,29 +13,28 @@
 <link rel="import" href="./aq-community-home-post-item2.html">
 <link rel='import' href='../common/aq-pagination.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
-
+<link rel="import" href="../common/announcement-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id="aq-community-home">
-    
-    <style  include="iron-flex iron-flex-alignment iron-positioning">
+
+    <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
-  
+
     <style>
 
-        p {         
-          font-size: 28px;
-          margin-bottom: 0px;
+        p {
+            font-size: 28px;
+            margin-bottom: 0px;
         }
 
         #header {
-          margin-bottom: 30px;
+            margin-bottom: 30px;
         }
 
         i {
-          font-size :16px;
+            font-size: 16px;
         }
-    
 
         .insidetoolbar {
             outline-color: blue;
@@ -49,19 +48,19 @@
         }
 
         #container {
-          margin:0 auto;
-          margin-top: 20px;
-          color: #24293d;
-          width: 95%;
-          margin-left: 2%;
-          
-          --overflow-y: scroll;
-          --height: 100%;
+            margin: 0 auto;
+            margin-top: 20px;
+            color: #24293d;
+            width: 95%;
+            margin-left: 2%;
+
+            --overflow-y: scroll;
+            --height: 100%;
         }
 
-
         #fab {
-            background: teal;--#24293d;
+            background: teal;
+            -- #24293d;
             --float: right;
             position: fixed;
             right: 25px;
@@ -71,123 +70,166 @@
         paper-tab:hover {
             font-weight: bold;
             font-size: 18px;
-        }   
+        }
 
         #community-tabs {
             max-width: 350px;
             font-size: 16px;
+            margin: 0 auto;
             margin-top: 20px;
             border-bottom: 1px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: #c3403f; !important;
-            margin-bottom: -10px;  
-        }
-
-        #allposts {
-            margin-top: 50px;
-            --margin-left:auto;
-            margin-right: 0px;
-            margin-left: 0px;
+            --paper-tabs-selection-bar-color: teal;
+        !important;
+            margin-bottom: -10px;
         }
 
         #ifsearch {
-          display: none;
+            display: none;
         }
-          
+
         paper-tab.iron-selected {
-          color: #cf6766; --teal;
+            color: #000;
         }
 
         paper-tooltip.iconTooltip {
-          --paper-tooltip: {
-              font-size: 13px;
-              min-width: 40px;
-              text-align: center;
-          }
-
-          --paper-tooltip-opacity: 1.0;
-          --paper-tooltip-background: teal;
+            --paper-tooltip: {
+                font-size: 13px;
+                min-width: 40px;
+                text-align: center;
+            } --paper-tooltip-opacity: 1.0;
+            --paper-tooltip-background: teal;
         }
 
+        aq-community-home-post-item2 {
+            width: 800px;
+            margin: 0 auto;
+        }
 
+        .layout {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            position: relative;
+            top: 20px;
+        }
+
+        announcement-card {
+            --announcement-card-width: 300px;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            position: relative;
+            top: 30px;
+            margin: 0 auto;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            margin-right: 60px;
+        }
+        ul{
+            list-style: none;
+        }
     </style>
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-      
+
         <iron-ajax
-            url=""
-            method='GET'
-            id='getAllThreadsQuery'
-            params='[[searchParam]]'
-            handle-as="json"
-            on-response="onGetAllThreadsResponse"
-            on-error="onGetAllThreadsError"
-            headers='{{header}}'
-            debounce-duration="300"
-            loading='{{loading}}'>
+                url=""
+                method='GET'
+                id='getAllThreadsQuery'
+                params='[[searchParam]]'
+                handle-as="json"
+                on-response="onGetAllThreadsResponse"
+                on-error="onGetAllThreadsError"
+                headers='{{header}}'
+                debounce-duration="300"
+                loading='{{loading}}'>
         </iron-ajax>
 
         <iron-signals on-iron-signal-post-added='onPostAdded'></iron-signals>
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-            <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
-              <div id='container' class="layout vertical flex">
-                
-                <div class="layout horizontal wrap">
-                  <div id="header">
+        <div id='container' class="layout vertical flex">
+
+            <div class="layout horizontal wrap">
+                <div id="header">
                     <p> AimsQuant Community</p>
                     <i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>
-                  </div>
-
-                  <div class="flex"></div>
-      
-                  <aq-community-home-searchbar id='searchbar' 
-                                          class="self-end"
-                                          active="[[isSearchActive(searchText)]]"
-                                          search-value="[[searchText]]">
-                  </aq-community-home-searchbar> 
-                
-                </div>
-             
-                <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
-                    <p style="font-size: 16px;"><i>Search results for "[[searchText]]"&nbsp</i> in Category: <i>"[[searchCategory]]"</i>
-                  </p>
-                </template>
-              
-                <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
-                    <paper-tab id="popular">Popular</paper-tab>
-                    <paper-tab id="newest">Newest</paper-tab>
-                    <paper-tab id="following">Following</paper-tab>
-                    <paper-tab id="personal">Personal</paper-tab>
-                </paper-tabs>
-
-                <div clas="layout vertical" id='allposts'>
-                    <template is="dom-repeat" items="{{threads}}">
-                        <aq-community-home-post-item2 thread="[[item]]">
-                        </aq-community-home-post-item2>
-                    </template>
                 </div>
 
                 <div class="flex"></div>
 
-                <template is='dom-if' if='[[hasThreads(threads)]]'>
-                    <aq-pagination class="self-center" 
-                                    per-page="[[perPage]]"   
-                                    current-page="{{currentPage}}"
-                                    total-items="[[totalThreads]]">
-                    </aq-pagination>
-                </template>
-            
-            </div>
-            
-            <paper-fab id='fab' noink icon="aq-icons:add" on-tap='createPost'></paper-fab>
+                <aq-community-home-searchbar id='searchbar'
+                                             class="self-end"
+                                             active="[[isSearchActive(searchText)]]"
+                                             search-value="[[searchText]]">
+                </aq-community-home-searchbar>
 
-            <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0" fit-to-visible-bounds>New Post</paper-tooltip>
+            </div>
+
+            <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
+                <p style="font-size: 16px;"><i>Search results for "[[searchText]]"&nbsp</i> in Category: <i>"[[searchCategory]]"</i>
+                </p>
+            </template>
+
+            <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
+                <paper-tab id="popular">Popular</paper-tab>
+                <paper-tab id="newest">Newest</paper-tab>
+                <paper-tab id="following">Following</paper-tab>
+                <paper-tab id="personal">Personal</paper-tab>
+            </paper-tabs>
+            <div class="main-container">
+                <ul class="list-container">
+                    <template is="dom-repeat" items="{{threads}}">
+                        <li>
+                            <aq-community-home-post-item2 thread="[[item]]">
+                            </aq-community-home-post-item2>
+                        </li>
+                    </template>
+                </ul>
+                <div class="announcement-container">
+                    <announcement-card header="Important Announcement"
+                                       sub-header="This is a very important announcement">
+                    <span>
+                        It is a long established fact that a reader will be distracted by the readable content of a page when
+                        looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                        of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
+                        desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
+                        search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
+                        evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                    </span>
+                    </announcement-card>
+                </div>
+            </div>
+
+            <div class="flex"></div>
+
+            <template is='dom-if' if='[[hasThreads(threads)]]'>
+                <aq-pagination class="self-center"
+                               per-page="[[perPage]]"
+                               current-page="{{currentPage}}"
+                               total-items="[[totalThreads]]">
+                </aq-pagination>
+            </template>
+
+        </div>
+
+        <paper-fab id='fab' noink icon="aq-icons:add" on-tap='createPost'></paper-fab>
+
+        <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0"
+                       fit-to-visible-bounds>New Post
+        </paper-tooltip>
     </template>
     <script>
-        
+
         Polymer({
             is: 'aq-community-home',
 
@@ -199,215 +241,227 @@
 
                 threads: {
                     type: Array,
-                    value:[],
+                    value: [],
                 },
 
-                searchParam:{
-                    type:Object,
+                searchParam: {
+                    type: Object,
                 },
 
-                searchText:{
-                    type:String,
-                    value:"",
+                searchText: {
+                    type: String,
+                    value: "",
                 },
 
-                searchCategory:{
-                    type:String,
-                    value:"",
+                searchCategory: {
+                    type: String,
+                    value: "",
                 },
 
                 currentPage: {
-                  type:Number,
-                  value:1,
-                  observer: '_currentPageChanged',
+                    type: Number,
+                    value: 1,
+                    observer: '_currentPageChanged',
                 },
 
-                perPage :{
-                  type:Number,
-                  value:10,
+                perPage: {
+                    type: Number,
+                    value: 10,
                 },
 
                 totalThreads: {
-                  type:Number,
+                    type: Number,
                 },
 
-                aimsquant:Object,
-                header:Object,
+                aimsquant: Object,
+                header: Object,
 
-                personal:{
-                  type:Boolean,
-                  computed: 'isSelected(selected, 3)'
+                personal: {
+                    type: Boolean,
+                    computed: 'isSelected(selected, 3)'
                 },
 
-                following:{
-                  type:Boolean,
-                  computed: 'isSelected(selected, 2)'
+                following: {
+                    type: Boolean,
+                    computed: 'isSelected(selected, 2)'
                 },
 
-                loading:Boolean,
+                loading: Boolean,
 
-                dirtyBit:{
-                  type:Number,
-                  value:1,
+                dirtyBit: {
+                    type: Number,
+                    value: 1,
                 },
 
             },
 
-            listeners :{
-              'search-action':'onSearch',
-              'view-action':'onView',
+            listeners: {
+                'search-action': 'onSearch',
+                'view-action': 'onView',
             },
 
             //observers:['_activeChanged(active, subroute)'],
 
-            attached: function() {
-              var x = localStorage.getItem('my-app-storage');
-              if (x) {
-                  var community = JSON.parse(x).community;
-                  if (community) {
-                      this.searchText = community.searchText;
-                      this.searchCategory  = community.searchCategory;
-                      this.oldselected = community.searchTab;
-                      this.selected = community.searchTab;
-                      this.currentPage = community.lastPage;
-                  } 
-              }
-
-              if(!this.isSearchActive(this.searchText, this.searchCategory) || this.dirtyBit == 1){
-                 this.processparams(); 
-                 this.dirtyBit = 0;
-              }
-              
-            },
-
-            isSelected: function(selected, selection) {
-              return selected == selection;
-            },
-
-            onActivateTab: function() {
-                if(this.selected != this.oldselected) {
-                  this.oldselected = this.selected;
-
-                  if(this.currentPage == 1) {
-                    if (this.isAttached) {
-                        this.processparams();
+            attached: function () {
+                var x = localStorage.getItem('my-app-storage');
+                if (x) {
+                    var community = JSON.parse(x).community;
+                    if (community) {
+                        this.searchText = community.searchText;
+                        this.searchCategory = community.searchCategory;
+                        this.oldselected = community.searchTab;
+                        this.selected = community.searchTab;
+                        this.currentPage = community.lastPage;
                     }
-                  } else {
-                    this.currentPage = 1;
-                  }
+                }
+
+                if (!this.isSearchActive(this.searchText, this.searchCategory) || this.dirtyBit == 1) {
+                    this.processparams();
+                    this.dirtyBit = 0;
+                }
+
+            },
+
+            isSelected: function (selected, selection) {
+                return selected == selection;
+            },
+
+            onActivateTab: function () {
+                if (this.selected != this.oldselected) {
+                    this.oldselected = this.selected;
+
+                    if (this.currentPage == 1) {
+                        if (this.isAttached) {
+                            this.processparams();
+                        }
+                    } else {
+                        this.currentPage = 1;
+                    }
                 }
             },
 
-            onGetAllThreadsResponse: function(data) {
+            onGetAllThreadsResponse: function (data) {
                 this.set('threads', []);
                 this.threads = data.detail.response.threads;
                 this.totalThreads = data.detail.response.count;
             },
 
-            onGetAllThreadsError: function(data) {
+            onGetAllThreadsError: function (data) {
             },
 
-            createPost: function() {
-                
+            createPost: function () {
+
                 if (!this.$.authItem.checkHasToken()) {
-                    this.fire('rt-changed',{route:'/user/signin'});
+                    this.fire('rt-changed', {route: '/user/signin'});
                     return;
                 }
 
                 this.updateCommunityState();
 
-                this.fire('rt-changed',{route:'/dashboard/community/create'});
+                this.fire('rt-changed', {route: '/dashboard/community/create'});
             },
 
-            onSearch: function(e) {
+            onSearch: function (e) {
 
-              this.searchText = e.detail.text;
-              this.searchCategory = e.detail.category;
+                this.searchText = e.detail.text;
+                this.searchCategory = e.detail.category;
 
-              if (this.searchText=="") {
-                  this.currentPage = 1;
-                  this.dirtyBit = 0;
-              } else {
-                  this.dirtyBit = 1;         
-              }
-              
-              if(this.isAttached) {
-                 this.processparams();
-              }
-            },
-
-            isFollowing: function() {
-              return this.selected == 2;
-            },
-
-            isPersonal: function() {
-              return this.selected == 3;
-            },
-
-            processparams: function() {
-              
-              if (this.selected == 0) {
-                  this.orderby = 'views';
+                if (this.searchText == "") {
+                    this.currentPage = 1;
+                    this.dirtyBit = 0;
                 } else {
-                  this.orderby = 'createdAt';
+                    this.dirtyBit = 1;
                 }
 
-              this.updateCommunityState();
-
-              var currentPage = (this.currentPage) ? this.currentPage : 1;
-
-              var category = this.searchCategory=="All" ? "":this.searchCategory;
-
-              this.searchParam = {"skip":this.perPage*(currentPage -1), "limit":this.perPage, "order":"-1", "q":this.searchText, "order_param":this.orderby, "personal":this.isPersonal(), "following": this.isFollowing(), "category": category};
-  
-              this.fetchResults();
-            
-            },
-
-            fetchResults: function() {
-                if(this.$.authItem.checkHasToken()) {
-                  this.header = this.$.authItem.getHeader();
-                  var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                  this.$.getAllThreadsQuery.url = APIEndPoint + '/thread'; 
-                  this.$.getAllThreadsQuery.generateRequest();   
+                if (this.isAttached) {
+                    this.processparams();
                 }
             },
 
-            _currentPageChanged: function(newPage, oldPage) {      
-                if(this.isAttached) {
-                  this.processparams();
-                  this.$$('#community-tabs').scrollIntoView(true); 
+            isFollowing: function () {
+                return this.selected == 2;
+            },
+
+            isPersonal: function () {
+                return this.selected == 3;
+            },
+
+            processparams: function () {
+
+                if (this.selected == 0) {
+                    this.orderby = 'views';
+                } else {
+                    this.orderby = 'createdAt';
+                }
+
+                this.updateCommunityState();
+
+                var currentPage = (this.currentPage) ? this.currentPage : 1;
+
+                var category = this.searchCategory == "All" ? "" : this.searchCategory;
+
+                this.searchParam = {
+                    "skip": this.perPage * (currentPage - 1),
+                    "limit": this.perPage,
+                    "order": "-1",
+                    "q": this.searchText,
+                    "order_param": this.orderby,
+                    "personal": this.isPersonal(),
+                    "following": this.isFollowing(),
+                    "category": category
+                };
+
+                this.fetchResults();
+
+            },
+
+            fetchResults: function () {
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.getAllThreadsQuery.url = APIEndPoint + '/thread';
+                    this.$.getAllThreadsQuery.generateRequest();
                 }
             },
 
-            updateCommunityState: function() {
+            _currentPageChanged: function (newPage, oldPage) {
+                if (this.isAttached) {
+                    this.processparams();
+                    this.$$('#community-tabs').scrollIntoView(true);
+                }
+            },
+
+            updateCommunityState: function () {
                 this.fire('update-localstorage-community', {
-                                    searchText: this.searchText, 
-                                    searchCategory:this.searchCategory,
-                                    lastPage: (this.currentPage) ? this.currentPage : 1,
-                                    searchTab: (this.selected) ? this.selected : 0 });
+                    searchText: this.searchText,
+                    searchCategory: this.searchCategory,
+                    lastPage: (this.currentPage) ? this.currentPage : 1,
+                    searchTab: (this.selected) ? this.selected : 0
+                });
             },
 
-            isSearchActive: function(searchText, searchCategory) {
-                return searchText.length > 0 || (searchCategory && searchCategory!="All" && searchCategory.length>0);
+            isSearchActive: function (searchText, searchCategory) {
+                return searchText.length > 0 || (searchCategory && searchCategory != "All" && searchCategory.length > 0);
             },
 
-            hasThreads: function(threads) {
-              return threads.length > 0;
+            hasThreads: function (threads) {
+                return threads.length > 0;
             },
 
-            setDirtyBit: function() {
-               this.dirtyBit = 1; 
-               this.async(function(){this.setDirtyBit}, 120000);
+            setDirtyBit: function () {
+                this.dirtyBit = 1;
+                this.async(function () {
+                    this.setDirtyBit
+                }, 120000);
             },
 
-            onPostAdded: function() {
-              console.log("Post Added");
-              this.dirtyBit = 1;
+            onPostAdded: function () {
+                console.log("Post Added");
+                this.dirtyBit = 1;
             },
 
-            onSetDirtyBit: function(e) {
-              this.dirtyBit = e.detail;
+            onSetDirtyBit: function (e) {
+                this.dirtyBit = e.detail;
             },
 
         });

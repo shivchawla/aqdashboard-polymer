@@ -1,0 +1,65 @@
+<dom-module id="post-user-comment">
+    <template>
+        <style>
+            :host{
+                display: inline-block;
+                font-family: 'Lato', sans-serif;
+                font-size: 16px;
+            }
+            .container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .by{
+                margin-right: 10px;
+            }
+            .user-name{
+                margin-right: 6px;
+            }
+            .by{
+                font-weight: 300;
+                font-size: 0.8em;
+                color:#646464;
+            }
+            .time{
+                font-weight: 400;
+                font-size: 0.75em;
+                color:#8a8c97;
+            }
+            .user-name{
+                font-weight: 400;
+                font-size: 1.1em;
+                color:#646464;
+            }
+            h3{
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+        <div class="container">
+            <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+            <h3 class="by">{{label}}  by <span class="user-name">{{user}}</span></h3>
+            <span class="time">{{time}}</span>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is:"post-user-comment",
+            properties:{
+                label:{
+                    type:String,
+                    value:""
+                },
+                user:{
+                    type:String,
+                    value: ""
+                },
+                time:{
+                    type:String,
+                    value:""
+                }
+            }
+        })
+    </script>
+</dom-module>

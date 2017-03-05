@@ -1,0 +1,63 @@
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+<dom-module id="announcement-card">
+    <template>
+        <style>
+            :host{
+                display: inline-block;
+            }
+            .container{
+                width: var(--announcement-card-width , 100%);
+                display: flex;
+                justify-content: flex-start;
+                padding: 15px 20px;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+                border-radius: 2px;
+                flex-direction: column;
+            }
+            .header , .sub-header{
+                font-family: 'Lato' , sans-serif;
+            }
+            .header{
+                font-weight: 400;
+                font-size: 14px;
+                color:teal;
+            }
+            .sub-header{
+                font-weight: 700;
+                font-size: 16px;
+                margin-top: 13px;
+            }
+            ::content span{
+                font-family: 'Lato' , sans-serif;
+                font-size: 14px;
+                line-height: 20px;
+                margin: 0; padding: 0;
+                margin-top: 13px;
+                font-weight: 400;
+            }
+            h1,h3{
+                margin: 0;padding: 0;
+            }
+        </style>
+        <div class="container">
+            <h1 class="header">{{header}}</h1>
+            <h3 class="sub-header">{{header}}</h3>
+            <content class="content-wrapper"></content>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is:"announcement-card",
+            properties:{
+                header:{
+                    type:String,
+                    value:"This is the card header"
+                },
+                subHeader:{
+                    type:String,
+                    value:"This is the Sub Header"
+                }
+            }
+        })
+    </script>
+</dom-module>
