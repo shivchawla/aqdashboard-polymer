@@ -7,11 +7,11 @@
 <link rel='import' href='../profile-img.html'>
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../../icons/aq-iconset.html">
-<link rel="import" href="../common/tag-element.html">
+<link rel="import" href="../common/aq-tag-element.html">
 <link rel="import" href="../common/post-user-comment.html">
-<link rel="import" href="../common/label-content-item.html">
+<link rel="import" href="../common/aq-label-content-item.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../common/profile-pic-element.html">
+<link rel="import" href="../common/aq-profile-pic-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
 
 <dom-module id="aq-community-home-post-item2">
@@ -20,6 +20,8 @@
             :host {
                 display: inline-block;
                 position: relative;
+                font-family: 'Lato', sans-serif;
+                font-size: 16px;
             }
 
             .container {
@@ -81,7 +83,7 @@
             .attachment-btn {
                 color: #cc4444;
                 position: absolute;
-                right: 15px;
+                right: 0;
                 top: 5px;
             }
 
@@ -97,7 +99,7 @@
                 align-items: center;
             }
 
-            .left-part post-user-comment {
+            .left-part .post-container {
                 margin-right: 30px;
             }
 
@@ -126,6 +128,32 @@
 
             profile-pic-element {
                 margin-right: 10px;
+            }
+            .post-container{
+                /*display: flex;*/
+                /*flex-direction: column;*/
+                /*justify-content: center;*/
+            }
+            .by{
+                margin-right: 10px;
+            }
+            .user-name{
+                margin-right: 6px;
+            }
+            .by{
+                font-weight: 300;
+                font-size: 0.8em;
+                color:#646464;
+            }
+            .time{
+                font-weight: 400;
+                font-size: 0.75em;
+                color:#8a8c97;
+            }
+            .user-name{
+                font-weight: 400;
+                font-size: 1.1em;
+                color:#646464;
             }
         </style>
         <div class="container" on-tap='goToDetail'>
@@ -157,8 +185,18 @@
             <div class="lower-container">
                 <div class="left-part">
                     <profile-pic-element></profile-pic-element>
-                    <post-user-comment user="[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]" time="[[format(thread.createdAt)]]"></post-user-comment>
-                    <post-user-comment label="Last Reply" user="[[getReplyAuthor(thread)]]" time="[[getReplyDate(thread)]]"></post-user-comment>
+                    <!--<post-user-comment user="[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]" time="[[format(thread.createdAt)]]"></post-user-comment>-->
+                    <!--<post-user-comment label="Last Reply" user="[[getReplyAuthor(thread)]]" time="[[getReplyDate(thread)]]"></post-user-comment>-->
+                    <div class="post-container layout vertical center">
+                        <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+                        <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span></h3>
+                        <span class="time">[[format(thread.createdAt)]]</span>
+                    </div>
+                    <div class="post-container layout vertical center">
+                        <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+                        <h3 class="by">Last Reply  by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
+                        <span class="time">[[getReplyDate(thread)]]</span>
+                    </div>
                 </div>
                 <div class="right-part">
                     <label-content-item label="Views" text="[[thread.views]]"></label-content-item>

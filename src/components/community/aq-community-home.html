@@ -15,7 +15,7 @@
 <link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="../common/announcement-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 <dom-module id="aq-community-home">
 
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -104,13 +104,7 @@
             margin: 0 auto;
         }
 
-        .layout {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            position: relative;
-            top: 20px;
-        }
+
 
         announcement-card {
             --announcement-card-width: 300px;
@@ -118,31 +112,29 @@
         }
 
         .main-container {
-            display: flex;
-            flex-direction: row;
             position: relative;
             top: 30px;
         }
 
         .list-container {
-            display: flex;
-            flex-direction: column;
             margin-right: 60px;
             width: 100%;
         }
-        ul{
+
+        ul {
             list-style: none;
         }
-        .announcement-container{
+
+        .announcement-container {
             position: relative;
-            top:18px;
-            display: flex;
-            flex-direction: column;
+            top: 18px;
         }
-        .flex{
+
+        .flex {
             width: 20%;
         }
-        #searchbox,#searchbox1 {
+
+        #searchbox, #searchbox1 {
             height: 32px;
             -webkit-appearance: none;
             line-height: 46px;
@@ -158,12 +150,12 @@
             display: inline-block;
         }
 
-        #searchbox:focus, #searchbox1:focus{
+        #searchbox:focus, #searchbox1:focus {
             outline: 0;
             background-color: #f7f7f7;
         }
 
-        #searchbox::-webkit-search-cancel-button,#searchbox1::-webkit-search-cancel-button {
+        #searchbox::-webkit-search-cancel-button, #searchbox1::-webkit-search-cancel-button {
             position: relative;
             right: 15px;
         }
@@ -171,18 +163,20 @@
         .search-bar {
             width: 45%;
             margin: 0 auto;
-            display: flex;
-            align-items: center;
+            /*display: flex;*/
+            /*align-items: center;*/
             position: relative;
         }
-        paper-button{
-            border:none;
+
+        paper-button {
+            border: none;
         }
-        .upper-container{
-            display: flex;
-            flex-direction: row;
+
+        .upper-container {
+            margin-bottom: 20px;
         }
-        .search-btn{
+
+        .search-btn {
             border: none;
             font-size: 13px;
             background-color: teal;
@@ -216,13 +210,13 @@
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <div id='container' class="layout vertical flex">
-            <div class="upper-container">
-                <div class="search-bar">
-                    <input id="searchbox"  placeholder="Search Term" class="flex"
+            <div class="upper-container layout horizontal wrap">
+                <div class="search-bar layout horizontal center-justified">
+                    <input id="searchbox" placeholder="Search Term" class="flex"
                            value="{{searchText::change}}"
                            on-keydown="checkForKeys" on-blur='blur'>
                 </div>
-                <div class="search-bar">
+                <div class="search-bar layout horizontal center-justified">
                     <input id="searchbox1" placeholder="Tags" class="flex"
                            value="{{searchText::change}}"
                            on-keydown="checkForKeys" on-blur='blur'>
@@ -230,18 +224,18 @@
                 <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
             </div>
             <!--<div class="layout horizontal wrap">-->
-                <!--<div id="header">-->
-                    <!--<p> AimsQuant Community</p>-->
-                    <!--<i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>-->
-                <!--</div>-->
+            <!--<div id="header">-->
+            <!--<p> AimsQuant Community</p>-->
+            <!--<i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>-->
+            <!--</div>-->
 
-                <!--<div class="flex"></div>-->
+            <!--<div class="flex"></div>-->
 
-                <!--<aq-community-home-searchbar id='searchbar'-->
-                                             <!--class="self-end"-->
-                                             <!--active="[[isSearchActive(searchText)]]"-->
-                                             <!--search-value="[[searchText]]">-->
-                <!--</aq-community-home-searchbar>-->
+            <!--<aq-community-home-searchbar id='searchbar'-->
+            <!--class="self-end"-->
+            <!--active="[[isSearchActive(searchText)]]"-->
+            <!--search-value="[[searchText]]">-->
+            <!--</aq-community-home-searchbar>-->
 
             <!--</div>-->
 
@@ -256,8 +250,8 @@
                 <paper-tab id="following">Following</paper-tab>
                 <paper-tab id="personal">Personal</paper-tab>
             </paper-tabs>
-            <div class="main-container">
-                <ul class="list-container">
+            <div class="main-container layout horizontal">
+                <ul class="list-container layout vertical">
                     <template is="dom-repeat" items="{{threads}}">
                         <li>
                             <aq-community-home-post-item2 thread="[[item]]">
@@ -265,7 +259,7 @@
                         </li>
                     </template>
                 </ul>
-                <div class="announcement-container">
+                <div class="announcement-container layout vertical">
                     <announcement-card header="Important Announcement"
                                        sub-header="This is a very important announcement">
                     <span>
