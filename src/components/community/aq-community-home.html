@@ -417,7 +417,9 @@
             },
 
             processparams: function () {
-
+                var category;
+                //console.log(this.searchCategory);
+                var categorySearch=["","Share your Idea","Questions and Answers","News and Announcements"];
                 if (this.selected == 0) {
                     this.orderby = 'views';
                 } else {
@@ -427,9 +429,13 @@
                 this.updateCommunityState();
 
                 var currentPage = (this.currentPage) ? this.currentPage : 1;
-
-                var category = this.searchCategory == "All" ? "" : this.searchCategory;
-
+                if(this.isSearchActive(this.searchText,this.searchCategory)){
+                    console.log("Search Active , Selected Item is "+this.selected);
+                    category = categorySearch[this.selected];
+                }else{
+                    category = this.searchCategory === "All" ? "" : this.searchCategory;
+                }
+                //console.log(category);
                 this.searchParam = {
                     "skip": this.perPage * (currentPage - 1),
                     "limit": this.perPage,
@@ -440,7 +446,6 @@
                     "following": this.isFollowing(),
                     "category": category
                 };
-
                 this.fetchResults();
 
             },
