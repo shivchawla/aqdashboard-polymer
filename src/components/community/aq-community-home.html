@@ -23,11 +23,6 @@
 
     <style>
 
-        p {
-            font-size: 28px;
-            margin-bottom: 0px;
-        }
-
         #header {
             margin-bottom: 30px;
         }
@@ -72,7 +67,7 @@
             font-size: 18px;
         }
 
-        #community-tabs {
+        #community-tabs,#search-tabs {
             max-width: 350px;
             font-size: 16px;
             margin: 0 auto;
@@ -104,8 +99,6 @@
             margin: 0 auto;
         }
 
-
-
         announcement-card {
             --announcement-card-width: 300px;
             margin-bottom: 30px;
@@ -134,57 +127,28 @@
             width: 20%;
         }
 
-        #searchbox, #searchbox1 {
-            height: 32px;
-            -webkit-appearance: none;
-            line-height: 46px;
-            border: 0;
-            margin: 0;
-            padding-left: 30px;
-            border: 1px solid #e5e5e5;
-            @apply(--paper-font-body1);
-            font-size: 14px;
-            background-color: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease-in-out;
-            display: inline-block;
+        #searchbar {
+            width: 100%;
         }
 
-        #searchbox:focus, #searchbox1:focus {
-            outline: 0;
-            background-color: #f7f7f7;
+        .search-result {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            color: #424242;
         }
 
-        #searchbox::-webkit-search-cancel-button, #searchbox1::-webkit-search-cancel-button {
-            position: relative;
-            right: 15px;
+        .search-string {
+            font-family: 'Lato', sans-serif;
+            font-weight: 400;
+            color: #757575;
         }
 
-        .search-bar {
-            width: 45%;
-            margin: 0 auto;
-            /*display: flex;*/
-            /*align-items: center;*/
-            position: relative;
+        .hr-bar {
+            width: 100%;
+            height: 1px;
+            background-color: #BDBDBD;
         }
 
-        paper-button {
-            border: none;
-        }
-
-        .upper-container {
-            margin-bottom: 20px;
-        }
-
-        .search-btn {
-            border: none;
-            font-size: 13px;
-            background-color: teal;
-            color: #fff;
-            padding: 0 20px;
-            border-radius: 2px;
-            height: 35px;
-        }
     </style>
     <template>
 
@@ -211,45 +175,35 @@
 
         <div id='container' class="layout vertical flex">
             <div class="upper-container layout horizontal wrap">
-                <div class="search-bar layout horizontal center-justified">
-                    <input id="searchbox" placeholder="Search Term" class="flex"
-                           value="{{searchText::change}}"
-                           on-keydown="checkForKeys" on-blur='blur'>
-                </div>
-                <div class="search-bar layout horizontal center-justified">
-                    <input id="searchbox1" placeholder="Tags" class="flex"
-                           value="{{searchText::change}}"
-                           on-keydown="checkForKeys" on-blur='blur'>
-                </div>
-                <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
+                <aq-community-home-searchbar id='searchbar'
+                                             class="self-end"
+                                             active="[[isSearchActive(searchText)]]"
+                                             search-value="[[searchText]]">
+                </aq-community-home-searchbar>
             </div>
-            <!--<div class="layout horizontal wrap">-->
-            <!--<div id="header">-->
-            <!--<p> AimsQuant Community</p>-->
-            <!--<i style="margin-bottom:50px; color:teal;">Share, Learn and Code</i>-->
-            <!--</div>-->
-
-            <!--<div class="flex"></div>-->
-
-            <!--<aq-community-home-searchbar id='searchbar'-->
-            <!--class="self-end"-->
-            <!--active="[[isSearchActive(searchText)]]"-->
-            <!--search-value="[[searchText]]">-->
-            <!--</aq-community-home-searchbar>-->
-
-            <!--</div>-->
-
             <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
-                <p style="font-size: 16px;"><i>Search results for "[[searchText]]"&nbsp</i> in Category: <i>"[[searchCategory]]"</i>
+                <!--<div id="ifsearch">-->
+                <p class="search-result">Search results for <span class="search-string">"[[searchText]]"&nbsp</span>
                 </p>
+                <div class="hr-bar"></div>
+                <!--</div>-->
             </template>
-
-            <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
-                <paper-tab id="popular">Popular</paper-tab>
-                <paper-tab id="newest">Newest</paper-tab>
-                <paper-tab id="following">Following</paper-tab>
-                <paper-tab id="personal">Personal</paper-tab>
-            </paper-tabs>
+            <template is='dom-if' if='[[!isSearchActive(searchText, searchCategory)]]'>
+                <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
+                    <paper-tab id="popular">Popular</paper-tab>
+                    <paper-tab id="newest">Newest</paper-tab>
+                    <paper-tab id="following">Following</paper-tab>
+                    <paper-tab id="personal">Personal</paper-tab>
+                </paper-tabs>
+            </template>
+            <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
+                <paper-tabs on-iron-select="onActivateTab" id="search-tabs" selected="{{selected}}" noink>
+                    <paper-tab id="all">ALL</paper-tab>
+                    <paper-tab id="ideas">IDEAS</paper-tab>
+                    <paper-tab id="quesions">QUESTIONS</paper-tab>
+                    <paper-tab id="news">NEWS</paper-tab>
+                </paper-tabs>
+            </template>
             <div class="main-container layout horizontal">
                 <ul class="list-container layout vertical">
                     <template is="dom-repeat" items="{{threads}}">

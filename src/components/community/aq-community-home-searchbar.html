@@ -1,4 +1,3 @@
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
 <link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
@@ -6,246 +5,313 @@
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <dom-module id='aq-community-home-searchbar'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
-  
-	<style>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
 
-		#searchbox {
-		  height: 46px;
-		  line-height: 46px;
+    <style>
 
-		  border: 0;
-		  margin: 0;
-		  padding-left: 10px;
-		  border: 1px solid #e5e5e5;
-		  @apply(--paper-font-body1);
-		  font-size:100%;
-		  
-		  width: 600px;
-		  padding-right: 10px;
-		}
+        /*#searchbox {*/
+            /*height: 46px;*/
+            /*line-height: 46px;*/
 
-		#searchbox:focus{
-		  outline:none;
-		  background-color: white;
-		}
+            /*border: 0;*/
+            /*margin: 0;*/
+            /*padding-left: 10px;*/
+            /*border: 1px solid #e5e5e5;*/
+            /*@apply(--paper-font-body1);*/
+            /*font-size: 100%;*/
 
-		paper-button {
-	      display: block;
-	      margin:0px;
-	      height:46px;
-	      background: white;
-	      border: 1px solid #e5e5e5;
-	      border-radius: 0px;
-	      width:150px;
-	    }
+            /*width: 600px;*/
+            /*padding-right: 10px;*/
+        /*}*/
 
-	    paper-menu {
-	    	cursor: pointer;
-	     	width: 150px;
-	    }
+        /*#searchbox:focus {*/
+            /*outline: none;*/
+            /*background-color: white;*/
+        /*}*/
 
-	    #button {
-	    	height:0;
-	    	margin:0;
-	    	padding:0px;
-	    }
+        /*paper-button {*/
+            /*display: block;*/
+            /*margin: 0px;*/
+            /*height: 46px;*/
+            /*background: white;*/
+            /*border: 1px solid #e5e5e5;*/
+            /*border-radius: 0px;*/
+            /*width: 150px;*/
+        /*}*/
 
-	    paper-button #content{
-	    	position:absolute;
-	    	top:-2px;
-	    }
+        /*paper-menu {*/
+            /*cursor: pointer;*/
+            /*width: 150px;*/
+        /*}*/
 
-	 	iron-icon {
-	    	position:absolute;
-	    	top: 10px;
-	    	left:100%;
-	    }
-		
-		#category {
-			width: 50px;
-		}
+        /*#button {*/
+            /*height: 0;*/
+            /*margin: 0;*/
+            /*padding: 0px;*/
+        /*}*/
 
-		#category_dd {
-			---button-width:170px;
-			--dropdown-width:240px;
-			--dropdown-border: 1px solid #e5e5e5;
-			--dropdown-height:46px;
-			--dropdown-font-size:15px;
-			--dropdown-paper-menu-font-size:16px;
-			--dropdown-background-color:#99ced4;
-		}
+        /*paper-button #content {*/
+            /*position: absolute;*/
+            /*top: -2px;*/
+        /*}*/
 
-		.iconButton {
-			outline:1px solid teal;
-			padding:5px;
-			width:35px;
-    		height:35px;
-    		margin-right: 10px;
-    		color: #cc6666;;
-    		margin-bottom: 40px;
-		}
+        /*iron-icon {*/
+            /*position: absolute;*/
+            /*top: 10px;*/
+            /*left: 100%;*/
+        /*}*/
 
-		.iconButton:active {
-			padding: 8px;
-		}
+        /*#category {*/
+            /*width: 50px;*/
+        /*}*/
 
-		paper-radio-button {
-			--paper-radio-button-size: 12px;
-			font-size: 13px;
-			--paper-radio-button-checked-color:teal;
-		}
+        /*#category_dd {*/
+            /*---button-width: 170px;*/
+            /*--dropdown-width: 240px;*/
+            /*--dropdown-border: 1px solid #e5e5e5;*/
+            /*--dropdown-height: 46px;*/
+            /*--dropdown-font-size: 15px;*/
+            /*--dropdown-paper-menu-font-size: 16px;*/
+            /*--dropdown-background-color: #99ced4;*/
+        /*}*/
 
-		#searchdiv {
-			display: none;
-		}
+        /*.iconButton {*/
+            /*outline: 1px solid teal;*/
+            /*padding: 5px;*/
+            /*width: 35px;*/
+            /*height: 35px;*/
+            /*margin-right: 10px;*/
+            /*color: #cc6666;;*/
+            /*margin-bottom: 40px;*/
+        /*}*/
 
-		paper-tooltip.iconTooltip {
-        	--paper-tooltip: {
-          		font-size: 13px;
-          		min-width: 40px;
-          		text-align: center;
-        	}
+        /*.iconButton:active {*/
+            /*padding: 8px;*/
+        /*}*/
 
-        	--paper-tooltip-opacity: 1.0;
-			--paper-tooltip-background: teal;
-		}
+        /*paper-radio-button {*/
+            /*--paper-radio-button-size: 12px;*/
+            /*font-size: 13px;*/
+            /*--paper-radio-button-checked-color: teal;*/
+        /*}*/
+
+        /*#searchdiv {*/
+            /*display: none;*/
+        /*}*/
+
+        /*paper-tooltip.iconTooltip {*/
+            /*--paper-tooltip: {*/
+                /*font-size: 13px;*/
+                /*min-width: 40px;*/
+                /*text-align: center;*/
+            /*} --paper-tooltip-opacity: 1.0;*/
+            /*--paper-tooltip-background: teal;*/
+        /*}*/
+        #searchbox, #searchbox1 {
+            height: 32px;
+            -webkit-appearance: none;
+            line-height: 46px;
+            border: 0;
+            margin: 0;
+            padding-left: 30px;
+            border: 1px solid #e5e5e5;
+            @apply(--paper-font-body1);
+            font-size: 14px;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease-in-out;
+            display: inline-block;
+        }
+
+        #searchbox:focus, #searchbox1:focus {
+            outline: 0;
+            background-color: #f7f7f7;
+        }
+
+        #searchbox::-webkit-search-cancel-button, #searchbox1::-webkit-search-cancel-button {
+            position: relative;
+            right: 15px;
+        }
+
+        .search-bar {
+            width: 45%;
+            margin: 0 auto;
+            /*display: flex;*/
+            /*align-items: center;*/
+            position: relative;
+        }
+
+        paper-button {
+            border: none;
+        }
+
+        .upper-container {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .search-btn {
+            border: none;
+            font-size: 13px;
+            background-color: teal;
+            color: #fff;
+            padding: 0 20px;
+            border-radius: 2px;
+            height: 35px;
+        }
+
+    </style>
+
+    <template>
+        <!--div id="search" class="layout vertical"-->
+        <!--aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown-->
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+        <div class="upper-container layout horizontal wrap">
+            <div class="search-bar layout horizontal center-justified">
+                <input id="searchbox" placeholder="Search Term" class="flex"
+                       value="{{searchValue::input}}"
+                       on-keydown="checkForKeys" on-blur='blur'>
+            </div>
+            <div class="search-bar layout horizontal center-justified">
+                <input id="searchbox1" placeholder="Tags" class="flex"
+                       value="{{searchText::change}}"
+                       on-keydown="checkForKeys" on-blur='blur'>
+            </div>
+            <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
+        </div>
+        <!--<div id="search" class="layout horizontal" on-keydown="checkForKeys">-->
+
+        <!--<div id="searchdiv">-->
+        <!--<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search">-->
+
+        <!--<div>-->
+        <!--<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">-->
+        <!--<template is='dom-repeat' items='{{categories}}'>-->
+        <!--<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>-->
+        <!--</template>-->
+        <!--</paper-radio-group>-->
+        <!--</div>-->
+        <!--</div>-->
 
 
-	</style>
-	
-	<template>
-      		<!--div id="search" class="layout vertical"-->
-	    		<!--aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown-->
-    			<aq-check-authentication id='authItem'></aq-check-authentication>
+        <!--<paper-icon-button id='searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised>-->
+        <!--</paper-icon-button>-->
+        <!--</div>-->
 
-	  			<div id="search" class="layout horizontal" on-keydown="checkForKeys">
-	  				
-  					<div id="searchdiv">
-		  				<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search">
-
-		  				<div>
-			  				<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">
-					         	<template is='dom-repeat' items='{{categories}}'>
-									<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>
-								</template>
-							</paper-radio-group>
-						</div>
-					</div>
+        <!--<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>-->
 
 
-	         	 	<paper-icon-button id='searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised> 
-                	</paper-icon-button>
-            	</div>
+        <!--/div-->
+    </template>
+    <script>
 
-            	<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>
-       	         	
+        Polymer({
+            is: 'aq-community-home-searchbar',
 
-			<!--/div-->
-	</template>
-	<script >
-				
-		Polymer({
-			is: 'aq-community-home-searchbar',
+            properties: {
+                selectedCategory: {
+                    type: Number,
+                    value: 0,
+                },
 
-			properties: {
-				selectedCategory : {
-					type: Number,
-					value: 0,
-				},
+                searchValue: {
+                    type: String,
+                    value: "",
+                },
 
-				searchValue: {
-					type: String,
-					value:"",
-				},
+                lastSearchValue: {
+                    type: String,
+                    value: "",
+                },
 
-				lastSearchValue:{
-					type: String,
-					value: "",
-				},
+                lastSelectedCategory: {
+                    type: Number,
+                    value: 0,
+                },
 
-				lastSelectedCategory: {
-					type: Number,
-					value: 0,
-				},
+                active: Boolean,
 
-				active: Boolean,
+                categories: {
+                    type: Array,
+                    value: [{value: "All", index: 0}, {
+                        value: "Share your Idea",
+                        index: 1
+                    }, {value: "Questions and Answers", index: 2}, {value: "News and Announcements", index: 3}],
 
-				categories:{
-					type:Array,
-					value: [{value:"All", index:0},{value:"Share your Idea",index:1},{value:"Questions and Answers",index:2},{value:"News and Announcements",index:3}],
-
-				},
-			},
-
-			attached : function() {
-				if (this.active) {
-				  	this.$.searchdiv.style.display = 'block';
-                	this.$.searchIcon.style.display = 'none';
-                	this.$.searchbox.focus();
-                	this.$.searchbox.value = this.searchValue;
-				}
-			},
-
-			search: function() {
-				this.searchValue = this.$$('#searchbox').value;
-
-				if (this.lastSelectedCategory != this.selectedCategory || this.lastSearchValue != this.searchValue) {
-
-	                this.fire('search-action', {text: this.searchValue, category: this.selectedCategory >= 0 ? this.categories[this.selectedCategory].value : ""});
-                }
-
-             	if (this.searchValue=="") {
-                	this.toggle();
-    			}
-
-    			this.lastSearchValue = this.searchValue;
-				this.lastSelectedCategory = this.selectedCategory;
-           
-			},
-
-			toggle: function() {
-              var d = this.$.searchdiv.style.display;
-              if (d == "block") {
-                this.$.searchdiv.style.display = 'none';
-                this.$.searchIcon.style.display = 'inline';
-              } else {
-
-              	if (!this.$.authItem.checkHasToken()) {
-                  	this.fire('rt-changed',{route:'/user/signin'});
-                  	return;
-              	}
-                this.$.searchdiv.style.display = 'block';
-                this.$.searchIcon.style.display = 'none';
-                this.$.searchbox.focus();
-                this.$.searchbox.value = "";
-              }
+                },
             },
 
-             /*blur: function(e) {
-            	if(this.$$('#searchbox').value=="") {
-            		//this.$$('#searchdiv').style.display = 'none';
-					//this.$$('#searchIcon').style.display = 'inline';
-					console.log("in blur");
-					this.search();
-				} 
-            },*/
+            attached: function () {
+                if (this.active) {
+                    this.$.searchdiv.style.display = 'block';
+                    this.$.searchIcon.style.display = 'none';
+                    this.$.searchbox.focus();
+                    this.$.searchbox.value = this.searchValue;
+                }
+            },
 
-            checkForKeys: function(e) {
+            search: function () {
+                this.searchValue = this.$$('#searchbox').value;
+
+                if (this.lastSelectedCategory != this.selectedCategory || this.lastSearchValue != this.searchValue) {
+
+                    this.fire('search-action', {
+                        text: this.searchValue,
+                        category: this.selectedCategory >= 0 ? this.categories[this.selectedCategory].value : ""
+                    });
+                }
+
+                if (this.searchValue == "") {
+                    this.toggle();
+                }
+
+                this.lastSearchValue = this.searchValue;
+                this.lastSelectedCategory = this.selectedCategory;
+
+            },
+
+            toggle: function () {
+                var d = this.$.searchdiv.style.display;
+                if (d == "block") {
+                    this.$.searchdiv.style.display = 'none';
+                    this.$.searchIcon.style.display = 'inline';
+                } else {
+
+                    if (!this.$.authItem.checkHasToken()) {
+                        this.fire('rt-changed', {route: '/user/signin'});
+                        return;
+                    }
+                    this.$.searchdiv.style.display = 'block';
+                    this.$.searchIcon.style.display = 'none';
+                    this.$.searchbox.focus();
+                    this.$.searchbox.value = "";
+                }
+            },
+
+            /*blur: function(e) {
+             if(this.$$('#searchbox').value=="") {
+             //this.$$('#searchdiv').style.display = 'none';
+             //this.$$('#searchIcon').style.display = 'inline';
+             console.log("in blur");
+             this.search();
+             }
+             },*/
+
+            checkForKeys: function (e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
-                    this.$$('#searchbox').value="";
+                    this.$$('#searchbox').value = "";
                     this.selectedCategory = 0;
                     this.search();
                 } else if (e.keyCode === 13) {
-                	this.search();
-                } 
+                    this.search();
+                }
             },
 
-		});
-		
+        });
 
-	</script>
+
+    </script>
 </dom-module>
 
