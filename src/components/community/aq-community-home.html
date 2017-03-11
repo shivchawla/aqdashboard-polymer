@@ -197,7 +197,7 @@
                 </paper-tabs>
             </template>
             <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
-                <paper-tabs on-iron-select="onActivateTab" id="search-tabs" selected="{{selected}}" noink>
+                <paper-tabs on-iron-select="onActivateTab" id="search-tabs" selected="{{categorySelected}}" noink>
                     <paper-tab id="all">ALL</paper-tab>
                     <paper-tab id="ideas">IDEAS</paper-tab>
                     <paper-tab id="quesions">QUESTIONS</paper-tab>
@@ -266,8 +266,13 @@
             properties: {
                 selected: {
                     type: String,
-                    value: 0,
+                    value: 0
                 },
+                categorySelected:{
+                    type:String,
+                    value:0
+                },
+
 
                 threads: {
                     type: Array,
@@ -357,17 +362,32 @@
             },
 
             onActivateTab: function () {
-                if (this.selected != this.oldselected) {
-                    this.oldselected = this.selected;
+                if(this.isSearchActive(this.searchText,this.searchCategory)) {
+                    if (this.categorySelected != this.oldselected) {
+                        this.oldselected = this.categorySelected;
 
-                    if (this.currentPage == 1) {
-                        if (this.isAttached) {
-                            this.processparams();
+                        if (this.currentPage == 1) {
+                            if (this.isAttached) {
+                                this.processparams();
+                            }
+                        } else {
+                            this.currentPage = 1;
                         }
-                    } else {
-                        this.currentPage = 1;
+                    }
+                }else {
+                    if (this.selected != this.oldselected) {
+                        this.oldselected = this.selected;
+
+                        if (this.currentPage == 1) {
+                            if (this.isAttached) {
+                                this.processparams();
+                            }
+                        } else {
+                            this.currentPage = 1;
+                        }
                     }
                 }
+
             },
 
             onGetAllThreadsResponse: function (data) {
@@ -430,12 +450,12 @@
 
                 var currentPage = (this.currentPage) ? this.currentPage : 1;
                 if(this.isSearchActive(this.searchText,this.searchCategory)){
-                    console.log("Search Active , Selected Item is "+this.selected);
-                    category = categorySearch[this.selected];
+                    console.log("Search Active , Selected Item is "+this.categorySelected);
+                    category = categorySearch[this.categorySelected];
                 }else{
                     category = this.searchCategory === "All" ? "" : this.searchCategory;
                 }
-                //console.log(category);
+                console.log(category);
                 this.searchParam = {
                     "skip": this.perPage * (currentPage - 1),
                     "limit": this.perPage,
