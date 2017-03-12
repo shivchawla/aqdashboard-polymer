@@ -24,765 +24,796 @@
 <link rel="import" href='../components/aq-toolbar.html'>
 <link rel="import" href='../dialog/aq-sendfeedback-dialog.html'>
 <link rel="import" href='../dialog/aq-invitefriend-dialog.html'>
-
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../components/community/aq-community-createpost.html">
 <dom-module id="aq-dashboard">
-    
+
     <style include="iron-flex iron-flex-alignment"></style>
 
     <style>
-      
-      :host {
-        display: block;
-      }
 
-      #mainpanel {
-        height:100%;
-        --background-color: #fff;
-      }
+        :host {
+            display: block;
+        }
 
-      .paper-header {
-          position: relative;
-      }
+        #mainpanel {
+            height: 100%;
+            --background-color: #fff;
+        }
 
-    paper-drawer-panel {
-      height:100%;
-      background-color: #EFEFEF;
-    }
+        .paper-header {
+            position: relative;
+        }
 
-    paper-header-panel {
-      height: 100%;
-      background-color: #f4f9f7;
-    }
+        paper-drawer-panel {
+            height: 100%;
+            background-color: #EFEFEF;
+        }
+
+        paper-header-panel {
+            height: 100%;
+            background-color: #f4f9f7;
+        }
+        #createPostDialog{
+            padding: 0;
+            background-color: #cc4444;
+            z-index: 2;
+        }
+        aq-community-createpost{
+            padding: 0;
+        }
 
     </style>
-    
-    
+
+
     <template>
 
-      <aq-check-authentication id='authItem'></aq-check-authentication>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
 
-      <div id="main">
-        <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
-            
-            <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
-                
-            <paper-header-panel id="mainpanel" main fixed mode="seamed">
-              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+        <div id="main">
+            <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]"
+                                responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
 
-                <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
-                  <template is="iron-lazy-page" m="0">
-                      <aq-homepage></aq-homepage>
-                  </template>
+                <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
 
-                  <template is="iron-lazy-page" m="1">
-                      <aq-dashboard-main></aq-dashboard-main>
-                  </template>
+                <paper-header-panel id="mainpanel" main fixed mode="seamed">
+                    <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header"
+                                show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
 
-                  <template is="iron-lazy-page" m="2">
-                      <aq-aboutpage></aq-aboutpage>
-                  </template>
+                    <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
+                        <template is="iron-lazy-page" m="0">
+                            <aq-homepage></aq-homepage>
+                        </template>
 
-                  <template is="iron-lazy-page" m="3">
-                      <aq-user-login-panel></aq-user-login-panel>
-                  </template>       
+                        <template is="iron-lazy-page" m="1">
+                            <aq-dashboard-main></aq-dashboard-main>
+                        </template>
 
-                  <template is="iron-lazy-page" m="4">
-                      <aq-user-login-panel></aq-user-login-panel>
-                  </template>                    
-                </iron-lazy-pages>
-                
-                
-          </paper-header-panel>
-        </paper-drawer-panel>
+                        <template is="iron-lazy-page" m="2">
+                            <aq-aboutpage></aq-aboutpage>
+                        </template>
 
-        <aq-sendfeedback-dialog id='feedbackDialog'>
-        </aq-sendfeedback-dialog>
+                        <template is="iron-lazy-page" m="3">
+                            <aq-user-login-panel></aq-user-login-panel>
+                        </template>
 
-        <aq-invitefriend-dialog id='inviteDialog'>
-        </aq-invitefriend-dialog>
+                        <template is="iron-lazy-page" m="4">
+                            <aq-user-login-panel></aq-user-login-panel>
+                        </template>
+                    </iron-lazy-pages>
 
-      </div>
 
-      <aq-web-socket 
-          url=""
-          id="webSocketConn"
-          json
-          on-open="_onOpen"
-          on-message="_onMessage"
-          on-error="_onError">
-      </aq-web-socket>
+                </paper-header-panel>
+            </paper-drawer-panel>
 
-       <iron-localstorage
-          id='localStorage'  
-          name="my-app-storage"
-          value="{{aimsquant}}"
-          on-iron-localstorage-load-empty="initializeDefaultValue">
+            <aq-sendfeedback-dialog id='feedbackDialog'>
+            </aq-sendfeedback-dialog>
+
+            <aq-invitefriend-dialog id='inviteDialog'>
+            </aq-invitefriend-dialog>
+            <paper-dialog id="createPostDialog">
+                <aq-community-createpost></aq-community-createpost>
+            </paper-dialog>
+
+        </div>
+
+        <aq-web-socket
+                url=""
+                id="webSocketConn"
+                json
+                on-open="_onOpen"
+                on-message="_onMessage"
+                on-error="_onError">
+        </aq-web-socket>
+
+        <iron-localstorage
+                id='localStorage'
+                name="my-app-storage"
+                value="{{aimsquant}}"
+                on-iron-localstorage-load-empty="initializeDefaultValue">
         </iron-localstorage>
 
-      <iron-ajax 
-        url="" 
-        body="{{feedBackData}}" 
-        method='POST' 
-        id='postFeedbackQuery' 
-        headers='{{header}}' 
-        handle-as="json" 
-        on-response="onPostFeedbackResponse"
-        on-error="onPostFeedbackError" 
-        last-response="{{ajaxResponse}}" 
-        debounce-duration="300">
-      </iron-ajax>
-
-      <iron-ajax 
-        url=""
-        body="{{inviteData}}" 
-        method='POST' 
-        id='sendInviteQuery' 
-        headers='{{header}}' 
-        handle-as="json" 
-        on-response="onSendInviteResponse"
-        on-error="onSendInviteError" 
-        last-response="{{ajaxResponse}}" 
-        debounce-duration="300">
-      </iron-ajax>
-
-      <iron-ajax
-        url=""
-        method='GET'
-        id='getBacktestQuery'
-        handle-as="json"
-        on-response="onGetBacktestSuccess"
-        on-error="onGetBacktestError"
-        headers='{{header}}'
-        debounce-duration="300">
+        <iron-ajax
+                url=""
+                body="{{feedBackData}}"
+                method='POST'
+                id='postFeedbackQuery'
+                headers='{{header}}'
+                handle-as="json"
+                on-response="onPostFeedbackResponse"
+                on-error="onPostFeedbackError"
+                last-response="{{ajaxResponse}}"
+                debounce-duration="300">
         </iron-ajax>
 
-  </template>
+        <iron-ajax
+                url=""
+                body="{{inviteData}}"
+                method='POST'
+                id='sendInviteQuery'
+                headers='{{header}}'
+                handle-as="json"
+                on-response="onSendInviteResponse"
+                on-error="onSendInviteError"
+                last-response="{{ajaxResponse}}"
+                debounce-duration="300">
+        </iron-ajax>
 
-  <script>
-    Polymer({
+        <iron-ajax
+                url=""
+                method='GET'
+                id='getBacktestQuery'
+                handle-as="json"
+                on-response="onGetBacktestSuccess"
+                on-error="onGetBacktestError"
+                headers='{{header}}'
+                debounce-duration="300">
+        </iron-ajax>
 
-        is: 'aq-dashboard',
+    </template>
 
-        properties: {
-          narrow: {
-            type:Boolean,
-            value:false,
-          },
+    <script>
+        Polymer({
 
-          showSidebar:{
-            type:Boolean,
-            value:false,
-          },
+            is: 'aq-dashboard',
 
-          view: {
-            type:String,
-            notify:true,
-          },
+            properties: {
+                narrow: {
+                    type: Boolean,
+                    value: false,
+                },
 
-          hasToken: {
-              type:Boolean,
-              value:false,
-          },
+                showSidebar: {
+                    type: Boolean,
+                    value: false,
+                },
 
-          currentTab:{
-            type:Number,
-            value:0,
-            observer:'_currentTabChanged',
-          },
+                view: {
+                    type: String,
+                    notify: true,
+                },
 
-          aimsquant:{
-            type: Object,
-            notify: true,
-          },
+                hasToken: {
+                    type: Boolean,
+                    value: false,
+                },
 
-          drawerWidth:{
-            type:String,
-            value:"0px",
-          },
+                currentTab: {
+                    type: Number,
+                    value: 0,
+                    observer: '_currentTabChanged',
+                },
 
-          backtests:{
-            type:Object,
-            value:{},
-          },
+                aimsquant: {
+                    type: Object,
+                    notify: true,
+                },
 
-          backtestId: String,
+                drawerWidth: {
+                    type: String,
+                    value: "0px",
+                },
 
-          inviteData:Object,
+                backtests: {
+                    type: Object,
+                    value: {},
+                },
 
-          feedBackData:Object,
+                backtestId: String,
 
-          header:Object,
+                inviteData: Object,
 
-          APIEndPoint:String,
+                feedBackData: Object,
 
-          WSEndPoint:String,
+                header: Object,
 
-          wsRequests: {
-            type: Array,
-            value: [],
-          },
+                APIEndPoint: String,
+
+                WSEndPoint: String,
+
+                wsRequests: {
+                    type: Array,
+                    value: [],
+                },
 
 
-        },
+            },
 
-        listeners: {
-            'open-menu': 'openMenu',
-            'close-menu':'closeMenu',
-            'change-view-navigation':'viewChanged',
-            'change-view-action':'viewChangedOnAction',
-            'loginClicked':'gotoSignin',
-            'signupClicked':'gotoSignup',
-            'signout-action':'onSignOut',
-            'take-feedback-action':'openFeedbackDialog',
-            'send-feedback-action':'sendFeedBack',
-            'enter-invite-action':'openInviteDialog',
-            'send-invite-action':'sendInvite',
-            'myaccount-action':'onMyAccount',
-            'execute-backtest':'requestExecution',
-            'subscribe-data':'onSubscription',
-            'unsubscribe-data':'onUnsubscription',
-            'update-token':'onTokenUpdate',
-            'scroll-top':'scrollToTop',
-            'rt-changed':'goToRoute',
-            'update-localstorage-community':'updateCommunityState',
-        },
+            listeners: {
+                'open-menu': 'openMenu',
+                'close-menu': 'closeMenu',
+                'change-view-navigation': 'viewChanged',
+                'change-view-action': 'viewChangedOnAction',
+                'loginClicked': 'gotoSignin',
+                'signupClicked': 'gotoSignup',
+                'signout-action': 'onSignOut',
+                'take-feedback-action': 'openFeedbackDialog',
+                'send-feedback-action': 'sendFeedBack',
+                'enter-invite-action': 'openInviteDialog',
+                'send-invite-action': 'sendInvite',
+                'myaccount-action': 'onMyAccount',
+                'execute-backtest': 'requestExecution',
+                'subscribe-data': 'onSubscription',
+                'unsubscribe-data': 'onUnsubscription',
+                'update-token': 'onTokenUpdate',
+                'scroll-top': 'scrollToTop',
+                'rt-changed': 'goToRoute',
+                'update-localstorage-community': 'updateCommunityState',
+            },
 
-        attached: function() {
+            attached: function () {
 
-            this.listen(window, 'popstate', '_urlChanged');
-            this.isURLResetPassword();
+                this.listen(window, 'popstate', '_urlChanged');
+                this.isURLResetPassword();
 
-            if(this.$.authItem.checkHasToken()) {
-                this.openWebSocketConnection();
-                this.hasToken = this.$.authItem.checkHasToken();
-            }
-
-            var lastTab;
-            var x = localStorage.getItem('my-app-storage');
-            
-            if (x) {
-              lastTab = JSON.parse(x).lastTab;
-            }
-
-            if (lastTab == 1) {
-                var path = ['home','editor','community','analyze','help'];
-
-                for (i in path) {
-                    var c = window.location.pathname.match('/dashboard/' + path[i]) ? true : false;
-                
-                    if (c && this.view != path[i]) {  
-                      
-                        if (path[i] == 'analyze') {
-                            this.view = 'editor';
-                        
-                        } else {
-                            this.view = path[i];  
-                        
-                        }
-
-                      break;   
-                    }
+                if (this.$.authItem.checkHasToken()) {
+                    this.openWebSocketConnection();
+                    this.hasToken = this.$.authItem.checkHasToken();
                 }
 
-                if(this.view == "editor") {
+                var lastTab;
+                var x = localStorage.getItem('my-app-storage');
+
+                if (x) {
+                    lastTab = JSON.parse(x).lastTab;
+                }
+
+                if (lastTab == 1) {
+                    var path = ['home', 'editor', 'community', 'analyze', 'help'];
+
+                    for (i in path) {
+                        var c = window.location.pathname.match('/dashboard/' + path[i]) ? true : false;
+
+                        if (c && this.view != path[i]) {
+
+                            if (path[i] == 'analyze') {
+                                this.view = 'editor';
+
+                            } else {
+                                this.view = path[i];
+
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (this.view == "editor") {
+                        this.showSidebar = false;
+                    }
+
+                    this.currentTab = lastTab;
+
+                } else {
+                    this.changeTabOnURL();
+                }
+
+            },
+
+            isURLResetPassword: function () {
+                if (this.URLcontains('/dashboard/user/resetpassword')) {
+                    this.removeToken();
+                }
+            },
+
+            computeGetBacktesturl: function (backtestId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/backtest/' + backtestId;
+            },
+
+            initializeDefaultValue: function () {
+                if (!localStorage.getItem('my-app-storage')) {
+                    this.aimsquant = {
+                        user: '',
+                        lastRequest: '',
+                        community: {lastPage: 1, searchText: "", searchCategory: "", searchTab: 0},
+                        lastTab: 0
+                    };
+                    this.$.localStorage.save();
+                }
+            },
+
+            computeShowMenu: function (narrow, showSidebar) {
+                return narrow || !showSidebar;
+            },
+
+            computeForceNarrow: function (narrow, showSidebar) {
+                return !showSidebar;
+            },
+
+            computeShowSideBar: function (narrow, showSidebar) {
+                return !showSidebar;
+            },
+
+            viewChanged: function (newMenu) {
+                this.view = newMenu.detail.menu;
+                this.fire('rt-changed', {route: '/dashboard/' + this.view});
+
+                if (this.view == "editor") {
                     this.showSidebar = false;
                 }
 
-                this.currentTab = lastTab;
-
-            } else {
-                this.changeTabOnURL();
-            }
-
-        },
-
-        isURLResetPassword: function() {
-            if(this.URLcontains('/dashboard/user/resetpassword')) {
-                this.removeToken();
-            }
-        },
-
-        computeGetBacktesturl: function(backtestId) {
-          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-          return APIEndPoint+'/backtest/'+backtestId;
-        },
-
-        initializeDefaultValue: function() {
-            if(!localStorage.getItem('my-app-storage')) {
-              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
-              this.$.localStorage.save();
-            } 
-        },
-
-        computeShowMenu: function(narrow, showSidebar) {
-          return narrow || !showSidebar;
-        },
-
-        computeForceNarrow: function(narrow, showSidebar) {
-          return !showSidebar;
-        },
-
-        computeShowSideBar: function(narrow, showSidebar){
-          return !showSidebar;
-        },
-
-        viewChanged: function(newMenu) {
-          this.view = newMenu.detail.menu; 
-          this.fire('rt-changed',{route:'/dashboard/' + this.view});
-          
-          if(this.view == "editor") {
-            this.showSidebar = false;
-          }
-
-          if(this.narrow){
-              this.$.drawerpanel.closeDrawer();
-          }
-        },
-
-        viewChangedOnAction: function(newAction) {
-          if(newAction.detail.action == "sendfeedback") {
-            this.openFeedbackDialog();
-          } else if(newAction.detail.action == "invitefriend") {
-            this.openInviteDialog();
-          } else {
-            this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
-            this.fire('rt-changed',{route:'/dashboard/' + newAction.detail.action});
-          }
-
-          if(this.view == "editor") {
-            this.showSidebar = false;
-          }
-
-          if(this.narrow){
-            this.$.drawerpanel.closeDrawer();
-          }
-        },
-
-        openMenu: function(e) {
-          this.$.drawerpanel.openDrawer();
-          this.showSidebar = true;
-        },
-
-        closeMenu: function() {
-          this.$.drawerpanel.closeDrawer();
-
-          if (this.showSidebar && !this.narrow) {
-            this.showSidebar = false;
-          }
-        },
-
-         _currentTabChanged: function(newTab, oldTab) {        
-          
-          if (!(oldTab + 1)) {
-            return;
-          }
-          
-          this.$.authItem.checkHasToken();
-              
-          this.showSidebar = (newTab == 1);  
-          
-          if (this.currentTab == 1) {
-            this.drawerWidth ="200px;"
-          }
-
-          this.set('aimsquant.lastTab', newTab);
-          
-          path = ['/main', 
-                  '/dashboard', 
-                  '/about',
-                  '/user/signin',
-                  '/user/signup',
-                  '/user/signout',
-                  '/user/resetpassword',
-                  '/user/authMessage'
-                  ];
-
-          if (this.currentTab == 1) {
-            this.drawerWidth ="200px;"
-            //this.view = 'editor';
-          }
-
-          if ((this.URLcontains(path[5]) || this.URLcontains(path[6]) || this.URLcontains(path[7])) && newTab==3) {
-              return;
-          }
-
-          if (this.URLcontains(path[newTab])) {
-            return;
-          } else {
-            this.fire('rt-changed',{route:path[newTab]});
-          }
-          
-        },
-
-        URLcontains: function(path) {
-          return (location.hash.match(path)) ? true : false;
-        },
-
-        gotoSignin: function() {
-          this.fire('rt-changed',{route:'/user/signin'});
-        },
-
-        onSignOut: function() {     
-          this.removeToken();
-          this.hasToken = this.$.authItem.checkHasToken();
-          this.fire('rt-changed',{route:'/user/signout'});
-          this.dirtyBit = 1;
-        },
-
-        openFeedbackDialog: function() {
-          this.$.feedbackDialog.open();
-        },
-
-        sendFeedBack: function(e){
-            this.feedBackData = {"feedback":e.detail.feedback, "subject":e.detail.subject};
-            
-            if(this.$.authItem.checkHasToken()) {
-                this.header = this.$.authItem.getHeader();
-                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                this.$.postFeedbackQuery.url = APIEndPoint+'/user/sendFeedback';
-                this.$.postFeedbackQuery.generateRequest();
-            } else {
-                this.gotoSignin();
-            }
-        },
-
-        onPostFeedbackResponse: function (e) {
-        },
-
-        onPostFeedbackError: function(e) {
-        },
-
-        openInviteDialog: function() {
-          this.$.inviteDialog.open();
-        },
-
-        sendInvite: function(e) {
-            
-            this.inviteData = {emailList:e.detail.address};
-            
-            if(this.$.authItem.checkHasToken()) {
-              this.header = this.$.authItem.getHeader();
-              var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-              this.$.sendInviteQuery.url = APIEndPoint+'/user/sendInvite';
-              this.$.sendInviteQuery.generateRequest();
-            } else {
-              this.gotoSignin();
-            }
-        },
-
-        onSendInviteResponse: function(e) {
-        },
-
-        onSendInviteError: function(e) {
-        },
-
-        onMyAccount: function() {
-          this.fire('rt-changed',{route:'/user/myaccount'});
-        },
-
-        _onOpen: function(e) {
-            for(var i=0;i<this.wsRequests.length;i++) {
-                var req = this.wsRequests[i];
-                this.$.webSocketConn.send(req);
-            }
-
-            this.set('wsRequests',[]);
-        },
-
-        _onMessage: function(e) { 
-            
-            var backtestId = e.detail.backtestId;
-            if (!this.backtests[backtestId]) {
-              return;
-            }
-              
-            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);
-          
-            this.backtests[backtestId].data.push(e.detail);
-            /*var bulksent = this.backtests[backtestId].bulksent;
-            var subscription = this.backtests[backtestId].subscription;
-            var alldata = this.backtests[backtestId].data;    
-                 
-            if(subscription && !bulksent) {
-              this.fire('iron-signal',{name:'bulk-data', data:alldata});
-              this.backtests[backtestId].bulksent = true;
-            } else if (subscription){
-                this.fire('iron-signal',{name:'point-data', data:e.detail});
-            }*/
-        },
-
-        _onError: function(e) {
-        },
-
-        _onClose: function(e) {
-        },
-
-        openWebSocketConnection: function() {
-          var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-          this.$.webSocketConn.url = WSEndPoint;
-
-          this.$.webSocketConn.close();
-          this.$.webSocketConn.open();
-        },
-
-        requestExecution: function(e) {
-
-          if(this.$.authItem.checkHasToken()) {
-            
-            this.header = this.$.authItem.getHeader();
-            var backtestId = e.detail.backtestId;
-            this.backtestId = backtestId;
-            //Send message to web socket for execution
-            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
-                  action: 'exec-backtest',
-                  backtestId: backtestId};
-
-            this.backtestId = backtestId
-            this.backtests[backtestId] = {data:[], subscription:false,bulksent:false, currentIndex:0};
-
-            //check if socket connection is open
-            //var rs = this.$.webSocketConn._webSocket.readyState;
-            if (this.$.webSocketConn.isOpen()) {
-                this.$.webSocketConn.send(msgForWS);  
-            } else if(this.$.webSocketConn.isClosed()) {    
-                this.push(wsRequests, msgForWS);
-                this.$.webSocketConn.open();
-            } else {
-                this.push(wsRequests, msgForWS);
-            }
-            
-          } else {
-            this.gotoSignin();
-          }
-
-        },
-
-        onSubscription: function(e) {
-          var backtestId = e.detail.backtestId;
-          if(this.backtests[backtestId]) { 
-            this.backtests[backtestId].subscription = true;
-            this.backtests[backtestId].bulksent = false;
-            this.backtests[backtestId].currentIndex = 0;
-            this.sendDataSlowly(backtestId);
-            this.async(this.managesubscriptions, 60000);
-          }
-        },
-
-        onUnsubscription: function(e) {   
-          var backtestId = e.detail.backtestId; 
-          
-          if(this.backtests[backtestId]) {
-              this.backtests[backtestId].subscription = false;
-              this.backtests[backtestId].bulksent = false;
-              delete this.backtests[backtestId].currentIndex;
-              this.backtests[backtestId].currentIndex = 0;
-          }
-
-        },
-
-        // Updates every 1 seconds and updates maximum of 50 points at once.
-        sendDataSlowly: function(key) {
-            var timeGap = 1000;
-            var maxLimit = 200;
-
-            if(this.backtests[key]) {
-
-                if(this.backtests[key].subscription) {
-                  var currentIndex = this.backtests[key].currentIndex;
-                  var currentLength = this.backtests[key].data.length;
-                  
-                  if(currentIndex <  currentLength && currentLength > 0) {  
-                      var j = 0;
-                      for(var i=currentIndex; i<currentLength && j<=maxLimit;i++) { 
-                          var dataPoint = this.backtests[key].data[i];
-                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
-                          this.backtests[key].currentIndex = i+1;
-                          j++;
-                      }
-
-                      this.fire('iron-signal', {name:'redraw-chart', backtestId: key});
-
-                  }
-
-                  this.async(function(){this.sendDataSlowly(key);}, timeGap);
-
+                if (this.narrow) {
+                    this.$.drawerpanel.closeDrawer();
                 }
-            }
-        },
+            },
 
-        updateHeader: function(user) {
-          this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"};
-        },
+            viewChangedOnAction: function (newAction) {
+                if (newAction.detail.action == "sendfeedback") {
+                    this.openFeedbackDialog();
+                } else if (newAction.detail.action == "invitefriend") {
+                    this.openInviteDialog();
+                } /*else if(newAction.detail.action == "createpost"){
+                    this.$.createPostDialog.open();
+                }*/
+                else {
+                    this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
+                    this.fire('rt-changed', {route: '/dashboard/' + newAction.detail.action});
+                }
 
-        removeToken: function() {
-            this.set('aimsquant.user','');
-            this.$.localStorage.save(); 
-        },
+                if (this.view == "editor") {
+                    this.showSidebar = false;
+                }
 
-        updateToken: function(user) {
-            this.set('aimsquant.user', user);
-            this.$.localStorage.save();
-        },
+                if (this.narrow) {
+                    this.$.drawerpanel.closeDrawer();
+                }
+            },
 
-        onTokenUpdate: function(e) {
-            this.updateToken(e.detail.user);
-            this.hasToken = this.$.authItem.checkHasToken();
-            this.fire('iron-signal',{name:'dirtybit', data:1});
-            
-            var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
+            openMenu: function (e) {
+                this.$.drawerpanel.openDrawer();
+                this.showSidebar = true;
+            },
 
-            this.openWebSocketConnection();
-            
-            if(lastRequest!='') {
-              this.fire('rt-changed',{route:lastRequest});
-            } else {
-              this.async(function(){this.fire('rt-changed',{route:'/dashboard'})}, 1000);
-            }
-        },
+            closeMenu: function () {
+                this.$.drawerpanel.closeDrawer();
 
-        scrollToTop: function() {
-      
-        },
+                if (this.showSidebar && !this.narrow) {
+                    this.showSidebar = false;
+                }
+            },
 
-        managesubscriptions: function(){ 
-          if(Object.keys(this.backtests).length > 0) {
-             for (var key in this.backtests) {
+            _currentTabChanged: function (newTab, oldTab) {
 
-              //continue with still subscribed
-              if(this.backtests[key].subscription){
-                break;
-              }
+                if (!(oldTab + 1)) {
+                    return;
+                }
 
-              this.backtestId = key;
+                this.$.authItem.checkHasToken();
 
-                if(this.$.authItem.checkHasToken()) {
-                    this.header = this.$.authItem.getHeader();
-                    this.$.getBacktestQuery.url = this.computeGetBacktesturl(this.backtestId);
-                    this.$.getBacktestQuery.generateRequest();
+                this.showSidebar = (newTab == 1);
+
+                if (this.currentTab == 1) {
+                    this.drawerWidth = "200px;"
+                }
+
+                this.set('aimsquant.lastTab', newTab);
+
+                path = ['/main',
+                    '/dashboard',
+                    '/about',
+                    '/user/signin',
+                    '/user/signup',
+                    '/user/signout',
+                    '/user/resetpassword',
+                    '/user/authMessage'
+                ];
+
+                if (this.currentTab == 1) {
+                    this.drawerWidth = "200px;"
+                    //this.view = 'editor';
+                }
+
+                if ((this.URLcontains(path[5]) || this.URLcontains(path[6]) || this.URLcontains(path[7])) && newTab == 3) {
+                    return;
+                }
+
+                if (this.URLcontains(path[newTab])) {
+                    return;
                 } else {
-                  this.gotoSignin();
+                    this.fire('rt-changed', {route: path[newTab]});
                 }
-             } 
 
-             this.async(this.managesubscriptions, 60000);
-          }
+            },
 
-        },
+            URLcontains: function (path) {
+                return (location.hash.match(path)) ? true : false;
+            },
 
-        onGetBacktestSuccess: function(e){
-          var id = e.detail.response._id;
-          var status = e.detail.response.status;
-          if (this.backtests[id] && (status == "complete" || status=="exception")) {
-            this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
-            delete this.backtests[id];
-          } 
-        },
+            gotoSignin: function () {
+                this.fire('rt-changed', {route: '/user/signin'});
+            },
 
-        onGetBacktestError: function(e){
-            if(e.request.response.id) {
-              var backtestId = e.request.response.id; 
-              delete this.backtests[backtestId];    
-            }
-        },
+            onSignOut: function () {
+                this.removeToken();
+                this.hasToken = this.$.authItem.checkHasToken();
+                this.fire('rt-changed', {route: '/user/signout'});
+                this.dirtyBit = 1;
+            },
 
-        goToRoute: function(e) {
+            openFeedbackDialog: function () {
+                this.$.feedbackDialog.open();
+            },
 
-            var route = this.redirect(e.detail.route);
+            sendFeedBack: function (e) {
+                this.feedBackData = {"feedback": e.detail.feedback, "subject": e.detail.subject};
 
-            var idx = route.indexOf('?');
-            
-            if(idx >=0) {
-                route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
-            } else {
-                route = '/#' + route;
-            }
-            
-            window.history.pushState({}, null, route);
-            window.dispatchEvent(new CustomEvent('location-changed'));
-            this.changeTabOnURL();
-            this.changeViewonURL();
-        },
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.postFeedbackQuery.url = APIEndPoint + '/user/sendFeedback';
+                    this.$.postFeedbackQuery.generateRequest();
+                } else {
+                    this.gotoSignin();
+                }
+            },
 
-        _urlChanged: function(e) {
-          this.changeTabOnURL();
-        },
+            onPostFeedbackResponse: function (e) {
+            },
 
-        changeTabOnURL: function() {
+            onPostFeedbackError: function (e) {
+            },
 
-          var pathname = window.location.pathname;
-          var ctab=0;
-          var pathArray = ['/main', 
-                  '/dashboard', 
-                  '/about',
-                  '/user/signin',
-                  '/user/signup',
-                  '/user/signout',
-                  '/user/resetpassword',
-                  '/user/authMessage'];
+            openInviteDialog: function () {
+                this.$.inviteDialog.open();
+            },
 
-          for(i=0;i<pathArray.length;i++){
-            if(this.URLcontains(pathArray[i])){
-              ctab = i;
-              break;
-            }
-          }
+            sendInvite: function (e) {
 
-          if(ctab>=5) {
-            ctab = 3;
-          }
+                this.inviteData = {emailList: e.detail.address};
 
-    
-          this.currentTab = ctab;
-        },
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.sendInviteQuery.url = APIEndPoint + '/user/sendInvite';
+                    this.$.sendInviteQuery.generateRequest();
+                } else {
+                    this.gotoSignin();
+                }
+            },
 
-        changeViewonURL: function() {
-          var path = ['home','editor','community','analyze','help'];
+            onSendInviteResponse: function (e) {
+            },
 
-          for (i in path) {
-              var c = this.URLcontains('/dashboard/' + path[i]);
-          
-              if (c && this.view != path[i]) {  
-                
-                  if (path[i] == 'analyze') {
-                      this.view = 'editor';
-                  } else {
-                      this.view = path[i];  
-                  }
-              }
-          }
+            onSendInviteError: function (e) {
+            },
 
-        },
+            onMyAccount: function () {
+                this.fire('rt-changed', {route: '/user/myaccount'});
+            },
 
-        redirect: function(route) {
-          switch(route) {
-            case "/dashboard/createstrategy":
-              return '/dashboard/editor?create=1';
-              break;
-            case "/dashboard/createpost":
-              return "/dashboard/community/create"
-              break;
-            case "/dashboard": 
-              return "/dashboard/editor"; 
-              break;
-            case "/dashboard/home": 
-              return "/dashboard/editor"; 
-              break;
-            default:
-              return route;
-              break 
-          }
-        },
+            _onOpen: function (e) {
+                for (var i = 0; i < this.wsRequests.length; i++) {
+                    var req = this.wsRequests[i];
+                    this.$.webSocketConn.send(req);
+                }
 
-        updateCommunityState: function(e) {
-            this.aimsquant.community.searchText = e.detail.searchText;
-            this.aimsquant.community.searchCategory = e.detail.searchCategory;
-            this.aimsquant.community.lastPage  = e.detail.lastPage;
-            this.aimsquant.community.searchTab = e.detail.searchTab;
-            this.$.localStorage.save();
-        },
+                this.set('wsRequests', []);
+            },
 
-    });
-  </script>
+            _onMessage: function (e) {
+
+                var backtestId = e.detail.backtestId;
+                if (!this.backtests[backtestId]) {
+                    return;
+                }
+
+                this.debounce('updatebtstatus', function () {
+                    this.fire('iron-signal', {name: 'backtest-updated'})
+                }, 1000);
+
+                this.backtests[backtestId].data.push(e.detail);
+                /*var bulksent = this.backtests[backtestId].bulksent;
+                 var subscription = this.backtests[backtestId].subscription;
+                 var alldata = this.backtests[backtestId].data;
+
+                 if(subscription && !bulksent) {
+                 this.fire('iron-signal',{name:'bulk-data', data:alldata});
+                 this.backtests[backtestId].bulksent = true;
+                 } else if (subscription){
+                 this.fire('iron-signal',{name:'point-data', data:e.detail});
+                 }*/
+            },
+
+            _onError: function (e) {
+            },
+
+            _onClose: function (e) {
+            },
+
+            openWebSocketConnection: function () {
+                var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+                this.$.webSocketConn.url = WSEndPoint;
+
+                this.$.webSocketConn.close();
+                this.$.webSocketConn.open();
+            },
+
+            requestExecution: function (e) {
+
+                if (this.$.authItem.checkHasToken()) {
+
+                    this.header = this.$.authItem.getHeader();
+                    var backtestId = e.detail.backtestId;
+                    this.backtestId = backtestId;
+                    //Send message to web socket for execution
+                    var msgForWS = {
+                        'aimsquant-token': this.$.authItem.getToken(),
+                        action: 'exec-backtest',
+                        backtestId: backtestId
+                    };
+
+                    this.backtestId = backtestId
+                    this.backtests[backtestId] = {data: [], subscription: false, bulksent: false, currentIndex: 0};
+
+                    //check if socket connection is open
+                    //var rs = this.$.webSocketConn._webSocket.readyState;
+                    if (this.$.webSocketConn.isOpen()) {
+                        this.$.webSocketConn.send(msgForWS);
+                    } else if (this.$.webSocketConn.isClosed()) {
+                        this.push(wsRequests, msgForWS);
+                        this.$.webSocketConn.open();
+                    } else {
+                        this.push(wsRequests, msgForWS);
+                    }
+
+                } else {
+                    this.gotoSignin();
+                }
+
+            },
+
+            onSubscription: function (e) {
+                var backtestId = e.detail.backtestId;
+                if (this.backtests[backtestId]) {
+                    this.backtests[backtestId].subscription = true;
+                    this.backtests[backtestId].bulksent = false;
+                    this.backtests[backtestId].currentIndex = 0;
+                    this.sendDataSlowly(backtestId);
+                    this.async(this.managesubscriptions, 60000);
+                }
+            },
+
+            onUnsubscription: function (e) {
+                var backtestId = e.detail.backtestId;
+
+                if (this.backtests[backtestId]) {
+                    this.backtests[backtestId].subscription = false;
+                    this.backtests[backtestId].bulksent = false;
+                    delete this.backtests[backtestId].currentIndex;
+                    this.backtests[backtestId].currentIndex = 0;
+                }
+
+            },
+
+            // Updates every 1 seconds and updates maximum of 50 points at once.
+            sendDataSlowly: function (key) {
+                var timeGap = 1000;
+                var maxLimit = 200;
+
+                if (this.backtests[key]) {
+
+                    if (this.backtests[key].subscription) {
+                        var currentIndex = this.backtests[key].currentIndex;
+                        var currentLength = this.backtests[key].data.length;
+
+                        if (currentIndex < currentLength && currentLength > 0) {
+                            var j = 0;
+                            for (var i = currentIndex; i < currentLength && j <= maxLimit; i++) {
+                                var dataPoint = this.backtests[key].data[i];
+                                this.fire('iron-signal', {name: 'point-data', data: dataPoint});
+                                this.backtests[key].currentIndex = i + 1;
+                                j++;
+                            }
+
+                            this.fire('iron-signal', {name: 'redraw-chart', backtestId: key});
+
+                        }
+
+                        this.async(function () {
+                            this.sendDataSlowly(key);
+                        }, timeGap);
+
+                    }
+                }
+            },
+
+            updateHeader: function (user) {
+                this.header = {
+                    "aimsquant-token": user.token,
+                    "Content-Type": "application/json"
+                };
+            },
+
+            removeToken: function () {
+                this.set('aimsquant.user', '');
+                this.$.localStorage.save();
+            },
+
+            updateToken: function (user) {
+                this.set('aimsquant.user', user);
+                this.$.localStorage.save();
+            },
+
+            onTokenUpdate: function (e) {
+                this.updateToken(e.detail.user);
+                this.hasToken = this.$.authItem.checkHasToken();
+                this.fire('iron-signal', {name: 'dirtybit', data: 1});
+
+                var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
+
+                this.openWebSocketConnection();
+
+                if (lastRequest != '') {
+                    this.fire('rt-changed', {route: lastRequest});
+                } else {
+                    this.async(function () {
+                        this.fire('rt-changed', {route: '/dashboard'})
+                    }, 1000);
+                }
+            },
+
+            scrollToTop: function () {
+
+            },
+
+            managesubscriptions: function () {
+                if (Object.keys(this.backtests).length > 0) {
+                    for (var key in this.backtests) {
+
+                        //continue with still subscribed
+                        if (this.backtests[key].subscription) {
+                            break;
+                        }
+
+                        this.backtestId = key;
+
+                        if (this.$.authItem.checkHasToken()) {
+                            this.header = this.$.authItem.getHeader();
+                            this.$.getBacktestQuery.url = this.computeGetBacktesturl(this.backtestId);
+                            this.$.getBacktestQuery.generateRequest();
+                        } else {
+                            this.gotoSignin();
+                        }
+                    }
+
+                    this.async(this.managesubscriptions, 60000);
+                }
+
+            },
+
+            onGetBacktestSuccess: function (e) {
+                var id = e.detail.response._id;
+                var status = e.detail.response.status;
+                if (this.backtests[id] && (status == "complete" || status == "exception")) {
+                    this.fire('iron-signal', {name: 'backtest-completed', id: this.backtests[id]});
+                    delete this.backtests[id];
+                }
+            },
+
+            onGetBacktestError: function (e) {
+                if (e.request.response.id) {
+                    var backtestId = e.request.response.id;
+                    delete this.backtests[backtestId];
+                }
+            },
+
+            goToRoute: function (e) {
+
+                var route = this.redirect(e.detail.route);
+
+                var idx = route.indexOf('?');
+
+                if (idx >= 0) {
+                    route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
+                } else {
+                    route = '/#' + route;
+                }
+
+                window.history.pushState({}, null, route);
+                window.dispatchEvent(new CustomEvent('location-changed'));
+                this.changeTabOnURL();
+                this.changeViewonURL();
+            },
+
+            _urlChanged: function (e) {
+                this.changeTabOnURL();
+            },
+
+            changeTabOnURL: function () {
+
+                var pathname = window.location.pathname;
+                var ctab = 0;
+                var pathArray = ['/main',
+                    '/dashboard',
+                    '/about',
+                    '/user/signin',
+                    '/user/signup',
+                    '/user/signout',
+                    '/user/resetpassword',
+                    '/user/authMessage'];
+
+                for (i = 0; i < pathArray.length; i++) {
+                    if (this.URLcontains(pathArray[i])) {
+                        ctab = i;
+                        break;
+                    }
+                }
+
+                if (ctab >= 5) {
+                    ctab = 3;
+                }
+
+
+                this.currentTab = ctab;
+            },
+
+            changeViewonURL: function () {
+                var path = ['home', 'editor', 'community', 'analyze', 'help'];
+
+                for (i in path) {
+                    var c = this.URLcontains('/dashboard/' + path[i]);
+
+                    if (c && this.view != path[i]) {
+
+                        if (path[i] == 'analyze') {
+                            this.view = 'editor';
+                        } else {
+                            this.view = path[i];
+                        }
+                    }
+                }
+
+            },
+
+            redirect: function (route) {
+                switch (route) {
+                    case "/dashboard/createstrategy":
+                        return '/dashboard/editor?create=1';
+                        break;
+                    case "/dashboard/createpost":
+                        return "/dashboard/community/create"
+                        break;
+                    case "/dashboard":
+                        return "/dashboard/editor";
+                        break;
+                    case "/dashboard/home":
+                        return "/dashboard/editor";
+                        break;
+                    default:
+                        return route;
+                        break
+                }
+            },
+
+            updateCommunityState: function (e) {
+                this.aimsquant.community.searchText = e.detail.searchText;
+                this.aimsquant.community.searchCategory = e.detail.searchCategory;
+                this.aimsquant.community.lastPage = e.detail.lastPage;
+                this.aimsquant.community.searchTab = e.detail.searchTab;
+                this.$.localStorage.save();
+            },
+
+        });
+    </script>
 </dom-module>
