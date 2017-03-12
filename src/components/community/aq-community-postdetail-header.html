@@ -5,217 +5,240 @@
 <link rel="import" href="./aq-community-postdetail-content.html">
 <link rel="import" href="../profile-img.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<link rel="import" href="../common/aq-profile-pic-element.html">
 <dom-module id="aq-community-postdetail-header">
-   
-    <style  include="iron-flex iron-flex-alignment iron-positioning">
+
+    <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
 
-   <style>
-    :host {
-      display:block;
-    }
-
-    #heading {
-      border-bottom: 1px solid teal;
-      font-size: 30px;
-    }
-
-    #heading span {
-      color:#cc6666;;--#cc6666;
-    }
-
-    #category {
-     font-size: 15px;
-     margin-top:5px;
-     color:teal;
-    }
-
-    #author {
-      margin-top:40px;
-      --margin-bottom: 15px;
-      border-bottom: 1px solid;
-    }
-
-    #img {
-      margin-right:10px;
-      margin-bottom: 5px;
-    }
-
-    #author-desc {
-      margin-bottom: 5px;
-    }
-
-    paper-icon-button {
-      --padding: 0px;
-      height:35px;
-      width:35px;
-      margin-right: 15px;
-      margin-top:5px;
-      outline: 1px solid; 
-      color: #cc6666;; --white;
-      background-color: white; 
-      outline:1px solid teal;
-    }
-
-
-    #header-content {
-      margin-top: 30px;
-    }
-
-    #followers {
-      font-size:15px;
-      font-style: italic;
-      color: #cc6666;;
-      margin-right:10px;
-    }
-
-    paper-tooltip.iconTooltip {
-        --paper-tooltip: {
-            font-size: 13px;
-            min-width: 40px;
-            text-align: center;
+    <style>
+        :host {
+            display: block;
+            font-family: 'Lato', sans-serif;
         }
 
-      --paper-tooltip-opacity: 1.0;
-      --paper-tooltip-background: teal;
-    }
+        .container {
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
 
-  </style>
+        #heading {
+            /*border-bottom: 1px solid teal;*/
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #4e4e4e;
+        }
 
-  <template>
-    <aq-check-authentication id='authItem'></aq-check-authentication>
-    
-    <iron-ajax
-      url=""
-      method="POST"
-      id='follows'
-      handle-as="json"
-      on-response="onFollowThreadResponse"
-      headers='{{header}}'
-      debounce-duration="300">
-    </iron-ajax>
+        #category {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: #cc6666;
+        }
+
+        #author {
+            margin-top: 40px;
+            --margin-bottom: 15px;
+            /*border-bottom: 1px solid;*/
+        }
+
+        #img {
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+
+        #author-desc {
+            margin-bottom: 5px;
+        }
+
+        /*paper-icon-button {*/
+            /*height: 35px;*/
+            /*width: 35px;*/
+            /*color: #cc6666;;*/
+        /*}*/
+
+        #header-content {
+            margin-top: 30px;
+        }
+
+        #followers {
+            font-size: 0.8em;
+            color: #a7a7a7;
+            margin-right: 10px;
+        }
+
+        paper-tooltip.iconTooltip {
+            --paper-tooltip: {
+                font-size: 13px;
+                min-width: 40px;
+                text-align: center;
+            } --paper-tooltip-opacity: 1.0;
+            --paper-tooltip-background: teal;
+        }
+        .middle-container{
+            position: relative;
+        }
+        .right-container{
+            position: absolute;
+            top:-20px;
+            right:0;
+        }
+        #followIcon{
+            font-size: 0.7em;
+            --paper-button-color:#7c7c7c;
+            background: #f5f5f5;
+            padding: 0 20px;
+            border-radius: 0;
+            height: 25px;
+            top:-2px;
+        }
+        paper-button{
+            border:none;
+        }
+        aq-community-postdetail-content{
+            position: relative;
+            top:20px;
+        }
+    </style>
+
+    <template>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+
+        <iron-ajax
+                url=""
+                method="POST"
+                id='follows'
+                handle-as="json"
+                on-response="onFollowThreadResponse"
+                headers='{{header}}'
+                debounce-duration="300">
+        </iron-ajax>
 
 
-        <div id='post-header'>
-          <div id='heading'>
-            <span>[[postHeader.title]]</span>
-          </div>
+        <div id='post-header' class="container">
+            <div id='heading'>
+                <span>[[postHeader.title]]</span>
+            </div>
 
-          <div class="layout horizontal">
-            <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
-            <div class="flex"></div>
+            <div class="layout horizontal middle-container self-center">
+                <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
+                <!--<div class="flex"></div>-->
+                <div class="right-container">
+                    <template is="dom-if" if="[[hasFollowers(followers)]]">
+                        <span id='followers' class="self-end">Following: [[followers.length]]</span>
+                    </template>
+                    <paper-button id='followIcon' disabled="[[preview]]"
+                                       on-tap='onFollow'>Follow</paper-button>
+                </div>
+            </div>
 
-            <template is="dom-if" if="[[hasFollowers(followers)]]">
-              <span id='followers' class="self-end">[[followers.length]] Followers</span>
-            </template>
-            <paper-icon-button id='followIcon' disabled="[[preview]]" toggles=1 icon="vaadin-icons:megafone" on-tap='onFollow'></paper-icon-button>
-          </div>
-
-          <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content> 
+            <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content>
 
         </div>
 
-        <paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]</paper-tooltip>
+        <!--<paper-tooltip for='followIcon' offset="2" class=' self-center iconTooltip' position="bottom"-->
+                       <!--animation-delay="0" fit-to-visible-bounds>[[computeFollowTitle(followers)]]-->
+        <!--</paper-tooltip>-->
 
-  
-  </template>
 
-  <script>
-    Polymer ({
-      is: 'aq-community-postdetail-header',
+    </template>
 
-      properties :{
-        postHeader: Object,
-        
-        header:Object,
-        
-        preview:{
-          type:Boolean,
-          value:false,
-        },
+    <script>
+        Polymer({
+            is: 'aq-community-postdetail-header',
 
-        followers:{
-          type:Array,
-          value:[],
-        },
-      },
+            properties: {
+                postHeader: Object,
 
-      attached: function() {
-        
-        if (this.postHeader.followers) {
-          this.followers = this.postHeader.followers;
-        }
-      },
+                header: Object,
 
-      /*ready: function() {
-          var x = localStorage.getItem('my-app-storage');
-          var user = JSON.parse(x).user;
-          if (user.token) {
-            this.header = {
-              "aimsquant-token": user.token,
-              "Content-Type": "application/json"};  
-          }
- 
-      },*/
+                preview: {
+                    type: Boolean,
+                    value: false,
+                },
 
-      hasPostHeader: function(postHeader) {
-          if (postHeader) {
-            return Object.keys(postHeader).length > 0;
-          }
+                followers: {
+                    type: Array,
+                    value: [],
+                },
+            },
 
-          return false;
-      },
+            attached: function () {
 
-      computeFollowPostUrl: function(postHeader) {
-        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        return APIEndPoint+'/thread/'+ postHeader._id+'/follow';
-      },
+                if (this.postHeader.followers) {
+                    this.followers = this.postHeader.followers;
+                }
+            },
 
-      onFollow: function() {
-        if(this.$.authItem.checkHasToken()) {
-            this.header = this.$.authItem.getHeader();
-            this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
-            this.$.follows.generateRequest();
-        } else {
-            this.fire('rt-changed', {route:'/user/signin'});
-        }
-      },
+            /*ready: function() {
+             var x = localStorage.getItem('my-app-storage');
+             var user = JSON.parse(x).user;
+             if (user.token) {
+             this.header = {
+             "aimsquant-token": user.token,
+             "Content-Type": "application/json"};
+             }
 
-      hasFollowers: function(followers) {
-        return followers.length > 0;
-      },
+             },*/
 
-      onFollowThreadResponse: function(e) {
-          this.followers = e.detail.response;
-      },
+            hasPostHeader: function (postHeader) {
+                if (postHeader) {
+                    return Object.keys(postHeader).length > 0;
+                }
 
-      computeFollowTitle: function(followers){
-          if(this.$.authItem.checkHasToken()) {
-              var user = this.$.authItem.getUser(); 
-             
-              var userId = user._id;
+                return false;
+            },
 
-              if (followers.indexOf(userId) > -1){
-                // Change the icon color too
-                this.$$('#followIcon').style.color = 'white';
-                this.$$('#followIcon').style.backgroundColor = '#cc6666';
-                this.$$('#followIcon').style.outlineColor = '#cc6666';
-                return "UnFollow";
-                //this.$.followIcon
+            computeFollowPostUrl: function (postHeader) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/thread/' + postHeader._id + '/follow';
+            },
 
-              }
+            onFollow: function () {
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
+                    this.$.follows.generateRequest();
+                } else {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                }
+            },
 
-              this.$$('#followIcon').style.color = '#cc6666';
-              this.$$('#followIcon').style.backgroundColor = 'white';
+            hasFollowers: function (followers) {
+                return followers.length > 0;
+            },
 
-              return "Follow";
-          }
+            onFollowThreadResponse: function (e) {
+                this.followers = e.detail.response;
+            },
 
-      },
+            computeFollowTitle: function (followers) {
+                if (this.$.authItem.checkHasToken()) {
+                    var user = this.$.authItem.getUser();
 
-    });
+                    var userId = user._id;
 
-  </script>
+                    if (followers.indexOf(userId) > -1) {
+                        // Change the icon color too
+                        this.$$('#followIcon').style.color = 'white';
+                        this.$$('#followIcon').style.backgroundColor = '#cc6666';
+                        this.$$('#followIcon').style.outlineColor = '#cc6666';
+                        return "UnFollow";
+                        //this.$.followIcon
+
+                    }
+
+                    this.$$('#followIcon').style.color = '#cc6666';
+                    this.$$('#followIcon').style.backgroundColor = 'white';
+
+                    return "Follow";
+                }
+
+            },
+
+        });
+
+    </script>
 
 </dom-module>

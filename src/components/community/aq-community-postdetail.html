@@ -14,174 +14,196 @@
 
 <link rel="import" href="../common/aq-loading-progress.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <dom-module id="aq-community-postdetail">
 
-    <style  include="iron-flex iron-flex-alignment iron-positioning">
+    <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
-   
-   <style>
-    #container {
-      width:90%;
-      margin: 0 auto;
-      margin-top: 10px;
-      color: #24293d;
-      height:100%;
-    }
 
-    .goBackButton {
-      margin-left: -7px;
-      margin-bottom: 10px;
-    }
+    <style>
+        :host{
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+        }
+        #container {
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 10px;
+            color: #24293d;
+            height: 100%;
+        }
 
-    paper-icon-button {
-      padding-left: 0px;
-    }
-    
-  </style>
+        .goBackButton {
+            margin-left: -7px;
+            margin-bottom: 10px;
+        }
 
-  <template>
-      <aq-check-authentication id='authItem'></aq-check-authentication>
-      
-      </app-route>
+        paper-icon-button {
+            padding-left: 0px;
+        }
+        .reply-no{
+            margin-top: 20px;
+            font-size: 1em;
+            font-weight: 700;
+            color: #4e4e4e;
+            display: block;
+        }
+        #replyContainer{
+            position: relative;
+            top:40px;
+        }
+        aq-community-postdetail-content{
+            --aq-community-postdetail-content-box-shadow:0 3px 8px rgba(0,0,0,0.2);
+            --aq-community-postdetail-content-padding:10px 20px 10px 10px;
+        }
 
-      <iron-ajax      
-          url="[[computeGetThreadUrl(threadId)]]"
-          method='GET'
-          id='getThreadQuery'
-          handle-as="json"
-          on-response="onGetThreadDetailResponse"
-          on-error="onGetThreadDetailError"
-          headers='{{header}}'
-          debounce-duration="300"
-          loading='{{loading}}'>
-      </iron-ajax>
+    </style>
 
-       <iron-ajax
-          url="[[computePostViewUrl(threadId)]]"
-          method="POST"
-          id='views'
-          handle-as="json"
-          headers='{{header}}'
-          debounce-duration="300">
-      </iron-ajax>
+    <template>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+
+        </app-route>
+
+        <iron-ajax
+                url="[[computeGetThreadUrl(threadId)]]"
+                method='GET'
+                id='getThreadQuery'
+                handle-as="json"
+                on-response="onGetThreadDetailResponse"
+                on-error="onGetThreadDetailError"
+                headers='{{header}}'
+                debounce-duration="300"
+                loading='{{loading}}'>
+        </iron-ajax>
+
+        <iron-ajax
+                url="[[computePostViewUrl(threadId)]]"
+                method="POST"
+                id='views'
+                handle-as="json"
+                headers='{{header}}'
+                debounce-duration="300">
+        </iron-ajax>
 
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{!loading}}'>
-          <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
-              <div id='container'>
-                
-                <div class="goBackButton layout horizontal">
-                  <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-click="goBack"></paper-icon-button>
-                  <div class="flex"><p>Back to Community</p></div>
-                </div>
-                
-                <aq-community-postdetail-header
-                  post-header='{{threadDetails}}'>
-                </aq-community-postdetail-header>
-                
-                <div id="replyContainer">
-                    <template is="dom-repeat" 
-                              items="{{threadDetails.replies}}"
-                              initial-count=5>
-                      <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
-                    </template>
-                </div>
-                
-                <aq-community-postdetail-reply id="replyEditor" thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
+            <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
+                <div id='container'>
 
-              </div>
-          </template>
+                    <!--<div class="goBackButton layout horizontal">-->
+                        <!--<paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back"-->
+                                           <!--on-click="goBack"></paper-icon-button>-->
+                        <!--<div class="flex"><p>Back to Community</p></div>-->
+                    <!--</div>-->
+
+                    <aq-community-postdetail-header
+                            post-header='{{threadDetails}}'>
+                    </aq-community-postdetail-header>
+                    <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
+                    <div id="replyContainer">
+                        <template is="dom-repeat"
+                                  items="{{threadDetails.replies}}"
+                                  initial-count=5>
+                            <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
+                        </template>
+                    </div>
+
+                    <aq-community-postdetail-reply id="replyEditor"
+                                                   thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
+
+                </div>
+            </template>
         </template>
 
-  </template>
+    </template>
 
-  <script>
-    Polymer ({
-      is: 'aq-community-postdetail',
+    <script>
+        Polymer({
+            is: 'aq-community-postdetail',
 
-      properties: {
-        
-        threadId:{
-          type:String,
-        },
-        
-        header: {
-          type:Object,
-        },
+            properties: {
 
-        user: {
-          type: Object, 
-        },
+                threadId: {
+                    type: String,
+                },
 
-        threadDetails: {
-          type: Object,
-        },
+                header: {
+                    type: Object,
+                },
 
-        loading:Boolean,
+                user: {
+                    type: Object,
+                },
 
-      },
+                threadDetails: {
+                    type: Object,
+                },
 
-      listeners :{
-        'goBackClicked':'goBack',
-        'reply-added':'addReply',
-      },
+                loading: Boolean,
 
-      onGetThreadDetailResponse: function(data) {
-          this.set('threadDetails', data.detail.response);
-      },
+            },
 
-      onGetThreadDetailError: function(data) {
-      },
+            listeners: {
+                'goBackClicked': 'goBack',
+                'reply-added': 'addReply',
+            },
 
-      computeGetThreadUrl: function(threadId){
-        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        return APIEndPoint + '/thread/' + threadId;
-      },
+            onGetThreadDetailResponse: function (data) {
+                this.set('threadDetails', data.detail.response);
+            },
 
-      computePostViewUrl: function(threadId){
-        var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-        return APIEndPoint+'/thread/'+threadId+'/view';
-      },
+            onGetThreadDetailError: function (data) {
+            },
 
-      goBack: function() {
-          this.fire('rt-changed',{route:'/dashboard/community'});
-      },
+            computeGetThreadUrl: function (threadId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/thread/' + threadId;
+            },
 
-      addReply: function(e) {
-        
-        var reply = e.detail.reply;
-        reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
+            computePostViewUrl: function (threadId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/thread/' + threadId + '/view';
+            },
 
-        this.push('threadDetails.replies', reply);
-        this.$$("#replyEditor").clearEditor();
-      },
+            goBack: function () {
+                this.fire('rt-changed', {route: '/dashboard/community'});
+            },
 
-      hasThreadDetail: function(detail) {
-          if (detail) {
-            return Object.keys(detail).length > 0;
-          }
+            addReply: function (e) {
 
-          return false;
-      },
+                var reply = e.detail.reply;
+                reply.user = {"firstName": this.user.firstName, "lastName": this.user.lastName};
 
-      attached: function() {
+                this.push('threadDetails.replies', reply);
+                this.$$("#replyEditor").clearEditor();
+                console.log(this.threadDetails.replies.size);
+            },
 
-        if(!this.$.authItem.checkHasToken()) {
-            this.fire('rt-changed',{route:'/user/signin'});
-            return;
-        } else {
-            this.user = this.$.authItem.getUser();
-            this.header = this.$.authItem.getHeader();
-            this.$.views.generateRequest();
-            this.$.getThreadQuery.generateRequest();
-        }
+            hasThreadDetail: function (detail) {
+                if (detail) {
+                    return Object.keys(detail).length > 0;
+                }
 
-      },
+                return false;
+            },
 
-    });
+            attached: function () {
 
-  </script>
+                if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                    return;
+                } else {
+                    this.user = this.$.authItem.getUser();
+                    this.header = this.$.authItem.getHeader();
+                    this.$.views.generateRequest();
+                    this.$.getThreadQuery.generateRequest();
+                }
+
+            },
+
+        });
+
+    </script>
 
 </dom-module>

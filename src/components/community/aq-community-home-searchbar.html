@@ -66,8 +66,6 @@
     </style>
 
     <template>
-        <!--div id="search" class="layout vertical"-->
-        <!--aq-dropdown vertical-offset=48 class="self-center" id='category_dd' options="[[categories]]"></aq-dropdown-->
         <aq-check-authentication id='authItem'></aq-check-authentication>
         <div class="upper-container layout horizontal wrap">
             <div class="search-bar layout horizontal center-justified">
@@ -82,29 +80,6 @@
             </div>
             <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
         </div>
-        <!--<div id="search" class="layout horizontal" on-keydown="checkForKeys">-->
-
-        <!--<div id="searchdiv">-->
-        <!--<input id="searchbox" placeholder="Search posts" class="flex" value="{{searchValue::input}}" type="search">-->
-
-        <!--<div>-->
-        <!--<paper-radio-group attr-for-selected="index" selected="{{selectedCategory}}">-->
-        <!--<template is='dom-repeat' items='{{categories}}'>-->
-        <!--<paper-radio-button noink index="{{item.index}}" name="{{item.value}}">{{item.value}}</paper-radio-button>-->
-        <!--</template>-->
-        <!--</paper-radio-group>-->
-        <!--</div>-->
-        <!--</div>-->
-
-
-        <!--<paper-icon-button id='searchIcon' noink class="iconButton" icon="aq-icons:search" on-tap="toggle" raised>-->
-        <!--</paper-icon-button>-->
-        <!--</div>-->
-
-        <!--<paper-tooltip for='searchIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Search</paper-tooltip>-->
-
-
-        <!--/div-->
     </template>
     <script>
 

@@ -2,123 +2,193 @@
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../common/aq-backtest-detail-item.html">
 <link rel="import" href="../profile-img.html">
-
+<link rel="import" href="../common/aq-profile-pic-element.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<link rel="import" href="../common/aq-label-content-item.html">
 <dom-module id="aq-community-postdetail-content">
-   
-    <style  include="iron-flex iron-flex-alignment iron-positioning">
+
+    <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
-   
-   <style>
-    :host {
-      display:block;
-    }
 
-    #author {
-      --margin-top:40px;
-      --margin-bottom: 15px;
-      border-bottom: 1px solid teal;--#bfbfbf;
-    }
+    <style>
+        :host {
+            display: block;
+        }
 
-    #img {
-      margin-right:10px;
-      margin-bottom: 5px;
-    }
+        #author {
+            --margin-top: 40px;
+            --margin-bottom: 15px;
+            /*border-bottom: 1px solid teal;--#bfbfbf;*/
+        }
 
-    #author-desc {
-      margin-bottom: 5px;
-    }
+        #img {
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
 
-    #post-content {
-      margin-bottom:50px;
-    }
+        #author-desc {
+            margin-bottom: 5px;
+        }
 
-    .markdown-html {
-      border: 1px solid #efefef;
+        #post-content {
+            margin-bottom: 50px;
+            box-shadow: var(--aq-community-postdetail-content-box-shadow,0 0px 0px rgba(0,0,0,0.2));
+            padding: var(--aq-community-postdetail-content-padding,0);
+            border-radius: 4px;
+        }
 
-      --margin-left: 5px;
-      padding-left: 5px;
-      margin-top:5px;
-      font-size: 13px;
-      min-height: 50px;
-      --max-height: 350px;
-      overflow: auto;
-    }
+        .markdown-html {
+            border: 1px solid #efefef;
 
-    i {
-      font-size: 12px;
-    }
+            --margin-left: 5px;
+            padding-left: 5px;
+            margin-top: 5px;
+            font-size: 13px;
+            min-height: 50px;
+            --max-height: 350px;
+            overflow: auto;
+        }
 
-  </style>
+        i {
+            font-size: 12px;
+        }
 
-  <template>
-         <div id='post-content'>
-          <div id='author' class="layout horizontal">
-            <profile-img id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>
-             <div id='author-desc' class="layout vertical self-center">
-                  <span id="author-name">[[postContent.user.firstName]] [[postContent.user.lastName]]
-                <i style="color:teal">on [[format(postContent.updatedAt)]]</i></span>
-              </div>
-          </div>
+        #author-name {
+            font-size: 0.8em;
+            font-family: 'Lato', sans-serif;
+            margin-left: 10px;
+            color: #a2a2a2;
+        }
+
+        .author-name-detail {
+            color: #304896;
+        }
+
+        .created-text {
+            font-size: 0.75em;
+            color: #a7a7a7;
+        }
+
+        .created-date {
+            color: #727272;
+        }
+
+        aq-help-marked-item {
+            color: #8c8c8c;
+            font-size: 12px;
+        }
+        .tags-container {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tags-container li {
+            display: inline;
+        }
+        .tags-header{
+            font-size: 0.8em;
+            color:#727272;
+        }
+        aq-backtest-detail-item{
+            --aq-backtest-detail-item-width:100%;
+        }
+    </style>
+
+    <template>
+        <div id='post-content'>
+            <div id='author' class="layout horizontal center">
+                <!--<profile-img id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>-->
+                <profile-pic-element></profile-pic-element>
+                <div id='author-desc' class="layout vertical self-center">
+                  <span id="author-name">by <span class="author-name-detail">[[postContent.user.firstName]] [[postContent.user.lastName]]</span>
+                      <!--<i style="color:teal">on [[format(postContent.updatedAt)]]</i>-->
+                  </span>
+                </div>
+                <div class="flex"></div>
+                <span class="created-text">on: <span class="created-date">[[format(postContent.updatedAt)]]</span></span>
+            </div>
+            <div class="tags-div layout horizontal center">
+                <span class="tags-header">Tags: &nbsp;</span>
+                <ul class="tags-container">
+                    <li>
+                        <tag-element label="Julia"></tag-element>
+                    </li>
+                    <li>
+                        <tag-element label="Python"></tag-element>
+                    </li>
+                    <li>
+                        <tag-element label="C++"></tag-element>
+                    </li>
+                    <li>
+                        <tag-element label="Java"></tag-element>
+                    </li>
+                    <li>
+                        <tag-element label="HTML 5"></tag-element>
+                    </li>
+                </ul>
+            </div>
 
 
-          <aq-help-marked-item help-text="[[postContent.markdownText]]"></aq-help-marked-item>
+            <aq-help-marked-item help-text="[[postContent.markdownText]]"></aq-help-marked-item>
 
-          <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
-              <aq-backtest-detail-item backtest-id="[[getBacktestId(postContent)]]">
-              </aq-backtest-detail-item>
-          </template>
+            <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
+                <aq-backtest-detail-item elevation="0" backtest-id="[[getBacktestId(postContent)]]">
+                </aq-backtest-detail-item>
+            </template>
 
         </div>
 
-  </template>
+    </template>
 
-  <script>
-    
-    Polymer ({
-      is: 'aq-community-postdetail-content',
-      properties :{
-        postContent: Object,  
-      },
+    <script>
 
-      hasContent: function(item) {
-        if(item) {
-          return Object.keys(item).length > 0;
-        }
+        Polymer({
+            is: 'aq-community-postdetail-content',
+            properties: {
+                postContent: Object,
+            },
 
-        return false;
-      },
+            hasContent: function (item) {
+                if (item) {
+                    return Object.keys(item).length > 0;
+                }
 
-      getinitials: function(item) {
-        if(item && item.user) {
-          return item.user.firstName[0] + item.user.lastName[0];
-        } else
-        return "";
-      }, 
+                return false;
+            },
 
-      format: function(date) {
-        var options = {
-            weekday: "long", year: "numeric", month: "short",
-            day: "numeric", hour: "2-digit", minute: "2-digit"
-        };
+            getinitials: function (item) {
+                if (item && item.user) {
+                    return item.user.firstName[0] + item.user.lastName[0];
+                } else
+                    return "";
+            },
 
-        return new Date(date).toLocaleTimeString("en-us", options);
-      },
+            format: function (date) {
+                var options = {
+                    weekday: "long", year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"
+                };
 
-      isValidBacktestId: function(postContent) {
-         return this.getBacktestId(postContent) ? true : false;
-      },
+                return new Date(date).toLocaleTimeString("en-us", options);
+            },
 
-      getBacktestId: function(postContent) {
-        if (postContent["backtest"]) {
-          return postContent["backtest"];
-        } else {
-          return postContent.backtestId;
-        }
-      },
+            isValidBacktestId: function (postContent) {
+                return this.getBacktestId(postContent) ? true : false;
+            },
+
+            getBacktestId: function (postContent) {
+                if (postContent["backtest"]) {
+                    return postContent["backtest"];
+                } else {
+                    return postContent.backtestId;
+                }
+            },
 
 
-    });
+        });
 
-  </script>
+    </script>
 
 </dom-module>
