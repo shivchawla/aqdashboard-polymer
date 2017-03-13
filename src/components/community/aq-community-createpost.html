@@ -19,6 +19,7 @@
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <dom-module id="aq-community-createpost">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
@@ -177,7 +178,9 @@
             font-size: 0.8em;
             color: #727272;
         }
-
+        tag-element{
+            margin-bottom: 20px;
+        }
         iron-icon {
             width: 13px;
             height: 13px;
@@ -185,6 +188,7 @@
 
         .middle-container {
             margin-top: 10px;
+            margin-bottom: 20px;
         }
 
         paper-radio-button {
@@ -225,7 +229,11 @@
         #cancelBtn {
             font-weight: 700;
         }
+        paper-toast{
+            --paper-toast-background-color:#cc4444;
+            font-weight: 700;
 
+        }
     </style>
 
 
@@ -277,29 +285,19 @@
                     <div class="layout vertical secondary-container">
                         <div class="title-text-container layout horizontal">
                             <!--<aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>-->
-                            <input id="topicInput" class="flex" label="Topic" placeholder="Title">
+                            <input id="topicInput" class="flex" placeholder="Title">
                         </div>
                         <div class="layout horizontal middle-container">
                             <div class="layout vertical left-container">
-                                <input id="tagsInput" class="flex" label="Add tags here" placeholder="Add tags here">
+                                <input type="text" id="tagsInput" class="flex" placeholder="Add tags here" on-keydown="onChange">
                                 <div class="layout horizontal center">
                                     <!--<span class="tags-header">Tags: &nbsp;</span>-->
                                     <ul class="tags-container">
-                                        <tag-element label="Html">
-                                            <iron-icon icon="clear"></iron-icon>
-                                        </tag-element>
-                                        <tag-element label="Python">
-                                            <iron-icon icon="clear"></iron-icon>
-                                        </tag-element>
-                                        <tag-element label="CSS3">
-                                            <iron-icon icon="clear"></iron-icon>
-                                        </tag-element>
-                                        <tag-element label="Java">
-                                            <iron-icon icon="clear"></iron-icon>
-                                        </tag-element>
-                                        <tag-element label="Hello World">
-                                            <iron-icon icon="clear"></iron-icon>
-                                        </tag-element>
+                                        <template is="dom-repeat" items="{{tags}}">
+                                            <tag-element label="{{item}}">
+                                                <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
+                                            </tag-element>
+                                        </template>
                                     </ul>
                                 </div>
                             </div>
@@ -333,14 +331,15 @@
                             </div>
                         </div>
                         <div id='buttons' class="layout horizontal">
-                            <div id='errorMessage'><i>[[error]]</i></div>
+                            <!--<div id='errorMessage'><i>[[error]]</i></div>-->
                             <paper-button id="previewBtn" noink on-tap='onPreview'>Preview</paper-button>
                             <div class="flex"></div>
-                            <paper-button id="cancelBtn" noink on-tap="">Cancel</paper-button>
+                            <!--<paper-button id="cancelBtn" noink on-tap="">Cancel</paper-button>-->
                             <paper-button id="submitBtn" noink on-tap="postThread">Submit</paper-button>
                         </div>
                     </div>
                 </div> <!-- Main Container Ends -->
+                <paper-toast text="[[error]]"></paper-toast>
             </template>
         </div>
     </template>
@@ -380,9 +379,12 @@
 
                 active: Boolean,
                 queryParams: Object,
+                tags:{
+                    type:Array,
+                    value:[]
+                }
 
             },
-
             listeners: {
                 'edit-clicked': 'onEdit',
                 'submit-clicked': 'postThread',
@@ -391,7 +393,6 @@
             },
 
             observers: ['_activeChanged(active, queryParams)'],
-
             computeFollowPostUrl: function (threadId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                 return APIEndPoint + '/thread/' + threadId + '/follow';
@@ -468,6 +469,8 @@
                     "markdownText": markdownText,
                     "user": {"firstName": user.firstName, "lastName": user.lastName},
                     "updatedAt": new Date(),
+                    "followers":user.followers,
+                    "tags":this.tags
                 };
 
                 // Send to backedn only if available. Backend can't handle empty backtestids
@@ -486,6 +489,7 @@
 
                 } else {
                     this.error = "No preview available for empty post. Please create a valid post and a header.";
+                    this.$$('paper-toast').open();
                     return false;
                 }
             },
@@ -537,7 +541,22 @@
             },
             onCategoryChanged: function () {
                 console.log(this.$$('#selectedCategory').selected);
-            }
+            },
+            onChange:function (e) {
+                if(e.keyCode == 13 && e.target.value.length>=1){
+                    this.push('tags', e.target.value);
+                    console.log(this.tags);
+                    if(this.$$('#tagsInput')){
+                        this.$$('#tagsInput').value = "";
+                    }
+                }
+            },
+            removeTag:function (e) {
+                var itemName = e.model.item;
+                var index = this.tags.indexOf(itemName);
+                this.splice('tags', index, 1);
+                console.log(this.tags);
+            },
 
         });
     </script>

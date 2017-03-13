@@ -363,9 +363,7 @@
                     this.openFeedbackDialog();
                 } else if (newAction.detail.action == "invitefriend") {
                     this.openInviteDialog();
-                } /*else if(newAction.detail.action == "createpost"){
-                    this.$.createPostDialog.open();
-                }*/
+                }
                 else {
                     this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
                     this.fire('rt-changed', {route: '/dashboard/' + newAction.detail.action});

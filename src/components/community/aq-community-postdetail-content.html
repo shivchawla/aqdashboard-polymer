@@ -91,9 +91,13 @@
         .tags-header{
             font-size: 0.8em;
             color:#727272;
+            margin-right: 20px;
         }
         aq-backtest-detail-item{
             --aq-backtest-detail-item-width:100%;
+        }
+        tag-element{
+            margin-bottom: 10px;
         }
     </style>
 
@@ -113,21 +117,11 @@
             <div class="tags-div layout horizontal center">
                 <span class="tags-header">Tags: &nbsp;</span>
                 <ul class="tags-container">
-                    <li>
-                        <tag-element label="Julia"></tag-element>
-                    </li>
-                    <li>
-                        <tag-element label="Python"></tag-element>
-                    </li>
-                    <li>
-                        <tag-element label="C++"></tag-element>
-                    </li>
-                    <li>
-                        <tag-element label="Java"></tag-element>
-                    </li>
-                    <li>
-                        <tag-element label="HTML 5"></tag-element>
-                    </li>
+                    <template is="dom-repeat" items="[[postContent.tags]]">
+                        <li>
+                            <tag-element label="{{item}}"></tag-element>
+                        </li>
+                    </template>
                 </ul>
             </div>
 
