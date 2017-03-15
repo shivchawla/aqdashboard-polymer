@@ -129,14 +129,15 @@
         }
 
         .header-container {
-            background-color: teal;
-            height: 45px;
+            background-color: #fff;
+            height: 55px;
         }
 
         .header-container h1 {
             font-size: 0.9em;
-            color: #fff;
-            margin-left: 20px;
+            color: #cc4444;
+            margin-left: 0px;
+            font-weight: 400;
         }
 
         .secondary-container {
@@ -149,7 +150,14 @@
         }
 
         #tagsInput {
-            padding: 10px;
+            width: 100%;
+            z-index: 1;
+            padding: 0;
+            border: none;
+            outline: none;
+            background: none;
+            margin: 0;
+            max-height: 35px;
         }
 
         .left-container {
@@ -165,12 +173,17 @@
 
         .tags-container {
             list-style: none;
+            z-index: 20;
+            display: inline-block;
+            height: 35px;
+            max-height: 35px;
             padding: 0;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            max-height: 50px;
+            margin: 0;
+            position: absolute;
             overflow: hidden;
-            overflow-y:scroll ;
+            overflow-y: scroll;
+            left: 37%;
+
         }
 
         .tags-container li {
@@ -181,9 +194,13 @@
             font-size: 0.8em;
             color: #727272;
         }
-        tag-element{
-            margin-bottom: 20px;
+
+        tag-element {
+            margin-top: 5px;
+            margin-bottom: 6px;
+            --tag-element-background-color: #D7D7D7;
         }
+
         iron-icon {
             width: 13px;
             height: 13px;
@@ -232,9 +249,26 @@
         #cancelBtn {
             font-weight: 700;
         }
-        paper-toast{
-            --paper-toast-background-color:#cc4444;
+
+        paper-toast {
+            --paper-toast-background-color: #cc4444;
             font-weight: 700;
+
+        }
+
+        #backIcon {
+            color: #cc4444;
+            transform: scale(1.6, 1.6);
+        }
+
+        .tagsInputContainer {
+            height: 35px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #24293d;
+            position: relative;
+            background-color: #f2f2f2;
+            padding-left: 10px;
 
         }
     </style>
@@ -282,8 +316,11 @@
             </aq-community-attachbacktest-dialog>
             <template is='dom-if' if="[[!preview]]">
                 <div class="main-container">
-                    <div class="layout horizontal center header-container">
-                        <h1>Create a post</h1>
+                    <div style="padding-left: 10px" class="layout horizontal center header-container">
+                        <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
+                                           on-tap="goBack"></paper-icon-button>
+
+                        <h1>Back to Community</h1>
                     </div>
                     <div class="layout vertical secondary-container">
                         <div class="title-text-container layout horizontal">
@@ -292,10 +329,10 @@
                         </div>
                         <div class="layout horizontal middle-container">
                             <div class="layout vertical left-container">
-                                <input type="text" id="tagsInput" class="flex" placeholder="Add tags here" on-keydown="onChange">
-                                <div class="layout horizontal center">
-                                    <!--<span class="tags-header">Tags: &nbsp;</span>-->
-                                    <ul class="tags-container">
+                                <div class="tagsInputContainer layout horizontal start-justified">
+                                    <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
+                                           on-keydown="onChange" on-keyup="scrollToBottom">
+                                    <ul id="tagsContainer" class="tags-container">
                                         <template is="dom-repeat" items="{{tags}}">
                                             <tag-element label="{{item}}">
                                                 <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
@@ -334,10 +371,8 @@
                             </div>
                         </div>
                         <div id='buttons' class="layout horizontal">
-                            <!--<div id='errorMessage'><i>[[error]]</i></div>-->
                             <paper-button id="previewBtn" noink on-tap='onPreview'>Preview</paper-button>
                             <div class="flex"></div>
-                            <!--<paper-button id="cancelBtn" noink on-tap="">Cancel</paper-button>-->
                             <paper-button id="submitBtn" noink on-tap="postThread">Submit</paper-button>
                         </div>
                     </div>
@@ -382,9 +417,9 @@
 
                 active: Boolean,
                 queryParams: Object,
-                tags:{
-                    type:Array,
-                    value:[]
+                tags: {
+                    type: Array,
+                    value: []
                 }
 
             },
@@ -459,41 +494,49 @@
             },
 
             processInput: function () {
-                const markdownText = this.$$('#editor').getContent();
-                const category = this.$$('#selectedCategory').selected;
+                try {
+                    const markdownText = this.$$('#editor').getContent();
 
-                const title = this.$$('#topicInput').value;
-                var x = localStorage.getItem('my-app-storage');
-                var user = JSON.parse(x).user;
+                    const category = this.$$('#selectedCategory').selected;
 
-                var threadData = {
-                    "category": category,
-                    "title": title,
-                    "markdownText": markdownText,
-                    "user": {"firstName": user.firstName, "lastName": user.lastName},
-                    "updatedAt": new Date(),
-                    "followers":user.followers,
-                    "tags":this.tags
-                };
+                    const title = this.$$('#topicInput').value;
+                    var x = localStorage.getItem('my-app-storage');
+                    var user = JSON.parse(x).user;
 
-                // Send to backedn only if available. Backend can't handle empty backtestids
-                if (this.attachedBacktestId && this.attachedBacktestId != "") {
-                    threadData["backtestId"] = this.attachedBacktestId;
-                }
+                    var threadData = {
+                        "category": category,
+                        "title": title,
+                        "markdownText": markdownText,
+                        "user": {"firstName": user.firstName, "lastName": user.lastName},
+                        "updatedAt": new Date(),
+                        "followers": user.followers,
+                        "tags": this.tags
+                    };
 
-                if (threadData["title"] != "" &&
-                        threadData["category"] != "" &&
-                        threadData["markdownText"] != ""
-                ) {
 
-                    this.error = "";
-                    this.threadData = threadData;
-                    return true;
+                    // Send to backedn only if available. Backend can't handle empty backtestids
+                    if (this.attachedBacktestId && this.attachedBacktestId != "") {
+                        threadData["backtestId"] = this.attachedBacktestId;
+                    }
 
-                } else {
+                    if (threadData["title"] != "" &&
+                            threadData["category"] != "" &&
+                            threadData["markdownText"] != ""
+                    ) {
+
+                        this.error = "";
+                        this.threadData = threadData;
+                        return true;
+
+                    } else {
+                        this.error = "No preview available for empty post. Please create a valid post and a header.";
+                        this.$$('paper-toast').open();
+                        return false;
+                    }
+                } catch (err) {
+                    //console.log(err);
                     this.error = "No preview available for empty post. Please create a valid post and a header.";
                     this.$$('paper-toast').open();
-                    return false;
                 }
             },
 
@@ -545,21 +588,30 @@
             onCategoryChanged: function () {
                 console.log(this.$$('#selectedCategory').selected);
             },
-            onChange:function (e) {
-                if(e.keyCode == 13 && e.target.value.length>=1){
+            onChange: function (e) {
+                if (e.keyCode == 13 && e.target.value.length >= 1) {
                     this.push('tags', e.target.value);
                     console.log(this.tags);
-                    if(this.$$('#tagsInput')){
+                    if (this.$$('#tagsInput')) {
                         this.$$('#tagsInput').value = "";
                     }
                 }
             },
-            removeTag:function (e) {
+            removeTag: function (e) {
                 var itemName = e.model.item;
                 var index = this.tags.indexOf(itemName);
                 this.splice('tags', index, 1);
                 console.log(this.tags);
             },
+            scrollToBottom: function () {
+//                if (e.keyCode == 13) {
+                var element = document.getElementById("tagsContainer");
+                if (element) {
+                    console.log("Element Found");
+                    element.scrollTop = element.scrollHeight;
+                }
+//                }
+            }
 
         });
     </script>

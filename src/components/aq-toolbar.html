@@ -10,147 +10,151 @@
 <link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id="aq-toolbar">
-  <style  include="iron-flex iron-flex-alignment iron-positioning">  
-  </style>
-  
-  <style>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
 
-  paper-toolbar {
-      --paper-toolbar-title: {
-        text-align: left;
-        margin-left: 0px !important;
-      };
-  }
-  
-  paper-toolbar{
-      height:8vh;
-      color:#546E7A;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-  
-  paper-toolbar {
-      --paper-toolbar-background:white;--#f2fbf7;
-      
-      --opacity:var(--dark-primary-opacity);
-      --border-bottom: 1px solid #e0e0e0;
-  }
+    <style>
+        :host{
+            z-index: 10;
+        }
+        paper-toolbar {
+            --paper-toolbar-title: {
+                text-align: left;
+                margin-left: 0px !important;
+            };
+        }
+
+        paper-toolbar {
+            height: 8vh;
+            color: #546E7A;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        paper-toolbar {
+            --paper-toolbar-background: white;
+
+            --opacity: var(--dark-primary-opacity);
+            --border-bottom: 1px solid #e0e0e0;
+        }
+
+        #profile {
+            right: 0;
+        }
+
+        .title {
+            min-width: 160px;
+        }
+
+        .title p {
+            font-size: 24px;
+        }
+
+        .title:hover {
+            cursor: pointer;
+        }
+
+        .title #quant {
+            color: #cc6666;
+        }
+
+        #aims {
+            color: teal;
+        }
+
+        #logo {
+            background: url(../../../resources/images/Logo.png);
+            background-size: cover;
+            height: 30px;
+            width: 42px;
+            --background-color: #f2fbf7;
+            margin: auto 0;
+        }
+
+        paper-tabs {
+            --paper-tabs-selection-bar-color: #c3403f;
+            --paper-tabs-container: {
+                height: 80%;
+            }
+        }
+
+    </style>
+
+    <template>
+
+        <paper-toolbar>
+
+            <template is='dom-if' if="[[computeShowMenu(showMenu, currentTab)]]">
+                <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
+            </template>
+
+            <template is='dom-if' if="[[showMenu]]">
+                <div on-tap='goToHome' class="title layout horizontal">
+                    <p id="aims">Aims</p>
+                    <p id='quant'>Quant</p>
+                    <div id='logo'></div>
+                </div>
+            </template>
 
 
-    #profile {
-      right:0;
-    }
+            <div class="flex"></div>
+            <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
+                <paper-tab>HOME</paper-tab>
+                <paper-tab>RESEARCH</paper-tab>
+                <!--paper-tab>INVESTMENTS</paper-tab-->
+                <paper-tab>ABOUT US</paper-tab>
+                <template is='dom-if' if="{{!hasToken}}">
+                    <paper-tab>LOG IN</paper-tab>
+                    <paper-tab>SIGN UP</paper-tab>
+                </template>
 
-    .title {
-      min-width: 160px;
-    }
+            </paper-tabs>
 
-    .title p {
-      font-size: 24px;
-    }
+            <template is='dom-if' if="{{hasToken}}">
+                <aq-user-menu></aq-user-menu>
+            </template>
 
-    .title:hover {
-      cursor: pointer;
-    }
+        </paper-toolbar>
 
-    .title #quant{
-      color: #cc6666;
-    }
-    #aims{
-        color:teal;
-    }
-    #logo {
-      background: url(../../../resources/images/Logo.png);
-      background-size: cover;
-      height:30px;
-      width:42px;
-      --background-color: #f2fbf7;
-      margin:auto 0;
-    }
+    </template>
 
+    <script>
+        Polymer({
+            is: 'aq-toolbar',
 
-    paper-tabs {
-      --paper-tabs-selection-bar-color:#c3403f;
-      --paper-tabs-container:{
-          height:80%;
-      }
-    }
-   
-  </style>
+            properties: {
+                showMenu: {
+                    type: Boolean,
+                    value: true,
+                },
 
-  <template>
+                narrow: {
+                    type: Boolean,
+                },
 
-      <paper-toolbar>
+                currentTab: {
+                    type: Number,
+                    notify: true,
+                },
 
-          <template is ='dom-if' if="[[computeShowMenu(showMenu, currentTab)]]">
-            <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
-          </template>
-          
-          <template is ='dom-if' if="[[showMenu]]"> 
-            <div on-tap='goToHome' class="title layout horizontal">
-            <p id="aims">Aims</p><p id='quant'>Quant</p>
-            <div id='logo'></div>
-            </div>
-          </template>
-          
-        
-        <div class="flex"></div>
-        <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
-          <paper-tab>HOME</paper-tab>
-          <paper-tab>RESEARCH</paper-tab>
-          <!--paper-tab>INVESTMENTS</paper-tab-->
-          <paper-tab>ABOUT US</paper-tab>
-          <template is='dom-if' if="{{!hasToken}}">
-            <paper-tab>LOG IN</paper-tab>
-            <paper-tab>SIGN UP</paper-tab>
-          </template>
+                hasToken: {
+                    type: Boolean,
+                    value: true,
+                },
+            },
 
-        </paper-tabs>
-         
-        <template is='dom-if' if="{{hasToken}}">
-            <aq-user-menu></aq-user-menu> 
-        </template>
+            toggleMenu: function () {
+                this.fire('open-menu');
+            },
 
-      </paper-toolbar>
+            computeShowMenu: function (showMenu, currentTab) {
+                return showMenu && currentTab == 1;
+            },
 
-  </template>
+            goToHome: function () {
+                this.fire('rt-changed', {route: '/main'});
+            },
 
-  <script>
-    Polymer({
-      is:'aq-toolbar',
-
-      properties: {
-        showMenu: {
-          type:Boolean,
-          value:true,
-        },
-
-        narrow:{
-          type:Boolean,
-        },
-
-        currentTab: {
-          type:Number,
-          notify:true,
-        },
-
-        hasToken: {
-          type:Boolean,
-          value:true,
-        },
-      }, 
-
-      toggleMenu: function() {
-        this.fire('open-menu');
-      },
-
-      computeShowMenu: function(showMenu, currentTab) {
-        return showMenu && currentTab == 1;
-      },
-
-      goToHome: function() {
-        this.fire('rt-changed',{route:'/main'});
-      },
-
-    });
-  </script>>
+        });
+    </script>
+    >
 </dom-module>  

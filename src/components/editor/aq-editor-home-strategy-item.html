@@ -54,17 +54,17 @@
             z-index: 10;
         }
 
-        .row-upper-container {
-            display: flex;
-            flex-direction: row;
-        }
+        /*.row-upper-container {*/
+            /*display: flex;*/
+            /*flex-direction: row;*/
+        /*}*/
 
         .strategy-bt {
             position: absolute;
             right: 10px;
             z-index: 20;
             cursor: pointer;
-            top:11px;
+            top:7px;
         }
 
         .strategy-desc {
@@ -126,6 +126,7 @@
             font-size: 0.8em;
             font-weight: 700;
         }
+
     </style>
 
     <template>
@@ -133,7 +134,7 @@
 
         <div id$="[[strategyId]]" class="row">
 
-            <div class="row-upper-container">
+            <div class="row-upper-container layout horizontal center">
                 <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
                 <div class="strategy-name self-center"><h4 class="st-header" on-click='goToEditor'>
                     [[strategyName]]</h4></div>
@@ -141,7 +142,7 @@
                 <!--<div on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span></div>-->
                 <!--<iron-icon icon="arrow-forward" on-click='goToAnalyze' ></iron-icon>-->
                 <paper-button on-tap='goToAnalyze' class="strategy-bt">
-                    <h4 class="st-li-header">Number of Backtest: <span class="st-li-detail">[[numBacktest]]</span></h4>
+                    <span class="st-li-header">Number of Backtest: <span class="st-li-detail">[[numBacktest]]</span></span>
                 </paper-button>
             </div>
             <div class="strategy-desc"><span class="st-li-header strategy-desc-text">[[strategyDesc]]</span></div>
