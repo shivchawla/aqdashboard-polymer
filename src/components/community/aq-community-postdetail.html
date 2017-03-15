@@ -43,8 +43,6 @@
   <template>
       <aq-check-authentication id='authItem'></aq-check-authentication>
       
-      </app-route>
-
       <iron-ajax      
           url="[[computeGetThreadUrl(threadId)]]"
           method='GET'
@@ -159,7 +157,7 @@
       },
 
       hasThreadDetail: function(detail) {
-          if (detail) {
+          if (detail && this.threadId == detail._id) {
             return Object.keys(detail).length > 0;
           }
 
@@ -172,6 +170,7 @@
             this.fire('rt-changed',{route:'/user/signin'});
             return;
         } else {
+            
             this.user = this.$.authItem.getUser();
             this.header = this.$.authItem.getHeader();
             this.$.views.generateRequest();

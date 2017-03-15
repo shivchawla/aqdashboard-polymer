@@ -126,7 +126,10 @@
       is: 'aq-community-postdetail-header',
 
       properties :{
-        postHeader: Object,
+        postHeader: {
+          type: Object,
+          observer: '_postHeaderChanged',
+        },
         
         header:Object,
         
@@ -141,8 +144,7 @@
         },
       },
 
-      attached: function() {
-        
+      _postHeaderChanged: function() {
         if (this.postHeader.followers) {
           this.followers = this.postHeader.followers;
         }

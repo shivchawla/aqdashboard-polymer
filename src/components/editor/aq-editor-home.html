@@ -157,8 +157,6 @@
               debounce-duration="300">
         </iron-ajax>
 
-        <!--template is='dom-if' if='{{isActive(active, subroute)}}'-->
-
           <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
           <template is='dom-if' if='{{!loading}}'>
@@ -202,8 +200,6 @@
       		    
       		  </div>
         </template> 
-    <!--/template-->
-		
   </template>
 
   <script>
@@ -258,8 +254,6 @@
       loading:Boolean,
 
 		},
-
-    //observers:['_activeChanged(subroute, queryParams)'],
 
 		attached: function() {
       if(!this.$.authItem.checkHasToken()) {
@@ -462,7 +456,7 @@
           this.fire('rt-changed',{route:'/user/signin'});
       }
 
-    	searchtext = e.detail.searchtext;
+    	var searchtext = e.detail.searchtext;
     	
     	if(searchtext!="") {
     		this.$$('#ifsearch').style.display = 'block';
@@ -490,15 +484,14 @@
     onDeletion: function() {
     	//Send DELETE request to backend
     	for (key in this.checkedItems) {
-    		for (i in this.strategies) {		
-    			if (key == this.strategies[i]._id && this.checkedItems[key]==true) {
-    				this.deleteId = this.strategies[i]._id;
-    				this.$.deleteStrategyQuery.generateRequest();
-    			}
-    		}
+    		var idx = this.strategies.map(x => x._id).indexOf(key);
+        if(idx != -1 && this.checkedItems[key]==true) {
+      		this.deleteId = key;
+  				this.$.deleteStrategyQuery.generateRequest();
+  			}
 		  }
 
-		this.deleteId = "";	 
+		  this.deleteId = "";	 
 
     },
 
@@ -507,19 +500,20 @@
     },
 
     onDeleteStrategyResponse: function(data) {
-    	var idDeleted = data.detail.response.id;
-    	for (i in this.strategies) {	
-  			if (idDeleted == this.strategies[i]._id) {
-          this.splice('strategies', i, 1);
+    	var deletedId = data.detail.response.id;
+    	
+      var idx = this.strategies.map(x => x._id).indexOf(deletedId);
+      if(idx != -1) {
+        this.splice('strategies', idx, 1);
           
-          if(this.strategies.length == 0) {
-            this.strategies = [];
-          }
+        if(this.strategies.length == 0) {
+          this.strategies = [];
+        }
 
-  				this.checkedCount -= 1;
-          this.dirtyBit = 1;
-  			}
-  		}
+        this.checkedCount -= 1;
+        this.dirtyBit = 1;
+
+      }
   	},
 
     _createChanged: function(nCreate, oCreate) {
@@ -544,40 +538,6 @@
       }
 
       return false;
-    },
-
-    isActive: function(active, subroute) {
-      return active && !this.hasTail(subroute);
-    },
-
-    _activeChanged: function(subroute, queryParams) {
-
-      console.log("Current Active: " + active);
-      if(active){
-        if(!this.$.authItem.checkHasToken()) {
-            this.fire('rt-changed',{route:'/user/signin'});
-            return;
-        }
-      }
-
-      if(active && !this.hasTail(subroute)) {
-
-        if(this.queryParams && this.queryParams.create) {
-          this.create = this.queryParams.create;
-        } else {
-          this.fire('close-action');
-        }
-
-        if (this.dirtyBit == 1 || !(this.dirtyBit+1)) {
-          this.set('strategies', []);
-          this.fetchResults();
-        }
-
-      } else {
-
-        this.checkedItems = {};
-        this.checkedCount = 0;
-      }
     },
 
     hasStrategies: function(strategies, searchParam) {

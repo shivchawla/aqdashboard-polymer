@@ -323,29 +323,27 @@
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
 	        	for (key in this.checkedItems) {
-	        		for (i in this.backtests) {		
-	        			if (key == this.backtests[i]._id && this.checkedItems[key]==true) {
-	        				this.deleteId = this.backtests[i]._id;
-	        				this.$.deleteBacktestQuery.generateRequest();
-	        			}
-	        		}
-	    		}
 
+	        		var idx = this.backtests.map(x=>x._id).indexOf(key);
+	        		if(idx != -1 && this.checkedItems[key]==true) {
+	        			this.deleteId = key;
+        				this.$.deleteBacktestQuery.generateRequest();
+	        		}
+        		}
+	      
 	    		this.deleteId="";
 	        },
 
 	        onDeleteBacktestForStrategySuccess: function(data) {
-	        	var deleteId = data.detail.response.id;
-	        	for (i in this.backtests) {		
-        			if (deleteId == this.backtests[i]._id) {
-        				this.splice('backtests', i, 1);
-        				this.checkedCount -= 1;
-        				delete this.checkedItems[deleteId];
-        				this.fire('iron-signal',{name:'backtest-deleted'});
-        				//this.dirtyBit = 1;
-        				break;
-        			}
-        		}
+	        	var deleteId = data.detail.response.backtestId;
+	        	var idx = this.backtests.map(x=>x._id).indexOf(deleteId);
+
+	        	if(idx != -1) {
+	        		this.splice('backtests', idx, 1);
+    				this.checkedCount -= 1;
+    				delete this.checkedItems[deleteId];
+    				this.fire('iron-signal', {name:'backtest-deleted'});
+	        	}
 	        },
 
 	        onDeleteBacktestForStrategyError: function(data) {
