@@ -62,7 +62,7 @@
 
         paper-drawer-panel {
             height: 90%;
-            width: 90%;
+            width: 100%;
             margin-left: 20px;
         }
 
@@ -84,7 +84,7 @@
             background-color: #f2fbf7;
         }
 
-        #toolbar {
+        #toolbar, #toolbar1 {
             --paper-toolbar-height: 35px;
             --paper-toolbar-background: #e3f6ed;
             margin-bottom: 5px;
@@ -120,6 +120,10 @@
         #attachButton,#closeButton{
             color:#fff;
         }
+        #toolbar1{
+            background-color: transparent;
+        }
+
     </style>
 
     <template>
@@ -141,7 +145,7 @@
             <div class="inner">
                 <paper-drawer-panel right-drawer>
                     <paper-header-panel id="btPanel" main mode="seamed">
-                        <paper-toolbar id="toolbar">
+                        <paper-toolbar id="toolbar1">
                             <div class="flex"></div>
                             <!--<paper-icon-button id='attachButton' disabled=[[!isAttachButtonActive(checkedCount)]] noink-->
                                                <!--on-tap='onAttach' icon="aq-icons:attach-file"-->

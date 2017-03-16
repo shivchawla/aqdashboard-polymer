@@ -33,8 +33,8 @@
 
         #post-content {
             margin-bottom: 50px;
-            box-shadow: var(--aq-community-postdetail-content-box-shadow,0 0px 0px rgba(0,0,0,0.2));
-            padding: var(--aq-community-postdetail-content-padding,0);
+            box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
+            padding: var(--aq-community-postdetail-content-padding, 0);
             border-radius: 4px;
         }
 
@@ -78,6 +78,7 @@
             color: #8c8c8c;
             font-size: 12px;
         }
+
         .tags-container {
             list-style: none;
             padding: 0;
@@ -88,19 +89,23 @@
         .tags-container li {
             display: inline;
         }
-        .tags-header{
+
+        .tags-header {
             font-size: 0.8em;
-            color:#727272;
+            color: #727272;
             margin-right: 20px;
         }
-        aq-backtest-detail-item{
-            --aq-backtest-detail-item-width:100%;
+
+        aq-backtest-detail-item {
+            --aq-backtest-detail-item-width: 100%;
         }
-        tag-element{
+
+        tag-element {
             margin-bottom: 10px;
         }
-        aq-backtest-detail-item{
-            --card-action-background-color:var(post-content-background-color,#fafafb);
+
+        aq-backtest-detail-item {
+            --card-action-background-color: var(post-content-background-color, #fafafb);
         }
     </style>
 
@@ -115,18 +120,21 @@
                   </span>
                 </div>
                 <div class="flex"></div>
-                <span class="created-text">on: <span class="created-date">[[format(postContent.updatedAt)]]</span></span>
+                <span class="created-text">on: <span
+                        class="created-date">[[format(postContent.updatedAt)]]</span></span>
             </div>
-            <div class="tags-div layout horizontal center">
-                <span class="tags-header">Tags: &nbsp;</span>
-                <ul class="tags-container">
-                    <template is="dom-repeat" items="[[postContent.tags]]">
-                        <li>
-                            <tag-element label="{{item}}"></tag-element>
-                        </li>
-                    </template>
-                </ul>
-            </div>
+            <template is="dom-if" if="[[postContent.tags.length]]">
+                <div class="tags-div layout horizontal center">
+                    <span class="tags-header">Tags: &nbsp;</span>
+                    <ul class="tags-container">
+                        <template is="dom-repeat" items="[[postContent.tags]]">
+                            <li>
+                                <tag-element label="{{item}}"></tag-element>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
 
 
             <aq-help-marked-item help-text="[[postContent.markdownText]]"></aq-help-marked-item>

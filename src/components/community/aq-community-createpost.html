@@ -91,7 +91,7 @@
         }
 
         #attachButton {
-            z-index: 2;
+            /*z-index: 2;*/
             background-color: white !important;
             color: teal !important;
             border: none !important;
@@ -151,7 +151,7 @@
 
         #tagsInput {
             width: 100%;
-            z-index: 1;
+            /*z-index: 1;*/
             padding: 0;
             border: none;
             outline: none;
@@ -173,7 +173,7 @@
 
         .tags-container {
             list-style: none;
-            z-index: 20;
+            /*z-index: 20;*/
             display: inline-block;
             height: 35px;
             max-height: 35px;
@@ -227,8 +227,8 @@
         }
 
         .attachment-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         paper-button {
@@ -357,19 +357,23 @@
                                 </paper-radio-group>
                             </div>
                         </div>
-                        <aq-html-editor id="editor"></aq-html-editor>
                         <div class="layout horizontal attachment-container">
-                            <paper-button style="color:#444;" id='attachButton' raised noink on-tap='onAttachRequest'>
-                                Attach
-                                <iron-icon icon="aq-icons:attach-file"></iron-icon>
-                            </paper-button>
                             <div class="flex"></div>
+                            <template is='dom-if' if='[[messageAttached]]'>
+                                <paper-button style="color:#444;" id='attachButton' raised noink
+                                              on-tap='onAttachRequest'>
+                                    Attach
+                                    <iron-icon icon="aq-icons:attach-file"></iron-icon>
+                                </paper-button>
+                            </template>
                             <div id="attachedMessageDiv" class="layout horizontal self-end">
                                 <span class="self-end">[[attachedMessage]]</span>
                                 <paper-icon-button id='removeIcon' class="self-end" title="Remove"
                                                    on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
                             </div>
                         </div>
+                        <aq-html-editor id="editor"></aq-html-editor>
+
                         <div id='buttons' class="layout horizontal">
                             <paper-button id="previewBtn" noink on-tap='onPreview'>Preview</paper-button>
                             <div class="flex"></div>
@@ -410,7 +414,10 @@
                 },
 
                 attachedMessage: String,
-
+                messageAttached: {
+                    type:Boolean,
+                    value:false
+                },
                 share: String,
 
                 newThreadId: String,
@@ -477,16 +484,19 @@
                 if (this.attachedBacktestId && this.attachedBacktestId != "") {
                     this.attachedMessage = "Attached Backtest ID: " + this.attachedBacktestId;
                     this.$$('#attachedMessageDiv').style.display = 'block';
+                    this.messageAttached = false;
                 } else {
                     this.attachedMessage = "";
                     if (this.$$('#attachedMessageDiv')) {
                         this.$$('#attachedMessageDiv').style.display = 'none';
+                        this.messageAttached = true;
                     }
                 }
             },
 
             onRemoveAttached: function () {
                 this.attachedBacktestId = "";
+                this.messageAttached = false;
             },
 
             goBack: function () {

@@ -8,6 +8,7 @@
 <link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <dom-module id="aq-community-postdetail-reply">
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -19,11 +20,10 @@
             font-size: 16px;
         }
         #attachButton {
-            margin-bottom: -40px;
-            margin-right: 7px;
-            color: teal;
+            /*z-index: 2;*/
+            background-color: white !important;
+            color: teal !important;
             border: none !important;
-            z-index: 2;
         }
 
         paper-button {
@@ -42,29 +42,42 @@
         }
 
         #attachedMessageDiv {
-            --display: none;
-            color: #cc6666;
+            display: none;
+            color: #727272;
             font-size: 14px;
-            height: 32px;
-            margin-bottom: 10px;
+            padding: 0px 10px;
+            border-radius: 4px;
+            background-color: #f2f2f2;
         }
 
         #removeIcon {
-            width: 25px;
-            height: 25px;
-            display: none;
-            padding: 5px;
+            width: 32px;
+            height: 32px;
         }
         paper-button{
             border:none;
         }
-        #reply-btn{
-            background-color: teal;
-            color:#fff;
-        }
         aq-html-editor{
             --aq-html-editor-box-shadow:0 3px 8px rgba(0,0,0,0.2);
             --aq-html-editor-border:none;
+        }
+        .attachment-container {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        #previewBtn {
+            color: teal;
+            font-weight: 700;
+        }
+
+        #reply-btn {
+            font-weight: 700;
+            color: #cc4444;
+        }
+        paper-toast {
+            --paper-toast-background-color: #cc4444;
+            font-weight: 700;
+
         }
 
     </style>
@@ -79,28 +92,45 @@
 
             <div id="replybox" class="flex layout vertical">
 
-                <div id="attachedMessageDiv" class="layout horizontal self-end">
-                    <i class="self-end">[[attachedMessage]]</i>
-                    <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached'
-                                       icon="aq-icons:remove-circle"></paper-icon-button>
-                </div>
+                <!--<div id="attachedMessageDiv" class="layout horizontal self-end">-->
+                    <!--<i class="self-end">[[attachedMessage]]</i>-->
+                    <!--<paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached'-->
+                                       <!--icon="aq-icons:remove-circle"></paper-icon-button>-->
+                <!--</div>-->
 
                 <!--<paper-button id='attachButton' class="self-end" raised noink on-tap='onAttach'>Attach-->
                     <!--<iron-icon icon="aq-icons:attach-file"></iron-icon>-->
                 <!--</paper-button>-->
 
                 <!--<aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>-->
+                <div class="layout horizontal attachment-container">
+                    <div class="flex"></div>
+                    <template is='dom-if' if='[[messageAttached]]'>
+                        <paper-button style="color:#444;" id='attachButton' raised noink
+                                      on-tap='onAttach'>
+                            Attach
+                            <iron-icon icon="aq-icons:attach-file"></iron-icon>
+                        </paper-button>
+                    </template>
+                    <div id="attachedMessageDiv" class="layout horizontal self-end">
+                        <span class="self-end">[[attachedMessage]]</span>
+                        <paper-icon-button id='removeIcon' class="self-end" title="Remove"
+                                           on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
+                    </div>
+                </div>
                 <aq-html-editor id="editor"></aq-html-editor>
                 <div class="layout horizontal" id='buttons'>
-                    <div id='errorMessage'><i>[[error]]</i></div>
-                    <paper-button id='attachButton' raised noink on-tap='onAttach'>Attach
-                        <iron-icon icon="aq-icons:attach-file"></iron-icon>
-                    </paper-button>
+                    <!--<div id='errorMessage'><i>[[error]]</i></div>-->
+                    <!--<paper-button id='attachButton' raised noink on-tap='onAttach'>Attach-->
+                        <!--<iron-icon icon="aq-icons:attach-file"></iron-icon>-->
+                    <!--</paper-button>-->
+                    <paper-button noink on-tap='onPreview' id="previewBtn">Preview</paper-button>
                     <div class="flex"></div>
-                    <!--<paper-button raised noink on-tap='onPreview'>Preview</paper-button>-->
-                    <paper-button raised noink on-tap="postThread" id="reply-btn">Post Reply</paper-button>
+
+                    <paper-button noink on-tap="postThread" id="reply-btn">Post Reply</paper-button>
                 </div>
             </div>
+            <paper-toast text="[[error]]"></paper-toast>
         </template>
 
         <aq-community-attachbacktest-dialog id='btDialog'>
@@ -143,6 +173,10 @@
                 preview: {
                     type: Boolean,
                     value: false,
+                },
+                messageAttached: {
+                    type:Boolean,
+                    value:true
                 },
 
             },
@@ -189,26 +223,30 @@
             },
 
             processInput: function () {
-                const markdownText = this.$$('#editor').getContent();
-                var x = localStorage.getItem('my-app-storage');
-                var user = JSON.parse(x).user;
+                try {
+                    const markdownText = this.$$('#editor').getContent();
+                    var x = localStorage.getItem('my-app-storage');
+                    var user = JSON.parse(x).user;
 
-                var threadData = {
-                    "markdownText": markdownText,
-                    "user": {"firstName": user.firstName, "lastName": user.lastName},
-                    "updatedAt": new Date(),
-                };
+                    var threadData = {
+                        "markdownText": markdownText,
+                        "user": {"firstName": user.firstName, "lastName": user.lastName},
+                        "updatedAt": new Date(),
+                    };
 
-                if (this.attachedBacktestId && this.attachedBacktestId != "") {
-                    threadData["backtestId"] = this.attachedBacktestId;
-                }
+                    if (this.attachedBacktestId && this.attachedBacktestId != "") {
+                        threadData["backtestId"] = this.attachedBacktestId;
+                    }
 
-                if (threadData["markdownText"] != "") {
-                    this.threadData = threadData;
-                    this.error = "";
-                    return true;
-                } else {
-                    return false;
+                    if (threadData["markdownText"] != "") {
+                        this.threadData = threadData;
+                        this.error = "";
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }catch(err){
+                    this.$$('paper-toast').open();
                 }
             },
 
@@ -230,14 +268,17 @@
             onBacktestAttached: function (e) {
                 this.attachedBacktestId = e.detail.id;
                 this.attachedMessage = "Attached Backtest ID: " + this.attachedBacktestId;
-                this.$$('#removeIcon').style.display = 'inline';
+//                this.$$('#removeIcon').style.display = 'inline';
+                this.$$('#attachedMessageDiv').style.display = 'block';
+                this.messageAttached = false;
             },
 
             onRemoveAttached: function () {
                 this.attachedBacktestId = "";
                 this.attachedMessage = "";
                 this.threadData = {};
-                this.$$('#removeIcon').style.display = 'none';
+                this.$$('#attachedMessageDiv').style.display = 'none';
+                this.messageAttached = true;
             },
 
             _threadIdChanged: function (nThreadId, oThreadId) {
