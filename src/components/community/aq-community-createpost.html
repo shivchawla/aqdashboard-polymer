@@ -36,6 +36,10 @@
             margin: 0;
         }
 
+        h1:hover {
+          cursor: pointer;
+        }
+
         .container {
             width: 100%;
             margin: 0 auto;
@@ -49,16 +53,15 @@
         }
 
         input {
-            height: 35px;
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #24293d;
-            /*border: 1px solid #e5e5e5;*/
             padding-left: 10px;
-            background-color: #f2f2f2;
-            outline: none;
-            border: none;
-
+            height: 35px;
+            border: 0;
+            margin: 0;
+            -webkit-appearance: none;
+            border: 1px solid #e5e5e5;
+            font-size: 16px;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
         aq-dropdown {
@@ -80,7 +83,6 @@
 
         paper-button {
             border: 1px solid teal;
-            #24293d;
             height: 30px;
             font-size: 13px;
             color: teal;
@@ -91,7 +93,6 @@
         }
 
         #attachButton {
-            /*z-index: 2;*/
             background-color: white !important;
             color: teal !important;
             border: none !important;
@@ -99,7 +100,6 @@
 
         #attachButton {
             border: none !important;
-
         }
 
         #buttons {
@@ -145,19 +145,22 @@
         }
 
         .title-text-container {
-            /*margin-top: 20px;*/
             width: 100%;
+    
         }
 
         #tagsInput {
             width: 100%;
-            /*z-index: 1;*/
-            padding: 0;
-            border: none;
-            outline: none;
-            background: none;
             margin: 0;
-            max-height: 35px;
+            padding-left: 10px;
+            height: 35px;
+            border: 0;
+            margin: 0;
+            -webkit-appearance: none;
+            border: 1px solid #e5e5e5;
+            font-size: 16px;
+            background-color: #fff;
+            display: inline-block;
         }
 
         .left-container {
@@ -173,7 +176,6 @@
 
         .tags-container {
             list-style: none;
-            /*z-index: 20;*/
             display: inline-block;
             height: 35px;
             max-height: 35px;
@@ -182,7 +184,7 @@
             position: absolute;
             overflow: hidden;
             overflow-y: scroll;
-            left: 37%;
+            left: 20%;
 
         }
 
@@ -213,7 +215,6 @@
 
         paper-radio-button {
             padding: 0;
-            /*padding-bottom: 5px;*/
             --paper-radio-button-checked-color: #cc4444;
             --paper-radio-button-size: 14px;
         }
@@ -261,16 +262,6 @@
             transform: scale(1.6, 1.6);
         }
 
-        .tagsInputContainer {
-            height: 35px;
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #24293d;
-            position: relative;
-            background-color: #f2f2f2;
-            padding-left: 10px;
-
-        }
     </style>
 
 
@@ -320,16 +311,15 @@
                         <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
                                            on-tap="goBack"></paper-icon-button>
 
-                        <h1>Back to Community</h1>
+                        <h1 on-tap="goBack">Back to Community</h1>
                     </div>
                     <div class="layout vertical secondary-container">
                         <div class="title-text-container layout horizontal">
-                            <!--<aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>-->
                             <input id="topicInput" class="flex" placeholder="Title">
                         </div>
                         <div class="layout horizontal middle-container">
                             <div class="layout vertical left-container">
-                                <div class="tagsInputContainer layout horizontal start-justified">
+                                <div class="layout horizontal start-justified">
                                     <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
                                            on-keydown="onChange" on-keyup="scrollToBottom">
                                     <ul id="tagsContainer" class="tags-container">

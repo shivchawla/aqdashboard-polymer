@@ -4,6 +4,7 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../bower_components/iron-media-query/iron-media-query.html'>
 <link rel='import' href='../profile-img.html'>
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../../icons/aq-iconset.html">
@@ -16,6 +17,9 @@
 
 <dom-module id="aq-community-home-post-item2">
     <template>
+        <style include="iron-flex iron-flex-alignment iron-positioning">
+        </style>
+
         <style>
             :host {
                 display: inline-block;
@@ -99,6 +103,15 @@
                 align-items: center;
             }
 
+            .right-part[wide-layout] {
+                @apply(--layout-horizontal);
+            }
+
+            .right-part[!wide-layout] {
+                @apply(--layout-vertical);
+            }
+
+
             .left-part .post-container {
                 margin-right: 30px;
             }
@@ -156,6 +169,9 @@
                 color:#646464;
             }
         </style>
+
+        <iron-media-query query="(min-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
+       
         <div class="container" on-tap='goToDetail'>
             <div class="upper-container">
                 <iron-icon class="post-icon" icon="{{icon}}"></iron-icon>
@@ -182,23 +198,25 @@
                 <paper-icon-button class="attachment-btn" icon="attachment"></paper-icon-button>
             </div>
             <div class="bar"></div>
-            <div class="lower-container">
-                <div class="left-part">
+            <div class="layout horizontal">
                     <profile-pic-element></profile-pic-element>
                     <!--<post-user-comment user="[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]" time="[[format(thread.createdAt)]]"></post-user-comment>-->
                     <!--<post-user-comment label="Last Reply" user="[[getReplyAuthor(thread)]]" time="[[getReplyDate(thread)]]"></post-user-comment>-->
-                    <div class="post-container layout vertical center">
+                    <div class="post-container layout vertical">
                         <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
                         <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span></h3>
                         <span class="time">[[format(thread.createdAt)]]</span>
                     </div>
-                    <div class="post-container layout vertical center">
-                        <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+
+                    <div class="flex"></div>  
+                    <!--div class="post-container layout vertical">
                         <h3 class="by">Last Reply  by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
                         <span class="time">[[getReplyDate(thread)]]</span>
                     </div>
-                </div>
-                <div class="right-part">
+
+                    <div class="flex"></div-->
+                
+                <div class="right-part layout vertical" wide-layout$="[[wide]]">
                     <label-content-item label="Views" text="[[thread.views]]"></label-content-item>
                     <label-content-item label="Replies" text="[[thread.replies.length]]"></label-content-item>
                     <label-content-item label="Followers" text="[[thread.followers.length]]"></label-content-item>
@@ -241,7 +259,7 @@
                 if (lastreplyDate != '' && lastreplyAuthor != '') {
                     return lastreplyAuthor + " on " + lastreplyDate;
                 } else {
-                    return "No replies yet. Be the first one to reply!!";
+                    return "No replies yet";
                 }
             },
 
@@ -253,7 +271,7 @@
                 if (thread.replies.length > 0) {
                     return this.format(thread.replies[thread.replies.length - 1].createdAt);
                 } else {
-                    return 'No replies yet. Be the first one to reply!!';
+                    return 'No replies yet.';
                 }
             },
 

@@ -16,7 +16,7 @@
             line-height: 46px;
             border: 0;
             margin: 0;
-            padding-left: 30px;
+            padding-left: 10px;
             border: 1px solid #e5e5e5;
             @apply(--paper-font-body1);
             font-size: 14px;
@@ -37,11 +37,28 @@
         }
 
         .search-bar {
-            width: 45%;
+            --width: 45%;
             margin: 0 auto;
             /*display: flex;*/
             /*align-items: center;*/
             position: relative;
+            margin-bottom: 5px;
+        }
+
+        .tag-bar {
+        	width: 30%;
+        	min-width: 375px;
+        }
+
+        .add-tag span {
+        	font-size:12px;
+        	--text-decoration: underline;
+        	color: #cc6666;
+        	margin-left: 5px;
+        }
+
+        .add-tag span:hover {
+        	cursor: pointer;
         }
 
         paper-button {
@@ -67,18 +84,28 @@
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        <div class="upper-container layout horizontal wrap">
-            <div class="search-bar layout horizontal center-justified">
+        <div class="upper-container">
+            <div class="search-bar layout horizontal">
                 <input id="searchbox" placeholder="Search Term" class="flex"
                        value="{{searchValue::input}}"
                        on-keydown="checkForKeys" on-blur='blur'>
+               	
+               	<paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
+        	  	
             </div>
-            <div class="search-bar layout horizontal center-justified">
-                <input id="searchbox1" placeholder="Tags" class="flex"
-                       value="{{searchText::change}}"
-                       on-keydown="checkForKeys" on-blur='blur'>
-            </div>
-            <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
+
+            <template is='dom-if' if='[[addTag]]'>
+	            <div class="tag-bar layout horizontal left-justified">
+	            	<input id="searchbox1" placeholder="Add Tags" class="flex"
+	                       value="{{searchText::change}}"
+	                       on-keydown="checkForKeys" on-blur='blur'>
+	          	</div>
+          	</template>
+
+        	<template is='dom-if' if='[[!addTag]]'>
+        		<div class='add-tag'><span on-tap='toggleAddTag'>Add Tags?</span></div>
+        	</template>
+        
         </div>
     </template>
     <script>
@@ -116,6 +143,11 @@
                         index: 1
                     }, {value: "Questions and Answers", index: 2}, {value: "News and Announcements", index: 3}],
 
+                },
+
+                addTag: {
+                	type: Boolean,
+                	value: false,
                 },
             },
 
@@ -184,6 +216,10 @@
                 } else if (e.keyCode === 13) {
                     this.search();
                 }
+            },
+
+            toggleAddTag: function() {
+            	this.addTag = !this.addTag;
             },
 
         });

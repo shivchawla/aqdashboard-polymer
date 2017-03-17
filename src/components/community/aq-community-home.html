@@ -3,6 +3,7 @@
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-media-query/iron-media-query.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
@@ -16,6 +17,7 @@
 <link rel="import" href="../common/announcement-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+
 <dom-module id="aq-community-home">
 
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -47,7 +49,7 @@
             margin-top: 20px;
             color: #24293d;
             width: 95%;
-            margin-left: 2%;
+            --margin-left: 2%;
 
             --overflow-y: scroll;
             --height: 100%;
@@ -112,6 +114,7 @@
         .list-container {
             margin-right: 60px;
             width: 100%;
+            padding-left: 10px;
         }
 
         ul {
@@ -152,6 +155,8 @@
     </style>
     <template>
 
+        <iron-media-query query="(min-width: 850px)" query-matches="{{wide}}"></iron-media-query>
+       
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
         <iron-ajax
@@ -174,13 +179,12 @@
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <div id='container' class="layout vertical flex">
-            <div class="upper-container layout horizontal wrap">
-                <aq-community-home-searchbar id='searchbar'
-                                             class="self-end"
-                                             active="[[isSearchActive(searchText)]]"
-                                             search-value="[[searchText]]">
-                </aq-community-home-searchbar>
-            </div>
+            <aq-community-home-searchbar id='searchbar'
+                                         class="self-end"
+                                         active="[[isSearchActive(searchText)]]"
+                                         search-value="[[searchText]]">
+            </aq-community-home-searchbar>
+            
             <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
                 <!--<div id="ifsearch">-->
                 <p class="search-result">Search results for <span class="search-string">"[[searchText]]"&nbsp</span>
@@ -213,31 +217,34 @@
                         </li>
                     </template>
                 </ul>
-                <div class="announcement-container layout vertical">
-                    <announcement-card header="Important Announcement"
-                                       sub-header="This is a very important announcement">
-                    <span>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when
-                        looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
-                        of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
-                        desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
-                        search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
-                        evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                    </span>
-                    </announcement-card>
+                
+                <template is='dom-if' if="{{wide}}">
+                  <div class="announcement-container layout vertical">
+                      <announcement-card header="Important Announcement"
+                                         sub-header="This is a very important announcement">
+                      <span>
+                          It is a long established fact that a reader will be distracted by the readable content of a page when
+                          looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                          of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
+                          desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
+                          search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
+                          evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                      </span>
+                      </announcement-card>
 
-                    <announcement-card header="Important Announcement"
-                                       sub-header="This is a very important announcement">
-                    <span>
-                        It is a long established fact that a reader will be distracted by the readable content of a page when
-                        looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
-                        of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
-                        desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
-                        search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
-                        evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                    </span>
-                    </announcement-card>
-                </div>
+                      <announcement-card header="Important Announcement"
+                                         sub-header="This is a very important announcement">
+                      <span>
+                          It is a long established fact that a reader will be distracted by the readable content of a page when
+                          looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                          of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
+                          desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
+                          search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
+                          evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                      </span>
+                      </announcement-card>
+                  </div>
+                </template>
             </div>
 
             <div class="flex"></div>
