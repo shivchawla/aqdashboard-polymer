@@ -38,7 +38,6 @@
             border-radius: 2px;
             justify-content: flex-start;
             position: relative;
-            /*z-index: 1;*/
         }
 
         .row paper-checkbox {
@@ -51,18 +50,11 @@
             --paper-checkbox-checked-color: #cc6666;
             -- #24293d;
             -- #99ced4;
-            /*z-index: 10;*/
         }
-
-        /*.row-upper-container {*/
-            /*display: flex;*/
-            /*flex-direction: row;*/
-        /*}*/
 
         .strategy-bt {
             position: absolute;
             right: 10px;
-            /*z-index: 20;*/
             cursor: pointer;
             top:7px;
         }
@@ -75,7 +67,6 @@
 
         .strategy-created-date {
             position: absolute;
-            /*z-index: 1;*/
             width: 100%;
             text-align: center;
         }
@@ -97,14 +88,12 @@
         }
 
         .strategy-name {
-            /*z-index: 20;*/
             cursor: pointer;
         }
 
         iron-icon {
             position: absolute;
             right: 15px;
-
             width: 22px;
             height: 22px;
             cursor: pointer;
@@ -139,8 +128,7 @@
                 <div class="strategy-name self-center"><h4 class="st-header" on-click='goToEditor'>
                     [[strategyName]]</h4></div>
                 <div class="strategy-created-date"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
-                <!--<div on-click='goToAnalyze' class="strategy-bt"><span>Number of Backtest: [[numBacktest]]</span></div>-->
-                <!--<iron-icon icon="arrow-forward" on-click='goToAnalyze' ></iron-icon>-->
+
                 <paper-button on-tap='goToAnalyze' class="strategy-bt">
                     <span class="st-li-header">Number of Backtest: <span class="st-li-detail">[[numBacktest]]</span></span>
                 </paper-button>
@@ -190,7 +178,6 @@
             },
 
             onSelectStrategy: function(e) {
-            	//this.$.checkbox.checked = !this.$.checkbox.checked;
                 this.$.checkbox.checked = e.detail.checked;
             	this.onCheck(); 
             }

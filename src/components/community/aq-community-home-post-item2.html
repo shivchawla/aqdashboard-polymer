@@ -7,295 +7,295 @@
 <link rel='import' href='../profile-img.html'>
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../../icons/aq-iconset.html">
-
+<link rel="import" href="../common/aq-tag-element.html">
+<link rel="import" href="../common/post-user-comment.html">
+<link rel="import" href="../common/aq-label-content-item.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../common/aq-profile-pic-element.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
 
 <dom-module id="aq-community-home-post-item2">
-  <style  include="iron-flex iron-flex-alignment iron-positioning">
-  </style>
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                position: relative;
+                font-family: 'Lato', sans-serif;
+                font-size: 16px;
+            }
 
-  <style>
-    paper-card {
-      margin-bottom: 13px;
-      height:115px;
-      min-width: 600px;
-      --max-width:80%;
-      width:80%;
-      --border-top:2px solid teal !important;
-      border:1px solid #24293d;--teal;
+            .container {
+                display: flex;
+                width: 97%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                flex-direction: column;
+                justify-content: center;
+                padding: 15px 20px 10px 20px;
+                margin-bottom: 25px;
+                border-radius: 2px;
+                transition: all 0.2s ease-in-out;
+                cursor: pointer;
+                background-color: #fff;
+            }
 
-      --paper-card-header-text:{
-        font-size:20px;
-      }
-      
-    }
+            .container:hover {
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            }
 
-    #content {
-      --height:77%;
-      word-wrap: break-word;
-      padding-bottom: 0px;
-    }
+            h1, h2, h3, h4, h5 {
+                margin: 0;
+                padding: 0;
+            }
 
-    .container-int {
-      min-height: 40px;
-      --height:20%;
-    }
+            .tags-container {
+                list-style: none;
+                padding: 0;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
 
-    .header{
-      --border-bottom: 1px solid teal;
-      min-height: 40px;
-    }
+            .tags-container li {
+                display: inline;
+            }
 
+            .bar {
+                width: 100%;
+                background-color: #E0E0E0;
+                height: 1px;
+                margin: 0 auto;
+                margin-bottom: 10px;
 
-    #textContent {
-      height:80%;
-      display: none;
-      overflow-y: scroll;
-    }
+            }
 
-    #action {
-      height: 40px;
-      background-color: #f2fbf7;
-      border-top: 1px solid #cc6666;
-    }
+            .lower-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
 
-    #topicHeading {
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 18px;
-      color: black;
-      color:#c3403f;
-    }
+            .header {
+                color: #5d5d5d;
+                font-family: 'Lato', sans-serif;
+                font-weight: 400;
+                font-size: 16px;
+            }
 
-    #topicHeading:hover {
-      text-decoration:underline;
-    }
+            .attachment-btn {
+                color: #cc4444;
+                position: absolute;
+                right: 0;
+                top: 5px;
+            }
 
-    .metric {
-      margin-right: 10px;
-      margin-left:10px;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      --max-width:200px;
-      font-size:12px;
-      --min-width: 75px;
-    }
- 
-    paper-card p{
-      width:200px;
-    }
+            .lower-container .left-part {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
 
-    #content :hover{
-      --color:teal;
-      --z-index:20;
-    }   
+            .lower-container .right-part {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
 
-    .bold-span {
-      font-weight: bold;
-      font-size: 13px;
-    }
+            .left-part .post-container {
+                margin-right: 30px;
+            }
 
-    paper-icon-button {
-      color:teal;
-    }
+            .post-icon {
+                color: #cc4444;
+                transform: scale(1.8, 1.8);
+                position: relative;
+                top: 10px
+            }
 
-    p strong {
-      font-size:20px;
-    }
+            .upper-container {
+                display: flex;
+                flex-direction: row;
+            }
 
-    #lastReplyAt {
-      width:320px !important;
+            .upper-container-header {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                left: 15px;
+            }
 
-    }
+            label-content-item {
+                margin-left: 20px;
+            }
 
-    #category{
-      font-size: 13px;
-      margin-bottom: 5px;
-      --font-weight: bold;
-      font-style: italic;
-    }
-
-    #category i{
-      color: teal;
-      font-weight: normal;
-    }
-
-    #img {
-      margin-right: 10px;
-    }
-
-    iron-icon {
-      
-      margin-left: 20px;
-      --opacity: 0.8;
-      color:#cc6666;
-      height: 25px;
-      width: 25px;
-      
-    }
-
-    #iconReply {
-      color:#cc6666;
-      height: 25px;
-      width: 25px;
-      padding: 0px;
-      --outline: 1px solid #24293d;
-      --margin-left:10px;
-    }
-                        
-  </style>
-
-  <template>
-    <paper-card class="self-center flex">
-      
-      <div id='content' class="card-content flex">
-
-        <div class="container-int header layout horizontal">       
-          <profile-img id='img' class="self-start" letter="[[getInitials(thread.user.firstName, thread.user.lastName)]]"></profile-img>
-
-          <div class="layout vertical">
-            <div id='topicHeading' on-click='goToDetail'>[[thread.title]]</div>
-            <span id='category'><i>[[thread.category]]</i> by [[getAuthorFullName(thread.user.firstName, thread.user.lastName)]] on [[format(thread.createdAt)]]</span>
-          </div>
-
-          <div class="flex"></div>
-
-           <template is='dom-if' if='[[hasBacktest(thread)]]'>
-              <iron-icon class="self-center" icon="vaadin-icons:line-bar-chart"></iron-icon>
-          </template>
-
-          <div class="flex"></div>
-
-          <paper-icon-button icon="vaadin-icons:external-link" on-tap='goToDetail' title='View Post'></paper-icon-button>   
-        </div>   
-      
-        <div id='textContent' class="flex"><aq-help-marked-item help-text="[[thread.markdownText]]"></aq-help-marked-item> 
-        </div> 
-
-        <!--div class="flex"></div-->  
-      </div>      
-      
-      <div id='action' class="card-actions flex">     
-        
-        <div class="container-int layout horizontal">
-          
-          <div class="layout vertical metric flex"> 
-            <span class="bold-span">[[thread.views]]</span>
-            <span>Views</span>               
-          </div>
-                       
-          <div class="layout vertical metric flex"> 
-            <span class="bold-span">[[thread.replies.length]]</span>
-            <span>Replies</span>   
-            
-          </div>
-
-          <div class="layout vertical metric flex"> 
-            <span class="bold-span">[[thread.followers.length]]</span>
-            <span>Followers</span>             
-          </div>
-
-           <div id="lastReplyAt" class="layout horizontal"> 
-            <div  class="layout vertical metric">    
-                <span class="bold-span">[[getLastReplyDetails(thread)]] </span>  
-               <span>Last Reply</span>
-            </div> 
-
-            <template is='dom-if' if="[[!hasReplies(thread)]]">
-                <paper-icon-button class="self-start" id='iconReply' icon="aq-icons:reply" on-tap='goToDetail'></paper-icon-button>
-            </template>  
-          </div>
-
-         
+            profile-pic-element {
+                margin-right: 10px;
+            }
+            .post-container{
+                /*display: flex;*/
+                /*flex-direction: column;*/
+                /*justify-content: center;*/
+            }
+            .by{
+                margin-right: 10px;
+            }
+            .user-name{
+                margin-right: 6px;
+            }
+            .by{
+                font-weight: 300;
+                font-size: 0.8em;
+                color:#646464;
+            }
+            .time{
+                font-weight: 400;
+                font-size: 0.75em;
+                color:#8a8c97;
+            }
+            .user-name{
+                font-weight: 400;
+                font-size: 1.1em;
+                color:#646464;
+            }
+        </style>
+        <div class="container" on-tap='goToDetail'>
+            <div class="upper-container">
+                <iron-icon class="post-icon" icon="{{icon}}"></iron-icon>
+                <div class="upper-container-header">
+                    <h1 class="header">[[thread.title]]</h1>
+                    <ul class="tags-container">
+                        <li>
+                            <tag-element label="Julia"></tag-element>
+                        </li>
+                        <li>
+                            <tag-element label="Python"></tag-element>
+                        </li>
+                        <li>
+                            <tag-element label="C++"></tag-element>
+                        </li>
+                        <li>
+                            <tag-element label="Java"></tag-element>
+                        </li>
+                        <li>
+                            <tag-element label="HTML 5"></tag-element>
+                        </li>
+                    </ul>
+                </div>
+                <paper-icon-button class="attachment-btn" icon="attachment"></paper-icon-button>
+            </div>
+            <div class="bar"></div>
+            <div class="lower-container">
+                <div class="left-part">
+                    <profile-pic-element></profile-pic-element>
+                    <!--<post-user-comment user="[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]" time="[[format(thread.createdAt)]]"></post-user-comment>-->
+                    <!--<post-user-comment label="Last Reply" user="[[getReplyAuthor(thread)]]" time="[[getReplyDate(thread)]]"></post-user-comment>-->
+                    <div class="post-container layout vertical center">
+                        <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+                        <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span></h3>
+                        <span class="time">[[format(thread.createdAt)]]</span>
+                    </div>
+                    <div class="post-container layout vertical center">
+                        <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
+                        <h3 class="by">Last Reply  by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
+                        <span class="time">[[getReplyDate(thread)]]</span>
+                    </div>
+                </div>
+                <div class="right-part">
+                    <label-content-item label="Views" text="[[thread.views]]"></label-content-item>
+                    <label-content-item label="Replies" text="[[thread.replies.length]]"></label-content-item>
+                    <label-content-item label="Followers" text="[[thread.followers.length]]"></label-content-item>
+                </div>
+            </div>
         </div>
+    </template>
 
-      </div>
 
-    </paper-card>
+    <script>
+        Polymer({
+            is: 'aq-community-home-post-item2',
+            properties: {
+                thread: {
+                    type: Object
+                },
+                icon: {
+                    type: String,
+                    value: "lightbulb-outline"
+                }
+            },
+            ready: function () {
+                if (this.icon === 'communication:forum') {
+                    this.$$('.post-icon').style.transform = "scale(1,1)";
+                }
+            },
+            getInitials: function (firstName, lastName) {
+                return firstName.charAt(0) + lastName.charAt(0);
+            },
 
-  </template>
-  	
+            goToDetail: function () {
+                this.fire('rt-changed', {route: '/dashboard/community/' + this.thread._id});
+            },
 
-  <script>
-    Polymer ({
-      is: 'aq-community-home-post-item2',
-      properties: {
+            getLastReplyDetails: function (thread) {
 
-        thread: {
-          type: Object,
-        },
-      },
+                var lastreplyAuthor = this.getReplyAuthor(thread);
+                var lastreplyDate = this.getReplyDate(thread);
 
-      getInitials: function(firstName, lastName) {
-        return firstName.charAt(0) + lastName.charAt(0);
-      },
+                if (lastreplyDate != '' && lastreplyAuthor != '') {
+                    return lastreplyAuthor + " on " + lastreplyDate;
+                } else {
+                    return "No replies yet. Be the first one to reply!!";
+                }
+            },
 
-      goToDetail: function() {
-        this.fire('rt-changed',{route:'/dashboard/community/' + this.thread._id});
-      },
+            getAuthorFullName: function (authorFirstname, authorLastname) {
+                return authorFirstname + ' ' + authorLastname;
+            },
 
-      getLastReplyDetails: function(thread) {
-        
-        var lastreplyAuthor = this.getReplyAuthor(thread);
-        var lastreplyDate = this.getReplyDate(thread);
+            getReplyDate: function (thread) {
+                if (thread.replies.length > 0) {
+                    return this.format(thread.replies[thread.replies.length - 1].createdAt);
+                } else {
+                    return 'No replies yet. Be the first one to reply!!';
+                }
+            },
 
-        if (lastreplyDate!='' && lastreplyAuthor!='') {
-          return lastreplyAuthor + " on " + lastreplyDate;
-        } else{
-          return "No replies yet. Be the first one to reply!!";
-        }
-      },
+            getReplyAuthor: function (thread) {
+                if (thread.replies.length > 0) {
+                    var reply = thread.replies[thread.replies.length - 1];
+                    return reply.user.firstName + " " + reply.user.lastName;
+                } else {
+                    return '';
+                }
+            },
 
-      getAuthorFullName: function(authorFirstname, authorLastname){
-        return authorFirstname+' '+ authorLastname;
-      },
+            hasBacktest: function (thread) {
+                if (thread.backtestId) {
+                    return true;
+                }
 
-      getReplyDate: function(thread) {
-        if (thread.replies.length > 0) {
-          return this.format(thread.replies[thread.replies.length-1].createdAt);
-        } else {
-          return '';
-        }
-      },
+                for (i = 0; i < thread.replies.length; i++) {
+                    if (thread.replies[i].backtestId) {
+                        return true;
+                    }
+                }
 
-      getReplyAuthor: function(thread) {
-         if (thread.replies.length > 0) {
-          var reply = thread.replies[thread.replies.length-1];
-          return reply.user.firstName +" "+ reply.user.lastName;
-        } else {
-          return '';
-        }
-      },
+                return false;
+            },
 
-      hasBacktest: function(thread) {
-        if (thread.backtestId){
-          return true;
-        }
+            format: function (date) {
+                var options = {
+                    weekday: "long", year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"
+                };
 
-        for(i=0;i<thread.replies.length;i++){
-          if(thread.replies[i].backtestId){
-            return true;
-          }
-        }
+                return new Date(date).toLocaleTimeString("en-us", options);
+            },
 
-        return false;
-      },
+            hasReplies: function (thread) {
+                return thread.replies && thread.replies.length > 0;
+            },
 
-      format: function(date) {
-        var options = {
-            weekday: "long", year: "numeric", month: "short",
-            day: "numeric", hour: "2-digit", minute: "2-digit"
-        };
 
-        return new Date(date).toLocaleTimeString("en-us", options);
-      },
-
-      hasReplies: function(thread) {
-        return thread.replies && thread.replies.length > 0;
-      },
-    
-
-    });
-  </script>
+        });
+    </script>
 
 </dom-module>
 

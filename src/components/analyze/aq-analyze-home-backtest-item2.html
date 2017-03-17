@@ -177,14 +177,20 @@
                     <ul>
                         <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
                             <li>
-                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
-                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                                <aq-backtest-metric-item 
+                                	metric-name="{{item.metricName}}"
+                                 	metric-value="{{item.metricValue}}">
+                             	</aq-backtest-metric-item>
                             </li>
                         </template>
-                        <template is='dom-repeat' items="{{processedBacktest.metrics2}}">
+
+                        <template is='dom-repeat' 
+                    			items="{{processedBacktest.metrics2}}">
                             <li>
-                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
-                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                                <aq-backtest-metric-item 
+                            		metric-name="{{item.metricName}}"
+                                 	metric-value="{{item.metricValue}}">
+                             	</aq-backtest-metric-item>
                             </li>
                         </template>
                     </ul>
@@ -192,6 +198,7 @@
                 </div>
                 <div class="bar"></div>
             </iron-collapse>
+            
             <paper-icon-button noink id="expand" on-click="toggle" icon="expand-more"></paper-icon-button>
             <div class="side-bar"></div>
         </div>
@@ -353,54 +360,11 @@
                         }]);
                 }
 
-
-                //this.set('metrics1', metricsArray1);
-                //this.set('metrics2', metricsArray2);
-
-                //this.set('processedBacktest.startDate', this.formatDate(this.backtest.settings.startDate));
                 this.set('processedBacktest.startDate', date.formatDate(this.backtest.settings.startDate));
-                //this.set('processedBacktest.endDate', this.formatDate(this.backtest.settings.endDate));
                 this.set('processedBacktest.endDate', date.formatDate(this.backtest.settings.endDate));
                 this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
-                //this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
                 this.set('processedBacktest.createdAt', date.formatDateTime(this.backtest.createdAt));
 
-            },
-
-            formatDate: function (date) {
-
-                var today = new Date(date);
-                today.setDate(today.getDate());
-                var dd = today.getDate();
-                var mm = today.getMonth() + 1; //January is 0!
-                var yyyy = today.getFullYear();
-
-                if (dd < 10) {
-                    dd = '0' + dd
-                }
-
-                if (mm < 10) {
-                    mm = '0' + mm
-                }
-
-                today = dd + '/' + mm + '/' + yyyy;
-                return today;
-            },
-
-            formatDateTime: function (date) {
-                date = new Date(date);
-                var hours = date.getHours();
-                var minutes = date.getMinutes();
-                var ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                var strTime = hours + ':' + minutes + ' ' + ampm;
-                var mm = date.getMonth() + 1;
-                mm = mm > 9 ? mm : '0' + mm.toString();
-                var dd = date.getDate();
-                dd = dd > 9 ? dd : '0' + dd.toString();
-                return dd + "/" + mm + "/" + date.getFullYear() + "  " + strTime;
             },
 
             isBacktestActive: function (backtest) {

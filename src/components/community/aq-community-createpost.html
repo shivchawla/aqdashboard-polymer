@@ -1,4 +1,3 @@
-
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
@@ -14,182 +13,380 @@
 
 <link rel='import' href='../common/aq-dropdown.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../common/aq-tag-element.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <dom-module id="aq-community-createpost">
-    <style  include="iron-flex iron-flex-alignment iron-positioning"></style>
-    
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+
     <style>
-      #container {
-          width:90%;
-          margin:0 auto;
-          color:#24293d; 
-          margin-top:10px;  
-      }
-
-      .goBackButton {
-        margin-left: -7px;
-        margin-bottom: 10px;
-      }
-   
-      input {
-        height: 42px;
-        font-size: 18px;
-        margin-bottom: 5px;
-        color:#24293d;
-        border:1px solid #e5e5e5;
-        padding-left: 10px;
-      }
-
-      input:focus {
-        outline: none;
-      }
-
-      aq-dropdown {
-        --dropdown-width:220px;
-        --dropdown-height:46px;
-        --dropdown-button-color: teal;
-        --dropdown-background-color: #f2fbf7;
-        --dropdown-color: teal;
-        
-        --dropdown-item-border: 1px solid #cc6666;
-
-      }
-
-      p {         
-          font-size: 28px;
-          margin-bottom: 10px;
-          margin-top:0px;
+        :host {
+            width: 100%;
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            background-color: #fff;
         }
 
-      paper-button {
-        border: 1px solid teal;#24293d;
-        height:30px;
-        font-size: 13px;
-        color: teal; --white;
-        background-color: white;
-        border-radius: 5px;
+        h1, h2, h3, h4, h5 {
+            padding: 0;
+            margin: 0;
+        }
 
-      }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            color: #24293d;
+            background-color: #fff;
+        }
 
-      #attachButton {
-        position:absolute;
-        top:195px;
-        right:6%;
-        z-index: 2;
-        background-color: white !important;
-        color: teal !important;
-        border: none !important;
-      }
+        .goBackButton {
+            margin-left: -7px;
+            margin-bottom: 10px;
+        }
 
-      #attachButton{
-        border:none !important;
+        input {
+            height: 35px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #24293d;
+            /*border: 1px solid #e5e5e5;*/
+            padding-left: 10px;
+            background-color: #f2f2f2;
+            outline: none;
+            border: none;
 
-      }
+        }
 
-      #buttons {
-        margin-bottom: 10px;
-      }
+        aq-dropdown {
+            --dropdown-width: 220px;
+            --dropdown-height: 46px;
+            --dropdown-button-color: teal;
+            --dropdown-background-color: #f2fbf7;
+            --dropdown-color: teal;
 
-      #errorMessage {
-        color:#cc6666;
-      }
+            --dropdown-item-border: 1px solid #cc6666;
 
-      #attachedMessageDiv {
-        display: none;
-        color:#cc6666;
-        font-size:14px;
-      }
+        }
 
-      #removeIcon {
-        width:32px;
-        height:32px;
-      }
+        p {
+            font-size: 28px;
+            margin-bottom: 10px;
+            margin-top: 0px;
+        }
 
+        paper-button {
+            border: 1px solid teal;
+            #24293d;
+            height: 30px;
+            font-size: 13px;
+            color: teal;
+            --white;
+            background-color: white;
+            border-radius: 5px;
 
+        }
+
+        #attachButton {
+            /*z-index: 2;*/
+            background-color: white !important;
+            color: teal !important;
+            border: none !important;
+        }
+
+        #attachButton {
+            border: none !important;
+
+        }
+
+        #buttons {
+            margin-bottom: 10px;
+        }
+
+        #errorMessage {
+            color: #cc6666;
+        }
+
+        #attachedMessageDiv {
+            display: none;
+            color: #727272;
+            font-size: 14px;
+            padding: 0px 10px;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+        }
+
+        #removeIcon {
+            width: 32px;
+            height: 32px;
+        }
+
+        paper-card {
+            width: 100%;
+        }
+
+        .header-container {
+            background-color: #fff;
+            height: 55px;
+        }
+
+        .header-container h1 {
+            font-size: 0.9em;
+            color: #cc4444;
+            margin-left: 0px;
+            font-weight: 400;
+        }
+
+        .secondary-container {
+            padding: 20px 20px;
+        }
+
+        .title-text-container {
+            /*margin-top: 20px;*/
+            width: 100%;
+        }
+
+        #tagsInput {
+            width: 100%;
+            /*z-index: 1;*/
+            padding: 0;
+            border: none;
+            outline: none;
+            background: none;
+            margin: 0;
+            max-height: 35px;
+        }
+
+        .left-container {
+            width: 60%;
+        }
+
+        .right-container {
+            width: 35%;
+            margin-left: 35px;
+            position: relative;
+            top: 5px;
+        }
+
+        .tags-container {
+            list-style: none;
+            /*z-index: 20;*/
+            display: inline-block;
+            height: 35px;
+            max-height: 35px;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            overflow: hidden;
+            overflow-y: scroll;
+            left: 37%;
+
+        }
+
+        .tags-container li {
+            display: inline;
+        }
+
+        .tags-header {
+            font-size: 0.8em;
+            color: #727272;
+        }
+
+        tag-element {
+            margin-top: 5px;
+            margin-bottom: 6px;
+            --tag-element-background-color: #D7D7D7;
+        }
+
+        iron-icon {
+            width: 13px;
+            height: 13px;
+        }
+
+        .middle-container {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        paper-radio-button {
+            padding: 0;
+            /*padding-bottom: 5px;*/
+            --paper-radio-button-checked-color: #cc4444;
+            --paper-radio-button-size: 14px;
+        }
+
+        paper-radio-button span {
+            font-size: 14px;
+        }
+
+        paper-radio-group {
+            margin-left: 10px;
+        }
+
+        .attachment-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        paper-button {
+            border: none;
+            color: #444;
+        }
+
+        #previewBtn {
+            color: teal;
+            font-weight: 700;
+        }
+
+        #submitBtn {
+            font-weight: 700;
+            color: #cc4444;
+        }
+
+        #cancelBtn {
+            font-weight: 700;
+        }
+
+        paper-toast {
+            --paper-toast-background-color: #cc4444;
+            font-weight: 700;
+
+        }
+
+        #backIcon {
+            color: #cc4444;
+            transform: scale(1.6, 1.6);
+        }
+
+        .tagsInputContainer {
+            height: 35px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #24293d;
+            position: relative;
+            background-color: #f2f2f2;
+            padding-left: 10px;
+
+        }
     </style>
 
 
     <template>
+        <div class="container layout vertical">
+            <aq-check-authentication id='authItem'></aq-check-authentication>
+            <app-location route="{{route}}" quer-params="{{queryParams}}" use-hash-as-path></app-location>
 
-        <aq-check-authentication id='authItem'></aq-check-authentication>
-        <app-location route="{{route}}" quer-params="{{queryParams}}" use-hash-as-path></app-location>
+            <app-route
+                    route="{{route}}"
+                    pattern="/dashboard/community/create"
+                    active="{{active}}"
+                    query-params="{{queryParams}}">
+            </app-route>
 
-        <app-route
-            route="{{route}}"
-            pattern="/dashboard/community/create"
-            active="{{active}}"
-            query-params="{{queryParams}}">
-        </app-route>
+            <iron-ajax
+                    url=""
+                    body="{{threadData}}"
+                    method='POST'
+                    id='postThreadQuery'
+                    headers='{{header}}'
+                    handle-as="json"
+                    on-response="onPostThreadResponse"
+                    on-error="onPostThreadError"
+                    debounce-duration="300">
+            </iron-ajax>
 
-        <iron-ajax 
-            url="" 
-            body="{{threadData}}" 
-            method='POST' 
-            id='postThreadQuery' 
-            headers='{{header}}' 
-            handle-as="json" 
-            on-response="onPostThreadResponse" 
-            on-error="onPostThreadError" 
-            debounce-duration="300">
-        </iron-ajax>
+            <iron-ajax
+                    url="[[computeFollowPostUrl(newThreadId)]]"
+                    method="POST"
+                    id='followPostQuery'
+                    handle-as="json"
+                    headers='{{header}}'
+                    debounce-duration="300">
+            </iron-ajax>
 
-        <iron-ajax
-          url="[[computeFollowPostUrl(newThreadId)]]"
-          method="POST"
-          id='followPostQuery'
-          handle-as="json"
-          headers='{{header}}'
-          debounce-duration="300">
-        </iron-ajax>
-        
 
             <template is='dom-if' if="[[preview]]">
-              <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>  
+                <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>
             </template>
 
             <aq-community-attachbacktest-dialog id='btDialog'>
-            </aq-community-attachbacktest-dialog>  
-           
+            </aq-community-attachbacktest-dialog>
             <template is='dom-if' if="[[!preview]]">
-                <div id='container' class="layout vertical flex">
-                    <div class="goBackButton layout horizontal">
-                    <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="goBack"></paper-icon-button>
-                    <div class="flex"><h4>Back to Community</h4></div>
-                  </div>
-                  
-                    <div class="layout horizontal">
-                      <p class="flex">Create a Post</p>
-                      
-                      <div id="attachedMessageDiv" class="layout horizontal self-end">
-                        <i class="self-end">[[attachedMessage]]</i>
-                        <paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached' icon="aq-icons:remove-circle"></paper-icon-button>
-                      </div>
+                <div class="main-container">
+                    <div style="padding-left: 10px" class="layout horizontal center header-container">
+                        <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
+                                           on-tap="goBack"></paper-icon-button>
+
+                        <h1>Back to Community</h1>
                     </div>
+                    <div class="layout vertical secondary-container">
+                        <div class="title-text-container layout horizontal">
+                            <!--<aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>-->
+                            <input id="topicInput" class="flex" placeholder="Title">
+                        </div>
+                        <div class="layout horizontal middle-container">
+                            <div class="layout vertical left-container">
+                                <div class="tagsInputContainer layout horizontal start-justified">
+                                    <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
+                                           on-keydown="onChange" on-keyup="scrollToBottom">
+                                    <ul id="tagsContainer" class="tags-container">
+                                        <template is="dom-repeat" items="{{tags}}">
+                                            <tag-element label="{{item}}">
+                                                <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
+                                            </tag-element>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="layout horizontal right-container">
+                                <span class="tags-header">Post Type: &nbsp;</span>
+                                <paper-radio-group id="selectedCategory" aria-labelledby="label1"
+                                                   selected="Share your Idea">
+                                    <paper-radio-button noink name="Share your Idea"><span>Idea</span>
+                                    </paper-radio-button>
+                                    <br>
+                                    <paper-radio-button noink name="Questions and Answers"><span>Quesions</span>
+                                    </paper-radio-button>
+                                    <br>
+                                    <paper-radio-button noink disabled name="News and Anoouncements"><span>News/Announcement</span>
+                                    </paper-radio-button>
+                                    <br>
+                                </paper-radio-group>
+                            </div>
+                        </div>
+                        <div class="layout horizontal attachment-container">
+                            <div class="flex"></div>
+                            <template is='dom-if' if='[[messageAttached]]'>
+                                <paper-button style="color:#444;" id='attachButton' raised noink
+                                              on-tap='onAttachRequest'>
+                                    Attach
+                                    <iron-icon icon="aq-icons:attach-file"></iron-icon>
+                                </paper-button>
+                            </template>
+                            <div id="attachedMessageDiv" class="layout horizontal self-end">
+                                <span class="self-end">[[attachedMessage]]</span>
+                                <paper-icon-button id='removeIcon' class="self-end" title="Remove"
+                                                   on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
+                            </div>
+                        </div>
+                        <aq-html-editor id="editor"></aq-html-editor>
 
-                    <paper-button id='attachButton' raised noink on-tap='onAttachRequest'>Attach<iron-icon icon="aq-icons:attach-file"></iron-icon></paper-button>
-                    
-                    <div class="layout horizontal">
-                        <aq-dropdown vertical-offset=46 id="category_dd" options="[[categories]]"></aq-dropdown>
-                        <input id="topicInput" class="flex" label="Topic" placeholder="Heading of the Post">
+                        <div id='buttons' class="layout horizontal">
+                            <paper-button id="previewBtn" noink on-tap='onPreview'>Preview</paper-button>
+                            <div class="flex"></div>
+                            <paper-button id="submitBtn" noink on-tap="postThread">Submit</paper-button>
+                        </div>
                     </div>
-                    
-                    <!--<aq-markdown-editor id="editor" placeholder="Describe in detail"></aq-markdown-editor>-->
-                    <aq-html-editor id="editor"></aq-html-editor>
-                    <div id='buttons' class="layout horizontal">
-                        <div id='errorMessage'><i>[[error]]</i></div>
-                        <div class="flex"></div>
-                        <paper-button raised noink on-tap='onPreview'>Preview</paper-button>
-
-                        <paper-button raised noink on-tap="postThread">Submit</paper-button>
-                    </div>
-
-                </div>
-
+                </div> <!-- Main Container Ends -->
+                <paper-toast text="[[error]]"></paper-toast>
             </template>
-        
+        </div>
     </template>
     <script>
-      
+
 
         Polymer({
             is: 'aq-community-createpost',
@@ -197,168 +394,192 @@
             properties: {
                 threadData: Object,
 
-                categories :{
-                  type:Array,
-                  value: [{value:"Share your Idea",index:0},{value:"Questions and Answers",index:1}],
+                categories: {
+                    type: Array,
+                    value: [{value: "Share your Idea", index: 0}, {value: "Questions and Answers", index: 1}],
                 },
 
-                preview:{
-                  type:Boolean,
-                  value:false,
+                preview: {
+                    type: Boolean,
+                    value: false,
                 },
 
-                error:String,
+                error: String,
 
-                header:Object,
+                header: Object,
 
                 attachedBacktestId: {
-                  type:String,
-                  observer:'_backtestIdChanged',
-                }, 
+                    type: String,
+                    observer: '_backtestIdChanged',
+                },
 
                 attachedMessage: String,
-
+                messageAttached: {
+                    type:Boolean,
+                    value:false
+                },
                 share: String,
 
                 newThreadId: String,
 
-                active:Boolean,
-                queryParams:Object,
+                active: Boolean,
+                queryParams: Object,
+                tags: {
+                    type: Array,
+                    value: []
+                }
 
             },
-
-            listeners :{
-              'edit-clicked':'onEdit',
-              'submit-clicked':'postThread',
-              'backtest-attached':'onBacktestAttached',
+            listeners: {
+                'edit-clicked': 'onEdit',
+                'submit-clicked': 'postThread',
+                'backtest-attached': 'onBacktestAttached',
+                'paper-radio-group-changed': 'onCategoryChanged'
             },
 
-            observers:['_activeChanged(active, queryParams)'],
-
-            computeFollowPostUrl: function(threadId) {
-              var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-              return APIEndPoint+'/thread/'+threadId+'/follow';
+            observers: ['_activeChanged(active, queryParams)'],
+            computeFollowPostUrl: function (threadId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/thread/' + threadId + '/follow';
             },
 
-            postThread: function() {
+            postThread: function () {
                 var x = this.processInput();
-                
-                if(x & this.$.authItem.checkHasToken()) {
-                  this.header = this.$.authItem.getHeader();
-                  var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                  this.$.postThreadQuery.url = APIEndPoint+'/thread';
-                  this.$.postThreadQuery.generateRequest();
+
+                if (x & this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.postThreadQuery.url = APIEndPoint + '/thread';
+                    this.$.postThreadQuery.generateRequest();
                 }
             },
-            
-            onPostThreadResponse: function(data) {
+
+            onPostThreadResponse: function (data) {
                 this.newThreadId = data.detail.response._id;
-                
-                if(this.$.authItem.checkHasToken()) {
-                  this.header = this.$.authItem.getHeader(); 
-                  this.$.followPostQuery.generateRequest();
+
+                if (this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.followPostQuery.generateRequest();
                 }
 
                 this.resetView();
+<<<<<<< HEAD
                 this.fire('rt-changed', {route:"/dashboard/community/"+this.newThreadId});
+=======
+                this.fire('rt-changed', {route: "/dashboard/community/topics/" + this.newThreadId});
+>>>>>>> sauravB
 
-                this.fire('iron-signal', {name:'post-added'});
+                this.fire('iron-signal', {name: 'post-added'});
             },
 
-            onPostThreadError: function(data) {
-            },
-                       
-            onAttachRequest: function() {
-                this.$$('#btDialog').open(); 
+            onPostThreadError: function (data) {
             },
 
-            onBacktestAttached: function(e) {
+            onAttachRequest: function () {
+                this.$$('#btDialog').open();
+            },
+
+            onBacktestAttached: function (e) {
                 this.attachedBacktestId = e.detail.id;
                 //this.handleAttachedBacktest();
             },
 
-            handleAttachedBacktest: function() {
-              if(this.attachedBacktestId && this.attachedBacktestId!="") {
-                  this.attachedMessage = "Attached Backtest ID: "+this.attachedBacktestId;
-                  this.$$('#attachedMessageDiv').style.display = 'block';
-              } else {
-                  this.attachedMessage = "";
-                  if(this.$$('#attachedMessageDiv')) {
-                    this.$$('#attachedMessageDiv').style.display = 'none';
-                  }
-              }
-            },
-
-            onRemoveAttached: function() {
-              this.attachedBacktestId = "";
-            },
-
-            goBack: function() {
-                this.fire('rt-changed',{route: '/dashboard/community'});
-            },
-
-            processInput: function() {
-              const markdownText = this.$$('#editor').getContent();
-              const category = this.$$('#category_dd').getSelectedValue();
-             
-              const title = this.$$('#topicInput').value;
-              var x = localStorage.getItem('my-app-storage');
-              var user = JSON.parse(x).user;
-
-              var threadData = {
-                  "category": category,
-                  "title": title,
-                  "markdownText": markdownText,
-                  "user":{"firstName":user.firstName,"lastName":user.lastName},
-                  "updatedAt": new Date(),
-              };
-
-              // Send to backedn only if available. Backend can't handle empty backtestids 
-              if(this.attachedBacktestId && this.attachedBacktestId!="") {
-                  threadData["backtestId"] = this.attachedBacktestId;
-              }
-
-              if(threadData["title"]!="" && 
-                  threadData["category"]!="" &&
-                  threadData["markdownText"]!=""
-                ) {
-                  
-                  this.error = "";
-                  this.threadData = threadData;
-                  return true;
-             
-              } else {
-                this.error = "No preview available for empty post. Please create a valid post and a header.";
-                return false;
-              }
-            },
-
-            onPreview: function() { 
-              this.preview = this.processInput();   
-            },
-
-            onEdit: function() {
-              this.threadData = {};
-              this.preview = false;
-            },
-
-            _activeChanged: function(active, queryParams) {
-
-                if(active) {
-                  if(!this.$.authItem.checkHasToken()) {
-                      this.fire('rt-changed', {route:'/user/signin'});
-                      return;
-                  }
+            handleAttachedBacktest: function () {
+                if (this.attachedBacktestId && this.attachedBacktestId != "") {
+                    this.attachedMessage = "Attached Backtest ID: " + this.attachedBacktestId;
+                    this.$$('#attachedMessageDiv').style.display = 'block';
+                    this.messageAttached = false;
+                } else {
+                    this.attachedMessage = "";
+                    if (this.$$('#attachedMessageDiv')) {
+                        this.$$('#attachedMessageDiv').style.display = 'none';
+                        this.messageAttached = true;
+                    }
                 }
-                
+            },
+
+            onRemoveAttached: function () {
+                this.attachedBacktestId = "";
+                this.messageAttached = false;
+            },
+
+            goBack: function () {
+                this.fire('rt-changed', {route: '/dashboard/community'});
+            },
+
+            processInput: function () {
+                try {
+                    const markdownText = this.$$('#editor').getContent();
+
+                    const category = this.$$('#selectedCategory').selected;
+
+                    const title = this.$$('#topicInput').value;
+                    var x = localStorage.getItem('my-app-storage');
+                    var user = JSON.parse(x).user;
+
+                    var threadData = {
+                        "category": category,
+                        "title": title,
+                        "markdownText": markdownText,
+                        "user": {"firstName": user.firstName, "lastName": user.lastName},
+                        "updatedAt": new Date(),
+                        "followers": user.followers,
+                        "tags": this.tags
+                    };
+
+
+                    // Send to backedn only if available. Backend can't handle empty backtestids
+                    if (this.attachedBacktestId && this.attachedBacktestId != "") {
+                        threadData["backtestId"] = this.attachedBacktestId;
+                    }
+
+                    if (threadData["title"] != "" &&
+                            threadData["category"] != "" &&
+                            threadData["markdownText"] != ""
+                    ) {
+
+                        this.error = "";
+                        this.threadData = threadData;
+                        return true;
+
+                    } else {
+                        this.error = "No preview available for empty post. Please create a valid post and a header.";
+                        this.$$('paper-toast').open();
+                        return false;
+                    }
+                } catch (err) {
+                    //console.log(err);
+                    this.error = "No preview available for empty post. Please create a valid post and a header.";
+                    this.$$('paper-toast').open();
+                }
+            },
+
+            onPreview: function () {
+                this.preview = this.processInput();
+            },
+
+            onEdit: function () {
+                this.threadData = {};
+                this.preview = false;
+            },
+
+            _activeChanged: function (active, queryParams) {
+
+                if (active) {
+                    if (!this.$.authItem.checkHasToken()) {
+                        this.fire('rt-changed', {route: '/user/signin'});
+                        return;
+                    }
+                }
+
                 this.resetView();
 
                 if (active && queryParams.backtestId) {
-                   this.attachedBacktestId = queryParams.backtestId;
-                } 
+                    this.attachedBacktestId = queryParams.backtestId;
+                }
             },
 
-            resetView: function() {
+            resetView: function () {
                 this.preview = false;
                 this.attachedBacktestId = "";
                 this.attachedMessage = "";
@@ -369,14 +590,41 @@
                     this.$$('#editor').focus();
                 }
 
-                if (this.$$('#topicInput')){
-                    this.$$('#topicInput').value="";
+                if (this.$$('#topicInput')) {
+                    this.$$('#topicInput').value = "";
                     this.$$('#topicInput').focus();
                 }
             },
 
-            _backtestIdChanged: function(nId, oId) {
+            _backtestIdChanged: function (nId, oId) {
                 this.async(this.handleAttachedBacktest, 500);
+            },
+            onCategoryChanged: function () {
+                console.log(this.$$('#selectedCategory').selected);
+            },
+            onChange: function (e) {
+                if (e.keyCode == 13 && e.target.value.length >= 1) {
+                    this.push('tags', e.target.value);
+                    console.log(this.tags);
+                    if (this.$$('#tagsInput')) {
+                        this.$$('#tagsInput').value = "";
+                    }
+                }
+            },
+            removeTag: function (e) {
+                var itemName = e.model.item;
+                var index = this.tags.indexOf(itemName);
+                this.splice('tags', index, 1);
+                console.log(this.tags);
+            },
+            scrollToBottom: function () {
+//                if (e.keyCode == 13) {
+                var element = document.getElementById("tagsContainer");
+                if (element) {
+                    console.log("Element Found");
+                    element.scrollTop = element.scrollHeight;
+                }
+//                }
             }
 
         });

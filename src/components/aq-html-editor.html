@@ -3,16 +3,23 @@
     <style>
         polymer-quill.full {
             --polymer-quill-editor-max-height: 300px;
-            --polymer-quill-editor-min-height: 250px;
+            --polymer-quill-editor-min-height: 150px;
+        }
+        polymer-quill{
+            box-shadow: var(--aq-html-editor-box-shadow,0 0px 0px rgba(0,0,0,0.2));
+            border-radius: 4px;
+            border:var(--aq-html-editor-border,1px solid #e7e7e7);
         }
     </style>
     <template>
-        <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="standard" content="">
+        <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="" content="">
         </polymer-quill>
     </template>
     <script>
         Polymer({
             is: "aq-html-editor",
+            ready:function () {
+            },
             getContent: function () {
                 return this.$.poly_quill_content.getHTML();
             },

@@ -154,7 +154,6 @@
                 if (e.keyCode === 27) {
                     this.$$('#searchbox').value = "";
                     this.$$('#searchbox').blur();
-                    //this.blur();
                 } else if (e.keyCode === 13) {
                     this.debounce('search', this.search, 50);
                 }
@@ -162,7 +161,6 @@
 
             blur: function () {
                 if (this.$$('#searchbox').value == "") {
-                    //this.$$('#search').style.display = 'none';
                     this.$$('#menu-icons').style.display = 'inline';
                     this.debounce('search', this.search, 50);
                 }

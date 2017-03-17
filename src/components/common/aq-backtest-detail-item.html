@@ -209,7 +209,6 @@
         <paper-card class="flex detail layout vertical paper_body" elevation="{{elevation}}">
             <div class='card-actions'>
                 <div id='detail-header-bottom' class="layout horizontal flex">
-                    <!--<span class="self-center">Risk Metrics</span>-->
                     <div class="flex"></div>
                 </div>
                 <div class="middle-container">
@@ -226,16 +225,16 @@
                     <ul>
                         <template is="dom-repeat" items="{{metrics}}">
                             <li>
-                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
-                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                                <aq-backtest-metric-item 
+                                	metric-name="{{item.metricName}}"
+                                 	metric-value="{{item.metricValue}}">
+                             	</aq-backtest-metric-item>
                             </li>
                         </template>
                     </ul>
                 </div>
 
                 <div id='detail-header' class="layout horizontal">
-                    <!--<span class="self-center">Strategy vs Benchmark Performance</span>-->
-
 
                     <template is='dom-if' if='{{active}}'>
                         <div class="layout vertical" id='progressDiv'>
@@ -267,9 +266,9 @@
 
                     <paper-tabs noink selected="{{graphType}}">
                         <paper-tab>Cumulative Return</paper-tab>
-                        <!--<template is='dom-if' if='[[!active]]'>-->
+                        <template is='dom-if' if='[[!active]]'>
                             <paper-tab>Monthly Returns</paper-tab>
-                        <!--</template>-->
+                        </template>
                     </paper-tabs>
 
                 </div>
