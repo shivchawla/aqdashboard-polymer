@@ -1,0 +1,69 @@
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/places-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/image-icons.html">
+<dom-module id="aq-sub-toolbar">
+    <template>
+        <link rel="stylesheet" href="../common/sub-toolbar.css">
+        <style is="custom-style">
+            .toolbar {
+                height: 42px;
+                width: 100%;
+                margin-bottom: 20px;
+                margin-top:0px;
+                background-color: #e9e9e9;
+                box-shadow:0 4px 8px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                position: fixed;
+                /*z-index: 20;*/
+            }
+
+            ::content #menu-icons {
+                position:fixed;
+                right:20px;
+            }
+
+            ::content .iconButton {
+                padding:5px;
+                width:35px;
+                margin-right: 5px;
+                margin-left: 5px;
+                color: #cc6666;;
+                --paper-icon-button-disabled:{
+                    color: #cacaca !important;
+                };
+                --paper-icon-button-disabled-text:grey;
+            }
+
+            ::content .iconButton:active {
+                padding: 8px;
+            }
+            ::content .checkbox-all{
+                position: relative;
+                margin-left:30px;
+            }
+            ::content .strategy-header{
+                font-size: 14px;
+                margin-left: 10px;
+            }
+        </style>
+        <div class="toolbar">
+            <content id="content"></content>
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+            is:"aq-sub-toolbar",
+
+        })
+    </script>
+</dom-module>

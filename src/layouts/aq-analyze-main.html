@@ -11,81 +11,92 @@
 <link rel="import" href="../components/analyze/aq-analyze-detail.html">
 
 <dom-module id="aq-analyze-main">
-  <style  include="iron-flex iron-flex-alignment iron-positioning">
-  </style>
-   <style>
-    #panel {
-      height:100%;
-    }
-  </style>
-  <template>
-
-    <app-location route="{{route}}" use-hash-as-path></app-location>
-
-    <app-route
-        route="{{route}}"
-        pattern="/dashboard/analyze/:strategyId/:backtestId"
-        data="{{detailData}}" 
-        active="{{detailActive}}">
-    </app-route>
-
-    <app-route
-        route="{{route}}"
-        pattern="/dashboard/analyze/:strategyId"
-        data="{{homeData}}" 
-        active="{{homeActive}}">
-    </app-route>
-
-    <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive)]]">
-        <template is="iron-lazy-page" page="home">
-            <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
-        </template>
-
-        <template is="iron-lazy-page" page="detail">
-            <aq-analyze-detail backtest-id='[[detailData.backtestId]]' strategy-id='[[detailData.strategyId]]'></aq-analyze-detail> 
-        </template>  
-
-    </iron-lazy-pages>
-  </template>
-
-  <script>
-    Polymer ({
-      is: 'aq-analyze-main', 
-
-      properties : {
-        hasViews: {
-          type: Boolean,
-          value: true,  
-        },
-
-        narrow:{
-          type:Boolean,
-        },
-
-        showmenu:{
-          type:Boolean,
-          value:false,
-        },
-
-        homeActive: Boolean,
-        detailActive: Boolean,
-      },
-
-    
-      computeAnalyzePage: function(homeActive, detailActive) {
-
-        var x = "";
-        if (detailActive){
-            x = "detail";
-        } else {
-            x = "home";
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+    <style>
+        #panel {
+            height: 100%;
         }
+    </style>
+    <template>
 
-        return x;
-      
-      },
+        <app-location route="{{route}}" use-hash-as-path></app-location>
 
-    });
-  </script>
+        <app-route
+                route="{{route}}"
+                pattern="/dashboard/analyze/:strategyId/:backtestId"
+                data="{{detailData}}"
+                active="{{detailActive}}">
+        </app-route>
+
+        <app-route
+                route="{{route}}"
+                pattern="/dashboard/analyze/:strategyId"
+                data="{{homeData}}"
+                active="{{homeActive}}">
+        </app-route>
+
+        <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive)]]">
+            <template is="iron-lazy-page" page="home">
+                <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
+            </template>
+
+            <template is="iron-lazy-page" page="detail">
+                <aq-analyze-detail backtest-id='[[detailData.backtestId]]'
+                                   strategy-id='[[detailData.strategyId]]' index="{{index}}"></aq-analyze-detail>
+            </template>
+
+        </iron-lazy-pages>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'aq-analyze-main',
+
+            properties: {
+                hasViews: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                narrow: {
+                    type: Boolean,
+                },
+
+                showmenu: {
+                    type: Boolean,
+                    value: false,
+                },
+                index:{
+                    type:String
+                },
+
+                homeActive: Boolean,
+                detailActive: Boolean,
+            },
+            listeners: {
+                'rt-changed':'handleRtChange'
+            },
+            computeAnalyzePage: function (homeActive, detailActive) {
+
+                var x = "";
+                if (detailActive) {
+                    x = "detail";
+                } else {
+                    x = "home";
+                }
+
+                return x;
+
+            },
+            handleRtChange: function (e) {
+                if(e.detail.index !== undefined) {
+                    //alert("Route Changed Clicked, index is " + e.detail.index);
+                    this.index = e.detail.index + 1;
+                }
+            }
+
+        });
+    </script>
 
 </dom-module>

@@ -1,380 +1,443 @@
-
-<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
-<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
-<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
-<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
-
-
-<link rel='import' href='../common/aq-backtest-metric-item.html'>
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
+<link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../common/aq-backtest-metric-item.html">
+<dom-module id='aq-analyze-home-backtest-item2'>
+    <template>
+        <style>
+            :host {
+                font-family: 'Lato', sans-serif;
+                font-size: 16px;
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+                display: inline-block;
+                width: 100%;
+                border-radius: 2px;
+                color: #646464;
+                margin-bottom: 30px;
+            }
 
-<dom-module id='aq-analyze-home-backtest-item2'>	
-	<style  include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
+            paper-checkbox {
+                --paper-checkbox-checked-color: #cc6666;
 
-	<style>
-		paper-card {
-			margin-bottom: 13px;
-			height:240px;
-			min-width: 500px;
-			width:100%;
-			--border-top:2px solid teal !important;
-			border:1px solid teal;
-			margin-right: 5px;
-			background-color: #f2fbf7;
-		}
-		
-		a {
-			cursor: pointer;
-		}
+            }
 
-		.metric {
-			margin-right: 10px;
-			margin-left:10px;
-			--margin-top: 20px;
-			margin-bottom: 10px;
-			--max-width:200px;
-			font-size:12px;
-			--min-width: 75px;
-		}
+            h1, h2, h3, h4, h5 {
+                margin: 0;
+            }
 
-		paper-card p{
-			width:200px;
-		}
+            .row-container {
+                position: relative;
+                padding: 10px 0;
+                padding-bottom: 35px;
+            }
 
-		paper-checkbox {
-			height:15px;
-			width:15px;
-			size:10px;
-			margin: 5px;
-			padding: 0px;
-			margin-right: 15px;
+            .upper-container {
+                display: flex;
+                flex-direction: row;
+                padding: 5px 20px;
+                position: relative;
+            }
 
-			margin-top:15px;
-			--paper-checkbox-checked-color: #cc6666;;--teal;
-		}
+            ul {
+                list-style: none;
+                padding-left: 0;
+                margin: 0;
+            }
 
-	 	#content :hover{
-			--color:teal;
-			--z-index:20;
-		}		
+            .middle-container {
+                padding-top: 10px;
+            }
 
-		.mdcontainer {
-			margin-left:10px;
-			margin-right:10px;
-			--margin-top:5px;
-			margin-bottom:8px;
-			height:100px;
-		}
-	
-		aq-backtest-metric-item {
-			margin-top: 8px;
-			--margin-bottom: 15px;
-			min-width: 100px;
-			height: 50px;
-			margin-right: 5px;
-			margin-left: 5px;
-			--font-size-metric:13px;
-			--font-size-metric-value:16px;
+            .middle-container ul {
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+            }
 
-		}
+            li {
+                display: inline-block;
+                margin-right: 20px;
+            }
 
-		#content {
-			height:75px;
-			border-bottom:1px solid teal;
-			background: white !important;
-		}
+            .bar {
+                width: 95%;
+                height: 1px;
+                background-color: #D8D8D8;
+                position: relative;
+                margin: 0 auto;
+                margin-top: 7px;
+            }
 
-		.bold-span {
-			--font-weight: bold;
-			--font-size: 14px;
-		}
+            .lower-container {
+                padding: 0 20px;
+                margin-top: 10px;
+            }
 
-		.container-int {
-			--height:30px;
-		}
+            .lower-container ul {
+                display: flex;
+                justify-content: space-between;
+                margin: 15px 0;
+            }
 
-		paper-icon-button {
-			color:#cc6666;;--teal;
-			opacity: 0.4;
-		}
+            .li-container {
+                text-align: center;
+            }
 
-		paper-icon-button:hover {
-			opacity: 1.0;
-		}
+            .text-label {
+                font-size: 0.8em;
+                font-weight: 300;
+            }
 
-		p strong {
-			font-size:20px;
-		}
+            .text-content {
+                font-weight: 400;
+                font-size: 1em;
+                margin-left: 5px;
+            }
 
-		#createdAt {
-			width:120px !important;
-		}
+            .header-text {
+                color: #474747;
+                font-size: 14px;
+            }
 
-	</style>
+            .side-bar {
+                left: 0;
+                top: 0;
+                width: 5px;
+                height: 100%;
+                background-color: #cc6666;
+                position: absolute;
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
+                transition: all 0.2s ease-in-out;
+                transform-origin: left;
+                transform: scale(0, 1);
+            }
 
-	<template>
+            #expand {
+                transition: all 0.4s ease-in-out 0.3s;
+                right: 5px;
+                position: absolute;
+                margin-right: 5px;
+                bottom: -2px;
+            }
 
-		<paper-card class="self-center flex">
-			<div id='content' class="card-content flex">
-				<div class="container-int layout horizontal">
-					<paper-checkbox noink id='checkbox' on-tap='onCheck'></paper-checkbox>	
-					<p>Backtest: <strong>[[formatIndex(index)]]</strong></p>
-					<div class="flex"></div>
-		          	
-					<template is='dom-if' if="[[detailIcon]]">
-		          		<paper-icon-button  title="Detail" on-tap="onBacktestDetail" icon="vaadin-icons:line-bar-chart"></paper-icon-button>
-		          	</template>
+            .topbar-icon-container {
+                position: absolute;
+                right: 10px;
+                top: -5px;
+            }
 
-		          	<template is='dom-if' if="[[shareIcon]]">
-		          		<paper-icon-button class="icons" title="Share" on-tap="onShare" icon="vaadin-icons:share-square"></paper-icon-button>
-		          	</template>
-					
-				</div>
+            paper-icon-button {
+                color: teal;
+            }
 
-				<div class=" container-int layout horizontal">
-					<div class="layout vertical metric">	
-						<span class="bold-span">[[processedBacktest.startDate]] - [[processedBacktest.endDate]]</span>
-						<span>Date Range</span>		
-					</div>
+            #share-icon {
+                transform: scale(0.9, 0.9);
+            }
 
-					
-					<div class="layout vertical metric">	
-						<span class="bold-span flex">[[processedBacktest.createdAt]]</span>
-						<span>Created</span>					
-					</div>	
+            iron-collapse {
+                --iron-collapse-transition-duration: 100ms;
+            }
+        </style>
+        <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
+        <iron-signals on-iron-signal-select-backtest="selectBacktest"></iron-signals>
+        <div class="row-container">
+            <div class="upper-container">
+                <paper-checkbox on-change="onChange" noink></paper-checkbox>
+                <h1 class="header-text">BackTest [[formatIndex(index)]]</h1>
+                <div class="topbar-icon-container">
+                    <paper-icon-button id="share-icon" on-tap="onShare" icon="social:share"></paper-icon-button>
+                    <paper-icon-button id="trending-icon" on-tap="onBacktestDetail"
+                                       icon="trending-up"></paper-icon-button>
+                </div>
+            </div>
+            <div class="middle-container">
+                <ul class="upper-list">
+                    <li class="text-label">Created: <span class="text-content">[[processedBacktest.createdAt]]</span>
+                    </li>
+                    <li class="text-label">Date Range: <span class="text-content">[[processedBacktest.startDate]] - [[processedBacktest.endDate]]</span>
+                    </li>
+                    <li class="text-label">Running Time:<span class="text-content">52s</span></li>
+                    <li class="text-label">Status:<span class="text-content">[[processedBacktest.status]]</span></li>
+                    <li class="text-label">Information Ratio:<span class="text-content">20.5%</span></li>
+                </ul>
+                <div class="bar"></div>
+            </div>
+            <iron-collapse>
+                <div class="lower-container">
+                    <ul>
+                        <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
+                            <li>
+                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
+                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                            </li>
+                        </template>
+                        <template is='dom-repeat' items="{{processedBacktest.metrics2}}">
+                            <li>
+                                <aq-backtest-metric-item metric-name="{{item.metricName}}"
+                                                         metric-value="{{item.metricValue}}"></aq-backtest-metric-item>
+                            </li>
+                        </template>
+                    </ul>
 
-					<div class="layout vertical metric flex">	
-						<span class="bold-span">[[processedBacktest.status]]</span>
-						<span>Status</span>		
-					</div>
+                </div>
+                <div class="bar"></div>
+            </iron-collapse>
+            <paper-icon-button noink id="expand" on-click="toggle" icon="expand-more"></paper-icon-button>
+            <div class="side-bar"></div>
+        </div>
 
-					<div class="layout vertical metric flex">	
-						<span class="bold-span">52s</span>
-						<span>Time</span>		
-					</div>
+    </template>
+    <script>
+        Polymer({
+            is: 'aq-analyze-home-backtest-item2',
+            expand: {
+                type: Boolean,
+                value: true
+            },
+            properties: {
+                backtest: {
+                    type: Object,
+                },
 
-				</div>
-			</div>
+                detailActive: {
+                    type: Boolean,
+                    value: false,
+                },
 
-			<div class="card-actions">
-				<div class="self-center wrap flex_container layout horizontal">
+                detailIcon: {
+                    type: Boolean,
+                    value: false,
+                },
 
-					<template is='dom-repeat' items="{{processedBacktest.metrics1}}">
-						<aq-backtest-metric-item class="flex width_tab" 	metric-name="[[item.metricName]]" 
-							metric-value="[[item.metricValue]]"
-							metric-desc="[[item.metricDesc]]">
-						</aq-backtest-metric-item>
-					</template>
-							
-				</div>
+                shareIcon: {
+                    type: Boolean,
+                    value: false,
+                },
 
-				<div class="self-center wrap flex_container layout horizontal">
-					<template is='dom-repeat' items="{{processedBacktest.metrics2}}">
-						<aq-backtest-metric-item class="flex width_tab" 	metric-name="[[item.metricName]]" 
-							metric-value="[[item.metricValue]]"
-							metric-desc="[[item.metricDesc]]">
-						</aq-backtest-metric-item>
-					</template>
-									
-				</div>
+                index: String,
 
-			</div>	
-			
-		</paper-card>
-	</template>
-	<script>
-		Polymer ({
-			is:'aq-analyze-home-backtest-item2',
-			
-			properties:{
-				backtest: {
-					type:Object,
-				},
+                processedBacktest: {
+                    type: Object,
+                    value: {},
+                },
 
-				detailActive:{
-					type:Boolean,
-					value:false,
-				},
+                backtestId: String,
 
-				detailIcon:{
-					type:Boolean,
-					value:false,
-				},
+            },
 
-				shareIcon:{
-					type:Boolean,
-					value:false,
-				},
+            attached: function () {
+                this.backtestId = this.backtest._id;
 
-				index: String,
+            },
 
-				processedBacktest:{
-					type:Object,
-					value:{},
-				},
+            ready: function () {
+                this.sideBar = this.$$('.side-bar');
+                this.expandBtn = this.$.expand;
+                this.ironCollapse = this.$$('iron-collapse');
+                this.paperCheckBox = this.$$('paper-checkbox');
+                this.set('processedBacktest.metrics1', [{
+                    "metricName": "Total Return",
+                    "metricValue": "-",
+                    "metricDescription": "Total Return"
+                },
+                    {
+                        "metricName": "Annual Return",
+                        "metricValue": "-",
+                        "metricDescription": "Annual Return",
+                    },
+                    {
+                        "metricName": "Volatility",
+                        "metricValue": "-",
+                        "metricDescription": "Volatility"
+                    },
+                    {
+                        "metricName": "Sharpe Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Sharpe Ratio"
+                    }]);
 
-				backtestId: String,
+                this.set('processedBacktest.metrics2', [{
+                    "metricName": "Information Ratio",
+                    "metricValue": "-",
+                    "metricDescription": "Information Ratio"
+                },
+                    {
+                        "metricName": "Max Drawdown",
+                        "metricValue": "-",
+                        "metricDescription": "Max Drawdown"
+                    },
+                    {
+                        "metricName": "Calmar Ratio",
+                        "metricValue": "-",
+                        "metricDescription": "Calmar Ratio"
+                    },
+                    {
+                        "metricName": "Beta",
+                        "metricValue": "-",
+                        "metricDescription": "Beta"
+                    },
+                    /*{
+                     "metricName":"Stability",
+                     "metricValue":"-",
+                     "metricDescription":"Stability"
+                     },
+                     {
+                     "metricName":"Avg. Concentration",
+                     "metricValue":"-",
+                     "metricDescription":"Avg. Concentration"
+                     },*/]);
+                this.processBacktestData();
 
-			},
+            },
 
-			attached: function() {
-				this.backtestId = this.backtest._id;
-			},
+            formatIndex: function (index) {
+                return index + 1;
+            },
 
-			ready: function() {
+            processBacktestData: function () {
+                var metricsArray1 = [];
+                var metricsArray2 = [];
 
-				this.set('processedBacktest.metrics1',[{
-				            		"metricName":"Total Return", 
-				            		"metricValue":"-", 
-				            		"metricDescription":"Total Return"
-				            	},
-								{
-									"metricName":"Annual Return",
-									"metricValue":"-",
-									"metricDescription":"Annual Return",
-								},
-								{
-									"metricName":"Volatility",
-								 	"metricValue":"-", 
-								 	"metricDescription":"Volatility"
-								},
-								{
-									"metricName":"Sharpe Ratio", 
-									"metricValue":"-",
-									"metricDescription":"Sharpe Ratio"
-								}]);
-								
-				this.set('processedBacktest.metrics2', [{	
-									"metricName":"Information Ratio",
-									"metricValue":"-",
-									"metricDescription":"Information Ratio"
-								},
-								{
-									"metricName":"Max Drawdown",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Max Drawdown"
-						 	 	},
-								{	
-									"metricName":"Calmar Ratio",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Calmar Ratio"
-						 	 	},
-								{
-									"metricName":"Beta",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Beta"
-						 	 	},
-								/*{
-									"metricName":"Stability",
-								 	"metricValue":"-",
-							 	 	"metricDescription":"Stability"
-						 	 	},
-								{
-									"metricName":"Avg. Concentration", 
-									"metricValue":"-",
-								 	"metricDescription":"Avg. Concentration"
-							 	},*/]);
-				this.processBacktestData();
-
-			},
-
-			formatIndex: function(index) {
-				return index + 1;
-			},
-
-			processBacktestData: function() {
-				var metricsArray1 = [];
-				var metricsArray2 = [];
-
-				if (this.backtest.output && this.backtest.output.summary) {
-					var data = this.backtest.output.summary;
-					this.set('processedBacktest.metrics1' ,[{
-			            		"metricName":"Total Return", 
-			            		"metricValue":data.totalreturn.toFixed(2).toString()+'%', 
-			            		"metricDescription":"Total Return"
-			            	},
-							{
-								"metricName":"Annual Return",
-								"metricValue":data.annualreturn.toFixed(2).toString()+'%',
-								"metricDescription":"Annual Return",
-							},
-						{"metricName":"Volatility", "metricValue":data.annualstandarddeviation.toFixed(2).toString()+'%', "metricDescription":"Volatility"},
-						{"metricName":"Sharpe Ratio", "metricValue":data.sharperatio.toFixed(2), "metricDescription":"Sharpe Ratio"},]);
-					this.set('processedBacktest.metrics2', [ 
-							{"metricName":"Information Ratio", "metricValue":data.informationratio.toFixed(2), "metricDescription":"Information Ratio"},
-							{"metricName":"Max Drawdown", "metricValue":data.maxdrawdown.toFixed(2).toString()+'%', "metricDescription":"Max Drawdown"},
-							{"metricName":"Calmar Ratio", "metricValue":data.calmarratio.toFixed(2), "metricDescription":"Calmar Ratio"},
-							{"metricName":"Beta", "metricValue":data.beta ? data.beta.toFixed(2) : "-", "metricDescription":"beta"}]);
-				}
-								
-
-				//this.set('metrics1', metricsArray1);
-				//this.set('metrics2', metricsArray2);
-
-				this.set('processedBacktest.startDate',this.formatDate(this.backtest.settings.startDate));
-				this.set('processedBacktest.endDate',this.formatDate(this.backtest.settings.endDate));
-				this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
-				this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
-				
-			},
-
-			formatDate: function(date) {
-
-				var today = new Date(date);
-				today.setDate(today.getDate());
-				var dd = today.getDate();
-				var mm = today.getMonth()+1; //January is 0!
-				var yyyy = today.getFullYear();
-
-				if(dd<10) {
-				    dd='0'+dd
-				} 
-
-				if(mm<10) {
-				    mm='0'+mm
-				} 
-
-				today = dd+'/'+mm+'/'+yyyy;
-				return today;
-			},
-
-			formatDateTime: function(date) {
-				date = new Date(date);	
-			  	var hours = date.getHours();
-			  	var minutes = date.getMinutes();
-			  	var ampm = hours >= 12 ? 'PM' : 'AM';
-			  	hours = hours % 12;
-			  	hours = hours ? hours : 12; // the hour '0' should be '12'
-			  	minutes = minutes < 10 ? '0'+minutes : minutes;
-		  		var strTime = hours + ':' + minutes + ' ' + ampm;
-		  		var mm = date.getMonth()+1;
-		  		mm = mm > 9 ? mm : '0'+mm.toString();
-		  		var dd = date.getDate();
-		  		dd = dd > 9 ? dd  : '0' + dd.toString();
-			  	return  dd + "/" + mm + "/" + date.getFullYear() + "  " + strTime;
-			},
-
-			isBacktestActive: function(backtest) {
-				return false;
-			},
-
-			onCheck: function() {
-				this.fire('backtestChecked',{id:this.backtest._id, checked:this.$.checkbox.checked})
-			},
-
-			onBacktestDetail: function() {
-				this.fire('detail-action',{id:this.backtest._id});
-			},
-
-			onShare: function() {
-				this.fire('shareClicked',{id:this.backtest._id});
-			},
+                if (this.backtest.output && this.backtest.output.summary) {
+                    var data = this.backtest.output.summary;
+                    this.set('processedBacktest.metrics1', [{
+                        "metricName": "Total Return",
+                        "metricValue": data.totalreturn.toFixed(2).toString() + '%',
+                        "metricDescription": "Total Return"
+                    },
+                        {
+                            "metricName": "Annual Return",
+                            "metricValue": data.annualreturn.toFixed(2).toString() + '%',
+                            "metricDescription": "Annual Return",
+                        },
+                        {
+                            "metricName": "Volatility",
+                            "metricValue": data.annualstandarddeviation.toFixed(2).toString() + '%',
+                            "metricDescription": "Volatility"
+                        },
+                        {
+                            "metricName": "Sharpe Ratio",
+                            "metricValue": data.sharperatio.toFixed(2),
+                            "metricDescription": "Sharpe Ratio"
+                        },]);
+                    this.set('processedBacktest.metrics2', [
+                        {
+                            "metricName": "Information Ratio",
+                            "metricValue": data.informationratio.toFixed(2),
+                            "metricDescription": "Information Ratio"
+                        },
+                        {
+                            "metricName": "Max Drawdown",
+                            "metricValue": data.maxdrawdown.toFixed(2).toString() + '%',
+                            "metricDescription": "Max Drawdown"
+                        },
+                        {
+                            "metricName": "Calmar Ratio",
+                            "metricValue": data.calmarratio.toFixed(2),
+                            "metricDescription": "Calmar Ratio"
+                        },
+                        {
+                            "metricName": "Beta",
+                            "metricValue": data.beta ? data.beta.toFixed(2) : "-",
+                            "metricDescription": "beta"
+                        }]);
+                }
 
 
-		});
-	</script>
+                //this.set('metrics1', metricsArray1);
+                //this.set('metrics2', metricsArray2);
+
+                //this.set('processedBacktest.startDate', this.formatDate(this.backtest.settings.startDate));
+                this.set('processedBacktest.startDate', date.formatDate(this.backtest.settings.startDate));
+                //this.set('processedBacktest.endDate', this.formatDate(this.backtest.settings.endDate));
+                this.set('processedBacktest.endDate', date.formatDate(this.backtest.settings.endDate));
+                this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
+                //this.set('processedBacktest.createdAt', this.formatDateTime(this.backtest.createdAt));
+                this.set('processedBacktest.createdAt', date.formatDateTime(this.backtest.createdAt));
+
+            },
+
+            formatDate: function (date) {
+
+                var today = new Date(date);
+                today.setDate(today.getDate());
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+
+                today = dd + '/' + mm + '/' + yyyy;
+                return today;
+            },
+
+            formatDateTime: function (date) {
+                date = new Date(date);
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                var strTime = hours + ':' + minutes + ' ' + ampm;
+                var mm = date.getMonth() + 1;
+                mm = mm > 9 ? mm : '0' + mm.toString();
+                var dd = date.getDate();
+                dd = dd > 9 ? dd : '0' + dd.toString();
+                return dd + "/" + mm + "/" + date.getFullYear() + "  " + strTime;
+            },
+
+            isBacktestActive: function (backtest) {
+                return false;
+            },
+            onBacktestDetail: function () {
+                this.fire('detail-action', {id: this.backtest._id, index: this.index});
+            },
+
+            onShare: function () {
+                this.fire('shareClicked', {id: this.backtest._id});
+            },
+            toggle: function () {
+                this.ironCollapse.toggle();
+                if (this.ironCollapse.opened) {
+                    this.expandBtn.style.transform = "rotate(180deg)";
+                } else {
+                    this.expandBtn.style.transform = "rotate(0deg)";
+                }
+            },
+            onChange: function () {
+                this.fire('backtestChecked', {id: this.backtest._id, checked: this.paperCheckBox.checked});
+                this.toggleSidebar();
+            },
+            toggleSidebar: function () {
+                if (this.paperCheckBox.checked)
+                    this.sideBar.style.transform = "scale(1,1)";
+                else
+                    this.sideBar.style.transform = "scale(0,1)";
+            },
+            selectBacktest: function (e) {
+                this.$$('paper-checkbox').checked = e.detail.checked;
+                this.onChange();
+            }
+
+        });
+
+    </script>
+    <script type="text/javascript" src="../common/DateTime.js"></script>
 </dom-module>

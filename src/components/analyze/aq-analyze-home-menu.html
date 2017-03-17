@@ -1,10 +1,11 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link rel="import" href="../common/aq-sub-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <dom-module id='aq-analyze-home-menu'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
-  
+    <link rel="stylesheet" href="../common/paper-button.css">
 	<style>
 
 		#search {
@@ -13,7 +14,7 @@
 		  --margin-bottom: 12px;
 		  position: relative;
 		  display:none;
-		  z-index:2;
+		  /*z-index:2;*/
 		}
 	
 		#search iron-icon {
@@ -43,7 +44,7 @@
 		  @apply(--paper-font-body1);
 		  width:100%;
 		  font-size: 16px;
-		  z-index: 2;
+		  /*z-index: 2;*/
 		}
 
 		#searchbox:focus {
@@ -56,91 +57,68 @@
 		  position: relative;
 		  right: 15px;
 		}
-
-		.toolbar {
-			height: 60px;
-			width: 98%;
-		    --border:1px solid;
-		}
-
-		#menu-icons {
-			position:relative;
-			float:right;
-			margin: auto 0;
-		}
-
-		paper-icon-button {
-			outline:1px solid;
-			width:35px;
-    		height:35px;
-    		margin-right: 10px;
-    		min-width:25px;
-    		max-width:35px;
-    		--color:#188364; 
-		}
-
-		paper-icon-button:active {
-			padding: 10px;
-		}
-
 		#backButton {
 			margin:auto 0;
 			outline: none !important;
 		}
 
-		.iconButton {
-			outline:1px solid teal;
-			padding:5px;
-			width:35px;
-    		margin-right: 10px;
-    		color: #cc6666;;
-    		--paper-icon-button-disabled-text:grey;
-    		--paper-icon-button-disabled:{
-				color: #cacaca !important;
-			};
-		}
-
-		.iconButton:active {
-			padding: 8px;
-		}
 
 		paper-tooltip.iconTooltip {
         	--paper-tooltip: {
           		font-size: 13px;
           		min-width: 40px;
           		text-align: center;
-        	}
+        	};
 
         	--paper-tooltip-opacity: 1.0;
 			--paper-tooltip-background: teal;
 		}
-		
-		
+        paper-button{
+            border:none;
+        }
+        #expand_all{
+            color:#cc6666;
+            font-size: 13px;
+            position: relative;
+            top:2px;
+        }
+        paper-checkbox{
+            --paper-checkbox-checked-color: #cc6666;
+        }
+        .iconTooltip {
+            --paper-tooltip: {
+                font-size: 13px;
+                min-width: 40px;
+                text-align: center;
+            };
+            --paper-tooltip-opacity: 1.0;
+            --paper-tooltip-background: teal;
+        }
+
 	</style>
 	
 	<template>
-	    <div class="toolbar layout horizontal">
-	    
-	    	<paper-icon-button noink id="backButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToEditor">
-	  			</paper-icon-button>
+        <aq-sub-toolbar>
+            <!--<paper-icon-button noink id="backButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToEditor">-->
+            <!--</paper-icon-button>-->
+            <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
+                            on-change='onCheckAllBacktest'></paper-checkbox>
+            <p class="self-center flex">All Backtests</p>
 
-	    	<p class="self-center flex">Back to Strategies</p>
+            <div id='menu-icons'>
+                <paper-button id="expand_all" on-tap="expandAll">EXPAND ALL</paper-button>
+                <paper-icon-button  id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
+                </paper-icon-button>
 
-	      	<div id='menu-icons' class="layout horizontal">
-	  			<paper-icon-button  id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
-	  			</paper-icon-button>
+                <paper-icon-button  id='compareIcon' noink class="iconButton" icon="aq-icons:chrome-reader-mode" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
+                </paper-icon-button>
+            </div>
 
-				<paper-icon-button  id='compareIcon' noink class="iconButton" icon="aq-icons:chrome-reader-mode" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
-				</paper-icon-button>
-					
-			</div>      	
-  		</div>
+        </aq-sub-toolbar>
 
   		<paper-tooltip for='compareIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Compare</paper-tooltip>
         		
     	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
-        	
-
 	</template>
 	
 	<script>
@@ -156,6 +134,14 @@
 					type:Number,
 					value:0,
 				},
+                expand:{
+				    type:Boolean,
+                    value:true
+                },
+                checkAll:{
+                    type:Boolean,
+                    value:false
+                }
 			},
 
 			isCompareActive: function(numActiveBacktests) {
@@ -185,6 +171,18 @@
             goToEditor: function() {
             	this.fire('backClicked');
             },
+            expandAll:function () {
+                if(this.expand) {
+                    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
+                    this.expand = false;
+                }else{
+                    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
+                    this.expand = true;
+                }
+            },
+            onCheckAllBacktest: function () {
+                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.$$('paper-checkbox').checked}});
+            }
 
 		});
 		

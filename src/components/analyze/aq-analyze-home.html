@@ -13,21 +13,21 @@
 <link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
 
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
-
 <dom-module id="aq-analyze-home">
-	
+
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
-  
+
 	<style>
-		
+
 		#container {
-			width:95%;
 			margin:0 auto;
 		    margin-top: 0px;
 		    color: #24293d; 
-		    overflow-y:scroll;
 	  	}
+		.backtest-item{
+			width: 95%;
+		}
 
 	  	#dialog{
 			width:80%;
@@ -37,7 +37,7 @@
 		#comparison {
 			margin:20px;
 			--height:400px;
-		}	
+		}
 
 		p{
 			font-size: 20px;
@@ -46,14 +46,17 @@
 		.spacer {
 			margin-bottom: 13px;
 			height:0px;
-			min-width: 500px; 		
+			min-width: 500px;
 		}
-
+		.layout{
+			position: relative;
+			top:70px;
+		}
 	</style>
 
 	<template>
 
-		<iron-ajax	
+		<iron-ajax
           	url="[[computeGetStrategyUrl(strategyId)]]"
      	 	method='GET'
           	id='getStrategyQuery'
@@ -77,7 +80,7 @@
           	debounce-duration="500"
           	loading='{{backtestLoading}}'>
         </iron-ajax>
-		
+
 		<iron-ajax
           	url="[[computeDeleteBacktestUrl(deleteId)]]"
      	 	method='DELETE'
@@ -90,7 +93,7 @@
         </iron-ajax>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-		
+
 	 	<iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
 
 	 	<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'></iron-signals>
@@ -98,18 +101,18 @@
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
+        <aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
-    	<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 			<div id='container'>
 				<template is='dom-if' if="[[!showComparison]]">
-					<aq-analyze-home-menu num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
 
 					<p>All Backtests for <i>{{strategyName}}</i></p>
 
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
 				
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-						<aq-analyze-home-backtest-item2  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+						<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 					</template>
 					<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 						<div class="spacer"></div>
@@ -123,10 +126,10 @@
 					</aq-analyze-backtest-comparison-item>
 				</template>
 
-			</div>	
+			</div>
 
 		    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
-				 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"	
+				 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"
 				 cancel="Cancel"
 				 accept="OK">
 	    	</aq-delete-dialog>
@@ -203,9 +206,14 @@
 					value:1,
 				},
 
-    		}, 
-    		
-			listeners: {
+                checkAll:{
+				    type:Boolean,
+                    value:false
+                }
+
+    		},
+
+    		listeners: {
 				'backClicked':'goToEditor',
 				'compareClicked':'toggleComparison',
 				'backtestChecked':'checkBacktest',
@@ -216,8 +224,15 @@
 				'detail-action':'onDetail',
 			},
 
+            ready: function () {
+                if(this.checkedCount == 0){
+                    this.checkAll = false;
+                }
+            },
+
+			
 			_strategyIdChanged: function(nId, oId) {
-				
+
 				if(nId && nId!= "") {
 					this.fetchBacktests();
 	        	}
@@ -234,12 +249,12 @@
          	 		this.fire('rt-changed',{route:'/user/signin'});
 	          		return;
 	          	} else {
-	          		
+
 					this.set('backtests', []);
 	        		this.header = this.$.authItem.getHeader();
         			this.$.getStrategyQuery.generateRequest();
         			this.dirtyBit = 0;
-	        	
+
 	        	}
 			},
 
@@ -269,7 +284,7 @@
 			isBacktestCountOdd: function(backtests) {
 				return backtests.length % 2 == 1;
 			},
-			
+
 			onGetAllBacktestsForStrategy: function(data) {
 				
 				if(this.backtests.length == 0) {
@@ -305,6 +320,10 @@
 	        	} else {
 	        		this.checkedCount -= 1;
 	        	}
+	        	if(this.checkedCount > this.backtests.length)
+	        	    this.checkedCount = this.backtests.length;
+	        	this.checkAll = this.checkedCount == this.backtests.length;
+                console.log(this.checkedCount);
 	        },
 
 	        numCheckedBacktests: function(checkedCount) {
@@ -323,7 +342,6 @@
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
 	        	for (key in this.checkedItems) {
-
 	        		var idx = this.backtests.map(x=>x._id).indexOf(key);
 	        		if(idx != -1 && this.checkedItems[key]==true) {
 	        			this.deleteId = key;
@@ -332,6 +350,7 @@
         		}
 	      
 	    		this.deleteId="";
+                this.checkAll = false;
 	        },
 
 	        onDeleteBacktestForStrategySuccess: function(data) {
@@ -347,15 +366,15 @@
 	        },
 
 	        onDeleteBacktestForStrategyError: function(data) {
-	        }, 
+	        },
 
 	        toggleComparison: function() {
 	        	this.showComparison = !this.showComparison;
 	        },
 
-	        onDetail: function(e) {  
-	        	e.stopPropagation();    
-	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id});
+	        onDetail: function(e) {
+	        	e.stopPropagation();
+	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id , index:e.detail.index});
 	        },
 
 	        hasTail: function(tail) {
