@@ -53,20 +53,24 @@
         }
 
         .strategy-bt {
-            position: absolute;
             right: 10px;
-            cursor: pointer;
-            top:7px;
+            --cursor: pointer;
+            --width: 200px;
+         	text-align: center;
+        }
+
+        .strategy-bt .st-li-detail {
+        	cursor: pointer;
         }
 
         .strategy-desc {
             width: 100%;
             position: relative;
             margin-bottom: 15px;
+            min-width: 200px;
         }
 
         .strategy-created-date {
-            position: absolute;
             width: 100%;
             text-align: center;
         }
@@ -87,7 +91,7 @@
             transition: all 0.2s ease-in-out;
         }
 
-        .strategy-name {
+        .strategy-name span{
             cursor: pointer;
         }
 
@@ -98,11 +102,7 @@
             height: 22px;
             cursor: pointer;
         }
-
-        paper-button {
-            width: 200px;
-            border: none;
-        }
+        
         .st-li-header {
             font-weight: 300;
             font-size: 0.8em;
@@ -123,16 +123,24 @@
 
         <div id$="[[strategyId]]" class="row">
 
-            <div class="row-upper-container layout horizontal center">
+            <div class="layout horizontal center">
                 <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
-                <div class="strategy-name self-center"><h4 class="st-header" on-click='goToEditor'>
-                    [[strategyName]]</h4></div>
-                <div class="strategy-created-date"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
+                
+                <div class="strategy-name self-center flex">
+                	<span class="st-header" on-tap='goToEditor'>
+                    [[strategyName]]</span>
+                    <div class="flex"></div>
+                </div>
+                
+                <div class="strategy-created-date flex"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
 
-                <paper-button on-tap='goToAnalyze' class="strategy-bt">
-                    <span class="st-li-header">Number of Backtest: <span class="st-li-detail">[[numBacktest]]</span></span>
-                </paper-button>
+                <div class="strategy-bt flex">
+                    <span class="st-li-header">Number of Backtest:</span> 
+                    <span class="st-li-detail" on-tap='goToAnalyze'>[[numBacktest]]</span>
+                </div>
+
             </div>
+            
             <div class="strategy-desc"><span class="st-li-header strategy-desc-text">[[strategyDesc]]</span></div>
             <div class="bar"></div>
         </div>

@@ -65,12 +65,12 @@
       <aq-check-authentication id='authItem'></aq-check-authentication>
 
       <div id="main">
-        <paper-drawer-panel id="drawerpanel" force-narrow="[[computeForceNarrow(narrow, showSidebar)]]" responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
+        <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
             <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
                 
             <paper-header-panel id="mainpanel" main fixed mode="seamed">
-              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="[[computeShowMenu(narrow, showSidebar)]]"></aq-toolbar>
+              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="true"></aq-toolbar>
 
                 <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
                   <template is="iron-lazy-page" m="0">
@@ -200,7 +200,7 @@
 
           drawerWidth:{
             type:String,
-            value:"0px",
+            value:"228px",
           },
 
           backtests:{
@@ -231,6 +231,7 @@
         listeners: {
             'open-menu': 'openMenu',
             'close-menu':'closeMenu',
+            'toggle-menu':'toggleMenu',
             'change-view-navigation':'viewChanged',
             'change-view-action':'viewChangedOnAction',
             'loginClicked':'gotoSignin',
@@ -374,6 +375,10 @@
           }
         },
 
+        toggleMenu: function(e) {
+          this.$.drawerpanel.togglePanel();
+        },
+
          _currentTabChanged: function(newTab, oldTab) {        
           
           if (!(oldTab + 1)) {
@@ -384,9 +389,9 @@
               
           this.showSidebar = (newTab == 1);  
           
-          if (this.currentTab == 1) {
+          /*if (this.currentTab == 1) {
             this.drawerWidth ="200px;"
-          }
+          }*/
 
           this.set('aimsquant.lastTab', newTab);
           
@@ -400,10 +405,10 @@
                   '/user/authMessage'
                   ];
 
-          if (this.currentTab == 1) {
+          /*if (this.currentTab == 1) {
             this.drawerWidth ="200px;"
             //this.view = 'editor';
-          }
+          }*/
 
           if ((this.URLcontains(path[5]) || this.URLcontains(path[6]) || this.URLcontains(path[7])) && newTab==3) {
               return;

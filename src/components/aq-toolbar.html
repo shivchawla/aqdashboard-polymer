@@ -14,9 +14,6 @@
     </style>
 
     <style>
-        :host{
-            z-index: 10;
-        }
         paper-toolbar {
             --paper-toolbar-title: {
                 text-align: left;
@@ -32,9 +29,7 @@
 
         paper-toolbar {
             --paper-toolbar-background: white;
-
-            --opacity: var(--dark-primary-opacity);
-            --border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid teal;
         }
 
         #profile {
@@ -66,14 +61,13 @@
             background-size: cover;
             height: 30px;
             width: 42px;
-            --background-color: #f2fbf7;
             margin: auto 0;
         }
 
         paper-tabs {
-            --paper-tabs-selection-bar-color: #c3403f;
+            --paper-tabs-selection-bar-color: #cc6666;
             --paper-tabs-container: {
-                height: 80%;
+                height: 70%
             }
         }
 
@@ -143,7 +137,7 @@
             },
 
             toggleMenu: function () {
-                this.fire('open-menu');
+                this.fire('toggle-menu');
             },
 
             computeShowMenu: function (showMenu, currentTab) {

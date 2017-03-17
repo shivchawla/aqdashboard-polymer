@@ -20,8 +20,7 @@
     }
 
     #content {
-       border-right: 1px solid #e0e0e0;--#5f6ca0;--#24293d;--#9ecbda;--#e5e5e5; 
-       background-color: #f2fbf7;--#f4f9fb;--#e5f1f5;
+      background-color:#fff;
     }
 
     paper-toolbar {
@@ -30,14 +29,14 @@
         margin-left: 0px !important;
       };
       --paper-toolbar-background: white;--#f2fbf7;--#24293d;
-      border-bottom: 1px solid teal;--#cc6666;
+      border-bottom: 1px solid teal;
       height:8vh;
       color:teal;
     }
 
     paper-menu {
       padding-bottom: 0;
-      background-color: #f2fbf7;--#f4f9fb;--#e5f1f5;
+      background-color:#fff;
       opacity: var(--dark-primary-opacity);
 
       --paper-menu-focused-item-after :{
@@ -94,9 +93,7 @@
       }
       
     }
-
    
-
     #navigation {
       margin-top:30px;
     }
@@ -136,19 +133,18 @@
     }
 
     #logo {
-      content: url(../../images/Logo.png);
-      height:40px;
-      width:57px;
-      --background-color: #f2fbf7;
-      margin:auto 0;
+        background: url(../../../resources/images/Logo.png);
+        background-size: cover;
+        height: 30px;
+        width: 42px;
+        margin: auto 0;
     }
+
     .sidenav{
-      z-index: 100;
+      z-index: 10;
     }
+    
 
-
-
-   
   </style>
 
   <template>
@@ -156,9 +152,9 @@
       <paper-toolbar>
         <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
         <div on-tap='goToHome' class="title layout horizontal">
-          <!--div id='logo'></div-->
           <p>Aims</p>
           <p id='quant'>Quant</p>
+          <div id='logo'></div>
         </div>
       </paper-toolbar>
       
