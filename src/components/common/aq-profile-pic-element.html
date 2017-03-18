@@ -1,0 +1,27 @@
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<dom-module id="profile-pic-element">
+    <template>
+        <style>
+            :host{
+                display: inline-block;
+            }
+            iron-image {
+                --iron-image-width: 35px;
+                --iron-image-height: 35px;
+                border-radius: 50%;
+            }
+        </style>
+        <iron-image src="pics/profile_pic.jpg"></iron-image>
+    </template>
+    <script>
+        Polymer({
+            is:"profile-pic-element",
+            properties:{
+                src:{
+                    type:String,
+                    value:"http://localhost:8080/custom_components/pics/profile_pic.jpg"
+                }
+            }
+        })
+    </script>
+</dom-module>
