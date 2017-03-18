@@ -1,4 +1,6 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
@@ -7,51 +9,7 @@
 <dom-module id='aq-editor-home-menu'>
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
-        #searchbox {
-            height: 32px;
-            -webkit-appearance: none;
-            line-height: 46px;
-            border: 0;
-            margin: 0;
-            padding-left: 30px;
-            border: 1px solid #e5e5e5;
-            @apply(--paper-font-body1);
-            width: 80%;
-            font-size: 14px;
-            /*z-index: 2;*/
-            background-color: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease-in-out;
-        }
-
-        #searchbox:focus {
-            outline: 0;
-            background-color: #f7f7f7;
-        }
-
-        #searchbox::-webkit-search-cancel-button {
-            position: relative;
-            right: 15px;
-        }
-        .search-bar {
-            width: 95%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            margin-top: 70px;
-            position: relative;
-        }
-
-        paper-button {
-            border: none;
-            font-size: 13px;
-            background-color: teal;
-            color: #fff;
-            padding: 0 20px;
-            border-radius: 2px;
-            height: 35px;
-        }
+        
         paper-checkbox{
             --paper-checkbox-checked-color: #cc6666;
         }
@@ -64,6 +22,18 @@
             --paper-tooltip-opacity: 1.0;
             --paper-tooltip-background: teal;
         }
+
+        .iconButton {
+            padding:5px;
+            width:35px;
+            margin-right: 5px;
+            margin-left: 5px;
+            color: #cc6666;
+            --paper-icon-button-disabled: {
+                color: #cacaca !important;
+            };
+            --paper-icon-button-disabled-text:grey;
+        }
     </style>
 
     <template>
@@ -72,6 +42,9 @@
             <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
                             on-change='onCheckAllStrategies'></paper-checkbox>
             <p class="strategy-header">ALL STRATEGIES</p>
+            
+            <div class="flex"></div>
+
             <div id='menu-icons'>
                 <paper-icon-button id='newIcon' noink class="iconButton" icon="aq-icons:add" on-tap="createNew">
                 </paper-icon-button>
@@ -84,13 +57,7 @@
             <paper-tooltip for='deleteIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
 
         </aq-sub-toolbar>
-        <div class="search-bar">
-            <input id="searchbox" placeholder="Search your strategy" class="flex"
-                   value="{{searchText::change}}"
-                   on-keydown="checkForKeys" on-blur='blur'>
-            <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
-        </div>
-
+        
     </template>
 
     <script>
@@ -114,10 +81,12 @@
                     notify: true,
                 }
             },
+            
             ready: function () {
-                this.$$('#searchbox').focus();
+                //this.$$('#searchbox').focus();
                 console.log("Searchbox element intiialized");
             },
+
             toggle: function () {
                 var d = this.$$('#search').style.display;
                 if (d == 'block') {
@@ -170,6 +139,7 @@
                 this.fire('search-action', {searchtext: this.searchText});
 
             },
+
             onCheckAllStrategies: function () {
                 this.checkAll = this.$$('paper-checkbox').checked;
                 console.log("Firing signal");
