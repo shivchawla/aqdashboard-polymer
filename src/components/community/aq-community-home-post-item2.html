@@ -126,34 +126,40 @@
                 margin-left: 20px;
             }
 
-            profile-pic-element {
+            profile-img,profile-pic-element {
                 margin-right: 10px;
             }
-            .post-container{
+
+            .post-container {
                 /*display: flex;*/
                 /*flex-direction: column;*/
                 /*justify-content: center;*/
             }
-            .by{
+
+            .by {
                 margin-right: 10px;
             }
-            .user-name{
+
+            .user-name {
                 margin-right: 6px;
             }
-            .by{
+
+            .by {
                 font-weight: 300;
                 font-size: 0.8em;
-                color:#646464;
+                color: #646464;
             }
-            .time{
+
+            .time {
                 font-weight: 400;
                 font-size: 0.75em;
-                color:#8a8c97;
+                color: #8a8c97;
             }
-            .user-name{
+
+            .user-name {
                 font-weight: 400;
                 font-size: 1.1em;
-                color:#646464;
+                color: #646464;
             }
         </style>
         <div class="container" on-tap='goToDetail'>
@@ -179,22 +185,28 @@
                         </li>
                     </ul>
                 </div>
-                <paper-icon-button class="attachment-btn" icon="attachment"></paper-icon-button>
+                <template is='dom-if' if='[[hasBacktest(thread)]]'>
+                    <paper-icon-button class="attachment-btn" icon="attachment"></paper-icon-button>
+                </template>
             </div>
             <div class="bar"></div>
             <div class="lower-container">
                 <div class="left-part">
-                    <profile-pic-element></profile-pic-element>
+                    <profile-img id='img' class="self-start"
+                                 letter="[[getInitials(thread.user.firstName, thread.user.lastName)]]"></profile-img>
+
+                    <!--<profile-pic-element></profile-pic-element>-->
                     <!--<post-user-comment user="[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]" time="[[format(thread.createdAt)]]"></post-user-comment>-->
                     <!--<post-user-comment label="Last Reply" user="[[getReplyAuthor(thread)]]" time="[[getReplyDate(thread)]]"></post-user-comment>-->
                     <div class="post-container layout vertical center">
                         <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
-                        <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span></h3>
+                        <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span>
+                        </h3>
                         <span class="time">[[format(thread.createdAt)]]</span>
                     </div>
                     <div class="post-container layout vertical center">
                         <!--<h3 class="by">{{label}} by <span class="user-name">{{user}}</span>{{time}}</h3>-->
-                        <h3 class="by">Last Reply  by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
+                        <h3 class="by">Last Reply by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
                         <span class="time">[[getReplyDate(thread)]]</span>
                     </div>
                 </div>

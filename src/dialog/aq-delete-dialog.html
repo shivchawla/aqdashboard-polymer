@@ -4,7 +4,8 @@
 <link rel='import' href='../../bower_components/paper-button/paper-button.html'>
 
 <link rel='import' href='../icons/aq-iconset.html'>
-
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-down-animation.html">
 <dom-module id='aq-delete-dialog'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
@@ -38,7 +39,7 @@
 
   		h2 {
   			color:teal;
-  		} 
+  		}
 
 		  iron-icon {
 	        height:50px;
@@ -47,18 +48,19 @@
 	        margin-bottom: -35px;
 	        margin-top:-15px;
 	      }
-  		
+
 	</style>
-	
+
 	<template>
-	    <paper-dialog id='modal' with-backdrop>
+	    <paper-dialog id='modal' entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation">
 	    	<div class="layout horizontal">
           		<div class="flex"></div>
           		<iron-icon icon="aq-icons:delete"></iron-icon>
         	</div>
 
  			<h2>[[heading]]</h2>
- 			<p>[[message]]</p>	 	
+ 			<p>[[message]]</p>
   			<div class="buttons">
   				<paper-button raised dialog-dismiss>[[cancel]]</paper-button>
     			<paper-button raised dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
@@ -66,7 +68,7 @@
 		</paper-dialog>
 
 	</template>
-	
+
 	<script>
 		Polymer ({
 			is: 'aq-delete-dialog',
@@ -88,6 +90,6 @@
 
 
 		});
-		
+
 	</script>
 </dom-module>

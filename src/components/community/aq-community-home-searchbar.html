@@ -2,15 +2,17 @@
 <link rel='import' href='../../../bower_components/paper-radio-group/paper-radio-group.html'>
 <link rel='import' href='../../../bower_components/paper-radio-button/paper-radio-button.html'>
 <link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
-
+<link rel="import" href="../common/aq-tags-input-container.html">
+<link rel="import" href="../common/aq-tag-element.html">
 <link rel='import' href='../common/aq-check-authentication.html'>
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <dom-module id='aq-community-home-searchbar'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
 
     <style>
 
-        #searchbox, #searchbox1 {
+        #searchbox, #tagsInput {
             height: 32px;
             -webkit-appearance: none;
             line-height: 46px;
@@ -26,12 +28,12 @@
             display: inline-block;
         }
 
-        #searchbox:focus, #searchbox1:focus {
+        #searchbox:focus, #tagsInput:focus {
             outline: 0;
             background-color: #f7f7f7;
         }
 
-        #searchbox::-webkit-search-cancel-button, #searchbox1::-webkit-search-cancel-button {
+        #searchbox::-webkit-search-cancel-button, #tagsInput::-webkit-search-cancel-button {
             position: relative;
             right: 15px;
         }
@@ -62,7 +64,23 @@
             border-radius: 2px;
             height: 35px;
         }
+        tag-element {
+            margin-top: 5px;
+            margin-bottom: 6px;
+            --tag-element-background-color: #D7D7D7;
+        }
 
+        iron-icon {
+            width: 13px;
+            height: 13px;
+        }
+        #tagsInput{
+            height: 100%;
+        }
+        aq-tags-input-container{
+            --tags-container-height:34px;
+            --tags-container-padding-left:0;
+        }
     </style>
 
     <template>
@@ -71,13 +89,24 @@
             <div class="search-bar layout horizontal center-justified">
                 <input id="searchbox" placeholder="Search Term" class="flex"
                        value="{{searchValue::input}}"
-                       on-keydown="checkForKeys" on-blur='blur'>
+                       on-keydown="checkForKeys">
             </div>
-            <div class="search-bar layout horizontal center-justified">
-                <input id="searchbox1" placeholder="Tags" class="flex"
-                       value="{{searchText::change}}"
-                       on-keydown="checkForKeys" on-blur='blur'>
-            </div>
+            <!--<div class="search-bar layout horizontal center-justified">-->
+                <!--<input id="searchbox1" placeholder="Tags" class="flex"-->
+                       <!--value="{{searchText::change}}"-->
+                       <!--on-keydown="checkForKeys">-->
+                <aq-tags-input-container class="search-bar layout horizontal center-justified">
+                    <input type="text" id="tagsInput" placeholder="Add tags here"
+                           on-keydown="onChange" on-keyup="scrollToBottom">
+                    <ul id="tagsContainer" class="tags-container">
+                        <template is="dom-repeat" items="{{tags}}">
+                            <tag-element label="{{item}}">
+                                <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
+                            </tag-element>
+                        </template>
+                    </ul>
+                </aq-tags-input-container>
+            <!--</div>-->
             <paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
         </div>
     </template>
@@ -117,6 +146,10 @@
                     }, {value: "Questions and Answers", index: 2}, {value: "News and Announcements", index: 3}],
 
                 },
+                tags:{
+                    type:Array,
+                    value:[]
+                }
             },
 
             attached: function () {
@@ -185,6 +218,32 @@
                     this.search();
                 }
             },
+            onChange: function (e) {
+                if (e.keyCode == 13 && e.target.value.length >= 1) {
+                    this.push('tags', e.target.value);
+                    console.log(this.tags);
+                    if (this.$$('#tagsInput')) {
+                        this.$$('#tagsInput').value = "";
+                    }
+                }else if(e.keyCode == 27){
+                    this.set('tags',[]);
+                }
+            },
+            removeTag: function (e) {
+                var itemName = e.model.item;
+                var index = this.tags.indexOf(itemName);
+                this.splice('tags', index, 1);
+                console.log(this.tags);
+            },
+            scrollToBottom: function () {
+                //                if (e.keyCode == 13) {
+                var element = document.getElementById("tagsContainer");
+                if (element) {
+                    console.log("Element Found");
+                    element.scrollTop = element.scrollHeight;
+                }
+                //                }
+            }
 
         });
 

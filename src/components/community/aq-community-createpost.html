@@ -20,6 +20,8 @@
 <link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../common/aq-sub-toolbar.html">
+<link rel="import" href="../common/aq-tags-input-container.html">
 <dom-module id="aq-community-createpost">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
@@ -28,7 +30,7 @@
             width: 100%;
             font-family: 'Lato', sans-serif;
             font-size: 16px;
-            background-color: #fff;
+            background-color: transparent;
         }
 
         h1, h2, h3, h4, h5 {
@@ -40,7 +42,7 @@
             width: 100%;
             margin: 0 auto;
             color: #24293d;
-            background-color: #fff;
+            background-color: transparent;
         }
 
         .goBackButton {
@@ -85,7 +87,7 @@
             font-size: 13px;
             color: teal;
             --white;
-            background-color: white;
+            background-color: transparent;
             border-radius: 5px;
 
         }
@@ -129,7 +131,7 @@
         }
 
         .header-container {
-            background-color: #fff;
+            background-color: transparent;
             height: 55px;
         }
 
@@ -149,16 +151,16 @@
             width: 100%;
         }
 
-        #tagsInput {
-            width: 100%;
-            /*z-index: 1;*/
-            padding: 0;
-            border: none;
-            outline: none;
-            background: none;
-            margin: 0;
-            max-height: 35px;
-        }
+        /*#tagsInput {*/
+            /*width: 100%;*/
+            /*!*z-index: 1;*!*/
+            /*padding: 0;*/
+            /*border: none;*/
+            /*outline: none;*/
+            /*background: none;*/
+            /*margin: 0;*/
+            /*max-height: 35px;*/
+        /*}*/
 
         .left-container {
             width: 60%;
@@ -171,24 +173,24 @@
             top: 5px;
         }
 
-        .tags-container {
-            list-style: none;
-            /*z-index: 20;*/
-            display: inline-block;
-            height: 35px;
-            max-height: 35px;
-            padding: 0;
-            margin: 0;
-            position: absolute;
-            overflow: hidden;
-            overflow-y: scroll;
-            left: 37%;
+        /*.tags-container {*/
+            /*list-style: none;*/
+            /*!*z-index: 20;*!*/
+            /*display: inline-block;*/
+            /*height: 35px;*/
+            /*max-height: 35px;*/
+            /*padding: 0;*/
+            /*margin: 0;*/
+            /*position: absolute;*/
+            /*overflow: hidden;*/
+            /*overflow-y: scroll;*/
+            /*left: 37%;*/
 
-        }
+        /*}*/
 
-        .tags-container li {
-            display: inline;
-        }
+        /*.tags-container li {*/
+            /*display: inline;*/
+        /*}*/
 
         .tags-header {
             font-size: 0.8em;
@@ -261,15 +263,47 @@
             transform: scale(1.6, 1.6);
         }
 
-        .tagsInputContainer {
-            height: 35px;
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #24293d;
-            position: relative;
-            background-color: #f2f2f2;
-            padding-left: 10px;
+        /*.tagsInputContainer {*/
+            /*height: 35px;*/
+            /*font-size: 16px;*/
+            /*margin-bottom: 5px;*/
+            /*color: #24293d;*/
+            /*position: relative;*/
+            /*background-color: #f2f2f2;*/
+            /*padding-left: 10px;*/
 
+        /*}*/
+
+        #previewEditBtn, #previewSubmitBtn {
+            border-radius: 2px;
+            height: 25px;
+        }
+        #previewSubmitBtn{
+            background-color: teal;
+            color: #fff;
+            margin-right: 10px;
+        }
+        #previewEditBtn{
+            background-color: #cccccc;
+        }
+
+
+        aq-sub-toolbar {
+            margin-bottom: 20px;
+            --toolbar-height:50px;
+        }
+        aq-sub-toolbar h4{
+            font-weight: 400;
+            margin-left: 20px;
+            font-size: 0.9em;
+        }
+
+        .toolbar-element {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            position: fixed;
+            right:20px;
         }
     </style>
 
@@ -309,7 +343,15 @@
 
 
             <template is='dom-if' if="[[preview]]">
-                <aq-community-previewpost thread-data="[[threadData]]"></aq-community-previewpost>
+                <aq-sub-toolbar>
+                    <h4>Post Preview</h4>
+                    <div class="toolbar-element">
+                        <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
+                        <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
+                    </div>
+
+                </aq-sub-toolbar>
+                <aq-community-previewpost thread-data="[[threadData]]" disable-buttons></aq-community-previewpost>
             </template>
 
             <aq-community-attachbacktest-dialog id='btDialog'>
@@ -329,7 +371,7 @@
                         </div>
                         <div class="layout horizontal middle-container">
                             <div class="layout vertical left-container">
-                                <div class="tagsInputContainer layout horizontal start-justified">
+                                <aq-tags-input-container>
                                     <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
                                            on-keydown="onChange" on-keyup="scrollToBottom">
                                     <ul id="tagsContainer" class="tags-container">
@@ -339,7 +381,7 @@
                                             </tag-element>
                                         </template>
                                     </ul>
-                                </div>
+                                </aq-tags-input-container>
                             </div>
                             <div class="layout horizontal right-container">
                                 <span class="tags-header">Post Type: &nbsp;</span>
@@ -360,7 +402,7 @@
                         <div class="layout horizontal attachment-container">
                             <div class="flex"></div>
                             <template is='dom-if' if='[[messageAttached]]'>
-                                <paper-button style="color:#444;" id='attachButton' raised noink
+                                <paper-button style="color:#444;" id='attachButton' raised
                                               on-tap='onAttachRequest'>
                                     Attach
                                     <iron-icon icon="aq-icons:attach-file"></iron-icon>
@@ -375,9 +417,9 @@
                         <aq-html-editor id="editor"></aq-html-editor>
 
                         <div id='buttons' class="layout horizontal">
-                            <paper-button id="previewBtn" noink on-tap='onPreview'>Preview</paper-button>
+                            <paper-button id="previewBtn" on-tap='onPreview'>Preview</paper-button>
                             <div class="flex"></div>
-                            <paper-button id="submitBtn" noink on-tap="postThread">Submit</paper-button>
+                            <paper-button id="submitBtn" on-tap="postThread">Submit</paper-button>
                         </div>
                     </div>
                 </div> <!-- Main Container Ends -->
@@ -415,8 +457,8 @@
 
                 attachedMessage: String,
                 messageAttached: {
-                    type:Boolean,
-                    value:false
+                    type: Boolean,
+                    value: false
                 },
                 share: String,
 
@@ -614,13 +656,13 @@
                 console.log(this.tags);
             },
             scrollToBottom: function () {
-//                if (e.keyCode == 13) {
+                //                if (e.keyCode == 13) {
                 var element = document.getElementById("tagsContainer");
                 if (element) {
                     console.log("Element Found");
                     element.scrollTop = element.scrollHeight;
                 }
-//                }
+                //                }
             }
 
         });

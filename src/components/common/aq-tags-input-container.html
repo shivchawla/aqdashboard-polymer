@@ -1,0 +1,66 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module id="aq-tags-input-container">
+    <template>
+        <style include="iron-flex iron-flex-alignment iron-positioning">
+            ::content ul li {
+                float: left;
+            }
+
+            ::content input {
+                width: 100%;
+                padding: 0;
+                border: none;
+                outline: none;
+                background: none;
+                margin: 0;
+                max-height: 35px;
+            }
+
+            ::content .tags-container {
+                list-style: none;
+                display: inline-block;
+                height: 35px;
+                max-height: 35px;
+                padding: 0;
+                margin: 0;
+                position: absolute;
+                overflow: hidden;
+                overflow-y: scroll;
+                left: 37%;
+
+            }
+
+            ::content .tags-container li {
+                display: inline;
+            }
+
+            ::content .tags-header {
+                font-size: 0.8em;
+                color: #727272;
+            }
+
+            .tagsInputContainer {
+                height: var(--tags-container-height,35px);
+                font-size: 16px;
+                margin-bottom: 5px;
+                color: #24293d;
+                position: relative;
+                background-color: #f2f2f2;
+                padding-left: var(--tags-container-padding-left,10px);
+                width:100%;
+            }
+
+            ::content input {
+                font-size: 16px;
+            }
+        </style>
+        <div class="tagsInputContainer layout horizontal start-justified">
+            <content></content>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "aq-tags-input-container"
+        })
+    </script>
+</dom-module>
