@@ -13,7 +13,7 @@
     <template>
         <style is="custom-style">
             .toolbar {
-                height: 42px;
+                height: var(--toolbar-height,42px);
                 width: 100%;
                 margin-bottom: 20px;
                 margin-top:0px;
@@ -22,7 +22,7 @@
                 display: flex;
                 align-items: center;
                 position: fixed;
-                /*z-index: 20;*/
+                z-index: 1;
             }
 
             ::content #menu-icons {

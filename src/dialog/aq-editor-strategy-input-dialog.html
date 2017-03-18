@@ -5,7 +5,8 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel='import' href='../icons/aq-iconset.html'>
-
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-down-animation.html">
 <dom-module id='aq-editor-strategy-input-dialog'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
@@ -18,6 +19,7 @@
     		padding-left:0px;
     		border-radius: 5px;
     		border: 2px solid #cc6666;;--teal;
+			z-index: 200;
   		}
 
   		.input-fields {
@@ -46,7 +48,7 @@
 
   		h2 {
   			color:teal;
-  		} 
+  		}
 
   		paper-input {
         --paper-input-container-underline-focus:{
@@ -61,12 +63,13 @@
         margin-bottom: -35px;
         margin-top:-15px;
       }
-		
+
 
 	</style>
-	
+
 	<template>
-	    <paper-dialog id='createStrategyModalDialog' with-backdrop on-keydown='checkForKeys'>
+	    <paper-dialog id='createStrategyModalDialog' entry-animation="scale-up-animation"
+					  exit-animation="fade-out-animation" on-keydown='checkForKeys'>
 	    	<div class="layout horizontal">
           		<div class="flex"></div>
           		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
@@ -75,18 +78,18 @@
 	    	<h2>[[header]]</h2>
 
  			<paper-input id='strategyNameInput' class='input-fields'
-                         label="Strategy Name" 
+                         label="Strategy Name"
                          value="{{strategyName}}"
                          error-message="Please enter a valid strategy name. It can not be empty."
                          type="text"
                          no-label-float
                          required
                          maxlength=30
-                         char-counter> 
+                         char-counter>
            	</paper-input>
- 				
+
 			<paper-input id='strategyDesc' class='input-fields'
-		                     label="Give it a short description..." 
+		                     label="Give it a short description..."
 		                     value="{{strategyDesc}}"
 		                     error-message="Please enter a valid strategy description. It can not be empty."
 		                     type="text"
@@ -104,11 +107,11 @@
   				<paper-button noink on-tap='onCancel'>Cancel</paper-button>
     			<paper-button noink on-tap='onSubmit'>OK</paper-button>
   			</div>
-		 	
+
 		</paper-dialog>
 
 	</template>
-	
+
 	<script>
 		Polymer ({
 			is: 'aq-editor-strategy-input-dialog',
@@ -117,7 +120,7 @@
 				header: String,
 				strategyName: String,
 				strategyDesc: String,
-				//dialogType:String, 
+				//dialogType:String,
 			},
 
 			onSubmit: function() {
@@ -138,7 +141,7 @@
         this.$.createStrategyModalDialog.close();
         //console.log(window.history.back());
         //this.fire('rt-changed',{route:'/dashboard/editor'});
-      },  
+      },
 
 			open: function(type) {
 				this.$.createStrategyModalDialog.open();
@@ -166,6 +169,6 @@
       }
 
 		});
-		
+
 	</script>
 </dom-module>
