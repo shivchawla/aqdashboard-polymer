@@ -25,7 +25,7 @@
         :host(.hidden) {
             transition: none;
             opacity: 0;
-
+            /*z-index: 20;*/
         }
 
         .header {
@@ -198,11 +198,11 @@
                 </div>
                 <div class="strategy-container">
                     <template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-                        <aq-editor-home-strategy-item 
-                                                      strategy-name="[[item.name]]"
-                                                      num-backtest="[[item.backtests]]"
-                                                      strategy-desc="[[item.description]]"
-                                                      strategy-id="[[item._id]]">
+                        <aq-editor-home-strategy-item
+                                strategy-name="[[item.name]]"
+                                num-backtest="[[item.backtests]]"
+                                strategy-desc="[[item.description]]"
+                                strategy-id="[[item._id]]">
                         </aq-editor-home-strategy-item>
                         <!--<strategy-item></strategy-item>-->
                     </template>
@@ -279,8 +279,8 @@
                 loading: Boolean,
 
                 checkAll: {
-                  type: Boolean,
-                  value: false,
+                    type: Boolean,
+                    value: false,
                 },
 
             },
@@ -299,7 +299,7 @@
                 'check-action': 'checkStrategy',
                 'delete-action': 'onDeletion',
                 'search-action': 'onSearch',
-               // 'check-all-strategies': 'onCheckAllStrategies',
+                // 'check-all-strategies': 'onCheckAllStrategies',
             },
 
             onCheckAllStrategies : function() {
@@ -646,4 +646,3 @@
     </script>
 </dom-module>
 
- 
