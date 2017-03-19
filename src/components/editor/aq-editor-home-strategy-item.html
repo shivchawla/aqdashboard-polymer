@@ -1,6 +1,7 @@
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
 
@@ -34,7 +35,7 @@
             box-sizing: border-box;
             overflow: hidden;
             font-weight: 400;
-            min-width: 600px;
+            --min-width: 590px;
             border-radius: 2px;
             justify-content: flex-start;
             position: relative;
@@ -51,14 +52,21 @@
         }
 
         .strategy-bt {
-            right: 10px;
-            --cursor: pointer;
-            --width: 200px;
+    	 	min-width: 150px !important;
+        }
+
+        .strategy-bt(:not([narrow-viewport])) {
          	text-align: center;
         }
 
-        .strategy-bt .st-li-detail {
+        .strategy-bt[narrow-viewport] {
+        	text-align: left;
+        	min-width: 200px;
+        }
+
+        .strategy-bt:hover {
         	cursor: pointer;
+        	text-decoration: underline;
         }
 
         .strategy-desc {
@@ -68,15 +76,20 @@
             min-width: 200px;
         }
 
-        .strategy-created-date {
+        .strategy-created-date(:not([narrow-viewport])) {
             width: 100%;
             text-align: center;
             pointer-events: none;
+            min-width: 200px;
+        }
+
+        .strategy-created-date[narrow-viewport]{
+        	text-align: left;
+        	min-width: 200px;
         }
 
         .strategy-desc-text {
             margin-left: 55px;
-
         }
 
         .bar {
@@ -90,7 +103,7 @@
             transition: all 0.2s ease-in-out;
         }
 
-        .strategy-name span{
+        .strategy-name span:hover {
             cursor: pointer;
         }
 
@@ -116,9 +129,22 @@
             font-weight: 700;
         }
 
+        .right-container[narrow-viewport] {
+        	@apply(--layout-vertical);
+        }
+
+        .right-container(:not[narrow-viewport]) {
+        	@apply(--layout-horizontal);
+        	@apply(--layout-flex);
+        }
+
     </style>
 
     <template>
+	 	<iron-media-query query="(max-width: 850px)" 
+ 						query-matches="{{narrowViewport}}">
+		</iron-media-query>
+       
     	<iron-signals on-iron-signal-select-strategy='onSelectStrategy'></iron-signals>
 
         <div id$="[[strategyId]]" class="row">
@@ -132,11 +158,24 @@
                     <div class="flex"></div>
                 </div>
                 
-                <div class="strategy-created-date flex"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
+                <template is='dom-if' if='[[narrowViewport]]'>
+                	<div class="flex"></div>	
+                </template>
+                
+                <div class='right-container layout horizontal flex' 
+            			narrow-viewport$="{{narrowViewport}}">
+	                <div class="strategy-created-date" 
+                			narrow-viewport$="{{narrowViewport}}">
+	                	<h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4>
+	                </div>
 
-                <div class="strategy-bt flex">
-                    <span class="st-li-header">Number of Backtest:</span> 
-                    <span class="st-li-detail" on-tap='goToAnalyze'>[[numBacktest]]</span>
+	                <div class="flex"></div>
+
+	                <div class="strategy-bt" on-tap='goToAnalyze'
+	                		narrow-viewport$="{{narrowViewport}}">
+	                    <span class="st-li-header">Number of Backtest:</span> 
+	                    <span class="st-li-detail">[[numBacktest]]</span>
+	                </div>
                 </div>
 
             </div>
@@ -164,7 +203,13 @@
                 },
 
                 strategyId: String,
+                
             },
+
+            attached: function() {
+            	console.log(this.narrowViewport);
+            },
+
             goToEditor: function () {
                 this.fire('editorClicked', {id: this.strategyId});
             },
