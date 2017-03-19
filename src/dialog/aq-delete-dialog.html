@@ -51,7 +51,7 @@
 	</style>
 	
 	<template>
-	    <paper-dialog id='modal' with-backdrop>
+	  <paper-dialog id='modal' with-backdrop on-iron-overlay-opened="patchOverlay">
 	    	<div class="layout horizontal">
           		<div class="flex"></div>
           		<iron-icon icon="aq-icons:delete"></iron-icon>
@@ -64,7 +64,6 @@
     			<paper-button raised dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
   			</div>
 		</paper-dialog>
-
 	</template>
 	
 	<script>
@@ -86,6 +85,12 @@
 				this.$.modal.open();
 			},
 
+			// https://github.com/PolymerElements/paper-dialog/issues/7
+			patchOverlay: function (e) {
+			  if (e.target.withBackdrop) {
+			    e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
+			  }
+			}
 
 		});
 		

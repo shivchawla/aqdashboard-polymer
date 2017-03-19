@@ -169,7 +169,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            margin-top: 30px;
+            margin-top: 20px;
             position: relative;
         }
 
@@ -227,8 +227,9 @@
       </iron-ajax>
 
       <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-        
-      <div class="fit">   
+      
+      <div class="fit"> 
+          
         <paper-header-panel fixed mode="seamed">
 
         <aq-editor-home-menu check-all="{{checkAll}}" 
@@ -271,10 +272,10 @@
       </div>
 
       <aq-delete-dialog id="dialog" heading="Delete Strategies"
-                        message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"
-                        cancel="Cancel"
-                        accept="OK">
-      </aq-delete-dialog>
+            message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"
+            cancel="Cancel"
+            accept="OK">
+      </aq-delete-dialog>  
 
       <aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
 
