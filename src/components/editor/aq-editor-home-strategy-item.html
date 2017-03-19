@@ -52,7 +52,7 @@
 
         .strategy-bt {
             right: 10px;
-            --cursor: pointer;
+            cursor: pointer;
             --width: 200px;
          	text-align: center;
         }
@@ -134,7 +134,7 @@
                 
                 <div class="strategy-created-date flex"><h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4></div>
 
-                <div class="strategy-bt flex">
+                <div class="strategy-bt flex" on-tap="goToAnalyze">
                     <span class="st-li-header">Number of Backtest:</span> 
                     <span class="st-li-detail" on-tap='goToAnalyze'>[[numBacktest]]</span>
                 </div>

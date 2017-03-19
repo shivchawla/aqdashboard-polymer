@@ -23,7 +23,7 @@
 		#container {
 			margin:0 auto;
 		    margin-top: 0px;
-		    color: #24293d; 
+		    color: #24293d;
 	  	}
 		.backtest-item{
 			width: 95%;
@@ -101,7 +101,10 @@
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
-        <aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+        <template is="dom-if" if="[[!showComparison]]">
+        <aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]"
+                              strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+        </template>
 
         <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 			<div id='container'>
@@ -110,7 +113,7 @@
 					<!--p>All Backtests for <i>{{strategyName}}</i></p-->
 
 					<div class="layout horizontal wrap flex around-justified itemcontainer" >
-				
+
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 						<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 					</template>
@@ -122,7 +125,7 @@
 				</template>
 
 				<template is='dom-if' if="[[showComparison]]">
-					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
+					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" index-array="[[indexArray]]" active="[[showComparison]]">
 					</aq-analyze-backtest-comparison-item>
 				</template>
 
@@ -209,7 +212,11 @@
                 checkAll:{
 				    type:Boolean,
                     value:false
-                }
+                },
+				indexArray:{
+                	type:Array,
+					value:[]
+				}
 
     		},
 
@@ -230,7 +237,7 @@
                 }
             },
 
-			
+
 			_strategyIdChanged: function(nId, oId) {
 
 				if(nId && nId!= "") {
@@ -286,7 +293,7 @@
 			},
 
 			onGetAllBacktestsForStrategy: function(data) {
-				
+
 				if(this.backtests.length == 0) {
 					this.backtests =  data.detail.response;
 				} else {
@@ -301,7 +308,7 @@
 
 			onGetStrategy: function(data) {
 				this.strategyName = data.detail.response.name;
-				
+
 				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
 
 				this.$.getBacktestsQuery.generateRequest();
@@ -312,7 +319,6 @@
 
 			checkBacktest: function(e) {
 				var checked = e.detail.checked;
-
 	        	this.checkedItems[e.detail.id] = e.detail.checked;
 
 	        	if (checked == true) {
@@ -322,6 +328,12 @@
 	        	}
 	        	if(this.checkedCount > this.backtests.length)
 	        	    this.checkedCount = this.backtests.length;
+                if(this.indexArray.length > this.backtests.length){
+                    this.set('indexArray',[]);
+                }else{
+                    this.push('indexArray',e.detail.index);
+                }
+                console.log(this.indexArray);
 	        	this.checkAll = this.checkedCount == this.backtests.length;
                 console.log(this.checkedCount);
 	        },
@@ -348,7 +360,7 @@
         				this.$.deleteBacktestQuery.generateRequest();
 	        		}
         		}
-	      
+
 	    		this.deleteId="";
                 this.checkAll = false;
 	        },

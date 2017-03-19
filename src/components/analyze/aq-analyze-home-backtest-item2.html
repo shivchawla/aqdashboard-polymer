@@ -177,20 +177,20 @@
                     <ul>
                         <template is='dom-repeat' items="{{processedBacktest.metrics1}}">
                             <li>
-                                <aq-backtest-metric-item 
-                                	metric-name="{{item.metricName}}"
-                                 	metric-value="{{item.metricValue}}">
-                             	</aq-backtest-metric-item>
+                                <aq-backtest-metric-item
+                                        metric-name="{{item.metricName}}"
+                                        metric-value="{{item.metricValue}}">
+                                </aq-backtest-metric-item>
                             </li>
                         </template>
 
-                        <template is='dom-repeat' 
-                    			items="{{processedBacktest.metrics2}}">
+                        <template is='dom-repeat'
+                                  items="{{processedBacktest.metrics2}}">
                             <li>
-                                <aq-backtest-metric-item 
-                            		metric-name="{{item.metricName}}"
-                                 	metric-value="{{item.metricValue}}">
-                             	</aq-backtest-metric-item>
+                                <aq-backtest-metric-item
+                                        metric-name="{{item.metricName}}"
+                                        metric-value="{{item.metricValue}}">
+                                </aq-backtest-metric-item>
                             </li>
                         </template>
                     </ul>
@@ -198,7 +198,7 @@
                 </div>
                 <div class="bar"></div>
             </iron-collapse>
-            
+
             <paper-icon-button noink id="expand" on-click="toggle" icon="expand-more"></paper-icon-button>
             <div class="side-bar"></div>
         </div>
@@ -386,7 +386,11 @@
                 }
             },
             onChange: function () {
-                this.fire('backtestChecked', {id: this.backtest._id, checked: this.paperCheckBox.checked});
+                this.fire('backtestChecked', {
+                    id: this.backtest._id,
+                    checked: this.paperCheckBox.checked,
+                    index: "Backtest "+this.formatIndex(this.index)
+                });
                 this.toggleSidebar();
             },
             toggleSidebar: function () {
