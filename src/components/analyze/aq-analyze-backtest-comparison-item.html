@@ -1,14 +1,17 @@
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel='import' href='../common/aq-cumret-linechart.html'>
 <link rel='import' href='../common/aq-aggregatedreturns-barchart.html'>
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-<link rel="import" href="../code-editor-element/code-editor-element.html">
-<script src="../code-editor-element/diff-match-patch.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"
+        charset="utf-8"></script>
+<script src="../common/code-editor-element/ace-diff.js"></script>
+<script src="../common/code-editor-element/diff-match-patch.js"></script>
+<link rel="import" href="../common/code-editor-element/code-editor-element.html">
+
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <dom-module id='aq-analyze-backtest-comparison-item'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -17,6 +20,7 @@
     <style>
         :host{
             font-family: 'Lato',sans-serif;
+            padding-bottom: 20px;
         }
         paper-icon-button {
             width: 35px;
@@ -33,7 +37,7 @@
         }
 
         span {
-            text-align: center;
+            /*text-align: center;*/
             margin-top: 15px;
         }
 
@@ -44,7 +48,7 @@
         }
 
         .pages_select {
-            text-align: -webkit-center;
+            /*text-align: -webkit-center;*/
             margin: 30px 0 30px 10px;
         }
 
@@ -144,7 +148,15 @@
             color:#cc4444;
             font-weight: 700;
         }
-
+        code-editor-element{
+            --code-editor-element-width: 100%;
+            --code-editor-element-height: 500px;
+            position: relative;
+            /*max-height: 700px;*/
+        }
+        .pages-container{
+            margin-bottom: 20px;
+        }
     </style>
 
     <template>
@@ -174,7 +186,7 @@
                     <paper-tabs noink selected={{graphType1}}>
                         <paper-tab>Total Return</paper-tab>
                         <paper-tab>Monthly Returns</paper-tab>
-                        <!--<paper-tab>Code Compare</paper-tab>-->
+                        <paper-tab>Code Compare</paper-tab>
                         <!--paper-tab>Risk Metrics</paper-tab-->
                     </paper-tabs>
                 </div>
@@ -185,7 +197,8 @@
                     <div id='cumRetLineChartDiv'></div>
                     <div id='barChartDiv'></div>
                     <div id='codeCompare'>
-                        <code-editor-element></code-editor-element>
+
+                        <code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></code-editor-element>
                     </div>
                 </iron-pages>
             </paper-card>
@@ -295,23 +308,18 @@
                 var backtest = e.detail.response;
                 this.backtests[backtest._id] = backtest;
                 this.addBacktestToComparison(backtest);
-//                console.log(Object.keys(this.compareItems).length);
                 var backtestResponseArray = Object.values(this.backtests);
                 console.log(backtestResponseArray);
                 if (Object.keys(this.compareItems).length === backtestResponseArray.length) {
                     console.log("Request Completed");
-//                    console.log(backtestResponseArray[0].code);
-                    console.log(backtestResponseArray)
+                    console.log(backtestResponseArray);
+                    var code_editor = this.$$('code-editor-element');
+                    var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
+                    var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";
+                    code_editor.init();
+                    code_editor.setCodeLeft(backtestResponseArray[0].code);
+                    code_editor.setCodeRight(backtestResponseArray[1].code);
                 }
-                var code_editor = document.querySelector('code-editor-element');
-                var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
-                var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";
-                code_editor.init();
-                code_editor.setCodeLeft(codeLeft);
-                code_editor.setCodeRight(codeRight);
-                setTimeout(function () {
-                    code_editor.setCodeLeft(codeLeft + codeRight);
-                }, 3000);
             },
 
             addBacktestToComparison: function (backtest) {
