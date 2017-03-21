@@ -10,17 +10,42 @@
 <dom-module id='aq-editor-strategy-input-dialog'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
-		paper-dialog {
-    		width: 520px;
-    		height: 250px;
-    		margin-right:0px;
-    		margin-left:0px;
-    		padding-right: 0px;
-    		padding-left:0px;
-    		border-radius: 5px;
-    		border: 2px solid #cc6666;;--teal;
-			z-index: 200;
-  		}
+		
+      paper-dialog {
+        width: 470px;
+        height: 240px;
+        margin-right:0px;
+        margin-left:0px;
+        padding-right: 0px;
+        padding-left:0px;
+      }
+
+      #buttons {
+        margin-bottom:0px;
+      }
+
+      paper-button {
+        --paper-button:{
+          color: teal;
+        };
+      }
+
+      paper-button{
+          border-radius: 5px;
+          height:30px;
+        }
+
+      iron-icon {
+          height:35px;
+          width: 35px;
+          color: teal;
+          margin-bottom: -35px;
+          margin-top:-15px;
+      }
+
+      .header {
+        color: teal;
+      }
 
   		.input-fields {
   			--padding-bottom: 20px;
@@ -31,23 +56,6 @@
 
   		#buttons {
   			margin-bottom:0px;
-  			margin-left: 58%;
-  		}
-
-  		paper-button {
-  			--paper-button:{
-  				color:teal;
-  			};
-  		}
-
-  		paper-button{
-  			border-radius: 5px;
-    		border: 1px solid teal;
-    		height:30px;
-  		}
-
-  		h2 {
-  			color:teal;
   		}
 
   		paper-input {
@@ -56,26 +64,18 @@
         }
       }
 
-     iron-icon {
-        height:50px;
-        width: 50px;
-        color: #cc6666;;--teal;
-        margin-bottom: -35px;
-        margin-top:-15px;
-      }
-
-
 	</style>
 
 	<template>
-	    <paper-dialog id='createStrategyModalDialog' entry-animation="scale-up-animation"
-					  exit-animation="fade-out-animation" on-keydown='checkForKeys'>
-	    	<div class="layout horizontal">
-          		<div class="flex"></div>
-          		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
+	    <paper-dialog id='createStrategyModalDialog' 
+                    with-backdrop
+                    on-iron-overlay-opened="patchOverlay" 
+                    on-keydown='checkForKeys'>
+	    	<div class="header layout horizontal">
+            <h2>[[header]]</h2>
+        		<div class="flex"></div>
+        		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
         	</div>
-
-	    	<h2>[[header]]</h2>
 
  			<paper-input id='strategyNameInput' class='input-fields'
                          label="Strategy Name"
@@ -86,7 +86,7 @@
                          required
                          maxlength=30
                          char-counter>
-           	</paper-input>
+     	</paper-input>
 
 			<paper-input id='strategyDesc' class='input-fields'
 		                     label="Give it a short description..."
@@ -100,13 +100,13 @@
 		                     max-rows=1
 		                     char-counter
 		                     no-wrap>
-            </paper-input>
+      </paper-input>
 
-           	<div id="buttons">
-
-  				<paper-button noink on-tap='onCancel'>Cancel</paper-button>
-    			<paper-button noink on-tap='onSubmit'>OK</paper-button>
-  			</div>
+     	<div id="buttons" class="layout horizontal">
+        <div class="flex"></div>
+				<paper-button noink on-tap='onCancel'>Cancel</paper-button>
+  			<paper-button noink on-tap='onSubmit'>OK</paper-button>
+			</div>
 
 		</paper-dialog>
 
@@ -166,7 +166,15 @@
         } else if(e.keyCode == 27) {
             this.onCancel();
         }
+      },
+
+      // https://github.com/PolymerElements/paper-dialog/issues/7
+      patchOverlay: function (e) {
+        if (e.target.withBackdrop) {
+          e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
+        }
       }
+
 
 		});
 

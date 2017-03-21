@@ -15,53 +15,52 @@
     		margin-left:0px;
     		padding-right: 0px;
     		padding-left:0px;
-    		border-radius: 5px;
-    		border: 2px solid #cc6666;;--teal;
   		}
 
   		#buttons {
   			margin-bottom:0px;
-  			--margin-top: 10px;
   		}
 
   		paper-button {
   			--paper-button:{
-  				color:teal;
+  				color: teal;
   			};
 		}
 
 		paper-button{
   			border-radius: 5px;
-    		border: 1px solid teal;
     		height:30px;
   		}
 
-  		h2 {
-  			color:teal;
-  		} 
-
-		  iron-icon {
-	        height:50px;
-	        width: 50px;
-	        color: #cc6666;;--teal;
-	        margin-bottom: -35px;
+	  	iron-icon {
+	        height:35px;
+	        width: 35px;
+	        color: teal;
+	       	margin-bottom: -35px;
 	        margin-top:-15px;
-	      }
+      	}
+
+      	.header {
+      		color: teal;
+      	}
   		
 	</style>
 	
 	<template>
-	  <paper-dialog id='modal' with-backdrop on-iron-overlay-opened="patchOverlay">
-	    	<div class="layout horizontal">
+	  <paper-dialog id='modal' 
+	  				with-backdrop 
+	  				on-iron-overlay-opened="patchOverlay">
+	    	<div class="header layout horizontal">
+          		<h2>[[heading]]</h2>
           		<div class="flex"></div>
           		<iron-icon icon="aq-icons:delete"></iron-icon>
         	</div>
 
- 			<h2>[[heading]]</h2>
+ 			
  			<p>[[message]]</p>	 	
   			<div class="buttons">
-  				<paper-button raised dialog-dismiss>[[cancel]]</paper-button>
-    			<paper-button raised dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
+  				<paper-button dialog-dismiss>[[cancel]]</paper-button>
+    			<paper-button dialog-confirm on-tap='onSubmit'>[[accept]]</paper-button>
   			</div>
 		</paper-dialog>
 	</template>
