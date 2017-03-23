@@ -12,7 +12,7 @@
 
 <link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="./aq-help-marked-item.html">
-
+<link rel="import" href="../common/aq-search-input.html">
 <dom-module id="aq-help-home">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
@@ -47,9 +47,9 @@
         }
 
         #drawerPanel1 {
-            background-color: #fafafa;
+            background-color: #f2f2f2;
             border: none;
-            padding: 10px;
+            padding: 10px 0 0 10px;
         }
 
         paper-listbox {
@@ -179,8 +179,11 @@
                     </paper-header-panel>
 
                     <paper-header-panel id='drawerPanel1' drawer mode="seamed">
-                        <paper-input class="searchCategories" label="Search Help" on-keyup="search"
-                                     id="search_input"></paper-input>
+                        <!--<paper-input class="searchCategories" label="Search Help" on-keyup="search"-->
+                                     <!--id="search_input"></paper-input>-->
+                        <aq-search-input>
+                            <input is="iron-input" placeholder="Search Help" on-keyup="search" id="search_input">
+                        </aq-search-input>
                         <paper-listbox selected="{{scrollSelected}}">
                             <template is="dom-repeat" items="{{categoriesArray}}">
                                 <paper-item class$="selectableCategories [[item.Category.size]]">
