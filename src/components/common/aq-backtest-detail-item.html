@@ -48,10 +48,10 @@
         }
 
         .detail {
-            margin: 10px;
+            --margin: 10px;
             --margin-bottom: 0px !important;
             --height: 250px;
-            width: 50%;
+            --width: 50%;
         }
 
         .detailmetric {
@@ -105,9 +105,9 @@
         }
 
         .paper_body {
-            width: var(--aq-backtest-detail-item-width,98%);
-            text-align: -webkit-center;
             color: #24293d;
+            width: 95%;
+            margin: 0 auto;
         }
 
         .card-actions {
@@ -155,16 +155,13 @@
             padding-top: 10px;
         }
 
-        .paper_body{
-            margin: 0;
-        }
     </style>
 
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <paper-card class="flex detail layout vertical paper_body" elevation="{{elevation}}">
+        <paper-card class="flex layout vertical paper_body" elevation="{{elevation}}">
             <div class='card-actions'>
                 <div id='detail-header-bottom' class="layout horizontal flex">
                     <div class="flex"></div>
@@ -719,25 +716,20 @@
                 [
                 	{	
                 		label: "Created",
-    					metric: this.backtest.createdAt, 
+    					metric: date.formatDateTime(this.backtest.createdAt), 
 					}, 
 
                 	{
                 		label: "Date Range",
-                		metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate)
+                		metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
                 	},
 
                 	{
                 		label: "Status",
-                		metric: this.backtest.status
+                		metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
                 	}
             	];
                 
-                /*this.set('backtest.createdAt',date.formatDateTime(this.backtest.createdAt));
-                this.set('backtest.settings.startDate' , date.formatDate(this.backtest.settings.startDate));
-                this.set('backtest.settings.endDate' , date.formatDate(this.backtest.settings.endDate));
-                console.log(this.backtest);*/
-
                 if (this.backtest.status == "active") {
                     this.active = true;
                     //this.reset();

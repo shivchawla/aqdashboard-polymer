@@ -4,7 +4,6 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <link rel="import" href="../common/aq-check-authentication.html">
-<link rel="import" href="../aq-markdown-editor.html">
 <link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
@@ -92,17 +91,6 @@
 
             <div id="replybox" class="flex layout vertical">
 
-                <!--<div id="attachedMessageDiv" class="layout horizontal self-end">-->
-                    <!--<i class="self-end">[[attachedMessage]]</i>-->
-                    <!--<paper-icon-button id='removeIcon' class="self-end" title="Remove" on-tap='onRemoveAttached'-->
-                                       <!--icon="aq-icons:remove-circle"></paper-icon-button>-->
-                <!--</div>-->
-
-                <!--<paper-button id='attachButton' class="self-end" raised noink on-tap='onAttach'>Attach-->
-                    <!--<iron-icon icon="aq-icons:attach-file"></iron-icon>-->
-                <!--</paper-button>-->
-
-                <!--<aq-markdown-editor id="editor" place-holder="Write a reply"></aq-markdown-editor>-->
                 <div class="layout horizontal attachment-container">
                     <div class="flex"></div>
                     <template is='dom-if' if='[[messageAttached]]'>

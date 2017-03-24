@@ -155,28 +155,12 @@
                 --iron-collapse-transition-duration: 100ms;
             }
 
-            .left-middle-container(:not([semi-wide])) {
-            	@apply(--layout-horizontal);
-            	
-            }
-
-            left-middle-container[semi-wide] {
-            	--@apply(--layout-vertical);
-            }
-
             aq-qqq{
             	display: inline-block;
             }
 
         </style>
 
-     	<iron-media-query query="(min-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
-        <iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
-
-      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
-      
-        <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
-       
         <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
         <iron-signals on-iron-signal-select-backtest="selectBacktest"></iron-signals>
         <div class="row-container">
@@ -199,21 +183,23 @@
 
             <div class="bar"></div>
 
-            <iron-collapse>
-                <div class="lower-container">
-                   
-                   	<template is='dom-if' if='[[processedBacktest.metrics]]'>
-		                <aq-backtest-metric-item-list 
+
+            <template is='dom-if' if='[[processedBacktest.metrics]]'>
+		            
+	            <iron-collapse>
+	                <div class="lower-container">
+	                   
+                   	    <aq-backtest-metric-item-list 
 		            		metric-items="{{processedBacktest.metrics}}">
 		                </aq-backtest-metric-item-list>
-	                </template>
 
-                </div>
+	                </div>
 
-                <div class="bar"></div>
-            </iron-collapse>
-            
-            <paper-icon-button noink id="expandBtn" on-click="toggle" icon="expand-more"></paper-icon-button>
+	                <div class="bar"></div>
+	            </iron-collapse>
+	            
+	            <paper-icon-button noink id="expandBtn" on-click="toggle" icon="expand-more"></paper-icon-button>
+            </template>
             <div class="side-bar"></div>
         </div>
 
@@ -255,105 +241,12 @@
 
                 backtestId: String,
                
-                narrow: Boolean,
-                narrowWide: Boolean,
-                semiWide: Boolean,
-                wide: Boolean,
-                
             },
 
             attached: function () {
                 this.backtestId = this.backtest._id;
-            },
-
-            /*_widthChanged: function() {
-            	this.manageView();
-            },
-
-            manageView: function() {
-        	 	this.initializeBackestData();
-               
-            	if(this.processedBacktest.metrics) {
-            		
-            		//this.initializeBackestData();
-            		this.processBacktestData();
-
-            		var nItems = this.processedBacktest.metrics.length;
-	            		
-	            	if(this.narrow ) {
-	            		this.splice('processedBacktest.metrics', nItems - 7, 7);
-
-	            	} else if (this.narrowWide) {
-	            		this.splice('processedBacktest.metrics', nItems - 6, 6);
-	            	} else if (this.semiWide) {
-	            		this.splice('processedBacktest.metrics', nItems - 4, 4);
-	            	} else if (!this.wide) {
-	            		this.splice('processedBacktest.metrics', nItems - 2, 2);
-	            	}
-            	}
-            },*/
-
-            ready: function () {
-                this.sideBar = this.$$('.side-bar');
-                this.ironCollapse = this.$$('iron-collapse');
-                this.paperCheckBox = this.$$('paper-checkbox');
-                this.expandBtn = this.$$('#expandBtn');
                 this.processBacktestData();
             },
-
-            /*initializeBackestData: function() {
-        		this.set('processedBacktest.metrics', [{
-                    "metricName": "Total Return",
-                    "metricValue": "-",
-                    "metricDescription": "Total Return"
-                },
-                    {
-                        "metricName": "Annual Return",
-                        "metricValue": "-",
-                        "metricDescription": "Annual Return",
-                    },
-                    {
-                        "metricName": "Volatility",
-                        "metricValue": "-",
-                        "metricDescription": "Volatility"
-                    },
-                    {
-                        "metricName": "Sharpe Ratio",
-                        "metricValue": "-",
-                        "metricDescription": "Sharpe Ratio"
-                    },
-                    {
-                        "metricName": "Beta",
-                        "metricValue": "-",
-                        "metricDescription": "Beta"
-                    },
-                    {
-	                    "metricName": "Information Ratio",
-	                    "metricValue": "-",
-	                    "metricDescription": "Information Ratio"
-	                },
-                    {
-                        "metricName": "Max Drawdown",
-                        "metricValue": "-",
-                        "metricDescription": "Max Drawdown"
-                    },
-                    {
-                        "metricName": "Calmar Ratio",
-                        "metricValue": "-",
-                        "metricDescription": "Calmar Ratio"
-                    },
-                    
-                    {
-	                     "metricName":"Stability",
-	                     "metricValue":"-",
-	                     "metricDescription":"Stability"
-                     },
-                     {
-	                     "metricName":"Avg. Concentration",
-	                     "metricValue":"-",
-	                     "metricDescription":"Avg. Concentration"
-                     }]);
-            },*/
 
             formatIndex: function (index) {
                 return index + 1;
@@ -440,18 +333,19 @@
 
                 	{
                 		label: "Total Return",
-                		metric: this.backtest.output.summary.totalreturn.toFixed(2).toString() + '%',
+                		metric: !this.isBacktestActive(this.backtest) ? this.backtest.output.summary.totalreturn.toFixed(2).toString() + '%' : "-",
                 	},
 
                 	{
                 		label: "Sharpe Ratio",
-                		metric: this.backtest.output.summary.sharperatio.toFixed(2),
+                		metric: !this.isBacktestActive(this.backtest) ? this.backtest.output.summary.sharperatio.toFixed(2) : "-",
                 	}];
             },
 
             isBacktestActive: function (backtest) {
-                return false;
+                return backtest.status != "complete"; 
             },
+
             onBacktestDetail: function () {
                 this.fire('detail-action', {id: this.backtest._id, index: this.index});
             },
@@ -459,24 +353,33 @@
             onShare: function () {
                 this.fire('shareClicked', {id: this.backtest._id});
             },
+
             toggle: function () {
+            	this.ironCollapse = this.$$('iron-collapse');
                 this.ironCollapse.toggle();
                 if (this.ironCollapse.opened) {
-                    this.expandBtn.style.transform = "rotate(180deg)";
+                    this.$$('#expandBtn').style.transform = "rotate(180deg)";
                 } else {
-                    this.expandBtn.style.transform = "rotate(0deg)";
+                    this.$$('#expandBtn').style.transform = "rotate(0deg)";
                 }
             },
+
             onChange: function () {
-                this.fire('backtestChecked', {id: this.backtest._id, checked: this.paperCheckBox.checked});
+                this.fire('backtestChecked', {
+                    id: this.backtest._id,
+                    checked: this.$$('paper-checkbox').checked,
+                    index: "Backtest "+this.formatIndex(this.index)
+                });
                 this.toggleSidebar();
             },
+
             toggleSidebar: function () {
                 if (this.paperCheckBox.checked)
-                    this.sideBar.style.transform = "scale(1,1)";
+                    this.$$('.side-bar').style.transform = "scale(1,1)";
                 else
-                    this.sideBar.style.transform = "scale(0,1)";
+                    this.$$('.side-bar').style.transform = "scale(0,1)";
             },
+
             selectBacktest: function (e) {
                 this.$$('paper-checkbox').checked = e.detail.checked;
                 this.onChange();
