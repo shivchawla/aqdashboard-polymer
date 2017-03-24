@@ -3,6 +3,7 @@
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
@@ -48,10 +49,15 @@
 			height:0px;
 			min-width: 500px;
 		}
-		.layout{
-			position: relative;
-			top:70px;
+
+		paper-button {
+			text-transform: none;
+			font-size: 14px;
+			color:#cc6666;
+		 	margin-bottom: 10px;
+            margin-left: 5px;
 		}
+
 	</style>
 
 	<template>
@@ -101,15 +107,18 @@
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
-        <aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}"></aq-analyze-home-menu>
+
+        <aq-analyze-home-menu check-all="{{checkAll}}" num-active-backtests="[[checkedCount]]" strategy-name="{{strategyName}}">
+        </aq-analyze-home-menu>
 
         <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 			<div id='container'>
+
+	            <paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goToEditor'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
+
 				<template is='dom-if' if="[[!showComparison]]">
 
-					<!--p>All Backtests for <i>{{strategyName}}</i></p-->
-
-					<div class="layout horizontal wrap flex around-justified itemcontainer" >
+					<div class="layout vertical center" >
 				
 					<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 						<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
@@ -230,7 +239,6 @@
                 }
             },
 
-			
 			_strategyIdChanged: function(nId, oId) {
 
 				if(nId && nId!= "") {
@@ -286,7 +294,7 @@
 			},
 
 			onGetAllBacktestsForStrategy: function(data) {
-				
+
 				if(this.backtests.length == 0) {
 					this.backtests =  data.detail.response;
 				} else {
@@ -342,7 +350,7 @@
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
 	        	for (key in this.checkedItems) {
-	        		var idx = this.backtests.map(x=>x._id).indexOf(key);
+	        		var idx = this.backtests.map(function(x) {return x._id;}).indexOf(key);
 	        		if(idx != -1 && this.checkedItems[key]==true) {
 	        			this.deleteId = key;
         				this.$.deleteBacktestQuery.generateRequest();
@@ -355,13 +363,18 @@
 
 	        onDeleteBacktestForStrategySuccess: function(data) {
 	        	var deleteId = data.detail.response.backtestId;
-	        	var idx = this.backtests.map(x=>x._id).indexOf(deleteId);
+	        	var idx = this.backtests.map(function(x) {return x._id;}).indexOf(deleteId);
 
 	        	if(idx != -1) {
 	        		this.splice('backtests', idx, 1);
+	        		console.log(this.backtests);
     				this.checkedCount -= 1;
     				delete this.checkedItems[deleteId];
     				this.fire('iron-signal', {name:'backtest-deleted'});
+	        	}
+
+	        	if(this.backtests.length == 0) {
+	        		this.fire('rt-changed', {route:'/dashboard/editor'});
 	        	}
 	        },
 
