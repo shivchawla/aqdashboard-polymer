@@ -1,0 +1,90 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel='import' href='./aq-backtest-metric-item.html'>
+
+<dom-module id='aq-backtest-metric-item-list'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<template>
+		<iron-media-query query="(max-width: 1050px)" query-matches="{{superWide}}"></iron-media-query>
+
+        <iron-media-query query="(max-width: 960px)" query-matches="{{wide}}">
+        </iron-media-query>
+
+        <iron-media-query query="(max-width: 800px)" query-matches="{{semiWide}}"></iron-media-query>
+      	
+      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
+      
+        <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+
+		<div class="layout horizontal">
+			
+			<template is='dom-repeat' id='repeater' items="{{metricItems}}">
+                <aq-backtest-metric-item class="flex"
+                	metric-name="{{item.metricName}}"
+                 	metric-value="{{item.metricValue}}">
+             	</aq-backtest-metric-item>
+            </template>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-backtest-metric-item-list',
+
+			properties: {
+				metricItems:{
+					type:Array,
+					value:[],
+				},
+
+				narrow: Boolean,
+				narrowWide: Boolean,
+				semiWide: Boolean,
+				wide:Boolean,
+				superWide:Boolean
+			},
+
+			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide)'],
+
+			_widthChanged: function() {
+				
+				if(this.originalItems) {
+					this.metricItems =  this.deepCopy(this.originalItems);
+				} else {
+					this.originalItems = this.deepCopy(this.metricItems);
+				}
+
+				if(this.metricItems) {
+
+					var nItems = this.metricItems.length;
+					let eIdx;
+
+					if(nItems > 0) {
+						if(this.narrow) {
+							eIdx = nItems >=3 ? 3: nItems;
+		            	} else if (this.narrowWide) {
+		            		eIdx = nItems >=4 ? 4 : nItems;
+		            	} else if (this.semiWide) {
+		            		eIdx = nItems >= 5 ? 5 : nItems;
+		            	} else if (this.wide) {
+		            		eIdx = nItems >= 6 ? 6 : nItems;
+		            	} else if (this.superWide) {
+		            		eIdx = nItems >= 8 ? 8 : nItems;
+		            	} else {
+		            		eIdx = nItems;
+		            	}
+
+		            	var ct = nItems - eIdx;
+		            	this.splice('metricItems', eIdx, ct);
+	            	}
+				}
+			},
+
+			deepCopy: function(array) {
+				return JSON.parse(JSON.stringify(array));
+			},
+		});
+	</script>
+</dom-module>

@@ -1,0 +1,139 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+
+<dom-module id='aq-backtest-header-item'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<template>
+		<iron-media-query query="(max-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
+        <iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
+
+      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
+      
+        <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+
+		<div class="layout horizontal">
+			<div class="flex"></div>
+	        
+	        <template is='dom-repeat' items="{{headerItems}}">
+	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]"></aq-qqq>
+	        	<div class="flex"></div>	
+	        </template>
+    	</div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-backtest-header-item',
+			properties :{
+				headerItems:{
+					type:Array,
+					value:[],
+				},
+
+				narrow: Boolean,
+				narrowWide: Boolean,
+				semiWide: Boolean,
+				wide:Boolean,
+			},
+
+			observers:['_widthChanged(narrow, narrowWide, semiWide, wide)'],
+
+			_widthChanged: function() {
+				
+				if(this.originalItems) {
+					this.headerItems =  this.deepCopy(this.originalItems);
+				} else {
+					this.originalItems = this.deepCopy(this.headerItems);
+				}
+
+				if(this.headerItems) {
+					var nItems = this.headerItems.length;
+
+					let eIdx;
+					if(nItems > 0) {
+						if(this.narrow ) {
+							eIdx = nItems >=3 ? 3 : nItems;
+		            	} else if (this.narrowWide) {
+		            		eIdx = nItems >=4 ? 4 : nItems;
+		            	} else if (this.semiWide) {
+		            		eIdx = nItems >= 5 ? 5 : nItems;
+		            	} else if (this.wide) {
+		            		eIdx = nItems >= 6 ? 6 : nItems;
+		            	} else {
+		            		eIdx = nItems;
+		            	}
+
+		            	var ct = nItems - eIdx;
+		            	this.splice('headerItems', eIdx, ct);
+
+	            	}
+				}
+			},
+
+			deepCopy: function(array) {
+				return JSON.parse(JSON.stringify(array));
+			},
+		});
+	</script>
+</dom-module>
+
+<dom-module id='aq-qqq'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		:host {
+			display: block;
+		}
+
+	  	.text-label {
+	        font-size: 12px;
+	        font-weight: 300;
+	        text-align: center;
+	    }
+
+	    .text-content {
+	        font-weight: 400;
+	        font-size: 13px;
+	        --margin-left: 5px;
+
+	    }
+	</style>
+
+	<template>
+
+		<iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
+       	
+		<template is='dom-if' if='[[!semiWide]]'>
+			<div class="text-label">
+				[[label]]:
+				<span class="text-content">[[metric]]</span>
+	        </div>
+        </template>
+
+        <template is='dom-if' if='[[semiWide]]'>
+			<div class="layout vertical center">
+				<span class="text-content">[[metric]]</span>
+				<span class="text-label">[[label]]</span>
+	        </div>
+        </template>
+
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-qqq',
+			properties: {
+				label: String,
+				metric: String, 
+				semiWide: {
+					type:Boolean,
+					value: false,
+				},
+			},
+
+		});
+	</script>
+</dom-module>
