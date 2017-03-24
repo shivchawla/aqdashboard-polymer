@@ -14,26 +14,19 @@
 
 	<style>
 		#container {
-			width:98%;
-			margin:0 auto;
-		    margin-top: 0px;
+			width:95%;
+			margin-top: 0px;
 		    color: #24293d; 
+		    margin-left: 50px;
 	  	}
 
-		#backButton {
-			margin:auto 0;
-			outline: none !important;
-            color:#cc4444;
-            transform: scale(1.6,1.6);
+		paper-button {
+			text-transform: none;
+			font-size: 14px;
+			color:#cc6666;
+		 	margin-bottom: 10px;
+            margin-left: 5px;
 		}
-        p.self-center{
-            padding: 0;
-            margin: 0;
-            font-size: 14px;
-            color:#cc4444;
-            position: relative;
-            left: -5px;
-        }
   	</style>
 
 	<template>
@@ -41,15 +34,13 @@
 	
     		<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 		  	
-		  	<div id='container'>
+		  	<div id='container layout vertical'>
 			    <template is='dom-if' if='{{!loading}}'>
-			    	<div class="goBackButton layout horizontal">
-			            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="chevron-left" on-tap="goBackAllBacktests">
-			            </paper-icon-button>
-			            <p class="self-center">Back</p>
-			      	</div>
+			    	
+			      	<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap="goBackAllBacktests"><iron-icon icon="chevron-left" ></iron-icon> Back
+		            </paper-button>
 
-			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
+			      	<aq-backtest-detail-item class="self-center" loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
 		      	</template>
       		</div>
 	</template>

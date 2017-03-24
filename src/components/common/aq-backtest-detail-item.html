@@ -8,6 +8,9 @@
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
+<link rel='import' href='./aq-backtest-header-item.html'>
+<link rel='import' href='./aq-backtest-metric-item-list.html'>
+
 <link rel='import' href='./aq-check-authentication.html'>
 <link rel='import' href='./aq-cumret-linechart.html'>
 <link rel='import' href='./aq-aggregatedreturns-barchart.html'>
@@ -45,10 +48,10 @@
         }
 
         .detail {
-            margin: 10px;
+            --margin: 10px;
             --margin-bottom: 0px !important;
             --height: 250px;
-            width: 50%;
+            --width: 50%;
         }
 
         .detailmetric {
@@ -101,22 +104,10 @@
             width: 144px;
         }
 
-        .wrap {
-            -webkit-flex-wrap: wrap;
-            flex-wrap: wrap;
-        }
-
         .paper_body {
-            width: var(--aq-backtest-detail-item-width,98%);
-            text-align: -webkit-center;
             color: #24293d;
-        }
-
-        .flex_container {
-            display: flex;
-            display: -webkit-flex; /* Safari */
-            -webkit-flex-wrap: wrap;
-            flex-wrap: wrap;
+            width: 95%;
+            margin: 0 auto;
         }
 
         .card-actions {
@@ -153,85 +144,46 @@
         #errProgress {
             --paper-progress-active-color: #cc6666 !important;
         }
-        ul {
-            list-style: none;
-            padding-left: 0;
-            margin: 0;
-        }
+
         .lower-container {
             padding: 0 20px;
             margin-top: 10px;
             background-color: #f5f5f5;
         }
 
-        .lower-container ul {
-            display: flex;
-            justify-content: space-between;
-            margin: 15px 0;
-            padding: 10px;
-        }
         .middle-container {
             padding-top: 10px;
         }
 
-        .middle-container ul {
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        li {
-            display: inline-block;
-            margin-right: 20px;
-        }
-        .text-label {
-            font-size: 0.8em;
-            font-weight: 300;
-        }
-
-        .text-content {
-            font-weight: 400;
-            font-size: 1em;
-            margin-left: 5px;
-        }
-        .text-content-bold{
-            font-weight: 700;
-        }
-        .paper_body{
-            margin: 0;
-        }
     </style>
 
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <paper-card class="flex detail layout vertical paper_body" elevation="{{elevation}}">
+        <paper-card class="flex layout vertical paper_body" elevation="{{elevation}}">
             <div class='card-actions'>
                 <div id='detail-header-bottom' class="layout horizontal flex">
                     <div class="flex"></div>
                 </div>
+
                 <div class="middle-container">
-                    <ul class="upper-list">
-                        <li class="text-label">Name:<span class="text-content text-content-bold">Backtest [[index]]</span></li>
-                        <li class="text-label">Created: <span class="text-content">{{backtest.createdAt}}</span></li>
-                        <li class="text-label">Date Range: <span class="text-content">{{backtest.settings.startDate}} - {{backtest.settings.endDate}}</span></li>
-                        <li class="text-label">Running Time:<span class="text-content">52s</span></li>
-                        <li class="text-label">Status:<span class="text-content">{{backtest.status}}</span></li>
-                    </ul>
-                    <div class="bar"></div>
+
+                	<template is='dom-if' if='[[backtestHeader]]'>
+                		<aq-backtest-header-item header-items="{{backtestHeader}}">
+                		</aq-backtest-header-item>
+            		</template>
+                   
                 </div>
+
+                <div class="bar"></div>
+
                 <div class="lower-container">
-                    <ul>
-                        <template is="dom-repeat" items="{{metrics}}">
-                            <li>
-                                <aq-backtest-metric-item 
-                                	metric-name="{{item.metricName}}"
-                                 	metric-value="{{item.metricValue}}">
-                             	</aq-backtest-metric-item>
-                            </li>
-                        </template>
-                    </ul>
+                	<template is='dom-if' if='{{metrics}}'>
+                		<aq-backtest-metric-item-list 
+                			metric-items = "{{metrics}}">
+            			</aq-backtest-metric-item-list> 
+                	</template>
                 </div>
 
                 <div id='detail-header' class="layout horizontal">
@@ -262,8 +214,6 @@
                         </div>
                     </template>
 
-                    <!--<div class="flex"></div>-->
-
                     <paper-tabs noink selected="{{graphType}}">
                         <paper-tab>Cumulative Return</paper-tab>
                         <template is='dom-if' if='[[!active]]'>
@@ -275,17 +225,14 @@
 
                 <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
                     <div id='cumRetLineChartDiv'>
-                        <!--aq-cumret-linechart></aq-cumret-linechart-->
                     </div>
 
                     <template is='dom-if' if='[[!active]]'>
                         <div id='barChartDiv'>
-                            <!--aq-aggregatedreturns-barchart></aq-aggregatedreturns-barchart-->
                         </div>
                     </template>
 
                 </iron-pages>
-
 
             </div>
         </paper-card>
@@ -394,7 +341,7 @@
             },
 
             resetMetrics: function () {
-                this.metrics = [{
+                this.metricss = [{
                     "metricName": "Total Return",
                     "metricValue": "-",
                     "metricDescription": "Total Return"
@@ -764,10 +711,25 @@
             onGetBacktestSuccess: function (e) {
 
                 this.set('backtest', e.detail.response);
-                this.set('backtest.createdAt',date.formatDateTime(this.backtest.createdAt));
-                this.set('backtest.settings.startDate' , date.formatDate(this.backtest.settings.startDate));
-                this.set('backtest.settings.endDate' , date.formatDate(this.backtest.settings.endDate));
-                console.log(this.backtest);
+
+                this.backtestHeader = 
+                [
+                	{	
+                		label: "Created",
+    					metric: date.formatDateTime(this.backtest.createdAt), 
+					}, 
+
+                	{
+                		label: "Date Range",
+                		metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
+                	},
+
+                	{
+                		label: "Status",
+                		metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
+                	}
+            	];
+                
                 if (this.backtest.status == "active") {
                     this.active = true;
                     //this.reset();

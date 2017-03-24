@@ -117,29 +117,6 @@
                 this.fire('compareClicked');
             },
 
-            checkForKeys: function (e) {
-                // check if 'esc' was pressed
-                if (e.keyCode === 27) {
-                    this.$$('#searchbox').value = "";
-                    this.$$('#searchbox').blur();
-                } else if (e.keyCode === 13) {
-                    this.debounce('search', this.search, 50);
-                }
-            },
-
-            blur: function () {
-                if (this.$$('#searchbox').value == "") {
-                    this.$$('#menu-icons').style.display = 'inline';
-                    this.debounce('search', this.search, 50);
-                }
-            },
-
-            search: function () {
-                this.searchText = this.$$('#searchbox').value;
-                this.fire('search-action', {searchtext: this.searchText});
-
-            },
-
             onCheckAllStrategies: function () {
                 this.checkAll = this.$$('paper-checkbox').checked;
                 console.log("Firing signal");
