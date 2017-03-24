@@ -1,0 +1,48 @@
+<link rel="import" href="../../../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<dom-module id="aq-search-input">
+    <template>
+        <style>
+            :host{
+                display: inline-block;
+            }
+            .search-container{
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                background-color: var(--search-element-background-color,#fff);
+                padding: 5px 10px;
+                border-radius: 4px;
+                min-width: 220px;
+            }
+            ::content input{
+                border:none;
+                outline:none;
+                margin-left: 10px;
+                font-size: 12px;
+                background-color: transparent;
+                width: 100%;
+            }
+            iron-icon{
+                color:var(--search-element-icon-color,#787878);
+                transform: rotate(90deg) scale(0.8,0.8);
+            }
+        </style>
+        <div class="search-container">
+            <iron-icon icon="{{icon}}"></iron-icon>
+            <content></content>
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+            is:"aq-search-input",
+            properties:{
+                icon:{
+                    type:String,
+                    value:"search"
+                }
+            }
+        })
+    </script>
+</dom-module>
