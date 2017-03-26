@@ -33,7 +33,6 @@
         #date-settings {
             --height: 80px;
             margin-top: 8px;
-            margin-left: 14px;
             --border: 1px solid #e5e5e5;
             --width: 90%;
         }
@@ -122,10 +121,9 @@
             /*transform: translate(0,35px);*/
         }
 
-        .input-span {
+        #basic-settings .input-span {
             position: relative;
             top: 15px;
-            font-size: 14px;
         }
 
         #input-capital {
@@ -135,6 +133,7 @@
         #input-capital, .input-span {
             color: #7c7c7c;
             font-family: 'Lato', sans-serif;
+            font-size: 14px;
         }
 
         paper-tabs {
@@ -144,6 +143,7 @@
 
         paper-tab {
             float: left;
+            --paper-tab-ink: #cc4444;
         }
 
         .paper-tabs-text {
@@ -176,12 +176,31 @@
         .advanced-settings tr td{
             margin-left: 10px;
         }
+        .box{
+            width: 40px;
+            height: 25px;
+            text-align: center;
+        }
+        .split-bar{
+            width: 2px;
+            height: 40px;
+            background-color: #f2f2f2;
+            position: absolute;
+            top:4px;
+            margin-left: 53px;
+        }
+        td{
+            position: relative;
+        }
+        table{
+            margin-left: 15px;
+        }
 
     </style>
 
     <template>
         <div id='run' class="layout vertical flex">
-        	 <paper-tabs selected="{{selected}}">
+        	 <paper-tabs selected="{{selected}}" >
                 <paper-tab><span class="paper-tabs-text">Basic</span></paper-tab>
                 <paper-tab><span class="paper-tabs-text">Advanced</span></paper-tab>
               
@@ -229,7 +248,7 @@
                 </div>
                 <div id='advancedSettings' class="layout vertical">
                     <table>
-                        <col width="150">
+                        <col width="100">
                         <col width="300">
                         <thead>
                         <tr style="display: none">
@@ -239,7 +258,7 @@
                         </thead>
                         <tbody class="advanced-settings">
                         <tr>
-                            <td><span class="">Rebalance</span></td>
+                            <td><span class="input-span">Rebalance</span></td>
                             <td>
                                 <div class="button-select-container layout horizontal">
                                     <group-selector event-name="rebalance-selected" items="{{rebalanceOptions}}"></group-selector>
@@ -247,7 +266,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="">Cancel Policy</span></td>
+                            <td><span class="input-span">Cancel Policy</span></td>
                             <td>
                                 <div class="button-select-container layout horizontal">
                                     <group-selector event-name="cancel-policy-selected" items="{{cancelOptions}}"></group-selector>
@@ -255,7 +274,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="">Resolution</span></td>
+                            <td><span class="input-span">Resolution</span></td>
                             <td>
                                 <div class="button-select-container layout horizontal">
                                     <group-selector event-name="resolution-selected" items="{{resolutionOptions}}"></group-selector>
@@ -263,29 +282,31 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="">Commission</span></td>
+                            <td><span class="input-span">Commission</span></td>
                             <td>
                                 <input class="box" placeholder="Commission" class="smallInputBox"
                                        value="{{commissionValue::change}}" type="number" default
                                        on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>
-                                <div style="display: inline-block;" class="button-select-container layout horizontal">
+                                <div class="split-bar"></div>
+                                <div style="display: inline-block;margin-left: 15px;" class="button-select-container layout horizontal">
                                     <group-selector event-name="commision-selected" items="{{commissionOptions}}"></group-selector>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="">Slippage</span></td>
+                            <td><span class="input-span">Slippage</span></td>
                             <td>
                                 <input class="box" class="smallInputBox" placeholder="Slippage"
                                        value="{{slippageValue::change}}" type="number"
                                        on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>
-                                <div style="display: inline-block;" class="button-select-container layout horizontal">
+                                <div class="split-bar"></div>
+                                <div style="display: inline-block;margin-left: 15px;" class="button-select-container layout horizontal">
                                     <group-selector event-name="slippage-selected" items="{{slippageOptions}}"></group-selector>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="">Investment Plan</span></td>
+                            <td><span class="input-span">Investment Plan</span></td>
                             <td>
                                 <div class="button-select-container layout horizontal">
                                     <group-selector event-name="investment-plan-selected" items="{{investmentPlanOptions}}"></group-selector>
@@ -328,7 +349,7 @@
             properties: {
                 selected: {
                     type: Number,
-                    value: 1
+                    value: 0
                 },
                 startDate: {
                     type: String,
