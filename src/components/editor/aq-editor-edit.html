@@ -64,17 +64,6 @@
             --height: 30px;
         }
 
-        #leftPanel {
-            border-right: 1px solid #24293d;
-        }
-
-        #rightPanel {
-            background-color: white;
-            border-left: 5px solid #24293d;
-            color: #02558b;
-            padding-right: -50px;
-        }
-
         .toolbarPlayIcon {
             border: 1px solid;
             padding: 0px;
@@ -84,7 +73,9 @@
 
         #sidebar {
             height: 100%;
-
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
         }
 
         #sidebarLeft {
@@ -97,6 +88,10 @@
             height: 100%;
         }
 
+        #rightPanel {
+          background-color: #E5E5E5;
+        }
+        
     </style>
 
     <style include="iron-flex iron-positioning"></style>
@@ -146,7 +141,7 @@
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{isLoadedWithStrategy(loading, strategy)}}'>
-            <div class="fit">
+            <div id='container' class="fit">
 
                 <paper-header-panel id='leftPanel' mode="seamed">
 
@@ -181,7 +176,7 @@
 
                         <paper-header-panel id='rightPanel' drawer mode="seamed">
 
-                            <div id="sidebar" class="layout horizontal flex">
+                            <div id="sidebar" class="layout horizontal">
                                 <iron-pages id="sidebarLeft" selected="{{selectedSidebar}}">
 
                                     <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
@@ -257,11 +252,6 @@
                     value: false,
                 },
 
-                counter: {
-                    type: Number,
-                    value: 0,
-                },
-
                 putStrategyData: Object,
 
                 runStrategyData: Object,
@@ -307,6 +297,8 @@
                     this.fire('close-menu');
                     this.selectedSidebar = 0;
                 }
+                
+                this.isRunning = false;
             },
 
             computeGetStrategyUrl: function (strategyId) {

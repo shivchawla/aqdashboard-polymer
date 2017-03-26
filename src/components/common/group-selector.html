@@ -1,23 +1,31 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+
 <dom-module id="group-selector">
     <style>
         .iron-selected {
             border: 1px solid teal;
+            background-color: teal;
+            color: white;
         }
-        button{
+        
+        paper-button {
             outline: none;
             border:none;
             background-color: #f2f2f2;
             color:#444;
             padding: 5px 10px;
             margin-right: 10px;
-
+            margin-bottom: 10px;
+            text-transform: none;
+            font-size: 12px;
         }
+
     </style>
     <template>
-        <iron-selector attr-for-selected="name" >
+        <iron-selector attr-for-selected="name" selected="[[firstItem]]">
             <template is="dom-repeat" items="{{items}}">
-                <button name="{{item.value}}">{{item.value}}</button>
+                <paper-button noink name="{{item.value}}">{{item.value}}</paper-button>
             </template>
         </iron-selector>
     </template>
@@ -28,23 +36,31 @@
                 name:{
                     type:String
                 },
+
                 eventName:{
                     type:String,
                     value:'someEvent',
                     notify:true
                 },
+
                 items:{
                     type:Array,
                     value:[]
                 }
             },
+
             listeners:{
                 'iron-select':'selectionChanged'
             },
+
             selectionChanged:function () {
                 console.log(this.eventName+" : "+this.$$('iron-selector').selected);
                 this.fire(this.eventName,{'attrSelected':this.$$('iron-selector').selected});
-            }
+            },
+
+            attached: function() {
+                this.firstItem = this.items[0].value;
+            },
         })
     </script>
 </dom-module>
