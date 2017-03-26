@@ -1,4 +1,6 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
+
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../common/aq-backtest-detail-item.html">
 <link rel="import" href="../profile-img.html">
@@ -6,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <link rel="import" href="../common/aq-label-content-item.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
 <dom-module id="aq-community-postdetail-content">
 
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -14,12 +17,15 @@
     <style>
         :host {
             display: block;
+            color: #24293d;
         }
 
         #author {
             --margin-top: 40px;
             --margin-bottom: 15px;
-            /*border-bottom: 1px solid teal;--#bfbfbf;*/
+            font-size: 14px;
+            font-family: 'Lato', sans-serif;
+            border-bottom: 1px solid #efefef;
         }
 
         #img {
@@ -27,20 +33,17 @@
             margin-bottom: 5px;
         }
 
-        #author-desc {
-            margin-bottom: 5px;
-        }
-
         #post-content {
-            margin-bottom: 50px;
+            margin-bottom: 20px;
             box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
             padding: var(--aq-community-postdetail-content-padding, 0);
             border-radius: 4px;
+            padding: 20px;
+            background-color: white;
         }
 
         .markdown-html {
             border: 1px solid #efefef;
-
             --margin-left: 5px;
             padding-left: 5px;
             margin-top: 5px;
@@ -52,26 +55,6 @@
 
         i {
             font-size: 12px;
-        }
-
-        #author-name {
-            font-size: 0.8em;
-            font-family: 'Lato', sans-serif;
-            margin-left: 10px;
-            color: #a2a2a2;
-        }
-
-        .author-name-detail {
-            color: #304896;
-        }
-
-        .created-text {
-            font-size: 0.75em;
-            color: #a7a7a7;
-        }
-
-        .created-date {
-            color: #727272;
         }
 
         aq-help-marked-item {
@@ -107,22 +90,30 @@
         aq-backtest-detail-item {
             --card-action-background-color: var(post-content-background-color, #fafafb);
         }
+
+        polymer-quill-html-render {
+          border-bottom: 1px solid #efefef;
+
+          margin-top: 5px;
+          margin-bottom: 15px;
+          min-height: 100px;
+          --polymer-quill-html-padding: 10px;
+        }
+
     </style>
 
     <template>
         <div id='post-content'>
             <div id='author' class="layout horizontal center">
-                <profile-img id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>
-                <div id='author-desc' class="layout vertical self-center">
-                  <span id="author-name">by 
-                    <span class="author-name-detail">[[postContent.user.firstName]] [[postContent.user.lastName]]</span>
-                  </span>
-                </div>
-
-                <div class="flex"></div>
-                  <span class="created-text">on: 
-                    <span class="created-date">[[format(postContent.updatedAt)]]</span>
-                  </span>
+                <profile-img class="self-center" id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>
+                
+                <span class="self-center" id="author-name">by 
+                  <span class="self-center author-name-detail">[[postContent.user.firstName]] [[postContent.user.lastName]]</span>
+                </span>
+              
+                <span class="self-center created-text">&nbsp on 
+                  <span class="self-center created-date">[[format(postContent.updatedAt)]]</span>
+                </span>
             </div>
             
             <template is="dom-if" if="[[postContent.tags.length]]">
@@ -138,8 +129,8 @@
                 </div>
             </template>
 
-
-            <aq-help-marked-item help-text="[[postContent.markdownText]]"></aq-help-marked-item>
+            <polymer-quill-html-render content="[[postContent.markdownText]]">
+            </polymer-quill-html-render>
 
             <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
                 <aq-backtest-detail-item elevation="0" backtest-id="[[getBacktestId(postContent)]]">

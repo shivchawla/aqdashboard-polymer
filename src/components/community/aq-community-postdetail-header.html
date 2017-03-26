@@ -20,15 +20,15 @@
 
         .container {
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-            padding: 10px 20px;
+            padding: 20px;
             border-radius: 4px;
+            background-color: white;
         }
 
         #heading {
-            /*border-bottom: 1px solid teal;*/
             font-size: 1.2em;
             font-weight: 700;
-            color: #4e4e4e;
+            color: teal;
         }
 
         #category {
@@ -39,12 +39,10 @@
 
         #author {
             margin-top: 40px;
-            --margin-bottom: 15px;
-            /*border-bottom: 1px solid;*/
         }
 
         #img {
-            margin-right: 10px;
+            margin-right: 5px;
             margin-bottom: 5px;
         }
 
@@ -58,7 +56,7 @@
 
         #followers {
             font-size: 0.8em;
-            color: #a7a7a7;
+            color: #24293d;
             margin-right: 10px;
         }
 
@@ -88,7 +86,7 @@
             top:-2px;
         }
         paper-button{
-            border:none;
+            border: 1px solid #cc6666;
         }
         aq-community-postdetail-content{
             position: relative;
@@ -121,8 +119,8 @@
                     <template is="dom-if" if="[[hasFollowers(followers)]]">
                         <span id='followers' class="self-end">Following: [[followers.length]]</span>
                     </template>
-                    <paper-button id='followIcon' disabled="[[preview]]"
-                                       on-tap='onFollow'>Follow</paper-button>
+                    <paper-button noink id='followIcon' disabled="[[preview]]"
+                                       on-tap='onFollow'>[[computeFollowTitle(followers)]]</paper-button>
                 </div>
             </div>
 
@@ -204,6 +202,7 @@
                         this.$$('#followIcon').style.color = 'white';
                         this.$$('#followIcon').style.backgroundColor = '#cc6666';
                         this.$$('#followIcon').style.outlineColor = '#cc6666';
+                        
                         return "UnFollow";
                         //this.$.followIcon
 

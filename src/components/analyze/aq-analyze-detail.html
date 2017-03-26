@@ -13,11 +13,12 @@
 	</style>
 
 	<style>
-		#container {
+		.container {
 			width:95%;
 			margin-top: 0px;
 		    color: #24293d; 
-		    margin-left: 50px;
+		    --margin-left: 50px;
+		    margin: 0 auto;
 	  	}
 
 		paper-button {
@@ -25,7 +26,7 @@
 			font-size: 14px;
 			color:#cc6666;
 		 	margin-bottom: 10px;
-            margin-left: 5px;
+            width: 50px;
 		}
   	</style>
 
@@ -34,13 +35,13 @@
 	
     		<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 		  	
-		  	<div id='container layout vertical'>
+		  	<div class='container layout vertical self-center'>
 			    <template is='dom-if' if='{{!loading}}'>
 			    	
-			      	<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap="goBackAllBacktests"><iron-icon icon="chevron-left" ></iron-icon> Back
+			      	<paper-button noink id='backButton' title="Go Back" on-tap="goBackAllBacktests"><iron-icon icon="chevron-left" ></iron-icon> Back
 		            </paper-button>
 
-			      	<aq-backtest-detail-item class="self-center" loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
+			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
 		      	</template>
       		</div>
 	</template>

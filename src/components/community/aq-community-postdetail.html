@@ -26,7 +26,7 @@
           font-size: 16px;
       }
       #container {
-          width: 90%;
+          width: 95%;
           margin: 0 auto;
           margin-top: 10px;
           color: #24293d;
@@ -44,14 +44,14 @@
       }
       #replyContainer{
           position: relative;
-          top:40px;
+          top:10px;
       }
       aq-community-postdetail-content{
           --aq-community-postdetail-content-box-shadow:0 3px 8px rgba(0,0,0,0.2);
           --aq-community-postdetail-content-padding:10px 20px 10px 10px;
       }
       .header-container {
-          background-color: transparent;
+          --background-color: transparent;
           height: 55px;
           position: relative;
           left:-20px;
@@ -67,6 +67,14 @@
           margin-left: 0px;
           font-weight: 400;
           padding: 0;
+      }
+
+      paper-button {
+        text-transform: none;
+        font-size: 14px;
+        color:#cc6666;
+        margin-bottom: 10px;
+        --margin-left: 5px;
       }
 
   </style>  
@@ -99,19 +107,17 @@
 
         <template is='dom-if' if='{{!loading}}'>
             <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
+                
+                <paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goBack'><iron-icon icon="chevron-left" ></iron-icon>Back</paper-button>
+
                 <div id='container'>
-
-                    <div class="layout horizontal center header-container">
-                        <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
-                                           on-tap="goBack"></paper-icon-button>
-
-                        <h1>Back to Community</h1>
-                    </div>
 
                     <aq-community-postdetail-header
                             post-header='{{threadDetails}}'>
                     </aq-community-postdetail-header>
+                    
                     <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
+                    
                     <div id="replyContainer">
                         <template is="dom-repeat"
                                   items="{{threadDetails.replies}}"
