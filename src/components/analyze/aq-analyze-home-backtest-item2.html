@@ -374,7 +374,7 @@
             },
 
             toggleSidebar: function () {
-                if (this.paperCheckBox.checked)
+                if (this.$$('paper-checkbox').checked)
                     this.$$('.side-bar').style.transform = "scale(1,1)";
                 else
                     this.$$('.side-bar').style.transform = "scale(0,1)";

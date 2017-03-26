@@ -1,4 +1,6 @@
 <link rel='import' href='../../common/aq-backtest-metric-item.html'>
+<link rel="import" href="../../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
 <dom-module id="code-editor-element">
     <link rel="stylesheet" href="code-editor-element.css">
     <style>
@@ -21,7 +23,7 @@
             list-style: none;
         }
 
-        .selected-backtest-left,.selected-backtest-right {
+        .selected-backtest-left, .selected-backtest-right {
             max-width: 300px;
         }
 
@@ -73,60 +75,78 @@
             --aq-backtest-metric-item-text-label-font-size: 10px;
             --aq-backtest-metric-item-text-content-font-size: 12px;
         }
-        .metric-item-li{
+
+        .metric-item-li {
             display: inline-table;
         }
-        .hr-bar{
+
+        .hr-bar {
             width: 100%;
             height: 1px;
             display: inline-block;
             background-color: #e6e6e6;
         }
-        .red-bar{
+
+        .red-bar {
             width: 4px;
             height: 20px;
-            color:#cc4444;
+            color: #cc4444;
+        }
+
+        .iron-selected {
+            border: 1px solid teal;
+            background-color: #fff;
+            color: teal;
+        }
+        .lower-container{
+            border: none;
         }
     </style>
     <template>
         <div id="flex-container">
             <div class="flex-container-inside">
                 <ul class="selected-backtest-left">
-                    <template is="dom-repeat" items="{{backtestIndexArray}}">
-                        <li class="selected-backtest-left-li">
-                            <span class="left-li-items">{{item}}</span>
-                        </li>
-                    </template>
+                    <iron-selector id="leftSelector" selected="{{selectedLeft}}">
+                        <template is="dom-repeat" items="{{backtestIndexArray}}">
+                            <li class="selected-backtest-left-li">
+                                <span class="left-li-items">{{item}}</span>
+                            </li>
+                        </template>
+                    </iron-selector>
                 </ul>
                 <div class="hr-bar"></div>
-                <div class="lower-container">
-                    <ul>
-                        <li class="metric-item-li">
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li class="metric-item-li">
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li class="metric-item-li">
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li class="metric-item-li">
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                    </ul>
-                </div>
+                <iron-pages selected="{{selectedLeft}}">
+                    <template is="dom-repeat" items="{{backtests}}">
+                        <div class="lower-container">
+                            <ul>
+                                <li class="metric-item-li">
+                                    <aq-backtest-metric-item
+                                            metric-name="Created"
+                                            metric-value="{{item.createdAt}}">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li class="metric-item-li">
+                                    <aq-backtest-metric-item
+                                            metric-name="Time Period"
+                                            metric-value="[[formatDate(item.settings.startDate)]] - [[formatDate(item.settings.endDate)]]">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li class="metric-item-li">
+                                    <aq-backtest-metric-item
+                                            metric-name="Total Return"
+                                            metric-value="{{item.output.summary.totalreturn}}%">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li class="metric-item-li">
+                                    <aq-backtest-metric-item
+                                            metric-name="Sharpe Ratio"
+                                            metric-value="{{item.output.summary.sharperatio}}">
+                                    </aq-backtest-metric-item>
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                </iron-pages>
                 <div class="acediff-class" id="editor-left"></div>
             </div>
 
@@ -136,41 +156,47 @@
 
             <div class="flex-container-inside">
                 <ul class="selected-backtest-right">
-                    <template is="dom-repeat" items="{{backtestIndexArray}}">
-                        <li class="selected-backtest-left-li">
-                            <span class="left-li-items">{{item}}</span>
-                        </li>
-                    </template>
+                    <iron-selector id="rightSelector" selected="{{selectedRight}}">
+                        <template is="dom-repeat" items="{{backtestIndexArray}}">
+                            <li class="selected-backtest-left-li">
+                                <span class="left-li-items">{{item}}</span>
+                            </li>
+                        </template>
+                    </iron-selector>
                 </ul>
                 <div class="hr-bar"></div>
-                <div class="lower-container">
-                    <ul>
-                        <li>
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li>
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li>
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                        <li>
-                            <aq-backtest-metric-item
-                                    metric-name="Created"
-                                    metric-value="27-Apr-17 11:32 a.m">
-                            </aq-backtest-metric-item>
-                        </li>
-                    </ul>
-                </div>
+                <iron-pages selected="{{selectedRight}}">
+                    <template is="dom-repeat" items="{{backtests}}">
+                        <div class="lower-container">
+                            <ul>
+                                <li>
+                                    <aq-backtest-metric-item
+                                            metric-name="Created"
+                                            metric-value="{{item.createdAt}}">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li>
+                                    <aq-backtest-metric-item
+                                            metric-name="Time Period"
+                                            metric-value="[[formatDate(item.settings.startDate)]] - [[formatDate(item.settings.endDate)]]">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li>
+                                    <aq-backtest-metric-item
+                                            metric-name="Total Return"
+                                            metric-value="{{item.output.summary.totalreturn}}%">
+                                    </aq-backtest-metric-item>
+                                </li>
+                                <li>
+                                    <aq-backtest-metric-item
+                                            metric-name="Sharpe Ratio"
+                                            metric-value="{{item.output.summary.sharperatio}}">
+                                    </aq-backtest-metric-item>
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                </iron-pages>
                 <div class="acediff-class" id="editor-right"></div>
             </div>
         </div>
@@ -203,14 +229,48 @@
                 editors: {
                     type: Object
                 },
-                backtestIndexArray:{
-                    type:Array,
-                    value:[]
+                backtestIndexArray: {
+                    type: Array,
+                    value: []
+                },
+                backtests: {
+                    type: Array,
+                    value: []
+                },
+                selectedLeft: {
+                    type: Number,
+                    value: 0
+                },
+                selectedRight: {
+                    type: Number,
+                    value: 1
                 }
             },
-            init: function () {
+            listeners:{
+//                'iron-select':'selectionChanged'
+            },
+            ready:function () {
+                var element = this;
+                this.$$('#leftSelector').addEventListener('iron-select',function () {
+                    console.log("Selection Changed Left");
+                    console.log(element.$$('#leftSelector').selected);
+                    element.setCodeLeft(element.backtests[element.$$('#leftSelector').selected].code);
+                });
+                this.$$('#rightSelector').addEventListener('iron-select',function () {
+                    console.log("Selection Changed Right");
+                    console.log(element.$$('#rightSelector').selected);
+                    element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
+                });
+            },
+            init: function (backtestArray) {
                 var aceDiffer = this.getAceDiff();
                 this.editors = aceDiffer.getEditors();
+                this.backtests = backtestArray;
+                console.log(backtestArray);
+                for (var i = 0; i < this.backtests.length; i++) {
+                    this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
+                }
+                console.log(this.backtests);
             },
             setCodeLeft: function (codeLeft) {
                 this.codeLeft = codeLeft;
@@ -267,46 +327,20 @@
 //                    }
                 });
                 return aceDiffer;
+            },
+            formatDateTime: function (dateVar) {
+                return date.formatDateTime(dateVar);
+            },
+            formatDate: function (dateVar) {
+                return date.formatDate(dateVar);
+            },
+            selectionChanged:function () {
+                console.log("Left "+this.selectedLeft);
+                console.log("Right "+this.selectedRight);
             }
         });
-        function getAceDiff(mode, theme, editable) {
-            var aceDiffer = new AceDiff({
-                mode: null,
-                theme: null,
-                diffGranularity: 'broad',
-                showDiffs: true,
-                showConnectors: true,
-                maxDiffs: 5000,
-                left: {
-                    id: 'editor-left',
-                    content: null,
-                    mode: mode,
-                    theme: theme,
-                    editable: editable,
-                    copyLinkEnabled: true
-                },
-                right: {
-                    id: 'editor-right',
-                    content: null,
-                    mode: mode,
-                    theme: theme,
-                    editable: editable,
-                    copyLinkEnabled: true
-                },
-                classes: {
-                    gutterID: 'acediff-gutter',
-                    diff: 'acediff-diff',
-                    connector: 'acediff-connector',
-                    newCodeConnectorLink: 'acediff-new-code-connector-copy',
-                    newCodeConnectorLinkContent: '&#8594;',
-                    deletedCodeConnectorLink: 'acediff-deleted-code-connector-copy',
-                    deletedCodeConnectorLinkContent: '&#8592;',
-                    copyRightContainer: 'acediff-copy-right',
-                    copyLeftContainer: 'acediff-copy-left'
-                }
-            });
-            return aceDiffer;
-        }
+
     </script>
+    <script type="text/javascript" src="../../common/DateTime.js"></script>
 </dom-module>
 

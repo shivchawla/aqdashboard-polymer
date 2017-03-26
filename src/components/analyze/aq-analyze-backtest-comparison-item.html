@@ -259,7 +259,7 @@
                     notify:true
                 },
 
-                header: Object,
+                header: Object
 
             },
 
@@ -267,7 +267,7 @@
                 this.async(this.resetComparison, 200);
                 if (this.active) {
                     this.async(this.doComparison, 200);
-                    console.log(this.indexArray);
+//                    console.log(this.indexArray);
                 }
 
             },
@@ -309,14 +309,13 @@
                 this.backtests[backtest._id] = backtest;
                 this.addBacktestToComparison(backtest);
                 var backtestResponseArray = Object.values(this.backtests);
-                console.log(backtestResponseArray);
                 if (Object.keys(this.compareItems).length === backtestResponseArray.length) {
                     console.log("Request Completed");
-                    console.log(backtestResponseArray);
+//                    console.log(backtestResponseArray);
                     var code_editor = this.$$('code-editor-element');
                     var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
                     var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";
-                    code_editor.init();
+                    code_editor.init(backtestResponseArray);
                     code_editor.setCodeLeft(backtestResponseArray[0].code);
                     code_editor.setCodeRight(backtestResponseArray[1].code);
                 }
