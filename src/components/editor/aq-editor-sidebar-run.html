@@ -16,7 +16,6 @@
         :host {
             font-family: 'Lato', sans-serif;
             color: #24293d;
-
         }
 
         #advancedSettings {
@@ -25,7 +24,6 @@
             --margin-left: 5px;
             --border: 1px solid #e5e5e5;
             padding-bottom: 10px;
-            border-bottom: 1px solid #24293d;
         }
 
         #universeSettings {
@@ -89,7 +87,6 @@
         }
 
         #run {
-            z-index: 1002;
             color: #24293d;
             /*margin: 10px 30px;*/
         }
@@ -179,53 +176,20 @@
         .advanced-settings tr td{
             margin-left: 10px;
         }
-        .side-menu-bar {
-            width: 60px;
-            height: 100%;
-            position: absolute;
-            right: 0;
-            background-color: #f2f2f2;
-        }
-        .side-bar-icon-container{
-            position: fixed;
-            top:20px;
-        }
 
     </style>
 
     <template>
-        <div id='run' class="layout end-justified">
-            <paper-tabs selected="{{selected}}">
+        <div id='run' class="layout vertical flex">
+        	 <paper-tabs selected="{{selected}}">
                 <paper-tab><span class="paper-tabs-text">Basic</span></paper-tab>
                 <paper-tab><span class="paper-tabs-text">Advanced</span></paper-tab>
-                <!--<paper-tab><span class="paper-tabs-text">Universe</span></paper-tab>-->
+              
             </paper-tabs>
 
             <iron-pages selected="{{selected}}">
                 <div id='basic-settings' class="layout vertical">
-                    <!--<div id='heading'><span>Basic Settings</span></div>-->
                     <div id='date-settings' class="layout vertical">
-                        <!--<div class="inputbox layout horizontal center">-->
-                        <!--<span class="input-span">Initial Capital</span>-->
-                        <!--<input class="input-box" label="Seed Capital"-->
-                        <!--value="{{initialCash::change}}" type="number"-->
-                        <!--on-keydown="checkForKeys" on-blur='close'>-->
-                        <!--</div>-->
-                        <!--<div class="calendar-inputbox layout horizontal center">-->
-                        <!--<span class="input-span">Start Date</span>-->
-                        <!--<input class="box" id="startDate" placeholder="Start Date"-->
-                        <!--value="{{startDate::change}}" type="date"-->
-                        <!--on-blur='close'>-->
-                        <!--&lt;!&ndash;<vaadin-date-picker label="End Date" value="{{startDate}}"></vaadin-date-picker>&ndash;&gt;-->
-                        <!--</div>-->
-
-                        <!--<div class="calendar-inputbox layout horizontal center">-->
-                        <!--<span class="input-span">End Date</span>-->
-                        <!--<input id='endDateField' class="box" placeholder="End Date"-->
-                        <!--value="{{endDate::change}}" type="date" max="2017-01-01"-->
-                        <!--on-blur='close'>-->
-                        <!--&lt;!&ndash;<vaadin-date-picker label="End Date" value="{{endDate}}"></vaadin-date-picker>&ndash;&gt;-->
-                        <!--</div>-->
                         <table>
                             <col width="100">
                             <col width="300">
@@ -248,9 +212,6 @@
                             </tr>
                             <tr class="second-tr">
                                 <td><span class="input-span">Start Date</span></td>
-                                <!--<td><paper-input class="box" id="startDate" placeholder="Start Date"-->
-                                <!--value="{{startDate::change}}" type="date"-->
-                                <!--on-blur='close'></paper-input></td>-->
                                 <td>
                                     <vaadin-date-picker value="{{startDate}}"></vaadin-date-picker>
                                 </td>
@@ -258,9 +219,6 @@
                             <tr class="second-tr">
                                 <td><span class="input-span">End Date</span></td>
                                 <td>
-                                    <!--<input id='endDateField' class="box" placeholder="End Date"-->
-                                    <!--value="{{endDate::change}}" type="date" max="2017-01-01"-->
-                                    <!--on-blur='close'>-->
                                     <vaadin-date-picker value="{{endDate}}"></vaadin-date-picker>
                                 </td>
                             </tr>
@@ -284,9 +242,6 @@
                             <td><span class="">Rebalance</span></td>
                             <td>
                                 <div class="button-select-container layout horizontal">
-                                    <!--<template is="dom-repeat" items="{{rebalanceOptions}}">-->
-                                        <!--<button class="square-btn">{{item.value}}</button>-->
-                                    <!--</template>-->
                                     <group-selector event-name="rebalance-selected" items="{{rebalanceOptions}}"></group-selector>
                                 </div>
                             </td>
@@ -339,97 +294,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <!--<div class="layout vertical">-->
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Rebalance</span>-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{rebalance}}" options="[[rebalanceOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{rebalanceOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Cancel Policy</span>-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{cancelPolicy}}"&ndash;&gt;-->
-                    <!--&lt;!&ndash;" options="[[cancelOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{cancelOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Resolution</span>-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{resolution}}" options="[[resolutionOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{resolutionOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--&lt;!&ndash;<div class="layout vetical">&ndash;&gt;-->
-
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Commission</span>-->
-                    <!--<div class="layout horizontal">-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{commissionModel}}" class="self-start smallDropdown"&ndash;&gt;-->
-                    <!--&lt;!&ndash;options="[[commissionOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<input class="box" placeholder="Commission" class="smallInputBox"-->
-                    <!--value="{{commissionValue::change}}" type="number" default-->
-                    <!--on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{commissionOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--</div>-->
-
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Slippage</span>-->
-                    <!--<div class="layout horizontal">-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{slippageModel}}" class="smallDropdown"&ndash;&gt;-->
-                    <!--&lt;!&ndash;options="[[slippageOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<input class="box" class="smallInputBox" placeholder="Slippage"-->
-                    <!--value="{{slippageValue::change}}" type="number"-->
-                    <!--on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{slippageOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--</div>-->
-
-                    <!--<div class="inputbox layout horizontal">-->
-                    <!--<span class="">Investment Plan</span>-->
-                    <!--<div class="layout horizontal">-->
-                    <!--&lt;!&ndash;<aq-dropdown selected="{{investmentPlan}}"&ndash;&gt;-->
-                    <!--&lt;!&ndash;options="[[investmentPlanOptions]]"></aq-dropdown>&ndash;&gt;-->
-                    <!--<div class="button-select-container layout horizontal">-->
-                    <!--<template is="dom-repeat" items="{{investmentPlanOptions}}">-->
-                    <!--<button class="square-btn">{{item.value}}</button>-->
-                    <!--</template>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</div>-->
                 </div>
-                <!--<div id='universeSettings' class="layout vertical">-->
-                    <!--<div id='heading'><span>Universe Settings</span></div>-->
-
-                    <!--<div id='extra-settings' class="layout horizontal">-->
-                    <!--<textarea rows="10" cols="71" value="{{universe::input}}"-->
-                              <!--placeholder="Optional list of symbols"></textarea>-->
-                    <!--</div>-->
-                <!--</div>-->
             </iron-pages>
         </div>
 
@@ -547,7 +412,7 @@
 
             attached: function () {
 
-                this.$$('#endDateField').setAttribute("max", this.endDate);
+                //this.$$('#endDateField').setAttribute("max", this.endDate);
 
             },
 
