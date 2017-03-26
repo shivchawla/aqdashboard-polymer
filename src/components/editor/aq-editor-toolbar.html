@@ -2,206 +2,219 @@
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../icons/aq-iconset.html'>
-
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
 <dom-module id='aq-editor-toolbar'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
-	<style>
+    <style>
+        :host{
+            font-family: 'Lato',sans-serif;
+        }
+        paper-icon-button {
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+            min-width: 25px;
+            max-width: 35px;
+            color: #cc4444;
+        }
 
-		paper-icon-button {
-    		width:35px;
-    		height:35px;
-    		margin-right: 10px;
-    		min-width:25px;
-    		max-width:35px;
-    		color: #24293d;
-  		}
+        /*paper-icon-button {*/
+        /*--paper-icon-button-hover: {*/
+        /*outline:1px solid;*/
+        /*};*/
+        /*}*/
 
-  		paper-icon-button {
-	  		--paper-icon-button-hover: {
-	  			outline:1px solid;
-	  		};
-	  	}
+        paper-toolbar {
+            --paper-toolbar-height: 40px;
+            --paper-toolbar-width: 100px;
+            --paper-toolbar-color: teal;
+            --paper-toolbar-background: #f2f2f2;
+            --border-right: 5px solid #24293d;
+        }
 
-  		paper-toolbar {
-		  --paper-toolbar-height:40px;
-		  --paper-toolbar-width:100px;
-		  --paper-toolbar-color:teal;
-  		  --paper-toolbar-background:#e3f6ed;--#e5f1f5;
-  		  --border-right: 5px solid #24293d;
-		}
+        #strategyName, #box {
+            height: 24px;
+            outline: none;
+            font-size: 12px;
+            padding-left: 3px;
+            font-weight: bolder;
+        }
 
-		#strategyName, #box {
-			height:24px;
-			margin-top: 3px;
-			font-size: 12px;
-			padding-left: 3px;
-			font-weight: bolder;
-		}
+        .separator {
+            border-left: teal solid 1px;
+            opacity: .8;
+            height: 25px;
+            margin-right: 10px;
 
-		.separator{
-			border-left:teal solid 1px;
-			opacity:.8;
-			height:25px;
-			margin-right: 10px;
+        }
 
-		}
+        input {
+            max-width: 250px;
+            min-width: 150px;
+            --width: 20%;
+            --font-size: 15px;
+            color: #24293d;
+        }
 
-		input {
-			max-width:250px;
-			min-width: 150px;
-			--width:20%;
-			--font-size: 15px;
-			color:#24293d;
-		}
+        .toolbarIcon:active {
+            padding: 10px;
+        }
 
-		.toolbarIcon:active {
-			padding:10px;
-		}
+        .toolbarPlayIcon {
+            /*border:1px solid;*/
+            padding: 0px;
+            height: 23px;
+            width: 23px;
+            color:teal;
 
-		.toolbarPlayIcon {
-			 border:1px solid;
-			 padding:0px;
-			 height:23px;
-			 width:23px;
-		}
+        }
 
-		.toolbarPlayIcon:active {
-			 padding:3px;
-		}
+        .toolbarPlayIcon:active {
+            padding: 3px;
+        }
 
-		paper-tabs {
-			height:35px;
-		}
+        paper-tabs {
+            height: 35px;
+        }
 
-		.inputbox {
-			margin-left:10px;
-			margin-right:10px;
-			@apply(--layout-horizontal);
-		}
+        .inputbox {
+            margin-left: 10px;
+            margin-right: 10px;
+            @apply(--layout-horizontal);
+        }
 
-		.input-span {
-			color:#24293d;
-			font-weight: bold;
-			font-size: 14px;
-		}
+        .input-span {
+            color: #24293d;
+            font-weight: bold;
+            font-size: 14px;
+        }
 
-		#box {
-			max-width: 130px;
-			font-weight: normal;
-			--border:1px solid black;
-			min-width:100px;
+        #box {
+            max-width: 130px;
+            font-weight: normal;
+            --border: 1px solid black;
+            min-width: 100px;
 
-		}
-		
-	</style>
-	
-	<template>
-		<paper-toolbar>
-			<div id='toolbar' class="flex layout horizontal">
-				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="aq-icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
-				<input class="flex" id ='strategyName' value="[[strategyName]]" type="text">
-	     		 
-	        	<div class="flex" style="max-width:5%"></div>
+        }
+        .strategy-name{
+            font-size: 14px;
+            margin-right:10px;
+        }
 
-	        	<!--paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button-->
+    </style>
 
-	        	<span class="self-center separator"></span>
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save Strategy" on-tap='onSave'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New Strategy" on-tap='onCreate'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone Strategy" on-tap='onClone'></paper-icon-button>
-		 		
-		 		<span class="self-center separator"></span>
-				
-				<paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:line-bar-chart" title="Analyze all Backtests" on-tap='onAnalyze'></paper-icon-button>
+    <template>
+        <paper-toolbar>
+            <div id='toolbar' class="flex layout horizontal center">
+                <paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="aq-icons:arrow-back"
+                                   title="Go Back" on-tap='goBack'></paper-icon-button>
+                <span class="strategy-name">Strategy Name</span>
+                <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
 
-		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="aq-icons:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
+                <div class="flex" style="max-width:5%"></div>
 
-	        	<template is='dom-if' if="[[checkToggleCondition(isProgrammer, narrow)]]">	
-	            	<div class="flex"></div>
-	            	<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
-		        </template>
+                <!--paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button-->
+                <div class="flex"></div>
+                <paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save Strategy"
+                                   on-tap='onSave'></paper-icon-button>
+                <paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New Strategy"
+                                   on-tap='onCreate'></paper-icon-button>
+                <paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone Strategy"
+                                   on-tap='onClone'></paper-icon-button>
 
-		        
-       		</div> 
-		</paper-toolbar>
+                <paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:line-bar-chart"
+                                   title="Analyze all Backtests" on-tap='onAnalyze'></paper-icon-button>
 
-	</template>
+                <paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon"
+                                   icon="aq-icons:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
 
-	<script>
-		Polymer({
-			is:'aq-editor-toolbar',
+                <!--<template is='dom-if' if="[[checkToggleCondition(isProgrammer, narrow)]]">-->
+                    <!--&lt;!&ndash;<div class="flex"></div>&ndash;&gt;-->
+                    <!--<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left"-->
+                                       <!--on-tap="toggleDrawer"></paper-icon-button>-->
+                <!--</template>-->
 
-			properties: {
-				narrow : {
-					type:Boolean,
-				},
 
-				isProgrammer: {
-					type:Boolean,
-				}, 
+            </div>
+        </paper-toolbar>
 
-				strategyName:String,
-				strategyDesc:String,
-				strategyId:String,
-			},
+    </template>
 
-			closeAll: function() {
-				this.fire('close-all');
-			},
+    <script>
+        Polymer({
+            is: 'aq-editor-toolbar',
 
-			openDrawer: function() {
-				this.fire('open-drawer');
-			},
+            properties: {
+                narrow: {
+                    type: Boolean,
+                },
 
-			closeDrawer: function() {
-				this.fire('close-drawer');
-			},
+                isProgrammer: {
+                    type: Boolean,
+                },
 
-			toggleDrawer: function() {
-				this.fire('toggle-drawer');
-			},
+                strategyName: String,
+                strategyDesc: String,
+                strategyId: String,
+            },
 
-			toggleConsole: function() {
-				this.fire('toggle-console');
-			},
+            closeAll: function () {
+                this.fire('close-all');
+            },
 
-			toggleDesign: function(){
-				this.fire('toggle-design');
-			},
+            openDrawer: function () {
+                this.fire('open-drawer');
+            },
 
-			goBack: function() {
-				//this.onSave();
-        		this.fire('backClicked');
-			},
+            closeDrawer: function () {
+                this.fire('close-drawer');
+            },
 
-			onAnalyze: function() {
-				this.fire('analyzeClicked', {id:this.strategyId});
-			},
+            toggleDrawer: function () {
+                this.fire('toggle-drawer');
+            },
 
-			onSave: function() {
-				this.strategyName = this.$.strategyName.value;
-				this.fire('save-action',{name:this.strategyName});
-			},
+            toggleConsole: function () {
+                this.fire('toggle-console');
+            },
 
-			onCreate: function() {
-				this.fire('newClicked');
-			},
+            toggleDesign: function () {
+                this.fire('toggle-design');
+            },
 
-			onClone: function() {	
-				this.fire('cloneClicked');	
-			},
+            goBack: function () {
+                //this.onSave();
+                this.fire('backClicked');
+            },
 
-			onRun: function() {
-				this.strategyName = this.$.strategyName.value;
-				this.fire('run-action',{name:this.strategyName});
-			},
+            onAnalyze: function () {
+                this.fire('analyzeClicked', {id: this.strategyId});
+            },
 
-			checkToggleCondition: function(isProgrammer, narrow) {
-				return isProgrammer && narrow;
-			},
+            onSave: function () {
+                this.strategyName = this.$.strategyName.value;
+                this.fire('save-action', {name: this.strategyName});
+            },
 
-		});
-	</script>
+            onCreate: function () {
+                this.fire('newClicked');
+            },
+
+            onClone: function () {
+                this.fire('cloneClicked');
+            },
+
+            onRun: function () {
+                this.strategyName = this.$.strategyName.value;
+                this.fire('run-action', {name: this.strategyName});
+            },
+
+            checkToggleCondition: function (isProgrammer, narrow) {
+                return isProgrammer && narrow;
+            },
+
+        });
+    </script>
 </dom-module>
