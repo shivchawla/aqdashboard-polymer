@@ -249,8 +249,29 @@
             listeners:{
 //                'iron-select':'selectionChanged'
             },
-            ready:function () {
+//            ready:function () {
+//                var element = this;
+//                this.$$('#leftSelector').addEventListener('iron-select',function () {
+//                    console.log("Selection Changed Left");
+//                    console.log(element.$$('#leftSelector').selected);
+//                    element.setCodeLeft(element.backtests[element.$$('#leftSelector').selected].code);
+//                });
+//                this.$$('#rightSelector').addEventListener('iron-select',function () {
+//                    console.log("Selection Changed Right");
+//                    console.log(element.$$('#rightSelector').selected);
+//                    element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
+//                });
+//            },
+            init: function (backtestArray) {
                 var element = this;
+                var aceDiffer = this.getAceDiff();
+                this.editors = aceDiffer.getEditors();
+                this.backtests = backtestArray;
+                console.log(backtestArray);
+                for (var i = 0; i < this.backtests.length; i++) {
+                    this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
+                }
+                console.log(this.backtests);
                 this.$$('#leftSelector').addEventListener('iron-select',function () {
                     console.log("Selection Changed Left");
                     console.log(element.$$('#leftSelector').selected);
@@ -261,16 +282,6 @@
                     console.log(element.$$('#rightSelector').selected);
                     element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
                 });
-            },
-            init: function (backtestArray) {
-                var aceDiffer = this.getAceDiff();
-                this.editors = aceDiffer.getEditors();
-                this.backtests = backtestArray;
-                console.log(backtestArray);
-                for (var i = 0; i < this.backtests.length; i++) {
-                    this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
-                }
-                console.log(this.backtests);
             },
             setCodeLeft: function (codeLeft) {
                 this.codeLeft = codeLeft;

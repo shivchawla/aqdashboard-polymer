@@ -105,12 +105,12 @@
 	 	<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'></iron-signals>
 
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
-
+		<iron-signals on-iron-signal-select-backtest="selectAllBacktest"></iron-signals>
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
 
         <template is="dom-if" if="[[!showComparison]]">
-	        <aq-analyze-home-menu 
-	        	check-all="{{checkAll}}" 	
+	        <aq-analyze-home-menu
+	        	check-all="{{checkAll}}"
 	        	num-active-backtests="[[checkedCount]]"
               	strategy-name="{{strategyName}}">
           	</aq-analyze-home-menu>
@@ -124,11 +124,11 @@
 				<template is='dom-if' if="[[!showComparison]]">
 
 					<div class="layout vertical center">
-				
+
 						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 							<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
 						</template>
-						
+
 						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 							<div class="spacer"></div>
 						</template>
@@ -334,16 +334,19 @@
 
 	        	if (checked == true) {
 	        		this.checkedCount += 1;
+                    if(this.indexArray.indexOf(e.detail.index) == -1)
+                        this.push('indexArray',e.detail.index);
 	        	} else {
 	        		this.checkedCount -= 1;
+                    this.splice('indexArray',this.indexArray.indexOf(e.detail.index),1);
 	        	}
 	        	if(this.checkedCount > this.backtests.length)
 	        	    this.checkedCount = this.backtests.length;
-                if(this.indexArray.length > this.backtests.length){
-                    this.set('indexArray',[]);
-                }else{
-                    this.push('indexArray',e.detail.index);
-                }
+//                if(this.indexArray.length > this.backtests.length - 1){
+//                    this.set('indexArray',[]);
+//                }else{
+//                    this.push('indexArray',e.detail.index);
+//                }
                 console.log(this.indexArray);
 	        	this.checkAll = this.checkedCount == this.backtests.length;
                 console.log(this.checkedCount);
@@ -438,6 +441,9 @@
 	        isLoading: function(strategyLoading, backtestLoading) {
 	        	return strategyLoading || backtestLoading;
 	        },
+			selectAllBacktest:function (e) {
+
+			}
 
     	});
     </script>
