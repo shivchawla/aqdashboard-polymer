@@ -1,8 +1,9 @@
 <link rel="import" href="../../../bower_components/marked-element/marked-element.html">
+
 <dom-module id="aq-help-marked-item">
 
 	<style>
-
+		
 		marked-element {
 			--margin-bottom: 10px;
 			--background-color: none;
@@ -16,18 +17,22 @@
 		code {
 			background-color: rgba(238,238,238,.35);
             padding: 10px;
-			font-size:13px;
+			font-size:14px !important;
             box-shadow: 0 1px 1px rgba(0,0,0,.125);
+		}
+
+		code span {
+			font-size:14px !important;
 		}
 
 		p {
 			font-size: 14px;
-            color:#7f7f7f;
+            color:#24293d;
 		}
 
 		strong {
 			font-weight: bold;
-			font-size: 16px;
+			font-size: 14px;
 		}
 
 		em strong {
@@ -40,14 +45,35 @@
             font-size: 16px;
 		}
 		.markdown-html ul{
-			list-style: none;
+			--list-style: none;
+		    font-size: 14px;
 		}
-		.markdown-html ul h3{
-			color:#cc4444;
+
+		.markdown-html h4 {
+			color: teal !important;
             font-size: 14px;
 		}
+
+		.markdown-html h3 {
+			color: #cc6666 !important;
+            font-size: 14px;
+		}
+
         .markdown-html .aq-help-marked-item{
-            color:#7f7f7f;
+            color: #24293d;
+        }
+
+        .markdown-html ul h4 {
+			color: #cc6666 !important;
+            font-size: 14px;
+		}
+
+        h1, h2 {
+          color: teal !important;
+        }
+
+        h3, h4 {
+        	color: #cc6666 !important;
         }
 
 
@@ -58,6 +84,7 @@
 		<marked-element on-marked-render-complete='highlight' markdown="[[helpText]]">
 		    <div class="markdown-html"></div>
 		</marked-element>
+
 	</template>
 
 	<script>

@@ -49,7 +49,7 @@
         #drawerPanel1 {
             background-color: #f2f2f2;
             border: none;
-            padding: 10px 0 0 10px;
+            padding: 10px 10px 0 10px;
         }
 
         paper-listbox {
@@ -62,7 +62,7 @@
             --paper-item: {
                 height: 32px;
                 font-size: 16px;
-                color: teal;
+                color: teal !important;
                 background-color: #fff;
             };
             --paper-item-selected: {
@@ -127,6 +127,7 @@
             padding: 10px;
         }
 
+
     </style>
 
     <template>
@@ -179,10 +180,8 @@
                     </paper-header-panel>
 
                     <paper-header-panel id='drawerPanel1' drawer mode="seamed">
-                        <!--<paper-input class="searchCategories" label="Search Help" on-keyup="search"-->
-                                     <!--id="search_input"></paper-input>-->
                         <aq-search-input>
-                            <input is="iron-input" placeholder="Search Help" on-keyup="search" id="search_input">
+                            <input is="iron-input" placeholder="Search Help" on-keyup="search" id="search_input" on-blur="blur">
                         </aq-search-input>
                         <paper-listbox selected="{{scrollSelected}}">
                             <template is="dom-repeat" items="{{categoriesArray}}">
@@ -244,7 +243,14 @@
                 }
             },
 
+            blur: function() {
+              console.log("fcuk");
+              this.$$('#search_input').value="";
+            },
+
             onGetHelpContentSuccess: function (e) {
+
+                console.log(e.detail.response);
                 this.set('itemsHelpContent', e.detail.response.Help);
                 var array = []
                 for (i in e.detail.response.Help) {
