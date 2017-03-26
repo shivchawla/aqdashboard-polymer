@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<dom-module id="group-selector">
+    <style>
+        .iron-selected {
+            border: 1px solid teal;
+        }
+        button{
+            outline: none;
+            border:none;
+            background-color: #f2f2f2;
+            color:#444;
+            padding: 5px 10px;
+            margin-right: 10px;
+
+        }
+    </style>
+    <template>
+        <iron-selector attr-for-selected="name" >
+            <template is="dom-repeat" items="{{items}}">
+                <button name="{{item.value}}">{{item.value}}</button>
+            </template>
+        </iron-selector>
+    </template>
+    <script>
+        Polymer({
+            is:"group-selector",
+            properties:{
+                name:{
+                    type:String
+                },
+                eventName:{
+                    type:String,
+                    value:'someEvent',
+                    notify:true
+                },
+                items:{
+                    type:Array,
+                    value:[]
+                }
+            },
+            listeners:{
+                'iron-select':'selectionChanged'
+            },
+            selectionChanged:function () {
+                console.log(this.eventName+" : "+this.$$('iron-selector').selected);
+                this.fire(this.eventName,{'attrSelected':this.$$('iron-selector').selected});
+            }
+        })
+    </script>
+</dom-module>
