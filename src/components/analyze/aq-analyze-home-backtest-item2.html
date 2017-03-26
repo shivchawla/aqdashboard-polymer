@@ -244,6 +244,8 @@
             },
 
             attached: function () {
+            	this.$$('paper-checkbox').checked = false;
+            	this.$$('.side-bar').style.transform = "scale(0,1)";
                 this.backtestId = this.backtest._id;
                 this.processBacktestData();
             },
@@ -354,10 +356,20 @@
                 this.fire('shareClicked', {id: this.backtest._id});
             },
 
-            toggle: function () {
-            	this.ironCollapse = this.$$('iron-collapse');
+            toggle: function (e) {
+
+				this.ironCollapse = this.$$('iron-collapse');
+
+            	var isOpen = this.ironCollapse.opened;
+
+            	if(e.detail.expand && isOpen) {
+            		return;
+            	} else if(e.detail.expand == false && !isOpen) {
+            		return;
+            	}
+            	
                 this.ironCollapse.toggle();
-                if (this.ironCollapse.opened) {
+                if (!isOpen) {
                     this.$$('#expandBtn').style.transform = "rotate(180deg)";
                 } else {
                     this.$$('#expandBtn').style.transform = "rotate(0deg)";
@@ -370,11 +382,12 @@
                     checked: this.$$('paper-checkbox').checked,
                     index: "Backtest "+this.formatIndex(this.index)
                 });
+
                 this.toggleSidebar();
             },
 
             toggleSidebar: function () {
-                if (this.paperCheckBox.checked)
+                if (this.$$('paper-checkbox').checked)
                     this.$$('.side-bar').style.transform = "scale(1,1)";
                 else
                     this.$$('.side-bar').style.transform = "scale(0,1)";

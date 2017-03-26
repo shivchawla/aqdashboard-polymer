@@ -137,7 +137,7 @@
 				</template>
 
 				<template is='dom-if' if="[[showComparison]]">
-					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" index-array="[[indexArray]]" active="[[showComparison]]">
+					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" index-array="[[getIndexArray(checkedItems)]]" active="[[showComparison]]">
 					</aq-analyze-backtest-comparison-item>
 				</template>
 
@@ -183,11 +183,6 @@
 				showComparison :{
 					type:Boolean,
 					value:false,
-				},
-
-				active:{
-					type: Boolean,
-					value: false,
 				},
 
 				routeData: {
@@ -243,11 +238,16 @@
 				'detail-action':'onDetail',
 			},
 
-            ready: function () {
-                if(this.checkedCount == 0){
-                    this.checkAll = false;
-                }
+            attached: function () {
+            	this.resetView();
             },
+
+            resetView: function() {
+	        	this.showComparison = false;
+	        	this.checkedCount = 0;
+	        	this.checkedItems = {};
+                this.checkAll = false;
+	        },
 
 			_strategyIdChanged: function(nId, oId) {
 
@@ -330,23 +330,24 @@
 
 			checkBacktest: function(e) {
 				var checked = e.detail.checked;
-	        	this.checkedItems[e.detail.id] = e.detail.checked;
+	        	this.checkedItems[e.detail.id] = {checked: e.detail.checked, index: e.detail.index};
 
 	        	if (checked == true) {
 	        		this.checkedCount += 1;
 	        	} else {
 	        		this.checkedCount -= 1;
 	        	}
-	        	if(this.checkedCount > this.backtests.length)
-	        	    this.checkedCount = this.backtests.length;
-                if(this.indexArray.length > this.backtests.length){
-                    this.set('indexArray',[]);
-                }else{
-                    this.push('indexArray',e.detail.index);
-                }
-                console.log(this.indexArray);
+
 	        	this.checkAll = this.checkedCount == this.backtests.length;
-                console.log(this.checkedCount);
+	        },
+
+	        getIndexArray: function(checkedItems) {
+	        	var indexArray = new Array();
+	        	for (var key in checkedItems) {
+	        		indexArray.push(checkedItems[key].index);
+	        	}
+
+	        	return indexArray;
 	        },
 
 	        numCheckedBacktests: function(checkedCount) {
@@ -366,7 +367,7 @@
 	        	//Send DELETE request to backend
 	        	for (key in this.checkedItems) {
 	        		var idx = this.backtests.map(function(x) {return x._id;}).indexOf(key);
-	        		if(idx != -1 && this.checkedItems[key]==true) {
+	        		if(idx != -1 && this.checkedItems[key].checked == true) {
 	        			this.deleteId = key;
         				this.$.deleteBacktestQuery.generateRequest();
 	        		}
@@ -403,24 +404,6 @@
 	        onDetail: function(e) {
 	        	e.stopPropagation();
 	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id , index:e.detail.index});
-	        },
-
-	        hasTail: function(tail) {
-	        	if(tail && tail.path) {
-	        		return tail.path.length > 0;
-	        	}
-
-	        	return false;
-	        },
-
-	        isActive: function(active, subroute) {
-	        	return active && !this.hasTail(subroute);
-	        },
-
-	        resetView: function() {
-	        	this.showComparison = false;
-	        	this.checkedCount = 0;
-	        	this.checkedItems = {};
 	        },
 
 	        onBacktestAdded: function() {

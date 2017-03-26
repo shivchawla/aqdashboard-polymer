@@ -105,7 +105,7 @@
             <p class="self-center flex">All Backtests</p>
 
             <div id='menu-icons'>
-                <paper-button id="expand_all" on-tap="expandAll">EXPAND ALL</paper-button>
+                <paper-button noink id="expand_all" on-tap="expandAll">EXPAND ALL</paper-button>
                 <paper-icon-button  id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
                 </paper-icon-button>
 
@@ -135,7 +135,7 @@
 				},
                 expand:{
 				    type:Boolean,
-                    value:true
+                    value: false
                 },
                 checkAll:{
                     type:Boolean,
@@ -170,15 +170,12 @@
             goToEditor: function() {
             	this.fire('backClicked');
             },
+
             expandAll:function () {
-                if(this.expand) {
-                    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
-                    this.expand = false;
-                }else{
-                    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
-                    this.expand = true;
-                }
+        	    this.expand = !this.expand;
+        	    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
             },
+
             onCheckAllBacktest: function () {
                 this.fire('iron-signal',{name:'select-backtest',data:{checked:this.$$('paper-checkbox').checked}});
             }
