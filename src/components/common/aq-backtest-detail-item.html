@@ -401,12 +401,14 @@
                     if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
                         this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
 
+                        this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
+                        console.log("Shiva");
+
                     }
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
                     this.pctCompleted = -1;
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
                 }
-
-                 this.fire('iron-signal', {name:'partially-completed-backtest', pctCompleted: this.pctCompleted});
             },
 
             onBacktestBulkData: function (e) {
@@ -736,9 +738,6 @@
                     this.$$('aq-aggregatedreturns-barchart').resizeChart();
                 }
             },
-
-            
-
         });
     </script>
     <script type="text/javascript" src="DateTime.js"></script>

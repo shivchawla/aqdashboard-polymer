@@ -13,9 +13,9 @@
 	
 	<style>
 		#container {
-			width:97%;
-			margin: 0 auto;
 			height:100%;
+			padding:5px;
+			background-attachment: #e5e5e5;
 		}
 
 		paper-button {
@@ -29,8 +29,8 @@
 	</style>
 
 	<template>
-		<div id='container' class="flex">
-			<div class="goBackButton layout horizontal">
+		<div id='container'>
+			<!--div class="goBackButton layout horizontal">
 	            
 				<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='onBack'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
 
@@ -41,9 +41,9 @@
 	         		</paper-icon-button>
 	         	</template>
 
-	      	</div>
+	      	</div-->
 
-	      	<aq-backtest-detail-item class="flex" id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
+	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
 	      	</aq-backtest-detail-item>
 		</div>
 
