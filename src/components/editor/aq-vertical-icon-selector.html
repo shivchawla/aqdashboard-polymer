@@ -2,6 +2,9 @@
 
 <link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
 
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+
+
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 
@@ -12,15 +15,16 @@
 	<style>
 
 		paper-icon-button {
-			--border: 1px solid;
-			width: 45px;
-			height:45px;
+			width: 50px;
+			height:50px;
+			padding:7px;
+			background-color: #fff;
+			border-left: 1px solid #E5E5E5;
 		}
 
 		.container {
-			--padding-top: 50px;
-			--border-left: 1px solid #E5E5E5;
 			background-color: white;
+			padding: 0px;
 		}
 
 		#topPadding {
@@ -33,19 +37,42 @@
 			border-left: 1px solid #E5E5E5;
 			height: 100%;
 			background-color: white;
-
 		}
+
+		paper-icon-button:focus {
+			border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+		}
+
+		paper-icon-button:active {
+			border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+		}
+
+		.iron-selected {
+            border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+        }
+
 		
 	</style>	
 
 	<template>
 		<div id='topPadding'></div>
-		<div class="container layout vertical">
+		<!--div class="container layout vertical self-center"-->
+		<iron-selector selected="{{selected}}">
 			<template is="dom-repeat" items="{{iconsArray}}">
-				<paper-icon-button class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
+				<paper-icon-button noink class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
 			</template> 
+		</iron-selector>
 			
-		</div>
+		<!--/div-->
 		<div id='bottomPadding' class="flex"></div>
 		
 	</template>
@@ -60,9 +87,22 @@
 
 				selected: {
 					type:Number,
-					value:0,
+					//value:0,
 					notify:true,
-				},
+				}
+
+			},
+
+			attached: function() {
+				console.log(this.selected)
+				//this.firstItem = this.iconsArray[0];
+				//console.log(this.firstItem);
+			},
+
+			isActive: function(item) {
+				//console.log(item);
+				//console.log(this.firstItem);
+				return item == this.firstItem;
 			},
 
 			changeIndex: function(e) {
