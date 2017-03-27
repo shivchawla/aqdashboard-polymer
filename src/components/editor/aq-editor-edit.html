@@ -82,6 +82,7 @@
             width: 50px;
             height: 100%;
             right:0;
+
             position: fixed;
             padding-top: 5px;
             padding-bottom: 5px;
@@ -92,6 +93,11 @@
           width: calc(100% - 50px);
           background-color: #E5E5E5; 
         }
+
+        aq-editor-edit-backtest-screen {
+            --margin-top: 10px;
+            width: calc(100% - 50px);
+        } 
 
     </style>
 
@@ -146,22 +152,28 @@
 
                 <paper-header-panel id='headerPanel' mode="seamed">
 
-                    <template is='dom-if' if='[[!isRunning]]'>
-                        <aq-editor-toolbar id='editorToolbar' is-programmer={{isProgrammer}} class="paper-header"
-                                           strategy-name="[[strategy.name]]" strategy-desc="[[strategy.description]]"
-                                           narrow="[[narrow]]" strategy-id="[[strategyId]]">
-                        </aq-editor-toolbar>
-                    </template>
-
+                    <aq-editor-toolbar 
+                        id='editorToolbar' 
+                        is-programmer={{isProgrammer}}
+                        is-running={{isRunning}}
+                        class="paper-header"
+                        strategy-name="[[strategy.name]]" 
+                        strategy-desc="[[strategy.description]]"
+                        narrow="[[narrow]]" 
+                        strategy-id="[[strategyId]]">
+                    </aq-editor-toolbar>
+                    
+                    <div class="layout horizontal">
                     <template is='dom-if' if='[[isRunning]]'>
-                        <aq-editor-edit-backtest-screen is-running="{{isRunning}}"
-                                                        id='backtestScreen'
-                                                        narrow="[[narrow]]"
-                                                        backtest-id="[[activeBacktestId]]">
+                        <aq-editor-edit-backtest-screen class="fit"
+                              is-running="{{isRunning}}"
+                              id='backtestScreen'
+                              narrow="[[narrow]]"
+                              backtest-id="[[activeBacktestId]]">
                         </aq-editor-edit-backtest-screen>
                     </template>
 
-                    <div>
+                    <template is='dom-if' if='[[!isRunning]]'>
                         <paper-drawer-panel
                                 id="drawerpanel"
                                 drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]"
@@ -170,7 +182,9 @@
                                 narrow="{{narrow}}"
                                 force-narrow="{{!showSideBar}}">
 
-                            <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
+                            <template 
+                                is='dom-if' 
+                                if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
                                 <aq-editor-edit-programmer 
                                     main 
                                     code="[[strategy.code]]"
@@ -178,25 +192,26 @@
                                 </aq-editor-edit-programmer>
                             </template>
                            
-                                <div id="sidebar" drawer> 
-                                    <iron-pages selected="{{selectedSidebar}}">
+                            <div id="sidebar" drawer> 
+                                <iron-pages selected="{{selectedSidebar}}" >
 
-                                        <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
+                                    <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
 
-                                        <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
+                                    <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
 
-                                    </iron-pages>
-                                </div>
-                   
-                        </paper-drawer-panel> 
+                                </iron-pages>
+                            </div>
+               
+                        </paper-drawer-panel>
+                    </template> 
                         
-                        <aq-vertical-icon-selector
-                              id="verticalSelector"
-                              selected="{{selectedSidebar}}"
-                              icons-array="[[iconsArray]]">
-                        </aq-vertical-icon-selector>
-                        
-                        </div>
+                    <aq-vertical-icon-selector
+                          id="verticalSelector"
+                          selected="{{selectedSidebar}}"
+                          icons-array="[[iconsArray]]">
+                    </aq-vertical-icon-selector>
+                    </div>
+                    
   
                 </paper-header-panel>
             </div>
@@ -501,7 +516,7 @@
             },
 
             onScroll: function () {
-                this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight;
+                //this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight;
             },
 
             showProgrammerWindow: function (isRunning, isProgrammer) {
