@@ -18,19 +18,35 @@
 		}
 
 		.container {
-			padding-top: 50px;
-			border-left: 1px solid;
-			z-index: 1002;
+			--padding-top: 50px;
+			--border-left: 1px solid #E5E5E5;
+			background-color: white;
+		}
+
+		#topPadding {
+			border-left: 1px solid #E5E5E5;
+			height: 50px;
+			background-color: white;
+		}
+
+		#bottomPadding {
+			border-left: 1px solid #E5E5E5;
+			height: 100%;
+			background-color: white;
+
 		}
 		
 	</style>	
 
 	<template>
+		<div id='topPadding'></div>
 		<div class="container layout vertical">
 			<template is="dom-repeat" items="{{iconsArray}}">
 				<paper-icon-button class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
 			</template> 
+			
 		</div>
+		<div id='bottomPadding' class="flex"></div>
 		
 	</template>
 

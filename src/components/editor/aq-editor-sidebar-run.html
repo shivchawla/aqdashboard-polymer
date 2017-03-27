@@ -18,6 +18,11 @@
             color: #24293d;
         }
 
+        #run {
+            color: #24293d;
+            background-color: #fff;
+        }
+
         #advancedSettings {
             --height: 35px;
             margin-top: 5px;
@@ -85,12 +90,7 @@
             --dropdown-width: 90px;
         }
 
-        #run {
-            color: #24293d;
-            background-color: #fff;
-            height: 100%;
-        }
-
+        
         vaadin-date-picker {
             width: 200px;
         }
@@ -200,7 +200,7 @@
     </style>
 
     <template>
-        <div id='run' class="layout vertical flex">
+        <div id='run' class="layout vertical">
         	 <paper-tabs selected="{{selected}}" >
                 <paper-tab><span class="paper-tabs-text">Basic</span></paper-tab>
                 <paper-tab><span class="paper-tabs-text">Advanced</span></paper-tab>
@@ -318,8 +318,8 @@
                     </table>
                 </div>
             </iron-pages>
+            
         </div>
-
     </template>
 
     <script>

@@ -72,26 +72,27 @@
         }
 
         #sidebar {
-            height: 100%;
+            height: calc(100%-10px);
             padding-top: 5px;
             padding-bottom: 5px;
-            padding-right: 5px;
-        }
-
-        #sidebarLeft {
-            border-right: 1px solid;
-            width: 90%;
+            background-color: #E5E5E5; 
         }
 
         #verticalSelector {
-            width: 10%;
+            width: 50px;
             height: 100%;
+            right:0;
+            position: fixed;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #e5e5e5;
         }
 
-        #rightPanel {
-          background-color: #E5E5E5;
+        #drawerpanel {
+          width: calc(100% - 50px);
+          background-color: #E5E5E5; 
         }
-        
+
     </style>
 
     <style include="iron-flex iron-positioning"></style>
@@ -143,7 +144,7 @@
         <template is='dom-if' if='{{isLoadedWithStrategy(loading, strategy)}}'>
             <div id='container' class="fit">
 
-                <paper-header-panel id='leftPanel' mode="seamed">
+                <paper-header-panel id='headerPanel' mode="seamed">
 
                     <template is='dom-if' if='[[!isRunning]]'>
                         <aq-editor-toolbar id='editorToolbar' is-programmer={{isProgrammer}} class="paper-header"
@@ -160,48 +161,46 @@
                         </aq-editor-edit-backtest-screen>
                     </template>
 
-                    <paper-drawer-panel
-                            id="drawerpanel"
-                            drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]"
-                            right-drawer
-                            responsive-width='840px'
-                            narrow="{{narrow}}"
-                            force-narrow="{{!showSideBar}}">
+                    <div>
+                        <paper-drawer-panel
+                                id="drawerpanel"
+                                drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]"
+                                right-drawer
+                                responsive-width='840px'
+                                narrow="{{narrow}}"
+                                force-narrow="{{!showSideBar}}">
 
-                        <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
-                            <aq-editor-edit-programmer main code="[[strategy.code]]"
-                                                       id='codeEditorPanel'></aq-editor-edit-programmer>
-                        </template>
+                            <template is='dom-if' if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
+                                <aq-editor-edit-programmer 
+                                    main 
+                                    code="[[strategy.code]]"
+                                    id='codeEditorPanel'>
+                                </aq-editor-edit-programmer>
+                            </template>
+                           
+                                <div id="sidebar" drawer> 
+                                    <iron-pages selected="{{selectedSidebar}}">
 
+                                        <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
 
-                        <paper-header-panel id='rightPanel' drawer mode="seamed">
+                                        <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
 
-                            <div id="sidebar" class="layout horizontal">
-                                <iron-pages id="sidebarLeft" selected="{{selectedSidebar}}">
-
-                                    <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
-
-                                    <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
-
-                                </iron-pages>
-
-                                <aq-vertical-icon-selector id="verticalSelector"
-                                                           selected="{{selectedSidebar}}"
-                                                           icons-array="[[iconsArray]]">
-                                </aq-vertical-icon-selector>
-
-                            </div>
-
-                        </paper-header-panel> <!--inner header panel for MAIN Toolbar-->
-
-                    </paper-drawer-panel> <!--inner drawer panel-->
-
+                                    </iron-pages>
+                                </div>
+                   
+                        </paper-drawer-panel> 
+                        
+                        <aq-vertical-icon-selector
+                              id="verticalSelector"
+                              selected="{{selectedSidebar}}"
+                              icons-array="[[iconsArray]]">
+                        </aq-vertical-icon-selector>
+                        
+                        </div>
+  
                 </paper-header-panel>
             </div>
-
-            <!--/paper-drawer-panel-->
         </template>
-
     </template>
 
     <script>
@@ -297,7 +296,7 @@
                     this.fire('close-menu');
                     this.selectedSidebar = 0;
                 }
-                
+
                 this.isRunning = false;
             },
 
