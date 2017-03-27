@@ -119,9 +119,8 @@
         <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 			<div id='container'>
 
-	            <paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goToEditor'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
-
 				<template is='dom-if' if="[[!showComparison]]">
+					<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goToEditor'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
 
 					<div class="layout vertical center">
 
