@@ -117,10 +117,11 @@
         	--paper-card:{
 	        	color: #24293d;
 	            margin: 0 auto;
-        	}
+        	};
+            background-color: var(--aq-backtest-detail-item-background-color,#fff);
         }
 
-        .card-content: {
+        .card-content{
         	color: #24293d;
         }
         
@@ -131,7 +132,7 @@
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <paper-card class="layout vertical flex">
+        <paper-card class="layout vertical flex" elevation="{{elevation}}">
         	<div class="card-content" >
                 <div class="middle-container self-center flex">
                 	<template is='dom-if' if='[[backtestHeader]]'>
@@ -199,7 +200,8 @@
             properties: {
                 elevation:{
                     type:Number,
-                    value:1
+                    value:1,
+                    notify:true
                 },
                 index:{
                     type:String

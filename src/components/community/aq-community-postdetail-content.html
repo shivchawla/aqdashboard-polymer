@@ -23,7 +23,7 @@
         }
 
         #img {
-            margin-right: 10px;
+            /*margin-right: 10px;*/
             margin-bottom: 5px;
         }
 
@@ -32,6 +32,7 @@
         }
 
         #post-content {
+
             margin-bottom: 50px;
             box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
             padding: var(--aq-community-postdetail-content-padding, 0);
@@ -63,6 +64,7 @@
 
         .author-name-detail {
             color: #304896;
+            margin-left: 5px;
         }
 
         .created-text {
@@ -105,7 +107,10 @@
         }
 
         aq-backtest-detail-item {
-            --card-action-background-color: var(post-content-background-color, #fafafb);
+            --aq-backtest-detail-item-background-color:var(--aq-community-postdetail-content-background-color,#fff);
+        }
+        #post-content{
+            background-color: #fff;
         }
     </style>
 

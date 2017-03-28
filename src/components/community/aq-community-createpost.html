@@ -149,11 +149,16 @@
             width: 100%;
     
         }
-
+        #topicInput{
+            outline: none;
+        }
+        aq-tags-input-container{
+            --tags-container-padding-left:0;
+            --tags-container-background-color:transparent;
+        }
         #tagsInput {
             width: 100%;
             margin: 0;
-            padding-left: 10px;
             height: 35px;
             border: 0;
             margin: 0;
@@ -344,13 +349,13 @@
                                 <aq-tags-input-container>
                                     <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
                                            on-keydown="onChange" on-keyup="scrollToBottom">
-                                    <ul id="tagsContainer" class="tags-container">
+                                    <div id="tagsContainer" class="tags-container">
                                         <template is="dom-repeat" items="{{tags}}">
                                             <tag-element label="{{item}}">
                                                 <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
                                             </tag-element>
                                         </template>
-                                    </ul>
+                                    </div>
                                 </aq-tags-input-container>
                               </div>
                             
@@ -358,14 +363,14 @@
                                 <span class="tags-header">Post Type: &nbsp;</span>
                                 <paper-radio-group id="selectedCategory" aria-labelledby="label1"
                                                    selected="Share your Idea">
-                                    <paper-radio-button noink name="Share your Idea"><span>Idea</span>
+                                    <paper-radio-button noink name="Share your Idea"><span>Share your Idea</span>
                                     </paper-radio-button>
                                     <br>
-                                    <paper-radio-button noink name="Questions and Answers"><span>Quesions</span>
+                                    <paper-radio-button noink name="Questions and Answers"><span>Quesions and Answers</span>
                                     </paper-radio-button>
                                     <br>
-                                    <paper-radio-button noink disabled name="News and Anoouncements"><span>News/Announcement</span>
-                                    </paper-radio-button>
+                                    <!--<paper-radio-button noink disabled name="News and Anoouncements"><span>News/Announcement</span>-->
+                                    <!--</paper-radio-button>-->
                                     <br>
                                 </paper-radio-group>
                             </div>

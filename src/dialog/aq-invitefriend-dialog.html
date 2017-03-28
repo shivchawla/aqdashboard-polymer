@@ -6,167 +6,173 @@
 <link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
 
 <link rel='import' href='../icons/aq-iconset.html'>
-
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <dom-module id='aq-invitefriend-dialog'>
-  <style  include="iron-flex iron-flex-alignment iron-positioning">
-  </style>
-	<style>
-		#sendInviteModalDialog {
-    		width: 40%;
-        min-width: 400px;
-    		margin-right:0px;
-    		margin-left:0px;
-    		padding-right: 0px;
-    		padding-left:0px;
-    		border-radius: 5px;
-    		border: 2px solid #cc6666;;--teal;
-  		}
-
-      #sentMessageDialog {
-        --width: 40%;
-        width: 400px;
-        margin-right:0px;
-        margin-left:0px;
-        padding-right: 0px;
-        padding-left:0px;
-        border-radius: 5px;
-        border: 2px solid #cc6666;;--teal;
-      } 
-
-  		.input-fields {
-  			  padding-bottom: 20px;
-  			--paper-input-container-color:#24293d;
-  			--paper-input-container-input-color:#24293d;
-  			--paper-input-container-focus-color :teal;
-  		}
-
-  		#buttons {
-  			margin:15px;
-  		}
-
-  		paper-button {
-  			--paper-button:{
-  				color:teal;
-  			};
-  		}
-
-  		paper-button{
-  			border-radius: 5px;
-    		border: 1px solid teal;
-    		height:30px;
-  		}
-
-  		#header {
-        margin-left: 15px;
-        margin-bottom: 5px;
-  		}
-
-      p, i{
-        color:teal; 
-      }
-
-      p {
-        font-size: 22px;
-        font-weight: bold;
-        margin-top:0px;
-        margin-bottom: 0px;
-      }
-
-      #editor {
-        margin:15px;
-      }
-
-      gold-email-input {
-        --paper-input-container-underline-focus:{
-            background-color: teal;
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+    <style>
+        :host{
+            font-family: 'Lato',sans-serif;
+        }
+        #sendInviteModalDialog {
+            width: 40%;
+            min-width: 400px;
+            margin-right: 0px;
+            margin-left: 0px;
+            padding-right: 0px;
+            padding-left: 0px;
+            border-radius: 5px;
         }
 
-      }
+        #sentMessageDialog {
+            --width: 40%;
+            width: 400px;
+            margin-right: 0px;
+            margin-left: 0px;
+            padding-right: 0px;
+            padding-left: 0px;
+            border-radius: 5px;
+            border: 2px solid #cc6666;;
+            --teal;
+        }
 
-      iron-icon {
-        height:50px;
-        width: 50px;
-        color: #cc6666;;--teal;
-        margin-bottom: -35px;
-        margin-top:-15px;
-      }
-    
-	</style>
-	
-	<template>
-	    <paper-dialog id='sendInviteModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel' on-iron-overlay-closed='onCancel'>
-	    	
-        <div class="layout horizontal">
-          <div class="flex"></div>
-          <iron-icon icon="aq-icons:person-add"></iron-icon>
-        </div>
+        .input-fields {
+            padding-bottom: 20px;
+            --paper-input-container-color: #24293d;
+            --paper-input-container-input-color: #24293d;
+            --paper-input-container-focus-color: teal;
+        }
 
-        <div id='header'>
-        <p class="self-end">Invite A Friend</p>
-        <i>We are thrilled you liked our platform. Spread the Joy!!</i></div>
-      
-        
- 			<div id='editor'> 
-         <gold-email-input 
-              id='userEmailInput'
-              class='input-fields'
-              auto-complete='on'
-              value="{{userEmail}}"
-              error-message="Please enter a valid email address"
-              no-label-float
-              auto-validate
-              required>  
-          </gold-email-input>
-      </div>
- 				 	
-      <div id='buttons' class="layout vertical">    
-        <div class="layout horizontal self-end">
-          <paper-button noink dialog-dismiss>Cancel</paper-button>
-  		  	<paper-button  noink on-tap='onSubmit'>Send</paper-button>
-        </div>
-      </div>
-	
-		 	
-		</paper-dialog>
+        paper-button {
+            --paper-button: {
+                color: teal;
+            };
+        }
 
-    <paper-dialog id='sentMessageDialog' modal>
-      <div><p style="font-weight: normal; font-size: 16px;"> Invitation Sent to [[userEmail]]</p></div>
-      <div id='buttons' class="layout vertical">    
-        <div class="layout horizontal self-end">
-          <paper-button noink dialog-dismiss>Close</paper-button> 
-        </div>
-      </div>
-    </paper-dialog>
+        paper-button {
+            height: 30px;
+        }
 
-	</template>
-	
-	<script>
-		Polymer ({
-			is: 'aq-invitefriend-dialog',
+        #editor {
+            margin: 15px;
+        }
 
-			properties: {
-				userEmail:{
-          type:String,
-        },		
-			},
+        gold-email-input {
+            --paper-input-container-underline-focus: {
+                background-color: teal;
+            }
 
-			onSubmit: function() {
-				if(this.$.userEmailInput.validate()) {
-					   this.fire('send-invite-action',{address:this.userEmail});
-             this.$.sendInviteModalDialog.close();
-             this.$.sentMessageDialog.open();
-				  } 		
-			},
+        }
 
-			open: function() {
-				this.$.sendInviteModalDialog.open();
-			},
+        iron-icon {
+            height: 50px;
+            width: 50px;
+            color: #cc6666;;
+            margin-bottom: -35px;
+            margin-top: -15px;
+        }
+        .header{
 
-      onCancel: function() {
-        this.emailAddress = "";
-      },
+            height: 50px;
+            background-color: teal;
+            position: relative;
+            top:-24px;
+            margin: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .header p{
+            color:#fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .sub-header p{
+            color:#444;
+            font-weight: 400;
+            text-align: center;
+            margin: 0;
+        }
+    </style>
 
-		});
-		
-	</script>
+    <template>
+        <paper-dialog id='sendInviteModalDialog' modal with-backdrop on-iron-overlay-canceled='onCancel'
+                      on-iron-overlay-closed='onCancel'>
+
+            <!--<div class="layout horizontal">-->
+            <!--<div class="flex"></div>-->
+            <!--<iron-icon icon="aq-icons:person-add"></iron-icon>-->
+            <!--</div>-->
+            <div class="header layout horizontal">
+                <p class="self-end">Invite A Friend</p>
+            </div>
+
+            <div class="sub-header layout horizontal center-justified">
+
+                <p>We are thrilled you liked our platform. <br>Spread the Joy!!</p>
+            </div>
+
+
+            <div id='editor'>
+                <gold-email-input
+                        id='userEmailInput'
+                        class='input-fields'
+                        auto-complete='on'
+                        value="{{userEmail}}"
+                        error-message="Please enter a valid email address"
+                        no-label-float
+                        auto-validate
+                        required>
+                </gold-email-input>
+            </div>
+
+            <div  class="layout vertical">
+                <div class="layout horizontal self-end">
+                    <paper-button  dialog-dismiss>Cancel</paper-button>
+                    <paper-button  on-tap='onSubmit'>Send</paper-button>
+                </div>
+            </div>
+
+
+        </paper-dialog>
+
+        <paper-dialog id='sentMessageDialog' modal>
+            <div><p style="font-weight: normal; font-size: 16px;"> Invitation Sent to [[userEmail]]</p></div>
+            <div class="layout vertical">
+                <div class="layout horizontal self-end">
+                    <paper-button  dialog-dismiss>Close</paper-button>
+                </div>
+            </div>
+        </paper-dialog>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'aq-invitefriend-dialog',
+
+            properties: {
+                userEmail: {
+                    type: String,
+                },
+            },
+
+            onSubmit: function () {
+                if (this.$.userEmailInput.validate()) {
+                    this.fire('send-invite-action', {address: this.userEmail});
+                    this.$.sendInviteModalDialog.close();
+                    this.$.sentMessageDialog.open();
+                }
+            },
+
+            open: function () {
+                this.$.sendInviteModalDialog.open();
+            },
+
+            onCancel: function () {
+                this.emailAddress = "";
+            },
+
+        });
+
+    </script>
 </dom-module>

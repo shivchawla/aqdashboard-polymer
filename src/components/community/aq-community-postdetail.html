@@ -68,7 +68,12 @@
           font-weight: 400;
           padding: 0;
       }
-
+      aq-community-postdetail-content{
+          --aq-community-postdetail-content-background-color:#fff;
+      }
+        .header-container h1{
+            cursor: pointer;
+        }
   </style>  
 
   <template>
@@ -105,7 +110,7 @@
                         <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
                                            on-tap="goBack"></paper-icon-button>
 
-                        <h1>Back to Community</h1>
+                        <h1 on-tap="goBack">Back to Community</h1>
                     </div>
 
                     <aq-community-postdetail-header

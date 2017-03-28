@@ -62,7 +62,7 @@
     "paper-tooltip": "^1.1.2",
     "simplemde": "^1.11.2",
     "vaadin-icons": "^2.0.0",
-    "vaadin-grid": "^1.1.1",
+    "vaadin-grid": "vaadin/vaadin-grid#^1.2.2",
     "web-socket": "*",
     "iron-meta": "PolymerElements/iron-meta#^1.1.2",
     "app-route": "PolymerElements/app-route#^0.9.3",
