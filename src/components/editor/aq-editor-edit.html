@@ -72,30 +72,38 @@
         }
 
         #sidebar {
-            height: calc(100%-10px);
-            padding-top: 5px;
-            padding-bottom: 5px;
-            background-color: #E5E5E5; 
+          height: 100%;
+          padding-top: 5px;
+          background-color: #E5E5E5; 
+        }
+
+        iron-pages {
+          height: 100%;
         }
 
         #verticalSelector {
             width: 50px;
             height: 100%;
             right:0;
-
             position: fixed;
             padding-top: 5px;
             padding-bottom: 5px;
             background-color: #e5e5e5;
         }
 
+        aq-editor-sidebar-log {
+            padding: 5px;
+            padding-right: 5px;
+            --padding-bottom: 5px;
+            background-color: #fff;
+        }
+
         #drawerpanel {
           width: calc(100% - 50px);
-          background-color: #E5E5E5; 
+          background-color: #E5E5E5;
         }
 
         aq-editor-edit-backtest-screen {
-            --margin-top: 10px;
             width: calc(100% - 50px);
         } 
 
@@ -164,15 +172,7 @@
                     </aq-editor-toolbar>
                     
                     <div class="layout horizontal">
-                    <template is='dom-if' if='[[isRunning]]'>
-                        <aq-editor-edit-backtest-screen class="fit"
-                              is-running="{{isRunning}}"
-                              id='backtestScreen'
-                              narrow="[[narrow]]"
-                              backtest-id="[[activeBacktestId]]">
-                        </aq-editor-edit-backtest-screen>
-                    </template>
-
+                    
                     <paper-drawer-panel
                           id="drawerpanel"
                           drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]"
@@ -191,10 +191,21 @@
                               </aq-editor-edit-programmer>
                           </template>
 
+                          <template is='dom-if' if='[[isRunning]]'>
+                              <aq-editor-edit-backtest-screen 
+                                    main
+                                    is-running="{{isRunning}}"
+                                    id='backtestScreen'
+                                    narrow="[[narrow]]"
+                                    backtest-id="[[activeBacktestId]]">
+                              </aq-editor-edit-backtest-screen>
+                          </template>
+
                             <div id="sidebar" drawer> 
                                 <iron-pages selected="{{selectedSidebar}}" >
 
-                                    <aq-editor-sidebar-run id='runSidebar'></aq-editor-sidebar-run>
+                                    <aq-editor-sidebar-run id='runSidebar'>
+                                    </aq-editor-sidebar-run>
 
                                     <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
 
@@ -203,11 +214,11 @@
                
                         </paper-drawer-panel>
                         
-                    <aq-vertical-icon-selector
-                          id="verticalSelector"
-                          selected="{{selectedSidebar}}"
-                          icons-array="[[iconsArray]]">
-                    </aq-vertical-icon-selector>
+                        <aq-vertical-icon-selector
+                              id="verticalSelector"
+                              selected="{{selectedSidebar}}"
+                              icons-array="[[iconsArray]]">
+                        </aq-vertical-icon-selector>
                     </div>
   
                 </paper-header-panel>
@@ -261,6 +272,7 @@
                 isRunning: {
                     type: Boolean,
                     value: false,
+                    observer:'_isRunningChanged',
                 },
 
                 putStrategyData: Object,
@@ -272,8 +284,7 @@
                 loading: Boolean,
 
                 iconsArray: {
-                    type: Array,
-                    value: ["aq-icons:settings", "aq-icons:graphic-eq"],
+                    type: Array, 
                 },
 
             },
@@ -295,6 +306,7 @@
                 'backClicked-backtest': 'toggleIsRunning',
                 'scroll-log': 'onScroll',
                 'save-request': 'onSaveRequest',
+                'open-sidebar-panel':'openDrawer',
             },
 
             attached: function () {
@@ -310,6 +322,14 @@
                 }
 
                 this.isRunning = false;
+            },
+
+            _isRunningChanged: function() {
+                if(this.isRunning) {
+                    this.iconsArray = ["aq-icons:settings", "aq-icons:graphic-eq"];
+                  } else {
+                    this.iconsArray = ["aq-icons:settings"]; 
+                  }
             },
 
             computeGetStrategyUrl: function (strategyId) {
@@ -444,7 +464,6 @@
             },
 
             saveStrategy: function (e) {
-
                 this.putStrategyData = {
                     "name": e.detail.name,
                     "description": this.strategy.description,
@@ -489,7 +508,6 @@
                 this.fire('execute-backtest', {backtestId: this.activeBacktestId});
 
                 this.fire('iron-signal', {name: 'backtest-added'});
-
 
             },
 

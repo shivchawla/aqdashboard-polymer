@@ -65,14 +65,11 @@
 
 	<template>
 		<div id='topPadding'></div>
-		<!--div class="container layout vertical self-center"-->
 		<iron-selector selected="{{selected}}">
 			<template is="dom-repeat" items="{{iconsArray}}">
 				<paper-icon-button noink class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
 			</template> 
 		</iron-selector>
-			
-		<!--/div-->
 		<div id='bottomPadding' class="flex"></div>
 		
 	</template>
@@ -107,7 +104,7 @@
 
 			changeIndex: function(e) {
 				this.selected = this.iconsArray.indexOf(e.target.icon);
-				console.log(this.selected);
+				this.fire('open-sidebar-panel');
 			},
 		});
 	</script>
