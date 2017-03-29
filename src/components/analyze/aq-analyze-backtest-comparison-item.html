@@ -148,9 +148,9 @@
             color:#cc4444;
             font-weight: 700;
         }
-        code-editor-element{
-            --code-editor-element-width: 100%;
-            --code-editor-element-height: 500px;
+        aq-code-editor-element{
+            --aq-code-editor-element-width: 100%;
+            --aq-code-editor-element-height: 500px;
             position: relative;
             /*max-height: 700px;*/
         }
@@ -204,7 +204,7 @@
                     <div id='cumRetLineChartDiv'></div>
                     <div id='barChartDiv'></div>
                     <div id='codeCompare'>
-                        <code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></code-editor-element>
+                        <aq-code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></aq-code-editor-element>
                     </div>
                     <div id="codeSummary">
                         <aq-code-summary-element backtests="{{backtests}}" backtest-index-array="{{indexArray}}"></aq-code-summary-element>
@@ -321,7 +321,7 @@
                 var backtestResponseArray = Object.values(this.backtests);
                 if (Object.keys(this.compareItems).length === backtestResponseArray.length) {
                     console.log("Request Completed");
-                    var code_editor = this.$$('code-editor-element');
+                    var code_editor = this.$$('aq-code-editor-element');
                     var code_summary_element = this.$$('aq-code-summary-element');
                     var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
                     var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";

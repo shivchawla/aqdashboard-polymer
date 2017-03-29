@@ -1,8 +1,8 @@
 <link rel='import' href='../../common/aq-backtest-metric-item.html'>
 <link rel="import" href="../../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
-<dom-module id="code-editor-element">
-    <link rel="stylesheet" href="code-editor-element.css">
+<dom-module id="aq-code-editor-element">
+    <link rel="stylesheet" href="aq-code-editor-element.css">
     <style>
         :host {
             display: block;
@@ -12,9 +12,9 @@
             display: inline-flex;
             flex-direction: row;
             position: relative;
-            width: var(--code-editor-element-width, 100%);
+            width: var(--aq-code-editor-element-width, 100%);
             /* these 3 lines are to prevents an unsightly scrolling bounce affect on Safari */
-            height: var(--code-editor-element-height, 100%);
+            height: var(--aq-code-editor-element-height, 100%);
             overflow: auto;
             justify-content: center;
         }
@@ -208,7 +208,7 @@
     </template>
     <script>
         Polymer({
-            is: "code-editor-element",
+            is: "aq-code-editor-element",
             properties: {
                 codeLeft: {
                     type: String,
