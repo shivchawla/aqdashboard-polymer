@@ -117,8 +117,8 @@
         	--paper-card:{
 	        	color: #24293d;
 	            margin: 0 auto;
-        	};
-            background-color: var(--aq-backtest-detail-item-background-color,#fff);
+	            height: 100%;
+            }
         }
 
         .card-content{
@@ -146,13 +146,13 @@
                 <div class="lower-container flex">
                 	<template is='dom-if' if='{{metrics}}'>
                 		<aq-backtest-metric-item-list 
-                			metric-items = "{{metrics}}">
+                			metric-items = "{{metrics}}"
+                			active="{{active}}">
             			</aq-backtest-metric-item-list> 
                 	</template>
                 </div>
 
-                
-                                <div class="layout horizontal">
+                <div class="layout horizontal">
 	                <div class="flex"></div>
 	                <paper-tabs noink selected="{{graphType}}">
 	                    <paper-tab>Cumulative Return</paper-tab>

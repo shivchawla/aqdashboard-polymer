@@ -54,7 +54,7 @@
             },
 
             selectionChanged:function () {
-                console.log(this.eventName+" : "+this.$$('iron-selector').selected);
+                //console.log(this.eventName+" : "+this.$$('iron-selector').selected);
                 this.fire(this.eventName,{'attrSelected':this.$$('iron-selector').selected});
             },
 

@@ -25,24 +25,10 @@
 		 	margin-bottom: 10px;
             margin-left: 5px;
 		}
-		
 	</style>
 
 	<template>
 		<div id='container'>
-			<!--div class="goBackButton layout horizontal">
-	            
-				<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='onBack'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
-
-	            <div class="flex"></div>
-	         	
-	         	<template is='dom-if' if='[[narrow]]'>
-	         		<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
-	         		</paper-icon-button>
-	         	</template>
-
-	      	</div-->
-
 	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
 	      	</aq-backtest-detail-item>
 		</div>

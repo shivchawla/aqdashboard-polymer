@@ -54,6 +54,14 @@
 					this.metricItems =  this.deepCopy(this.originalItems);
 				} else {
 					this.originalItems = this.deepCopy(this.metricItems);
+					
+					if (this.active) {
+						if(this.originalItems.length > 6) {
+							this.splice('originalItems', 6, this.originalItems.length - 6);
+						}
+
+						this.metricItems =  this.deepCopy(this.originalItems);
+					}
 				}
 
 				if(this.metricItems) {
@@ -85,6 +93,8 @@
 			deepCopy: function(array) {
 				return JSON.parse(JSON.stringify(array));
 			},
+
+
 		});
 	</script>
 </dom-module>

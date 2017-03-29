@@ -20,7 +20,7 @@
             margin-right: 10px;
             min-width: 25px;
             max-width: 35px;
-            color: teal;
+            color: #cc6666;
         }
 
         paper-icon-button {
@@ -68,7 +68,7 @@
             padding: 5px;
             height: 35px;
             width: 23px;
-            color:teal;
+            color:#cc6666;
         }
 
         .toolbarPlayIcon:active {
@@ -103,16 +103,20 @@
             margin-right:10px;
         }
 
-      	#toggleIcon.green {
-		    color: teal;
-		    --paper-button:	{
+      	
+        #toggleIcon {
+    	    --paper-button:	{
     			width: 25px;
         	};
+        }
 
+      	#toggleIcon.green{
+		    color: #cc6666;
+	  		background-color: #f2f2f2;
 	  	}
 
 	  	#toggleIcon.green[active] {
-		    background-color: teal;
+		    background-color: #cc6666;
 		    color: white;
 	  	}
 
@@ -151,8 +155,10 @@
                                    title="Go Back" on-tap='goBack'></paper-icon-button>
                 <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
 
-                <div class="flex" style="max-width:5%"></div>
- 				  
+                <!--div class="flex" style="max-width:5%"></div-->
+			 	
+			 	<div class="flex"></div> 
+                
                 <template is='dom-if' if='{{isRunning}}'>
                     <p style="color:[[getStatusColor(pctCompleted)]]">[[getStatusMessage(pctCompleted)]]</p>
                 </template>
@@ -216,29 +222,28 @@
             			noink 
             			class="flex self-center green" 
             			toggles
+            			active="[[!narrow]]"
                         title="Toggle Menu" 
                         on-tap='toggleDrawer'
                         icon="vaadin-icons:split-h">
                 </paper-icon-button>
 
             </div>
-        	</paper-toolbar>
+        	
+    	</paper-toolbar>
 
-      	    <template is='dom-if' if='{{isRunning}}'>
-                <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
-                    <paper-progress value='{{pctCompleted}}'>
-                    </paper-progress>
-                </template>
-
-                <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
-                    <paper-progress indeterminate class="self-center">
-                    </paper-progress>
-                </template>
-
+  	    <template is='dom-if' if='{{isRunning}}'>
+            <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+                <paper-progress value='{{pctCompleted}}'>
+                </paper-progress>
             </template>
 
-
-    </template>
+            <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+                <paper-progress indeterminate class="self-center">
+                </paper-progress>
+            </template>
+        </template>
+	</template>
 
     <script>
         Polymer({

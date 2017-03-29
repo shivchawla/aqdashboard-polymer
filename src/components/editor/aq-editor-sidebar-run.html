@@ -1,12 +1,10 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../common/aq-dropdown.html'>
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-<link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
+
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../common/aq-group-selector.html">
 <dom-module id='aq-editor-sidebar-run'>
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -16,139 +14,48 @@
         :host {
             font-family: 'Lato', sans-serif;
             color: #24293d;
+            display: block;
+            height:100%;
         }
 
         #run {
             color: #24293d;
+            padding:5px;
             background-color: #fff;
         }
 
+        paper-card {
+        	--paper-card: {
+        		height: 100%;
+        	};
+        }
+
         #advancedSettings {
-            --height: 35px;
             margin-top: 5px;
-            --margin-left: 5px;
-            --border: 1px solid #e5e5e5;
             padding-bottom: 10px;
-        }
-
-        #universeSettings {
-            padding-bottom: 10px;
-        }
-
-        #date-settings {
-            --height: 80px;
-            margin-top: 8px;
-            --border: 1px solid #e5e5e5;
-            --width: 90%;
-        }
-
-        #heading {
-            margin-top: 10px;
-            margin-left: 14px;
-        }
-
-        #heading span {
-            font-weight: bold;
-            --color: green;
-            color: #24293d;
-        }
-
-        paper-button {
-            top: 0;
-            --margin-top: 10px;
-        }
-
-        paper-button :active {
-            background-color: blue;
-        }
-
-        textarea {
-            font-size: 15px;
-            color: #02558b;
-        }
-
-        textarea:focus {
-            border-color: #cbefde;
-        }
-
-        aq-dropdown {
-            --dropdown-height: 27px;
-            --dropdown-width: 140px;
-            margin-top: -13px;
-            --dropdown-background-color: #cbefde;
-        }
-
-        .smallInputBox {
-            width: 40px !important;
-            height: 21px !important;
-            margin-left: 5px;
-            margin-top: -1px;
-
-        }
-
-        .smallDropdown {
-            --dropdown-width: 90px;
-        }
-
-        
-        vaadin-date-picker {
-            width: 200px;
         }
 
         .input-box {
             border: 1px solid #d4d4d4;
-            padding: 5px 10px;
             outline: none;
             font-size: 14px;
-            width: 200px;
-            /*margin-left: 20px;*/
+            width: 175px;
+            height: 25px;
+            padding-left: 5px;
         }
 
-        /*.box{*/
-        /*margin-left: 15px;*/
-        /*}*/
-        vaadin-date-picker {
-            /*background-color: #00acc1;*/
-            width: 150px;
+        #basic-settings{
             position: relative;
-            font-size: 14px;
-
-        }
-
-        tr {
-            position: relative;
-            border: 4px solid;
-            /*margin-bottom: 20px;*/
-            /*transform: translate(0,35px);*/
-        }
-
-        #basic-settings .input-span {
-            position: relative;
-            top: 15px;
-        }
-
-        #input-capital {
-            font-size: 14px;
-        }
-
-        #input-capital, .input-span {
-            color: #7c7c7c;
-            font-family: 'Lato', sans-serif;
-            font-size: 14px;
         }
 
         paper-tabs {
-            --paper-tabs-selection-bar-color: #cc4444;
-            width: 300px;
-        }
+            --paper-tabs-selection-bar-color: #cc6666;
+            --paper-tabs:{
+            	font-size:13px;
+            };
 
-        paper-tab {
-            float: left;
-            --paper-tab-ink: #cc4444;
-        }
-
-        .paper-tabs-text {
-            font-size: 12px;
+            width: 50%;
+            margin-left:10px;
         }
 
         iron-pages {
@@ -168,158 +75,144 @@
         .inputbox {
             margin-bottom: 20px;
         }
-        .button-select-container{
-            display: inline-block;
+        
+        .label {
+        	width: 120px;
+        	margin-right:20px;
         }
-        .advanced-settings tr{
-            height: 50px;
+
+        .label span {
+        	font-size: 14px;
+        	color: #7c7c7c;
+            font-family: 'Lato', sans-serif;
         }
-        .advanced-settings tr td{
-            margin-left: 10px;
+
+        .value {
+        	width: 200px;
         }
-        .box{
-            width: 40px;
-            height: 25px;
-            text-align: center;
+
+        paper-input {
+        	--paper-input-container: {
+        		padding-top: 0px;
+        		padding-bottom: 0px;
+        		padding-left:5px;
+        		border: 1px solid #e5e5e5;
+        		width: 175px;
+    		};
+
+    		--paper-input-container-input: {
+        		font-size: 14px;
+    		};
+
+    		--paper-input-container-underline: {
+            	display: none;
+          	};
+    
+	      	--paper-input-container-underline-focus: {
+	            display: none;
+          	};
+        	
+    	  	--paper-input-container-underline-disabled: {
+	            display: none;
+          	};
         }
-        .split-bar{
-            width: 2px;
-            height: 40px;
-            background-color: #f2f2f2;
-            position: absolute;
-            top:4px;
-            margin-left: 53px;
-        }
-        td{
-            position: relative;
-        }
-        table{
-            margin-left: 15px;
+
+        .horizontalField {
+        	margin-bottom: 20px;
+        	margin-left:30px;
         }
 
     </style>
 
     <template>
-        <div id='run' class="layout vertical">
-        	 <paper-tabs selected="{{selected}}" >
-                <paper-tab><span class="paper-tabs-text">Basic</span></paper-tab>
-                <paper-tab><span class="paper-tabs-text">Advanced</span></paper-tab>
-              
-            </paper-tabs>
+        <paper-card id='run' class="layout vertical">
+        
+        	<div class="layout horizontal">
+	    	 	<paper-tabs noink selected="{{selected}}" >
+	                <paper-tab>BASIC</paper-tab>
+	                <paper-tab>ADVANCED</paper-tab>
+	            </paper-tabs>
+	            <div class="flex"></div>
+            </div>
 
             <iron-pages selected="{{selected}}">
                 <div id='basic-settings' class="layout vertical">
-                    <div id='date-settings' class="layout vertical">
-                        <table>
-                            <col width="100">
-                            <col width="300">
-                            <thead>
-                            <tr>
-                                <td style="display: none">Text</td>
-                                <td style="display: none">Input Box</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <span id="input-capital">Initial Capital</span>
-                                </td>
-                                <td>
-                                    <input class="input-box" label="Seed Capital"
-                                           value="{{initialCash::change}}" type="number"
-                                           on-keydown="checkForKeys" on-blur='close'>
-                                </td>
-                            </tr>
-                            <tr class="second-tr">
-                                <td><span class="input-span">Start Date</span></td>
-                                <td>
-                                    <vaadin-date-picker value="{{startDate}}"></vaadin-date-picker>
-                                </td>
-                            </tr>
-                            <tr class="second-tr">
-                                <td><span class="input-span">End Date</span></td>
-                                <td>
-                                    <vaadin-date-picker value="{{endDate}}"></vaadin-date-picker>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        
+            		<div class="horizontalField layout horizontal">
+                		<div class="label self-center">
+                			<span>Initial Capital</span>
+                		</div>
+
+                		<div class="value self-center">
+                		<input class="input-box" label="Seed Capital"
+                                       value="{{initialCash::change}}" type="number"
+                                       on-keydown="checkForKeys" on-blur='close'>
+                       	</div>
+            		</div>
+
+            		<div class="horizontalField layout horizontal">
+                       	<div class="label self-center">
+                			<span>Start Date</span>
+                		</div>
+
+            			<paper-input no-label-float class="value self-center" type="date" value="{{startDate}}"></paper-input>
+            		</div>
+
+					<div class="horizontalField layout horizontal">
+                       	<div class="label self-center">
+                			<span>End Date</span>
+                		</div>
+
+            			<paper-input no-label-float class="value self-center" type="date" value="{{endDate}}"></paper-input>
+
+            		</div>
 
                 </div>
+
+
                 <div id='advancedSettings' class="layout vertical">
-                    <table>
-                        <col width="100">
-                        <col width="300">
-                        <thead>
-                        <tr style="display: none">
-                            <td>Label</td>
-                            <td>Text</td>
-                        </tr>
-                        </thead>
-                        <tbody class="advanced-settings">
-                        <tr>
-                            <td><span class="input-span">Rebalance</span></td>
-                            <td>
-                                <div class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="rebalance-selected" items="{{rebalanceOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><span class="input-span">Cancel Policy</span></td>
-                            <td>
-                                <div class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="cancel-policy-selected" items="{{cancelOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><span class="input-span">Resolution</span></td>
-                            <td>
-                                <div class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="resolution-selected" items="{{resolutionOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><span class="input-span">Commission</span></td>
-                            <td>
-                                <input class="box" placeholder="Commission" class="smallInputBox"
-                                       value="{{commissionValue::change}}" type="number" default
-                                       on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>
-                                <div class="split-bar"></div>
-                                <div style="display: inline-block;margin-left: 15px;" class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="commision-selected" items="{{commissionOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><span class="input-span">Slippage</span></td>
-                            <td>
-                                <input class="box" class="smallInputBox" placeholder="Slippage"
-                                       value="{{slippageValue::change}}" type="number"
-                                       on-keydown="checkForKeys" on-blur='close' step="0.01" min=0>
-                                <div class="split-bar"></div>
-                                <div style="display: inline-block;margin-left: 15px;" class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="slippage-selected" items="{{slippageOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><span class="input-span">Investment Plan</span></td>
-                            <td>
-                                <div class="button-select-container layout horizontal">
-                                    <aq-group-selector event-name="investment-plan-selected" items="{{investmentPlanOptions}}"></aq-group-selector>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+	                    
+	                <aq-paper-button-group 
+	                		label="Rebalance"
+	                		event-name="rebalance-selected" 
+	                		button-values="{{rebalanceOptions}}">
+	        		</aq-paper-button-group>
+
+	        		<aq-paper-button-group 
+	                		label="Cancel Policy"
+	                		event-name="cancel-policy-selected" 
+	                		button-values="{{cancelOptions}}">
+	        		</aq-paper-button-group>
+
+					<aq-paper-button-group 
+	                		label="Resolution"
+	                		event-name="resolution-selected" 
+	                		button-values="{{resolutionOptions}}">
+	        		</aq-paper-button-group>
+
+	        		<aq-paper-button-group 
+	                		label="Commission"
+	                		event-name="resolution-selected" 
+	                		has-input
+	                		button-values="{{commissionOptions}}">
+	        		</aq-paper-button-group>
+	            	
+	            	<aq-paper-button-group 
+	                		label="Slippage"
+	                		event-name="slippage-selected" 
+	                		has-input
+	                		button-values="{{slippageOptions}}">
+	        		</aq-paper-button-group>
+	            	
+	            	<aq-paper-button-group 
+	                		label="Investment Plan"
+	                		event-name="investment-plan-selected-selected" 
+	                		button-values="{{investmentPlanOptions}}">
+	        		</aq-paper-button-group>
+
                 </div>
             </iron-pages>
-            
-        </div>
+        </paper-card>
     </template>
 
     <script>
@@ -490,8 +383,105 @@
                 this.$.dialog.toggle();
             }
 
-
         });
     </script>
 
+</dom-module>
+
+
+<dom-module id='aq-paper-button-group'>
+	<style include="iron-flex iron-flex-alignment iron-positioning"></style>	
+	<style>
+	 	.label {
+        	min-width: 115px;
+        	width: 115px;
+        	margin-right:20px;
+        }
+
+        .label span {
+        	font-size: 14px;
+        	color: #7c7c7c;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .split-bar{
+            width: 2px;
+            height: 35px;
+            background-color: grey;
+            margin-left: 2px;
+            margin-bottom: 5px;
+        }
+
+        .horizontalField {
+        	margin-bottom: 20px;
+        	margin-left: 30px;
+        }
+
+      	.box {
+            width: 50px;
+            height: 25px;
+            text-align: center;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin-right: 10px;
+            margin-left: 3px;
+            font-size: 14px;
+        }
+
+        .box:focus {
+        	outline: none;
+        }
+
+	</style>
+
+	<template>
+		<div class="horizontalField layout horizontal">
+			<div class="label self-center">
+				<span>[[label]]</span>
+			</div>
+
+			<template is='dom-if' if="[[hasInput]]">
+				<input class="box" 
+						type="number"
+                    	step="0.01" 
+                        min=0
+                        value="{{inputValue}}">
+            </template>
+
+			<div class="button-select-container layout horizontal">
+		        <aq-group-selector event-name="[[eventName]]" 
+		        		items="{{buttonValues}}">
+	    		</aq-group-selector>
+		    </div>
+	    </div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-paper-button-group',
+
+			properties: {
+				label: String,
+				
+				buttonValues: Array,
+				
+				eventName: String,
+				
+				hasInput: {
+					type: Boolean,
+					value: false,
+				},
+
+				inputValue:{
+					type:Number,
+					value:0.1,
+					notify:true,
+				}
+			},
+
+			attached: function() {
+				console.log(this.buttonValues);
+			}
+		});
+	</script>
 </dom-module>
