@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
@@ -151,8 +152,14 @@
 
         <paper-toolbar>
             <div id='toolbar' class="flex layout horizontal center">
-                <paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="aq-icons:arrow-back"
-                                   title="Go Back" on-tap='goBack'></paper-icon-button>
+                <paper-icon-button 
+                		noink id='back-icon' 
+            			class="flex toolbarIcon" 
+            			icon="aq-icons:arrow-back"
+            			title="Go Back"
+                        on-tap='goBack'>
+                </paper-icon-button>
+
                 <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
 
                 <!--div class="flex" style="max-width:5%"></div-->
@@ -170,7 +177,7 @@
                 		class="flex toolbarIcon" 
                 		icon="aq-icons:add" 
                 		title="New Strategy"
-                       on-tap='onCreate'>
+                       	on-tap='onCreate'>
                 </paper-icon-button>
 
                 <paper-icon-button 

@@ -4,6 +4,7 @@
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
 <link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/paper-header-panel/paper-header-panel.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
@@ -23,7 +24,7 @@
 
 		#container {
 			margin:0 auto;
-		    margin-top: 0px;
+		    margin-top: 30px;
 		    color: #24293d;
 	  	}
 		.backtest-item{
@@ -38,10 +39,6 @@
 		#comparison {
 			margin:20px;
 			--height:400px;
-		}
-
-		p{
-			font-size: 20px;
 		}
 
 		.spacer {
@@ -104,50 +101,59 @@
 
 	 	<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'></iron-signals>
 
-	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
-		<iron-signals on-iron-signal-select-backtest="selectAllBacktest"></iron-signals>
+	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'>
+	 	</iron-signals>
+		
+		<iron-signals on-iron-signal-select-backtest="selectAllBacktest">
+		</iron-signals>
+		
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
 
-        <template is="dom-if" if="[[!showComparison]]">
-	        <aq-analyze-home-menu
-	        	check-all="{{checkAll}}"
-	        	num-active-backtests="[[checkedCount]]"
-              	strategy-name="{{strategyName}}">
-          	</aq-analyze-home-menu>
-        </template>
+		<div class="fit"> 
+	        <paper-header-panel fixed mode="seamed">
+		        <template is="dom-if" if="[[!showComparison]]">
+			        <aq-analyze-home-menu
+			        	check-all="{{checkAll}}"
+			        	num-active-backtests="[[checkedCount]]"
+		              	strategy-name="{{strategyName}}"
+		              	class="paper-header">
+		          	</aq-analyze-home-menu>
+		        </template>
 
-        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
-			<div id='container'>
+		        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+					<div id='container'>
 
-				<template is='dom-if' if="[[!showComparison]]">
-					<paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goToEditor'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button>
+						<template is='dom-if' if="[[!showComparison]]">
+							<!--paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goToEditor'><iron-icon icon="chevron-left" ></iron-icon> Back</paper-button-->
 
-					<div class="layout vertical center">
+							<div class="layout vertical center">
 
-						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-							<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+								<template is='dom-repeat' items="{{backtests}}" initial-count=10>
+									<aq-analyze-home-backtest-item2  class="backtest-item"  index="{{index}}" backtest="{{item}}" detail-icon=1 share-icon=1></aq-analyze-home-backtest-item2>
+								</template>
+
+								<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
+									<div class="spacer"></div>
+								</template>
+
+							</div>
 						</template>
 
-						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
-							<div class="spacer"></div>
+						<template is='dom-if' if="[[showComparison]]">
+							<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" index-array="[[indexArray]]" active="[[showComparison]]">
+							</aq-analyze-backtest-comparison-item>
 						</template>
 
 					</div>
 				</template>
-
-				<template is='dom-if' if="[[showComparison]]">
-					<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" index-array="[[indexArray]]" active="[[showComparison]]">
-					</aq-analyze-backtest-comparison-item>
-				</template>
-
-			</div>
+			</paper-header-panel>
+		</div>
 
 		    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
 				 message="Are you sure to delete [[checkedCount]] backtest[[getMessageSuffix(checkedCount)]]?"
 				 cancel="Cancel"
 				 accept="OK">
 	    	</aq-delete-dialog>
-		</template>
 	</template>
 
     <script>
