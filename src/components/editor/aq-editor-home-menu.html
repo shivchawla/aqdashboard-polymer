@@ -1,18 +1,25 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../common/aq-sub-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
 <dom-module id='aq-editor-home-menu'>
-    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
     <style>
         
-        paper-checkbox{
+        .checkbox-all {
             --paper-checkbox-checked-color: #cc6666;
-        }
+            margin-left: 45px;
+        } 
+
         .iconTooltip {
             --paper-tooltip: {
                 font-size: 13px;
@@ -34,14 +41,25 @@
             };
             --paper-icon-button-disabled-text:grey;
         }
+
+        paper-icon-button {
+            --paper-icon-button:{
+                color:#cc6666;
+            };
+
+            width:40px;
+            height:40px;
+        }
+
     </style>
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
+        
         <aq-sub-toolbar>
             <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
                             on-change='onCheckAllStrategies'></paper-checkbox>
-            <p class="strategy-header">ALL STRATEGIES</p>
+            <p class="strategy-header">All Strategies</p>
             
             <div class="flex"></div>
 
@@ -52,6 +70,7 @@
                 <paper-icon-button id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!activeDelete]]">
                 </paper-icon-button>
             </div>
+            
             <paper-tooltip for='newIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>New</paper-tooltip>
 
             <paper-tooltip for='deleteIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>

@@ -6,25 +6,44 @@
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
 
-	<style>	
+	<style>
+
+		:host {
+			display: block;
+			height: 100%;
+		};
+		
 		#logcontainer {
-			
-			color:white;
-			height:100%;
+			background-color: black; 
+			color: white;
+			--margin: auto 0;	
+		}
+
+		paper-card { 
+			--paper-card: {
+				height: 97.5%;
+
+			}
+		}
+
+		.padding {
+			height: 5px;	
 		}	
 
 	</style>
 
 	<template>
 		
-		<div id='logcontainer' class="flex">
-			<template is='dom-repeat' items="{{logs}}">
-				<aq-log-item datetime = "[[item.datetime]]"
-							message = "[[item.message]]"
-							message-type = "[[item.messagetype]]">
-				</aq-log-item>
-			</template>
-		</div>
+		<paper-card id='logcontainer' class="layout vertical self-center">
+			<div class="card-content">
+				<template is='dom-repeat' items="{{logs}}">
+					<aq-log-item datetime = "[[item.datetime]]"
+								message = "[[item.message]]"
+								message-type = "[[item.messagetype]]">
+					</aq-log-item>
+				</template>
+			</div>
+		</paper-card>
 
 		<iron-signals on-iron-signal-bulk-data='onMessage' on-iron-signal-point-data='onMessage'></iron-signals>
 			

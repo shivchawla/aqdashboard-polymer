@@ -116,13 +116,13 @@
 	             <aq-tags-input-container class="search-bar layout horizontal center-justified">
                     <input type="text" id="tagsInput" placeholder="Add tags here"
                            on-keydown="onChange" on-keyup="scrollToBottom">
-                    <ul id="tagsContainer" class="tags-container">
+                    <div id="tagsContainer" class="tags-container">
                         <template is="dom-repeat" items="{{tags}}">
                             <tag-element label="{{item}}">
                                 <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
                             </tag-element>
                         </template>
-                    </ul>
+                    </div>
                 </aq-tags-input-container>
           	</template>
 
@@ -257,6 +257,7 @@
                     }
                 }else if(e.keyCode == 27){
                     this.set('tags',[]);
+                    this.$$('#tagsInput').value = "";
                 }
             },
             removeTag: function (e) {

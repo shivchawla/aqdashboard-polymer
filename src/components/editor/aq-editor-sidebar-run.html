@@ -1,431 +1,487 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../common/aq-dropdown.html'>
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../common/aq-group-selector.html">
 <dom-module id='aq-editor-sidebar-run'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
+    <style>
+
+        :host {
+            font-family: 'Lato', sans-serif;
+            color: #24293d;
+            display: block;
+            height:100%;
+        }
+
+        #run {
+            color: #24293d;
+            padding:5px;
+            background-color: #fff;
+        }
+
+        paper-card {
+        	--paper-card: {
+        		height: 100%;
+        	};
+        }
+
+        #advancedSettings {
+            margin-top: 5px;
+            padding-bottom: 10px;
+        }
+
+        .input-box {
+            border: 1px solid #d4d4d4;
+            outline: none;
+            font-size: 14px;
+            width: 175px;
+            height: 25px;
+            padding-left: 5px;
+        }
+
+        #basic-settings{
+            position: relative;
+        }
+
+        paper-tabs {
+            --paper-tabs-selection-bar-color: #cc6666;
+            --paper-tabs:{
+            	font-size:13px;
+            };
+
+            width: 50%;
+            margin-left:10px;
+        }
+
+        iron-pages {
+            margin-top: 20px;
+        }
+
+        .square-btn {
+            padding: 3px 5px;
+            background-color: #f2f2f2;
+            border-radius: 2px;
+            border: none;
+            outline: none;
+            color: #898989;
+            margin-right: 10px;
+        }
+
+        .inputbox {
+            margin-bottom: 20px;
+        }
+        
+        .label {
+        	width: 120px;
+        	margin-right:20px;
+        }
+
+        .label span {
+        	font-size: 14px;
+        	color: #7c7c7c;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .value {
+        	width: 200px;
+        }
+
+        paper-input {
+        	--paper-input-container: {
+        		padding-top: 0px;
+        		padding-bottom: 0px;
+        		padding-left:5px;
+        		border: 1px solid #e5e5e5;
+        		width: 175px;
+    		};
+
+    		--paper-input-container-input: {
+        		font-size: 14px;
+    		};
+
+    		--paper-input-container-underline: {
+            	display: none;
+          	};
+    
+	      	--paper-input-container-underline-focus: {
+	            display: none;
+          	};
+        	
+    	  	--paper-input-container-underline-disabled: {
+	            display: none;
+          	};
+        }
+
+        .horizontalField {
+        	margin-bottom: 20px;
+        	margin-left:30px;
+        }
+
+    </style>
+
+    <template>
+        <paper-card id='run' class="layout vertical">
+        
+        	<div class="layout horizontal">
+	    	 	<paper-tabs noink selected="{{selected}}" >
+	                <paper-tab>BASIC</paper-tab>
+	                <paper-tab>ADVANCED</paper-tab>
+	            </paper-tabs>
+	            <div class="flex"></div>
+            </div>
+
+            <iron-pages selected="{{selected}}">
+                <div id='basic-settings' class="layout vertical">
+                        
+            		<div class="horizontalField layout horizontal">
+                		<div class="label self-center">
+                			<span>Initial Capital</span>
+                		</div>
+
+                		<div class="value self-center">
+                		<input class="input-box" label="Seed Capital"
+                                       value="{{initialCash::change}}" type="number"
+                                       on-keydown="checkForKeys" on-blur='close'>
+                       	</div>
+            		</div>
+
+            		<div class="horizontalField layout horizontal">
+                       	<div class="label self-center">
+                			<span>Start Date</span>
+                		</div>
+
+            			<paper-input no-label-float class="value self-center" type="date" value="{{startDate}}"></paper-input>
+            		</div>
+
+					<div class="horizontalField layout horizontal">
+                       	<div class="label self-center">
+                			<span>End Date</span>
+                		</div>
+
+            			<paper-input no-label-float class="value self-center" type="date" value="{{endDate}}"></paper-input>
+
+            		</div>
+
+                </div>
+
+
+                <div id='advancedSettings' class="layout vertical">
+	                    
+	                <aq-paper-button-group 
+	                		label="Rebalance"
+	                		event-name="rebalance-selected" 
+	                		button-values="{{rebalanceOptions}}">
+	        		</aq-paper-button-group>
+
+	        		<aq-paper-button-group 
+	                		label="Cancel Policy"
+	                		event-name="cancel-policy-selected" 
+	                		button-values="{{cancelOptions}}">
+	        		</aq-paper-button-group>
+
+					<aq-paper-button-group 
+	                		label="Resolution"
+	                		event-name="resolution-selected" 
+	                		button-values="{{resolutionOptions}}">
+	        		</aq-paper-button-group>
+
+	        		<aq-paper-button-group 
+	                		label="Commission"
+	                		event-name="resolution-selected" 
+	                		has-input
+	                		button-values="{{commissionOptions}}">
+	        		</aq-paper-button-group>
+	            	
+	            	<aq-paper-button-group 
+	                		label="Slippage"
+	                		event-name="slippage-selected" 
+	                		has-input
+	                		button-values="{{slippageOptions}}">
+	        		</aq-paper-button-group>
+	            	
+	            	<aq-paper-button-group 
+	                		label="Investment Plan"
+	                		event-name="investment-plan-selected-selected" 
+	                		button-values="{{investmentPlanOptions}}">
+	        		</aq-paper-button-group>
+
+                </div>
+            </iron-pages>
+        </paper-card>
+    </template>
+
+    <script>
+        var slippageOptions = [{index: 0, value: 'Variable'},
+            {index: 1, value: 'Spread'}];
+
+        var cancelOptions = [{index: 0, value: 'EOD'},
+            {index: 1, value: 'GTC'}];
+
+        var commissionOptions = [{index: 0, value: 'PerTrade'},
+            {index: 1, value: 'PerShare'}];
+
+        var rebalanceOptions = [{index: 0, value: 'Daily'},
+            {index: 1, value: 'Weekly'},
+            {index: 2, value: 'Monthly'}];
+
+        var resolutionOptions = [{index: 0, value: 'Day'}]
+
+        var investmentPlanOptions = [{index: 0, value: 'AllIn'},
+            {index: 1, value: 'Monthly'},
+            {index: 2, value: 'Yearly'},
+            {index: 3, value: 'Weekly'}]
+
+
+        Polymer({
+            is: 'aq-editor-sidebar-run',
+
+            properties: {
+                selected: {
+                    type: Number,
+                    value: 0
+                },
+                startDate: {
+                    type: String,
+                    value: "",
+                },
+
+                endDate: {
+                    type: String,
+                    value: "",
+                },
+
+                initialCash: {
+                    type: Number,
+                    value: 1000000,
+                },
+
+                rebalance: {
+                    type: String,
+                    value: rebalanceOptions[0].value,
+                },
+
+                cancelPolicy: {
+                    type: String,
+                    value: cancelOptions[0].value,
+                },
+
+                slippageValue: {
+                    type: Number,
+                    value: 0.05,
+                },
+
+                slippageModel: {
+                    type: String,
+                    value: slippageOptions[0].value,
+                },
+
+                commissionValue: {
+                    type: Number,
+                    value: 0.1,
+                },
+
+                commissionModel: {
+                    type: String,
+                    value: commissionOptions[0].value,
+                },
+
+
+                resolution: {
+                    type: String,
+                    value: resolutionOptions[0].value,
+                },
+
+                universe: {
+                    type: String,
+                    value: "",
+                },
+
+                investmentPlan: {
+                    type: String,
+                    value: investmentPlanOptions[0].value,
+                },
+
+                slippageOptions: Array,
+                cancelOptions: Array,
+                commissionOptions: Array,
+                rebalanceOptions: Array,
+                resolutionOptions: Array,
+                investmentPlanOptions: Array,
+            },
+
+            ready: function () {
+                this.slippageOptions = slippageOptions;
+                this.cancelOptions = cancelOptions;
+                this.commissionOptions = commissionOptions;
+                this.rebalanceOptions = rebalanceOptions;
+                this.resolutionOptions = resolutionOptions;
+                this.investmentPlanOptions = investmentPlanOptions;
+                this.startDate = this.getTodayDate(365)
+                this.endDate = this.getTodayDate(7);
+            },
+
+            attached: function () {
+
+                //this.$$('#endDateField').setAttribute("max", this.endDate);
+
+            },
+
+            toggle: function () {
+                if (this.$.adcollapse.opened) {
+                    this.$.advancedSettings.style.height = '35px';
+
+                } else {
+                    this.$.advancedSettings.style.height = '310px';
+                }
+
+                this.$.adcollapse.toggle();
+            },
+
+
+            getSettings: function () {
+                var settings = {
+                    startDate: this.startDate,
+                    endDate: this.endDate,
+                    initialCash: parseInt(this.initialCash),
+                    advanced: JSON.stringify({
+                        rebalance: this.rebalance,
+                        cancelPolicy: this.cancelPolicy,
+                        slippage: {model: this.slippageModel, value: this.slippageValue},
+                        commission: {model: this.commissionModel, value: this.commissionValue},
+                        resolution: this.resolution,
+                        investmentPlan: this.investmentPlan
+                    }),
+                    universe: this.universe
+                };
+                return settings;
+            },
+
+            getTodayDate: function (offset) {
+                var today = new Date();
+                today.setDate(today.getDate() - offset);
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+
+                today = yyyy + '-' + mm + '-' + dd;
+                return today;
+            },
+            openDatePicker: function () {
+                this.$.dialog.toggle();
+            }
+
+        });
+    </script>
+
+</dom-module>
+
+
+<dom-module id='aq-paper-button-group'>
+	<style include="iron-flex iron-flex-alignment iron-positioning"></style>	
 	<style>
+	 	.label {
+        	min-width: 115px;
+        	width: 115px;
+        	margin-right:20px;
+        }
 
-		:host{
-			--font-family: 'Roboto';
-			color:#24293d;
-		};
-		
-		.inputbox {
-		  --height: 10%;
-		  line-height: 48px;
-		  --margin-bottom: 12px;
-		  position: relative;
-		  --z-index:2;
-		  margin-top: 5px;
-		  margin-left:4px;
-		  width:200px;
-		  @apply(--layout-vertical);
-		}
-	
-		.inputbox iron-icon {
-		  margin-left: 75px;
-		  --margin-right: 8px;
-		  position: absolute;
-		  top: 14px;
-		  --left: 0px;
-		  height:18px;
-		  width:18px;
-		}
+        .label span {
+        	font-size: 14px;
+        	color: #7c7c7c;
+            font-family: 'Lato', sans-serif;
+        }
 
-		.inputbox span {
-			font-size: 14px;
-			--font-weight: bold;
-		 	margin-bottom: 0px;
-		}
+        .split-bar{
+            width: 2px;
+            height: 35px;
+            background-color: grey;
+            margin-left: 2px;
+            margin-bottom: 5px;
+        }
 
-		input {
-		  line-height: 46px;
-		  border: 0;
-		  margin: 0;
-		  padding-left: 4px;
-		  border: 2px solid teal;--#e5e5e5;
-		  @apply(--paper-font-body1);
-		  font-size: 14px;
-		  border-radius: 5px;
-		  border:1px solid #cbefde;--#c9e4e9;--#f3f9fa;
-		  color:#24293d;--#02558b;
-		}
+        .horizontalField {
+        	margin-bottom: 20px;
+        	margin-left: 30px;
+        }
 
-		.box {
-		  width:80%;	 
-		}
-	
-		input :focus {
-		  outline: 0;
-		  background-color: #eceff1;
-		  border-color: #cbefde;--#cfd8dc;
-		}
+      	.box {
+            width: 50px;
+            height: 25px;
+            text-align: center;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin-right: 10px;
+            margin-left: 3px;
+            font-size: 14px;
+        }
 
-		
-		#basic-settings {
-			--height:140px;
-			margin-top:5px;
-			--margin-left:5px;
-			padding-bottom:10px;
-			--border: 1px solid #e5e5e5;
-			border-bottom: 1px solid #24293d;
-
-		}
-
-		#advancedSettings {
-			--height:35px;
-			margin-top:5px;
-			--margin-left:5px;
-			--border: 1px solid #e5e5e5;
-			padding-bottom:10px;
-			border-bottom: 1px solid #24293d;
-		}
-
-		#universeSettings {	
-			padding-bottom:10px;
-		}
-
-		#extra-settings {
-			--height:80px;
-			margin-top:8px;
-			margin-left:7px;
-			margin-right:7px;
-			--border: 1px solid #e5e5e5;	
-			--width:90%;			
-		}
-
-		#date-settings {
-			--height:80px;
-			margin-top:8px;
-			margin-left:14px;
-			--border: 1px solid #e5e5e5;	
-			--width:90%;
-		}
-
-		#heading {
-			margin-top: 10px;
-			margin-left: 14px;
-		}
-
-		#heading span{
-			font-weight: bold;
-			--color: green;
-			color:#24293d;
-		}
-
-		paper-button {
-			top:0;
-			--margin-top: 10px;
-		}
-
-		paper-button :active{
-			background-color: blue;
-		}
-
-		.input-span {
-			height:40px;
-		}
-
-		.input-span span { 
-			--margin:0 auto;
-			--height:24px;
-			font-size: 12px;
-		}
-
-		textarea {
-			font-size: 15px;
-		  	color:#02558b;
-		}
-
-		textarea:focus{
-			border-color: #cbefde;
-		}
-
-		aq-dropdown {
-			--dropdown-height:27px;
-			--dropdown-width:140px;
-			margin-top: -13px;
-			--dropdown-background-color:#cbefde; --#c9e4e9;--#f3f9fa;
-		}
-
-		.smallInputBox {
-			width:40px !important;
-			height: 21px !important;
-			margin-left: 5px;
-			margin-top:-1px;
-
-		}
-
-		.smallDropdown{
-			--dropdown-width:90px;
-		}
-
-		#run {
-			z-index: 1002;
-			color:#24293d;-#02558b;
-		}
+        .box:focus {
+        	outline: none;
+        }
 
 	</style>
 
 	<template>
-		
-		<div id = 'run' class="layout vertical">
-			<div id = 'basic-settings' class="layout vertical">
-				<div id='heading'><span>Basic Settings</span></div>
-				<div id='date-settings' class="layout horizontal">
-			
-					<div class="inputbox">	
-						
-						<span class="input-span">Start Date</span>
-						
-			    		<input class="box" placeholder="Start Date"
-		             	value="{{startDate::change}}" type="date"
-		             	 on-blur='close'>
-		        	</div>
-
-		        	<div class="inputbox">	
-						<span class="input-span">End Date</span> 	
-			    		<input id='endDateField' class="box" placeholder="End Date"
-		             	value="{{endDate::change}}" type="date" max="2017-01-01"
-		             	on-blur='close'>
-		        	</div>
-		    		<div class="inputbox">	
-						<span class="input-span">Initial Capital</span> 	
-			    		<input class="box" placeholder="Seed Capital"
-			         	value="{{initialCash::change}}" type="number"
-			         	on-keydown="checkForKeys" on-blur='close'>
-			    	</div>
-		    	</div>
-
+		<div class="horizontalField layout horizontal">
+			<div class="label self-center">
+				<span>[[label]]</span>
 			</div>
 
-			<div id = 'advancedSettings' class="layout vertical">		
-				<div id='heading'><span>Advanced Settings</span></div>
-						
-				<div id='extra-settings' class="layout horizontal" >
+			<template is='dom-if' if="[[hasInput]]">
+				<input class="box" 
+						type="number"
+                    	step="0.01" 
+                        min=0
+                        value="{{inputValue}}">
+            </template>
 
-					<div class="inputbox">	
-						<span class="input-span">Rebalance</span> 	
-			    		<aq-dropdown selected="{{rebalance}}" options="[[rebalanceOptions]]"></aq-dropdown> 	
-			    		
-	        		</div>
-
-	        		<div class="inputbox">	
-						<span class="input-span">Cancel Policy</span> 
-						<aq-dropdown selected="{{cancelPolicy}}"" options="[[cancelOptions]]"></aq-dropdown>	
-		
-	        		</div>
-
-	        		<div class="inputbox">	
-						<span class="input-span">Resolution</span> 	
-			    		<aq-dropdown selected="{{resolution}}" options="[[resolutionOptions]]"></aq-dropdown>	
-		
-	        		</div>
-        		</div>
-
-        		<div id='extra-settings' class="layout horizontal" >
-				
-		    		<div class="inputbox">	
-						<span class="input-span">Commission</span> 	
-		    			<div class="layout horizontal">
-		    			<aq-dropdown selected="{{commissionModel}}" class="self-start smallDropdown" options="[[commissionOptions]]"></aq-dropdown>
-			    		<input class="box" placeholder="Commission" class="smallInputBox"
-		             	value="{{commissionValue::change}}" type="number" default
-		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
-
-	        		</div>
-
-		        	<div class="inputbox">	
-						<span class="input-span">Slippage</span>
-						<div class="layout horizontal">
-						<aq-dropdown selected="{{slippageModel}}" class="smallDropdown" options="[[slippageOptions]]"></aq-dropdown> 	
-			    		<input class="box" class="smallInputBox" placeholder="Slippage"
-		             	value="{{slippageValue::change}}" type="number"
-		             	on-keydown="checkForKeys" on-blur='close' step="0.01" min=0></div>
-
-		        	</div>
-
-		        	<div class="inputbox">	
-						<span class="input-span">Investment Plan</span>
-						<div class="layout horizontal">
-						<aq-dropdown selected="{{investmentPlan}}" options="[[investmentPlanOptions]]"></aq-dropdown> 	
-		        		</div>
-		    		</div>
-	    		</div>
-    		</div>
-
-	    	<div id = 'universeSettings' class="layout vertical">
-				<div id='heading'><span>Universe Settings</span></div>
-							
-				<div id='extra-settings' class="layout horizontal" >
-					<textarea rows="10" cols="71" value="{{universe::input}}" placeholder="Optional list of symbols"></textarea>
-    			</div>
-			</div>
-		</div>
-			
+			<div class="button-select-container layout horizontal">
+		        <aq-group-selector event-name="[[eventName]]" 
+		        		items="{{buttonValues}}">
+	    		</aq-group-selector>
+		    </div>
+	    </div>
 	</template>
 
 	<script>
-		var slippageOptions = [{index:0, value:'Variable'},
-							{index:1, value:'Spread'}];
-
-		var cancelOptions = [{index:0, value:'EOD'},
-							{index:1, value:'GTC'}];
-
-		var commissionOptions = [{index:0, value:'PerTrade'},
-							{index:1, value:'PerShare'}];
-
-		var rebalanceOptions = [{index:0, value:'Daily'},
-							{index:1, value:'Weekly'},
-							{index:2, value:'Monthly'}];
-							
-		var resolutionOptions = [{index:0, value:'Day'}]
-
-		var investmentPlanOptions = [{index:0, value:'AllIn'},
-									{index:1, value:'Monthly'},
-									{index:2, value:'Yearly'},
-									{index:3, value:'Weekly'}]
-							
-
 		Polymer({
-			is:'aq-editor-sidebar-run',
+			is:'aq-paper-button-group',
 
 			properties: {
-
-				startDate: {
-					type: String,
-					value: "",
-				},
-
-				endDate: {
-					type: String,
-					value: "",
-				},
-
-				initialCash: {
-					type:Number,
-					value:1000000,
-				},
-
-				rebalance:{
-					type:String,
-					value: rebalanceOptions[0].value,
-				},
-
-				cancelPolicy: {
-					type:String,
-					value: cancelOptions[0].value,
-				},
-
-				slippageValue: {
-					type: Number,
-					value: 0.05,
-				},
-
-				slippageModel: {
-					type: String,
-					value: slippageOptions[0].value,
-				},
-
-				commissionValue:{
-					type:Number,
-					value: 0.1,
-				},
-
-				commissionModel:{
-					type:String,
-					value:commissionOptions[0].value,
-				},
-
-
-				resolution: {
-					type: String,
-					value: resolutionOptions[0].value,
-				},
-
-				universe:{
-					type:String,
-					value:"",
-				},
-
-				investmentPlan:{
-					type:String,
-					value:investmentPlanOptions[0].value,
-				},
-
-				slippageOptions:Array,
-				cancelOptions:Array,
-				commissionOptions:Array,
-				rebalanceOptions:Array,
-				resolutionOptions:Array,
-				investmentPlanOptions:Array,
-			},
-
-			ready: function() {
-				this.slippageOptions = slippageOptions;
-				this.cancelOptions = cancelOptions;
-				this.commissionOptions = commissionOptions;
-				this.rebalanceOptions = rebalanceOptions;
-				this.resolutionOptions = resolutionOptions;
-				this.investmentPlanOptions = investmentPlanOptions;
-				this.startDate = this.getTodayDate(365)
-				this.endDate = this.getTodayDate(7);
-			},
-
-			attached: function(){
+				label: String,
 				
-				this.$$('#endDateField').setAttribute("max", this.endDate);
+				buttonValues: Array,
 				
-			},
+				eventName: String,
+				
+				hasInput: {
+					type: Boolean,
+					value: false,
+				},
 
-			toggle: function() {
-				if (this.$.adcollapse.opened) {
-					this.$.advancedSettings.style.height='35px';
-					
-				} else {
-					this.$.advancedSettings.style.height='310px';
+				inputValue:{
+					type:Number,
+					value:0.1,
+					notify:true,
 				}
-					
-				this.$.adcollapse.toggle();
 			},
 
-
-			getSettings: function() {
-				var settings = {startDate:this.startDate,
-						endDate:this.endDate,
-						initialCash:parseInt(this.initialCash),
-						advanced: JSON.stringify({rebalance:this.rebalance,
-									cancelPolicy:this.cancelPolicy,
-									slippage:{model:this.slippageModel, value:this.slippageValue},
-									commission:{model:this.commissionModel, value:this.commissionValue},
-									resolution:this.resolution,
-									investmentPlan: this.investmentPlan}),
-						universe:this.universe};
-				return settings;
-			},
-
-			getTodayDate: function(offset){
-				var today = new Date();
-				today.setDate(today.getDate() - offset);
-				var dd = today.getDate();
-				var mm = today.getMonth()+1; //January is 0!
-				var yyyy = today.getFullYear();
-
-				if(dd<10) {
-				    dd='0'+dd
-				} 
-
-				if(mm<10) {
-				    mm='0'+mm
-				} 
-
-				today = yyyy + '-' + mm + '-' + dd;
-				return today;
-			},
-
-
+			attached: function() {
+				console.log(this.buttonValues);
+			}
 		});
 	</script>
-
 </dom-module>

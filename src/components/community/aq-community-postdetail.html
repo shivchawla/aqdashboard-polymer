@@ -25,6 +25,7 @@
           font-family: 'Lato', sans-serif;
           font-size: 16px;
       }
+
       #container {
           width: 95%;
           margin: 0 auto;
@@ -32,9 +33,11 @@
           color: #24293d;
           height: 100%;
       }
+
       paper-icon-button {
           padding-left: 0px;
       }
+
       .reply-no{
           margin-top: 20px;
           font-size: 1em;
@@ -42,14 +45,17 @@
           color: #4e4e4e;
           display: block;
       }
+
       #replyContainer{
           position: relative;
-          top:10px;
+          top:20px;
       }
+
       aq-community-postdetail-content{
           --aq-community-postdetail-content-box-shadow:0 3px 8px rgba(0,0,0,0.2);
           --aq-community-postdetail-content-padding:10px 20px 10px 10px;
       }
+
       .header-container {
           --background-color: transparent;
           height: 55px;
@@ -57,10 +63,12 @@
           left:-20px;
           margin-bottom: 10px;
       }
+
       #backIcon {
           color: #cc4444;
           transform: scale(1.6, 1.6);
       }
+
       .header-container h1 {
           font-size: 0.9em;
           color: #cc4444;
@@ -74,8 +82,16 @@
         font-size: 14px;
         color:#cc6666;
         margin-bottom: 10px;
-        --margin-left: 5px;
       }
+
+      aq-community-postdetail-header {
+        margin-bottom: 10px;
+      }
+
+      .postContent {
+          --post-content-padding: 20px;
+      }
+
 
   </style>  
 
@@ -122,7 +138,7 @@
                         <template is="dom-repeat"
                                   items="{{threadDetails.replies}}"
                                   initial-count=5>
-                            <aq-community-postdetail-content post-content="{{item}}"></aq-community-postdetail-content>
+                            <aq-community-postdetail-content class="postContent" post-content="{{item}}"></aq-community-postdetail-content>
                         </template>
                     </div>
 

@@ -3,7 +3,7 @@
 <link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
 
-<link rel="import" href="./profile-img.html">
+<link rel="import" href="aq-profile-img.html">
 
 <dom-module id='aq-user-menu'>
     <style  include="iron-flex iron-flex-alignment">
@@ -70,7 +70,7 @@
          <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
         <paper-menu-button id = 'userMenu' on-focus-out='onBlur' horizontal-offset=-250 vertical-offset=48>
-            <profile-img letter="[[letter]]" class="dropdown-trigger"></profile-img>
+            <aq-profile-img letter="[[letter]]" class="dropdown-trigger"></aq-profile-img>
 
             <div class="dropdown-content">
                 <div id='top' class="layout horizontal">

@@ -1,207 +1,389 @@
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../icons/aq-iconset.html'>
 
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
 <dom-module id='aq-editor-toolbar'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+    <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
-	<style>
+    <style>
+        :host{
+            font-family: 'Lato',sans-serif;
+        }
+        paper-icon-button {
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+            min-width: 25px;
+            max-width: 35px;
+            color: #cc6666;
+        }
 
-		paper-icon-button {
-    		width:35px;
-    		height:35px;
-    		margin-right: 10px;
-    		min-width:25px;
-    		max-width:35px;
-    		color: #24293d;
-  		}
+        paper-icon-button {
+	        --paper-icon-button-hover: {
+       	 		outline:1px solid;
+	        };
+        }
 
-  		paper-icon-button {
-	  		--paper-icon-button-hover: {
-	  			outline:1px solid;
-	  		};
+        paper-toolbar {
+            --paper-toolbar-height: 40px;
+            --paper-toolbar-width: 100px;
+            --paper-toolbar-color: teal;
+            --paper-toolbar-background: #f2f2f2;
+            --border-right: 5px solid #24293d;
+        }
+
+        #strategyName, #box {
+            height: 24px;
+            outline: none;
+            font-size: 12px;
+            padding-left: 3px;
+            font-weight: bolder;
+        }
+
+        .separator {
+            border-left: teal solid 1px;
+            opacity: .8;
+            height: 25px;
+            margin-right: 20px;
+        }
+
+        input {
+            max-width: 250px;
+            min-width: 150px;
+            --width: 20%;
+            --font-size: 15px;
+            color: #24293d;
+        }
+
+        .toolbarIcon:active {
+            padding: 10px;
+        }
+
+        .toolbarPlayIcon {
+            padding: 5px;
+            height: 35px;
+            width: 23px;
+            color:#cc6666;
+        }
+
+        .toolbarPlayIcon:active {
+            padding: 10px;
+        }
+
+        paper-tabs {
+            height: 35px;
+        }
+
+        .inputbox {
+            margin-left: 10px;
+            margin-right: 10px;
+            @apply(--layout-horizontal);
+        }
+
+        .input-span {
+            color: #24293d;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        #box {
+            max-width: 130px;
+            font-weight: normal;
+            --border: 1px solid black;
+            min-width: 100px;
+
+        }
+        .strategy-name{
+            font-size: 14px;
+            margin-right:10px;
+        }
+
+      	
+        #toggleIcon {
+    	    --paper-button:	{
+    			width: 25px;
+        	};
+        }
+
+      	#toggleIcon.green{
+		    color: #cc6666;
+	  		background-color: #f2f2f2;
 	  	}
 
-  		paper-toolbar {
-		  --paper-toolbar-height:40px;
-		  --paper-toolbar-width:100px;
-		  --paper-toolbar-color:teal;
-  		  --paper-toolbar-background:#e3f6ed;--#e5f1f5;
-  		  --border-right: 5px solid #24293d;
-		}
+	  	#toggleIcon.green[active] {
+		    background-color: #cc6666;
+		    color: white;
+	  	}
 
-		#strategyName, #box {
-			height:24px;
-			margin-top: 3px;
-			font-size: 12px;
-			padding-left: 3px;
-			font-weight: bolder;
-		}
+        paper-progress {
+            --paper-progress-height: 2px;
+            --paper-progress-active-color: #0375b4;
+            opacity: 0.6;
+            width: 100%;
+            --paper-progress-indeterminate-cycle-duration: 5s;
+        }
 
-		.separator{
-			border-left:teal solid 1px;
-			opacity:.8;
-			height:25px;
-			margin-right: 10px;
+        #progressDiv p {
+            margin-bottom: 2px;
+            font-size: 12px;
+            color: #0375b4;
+        }
 
-		}
+        #errProgress {
+            --paper-progress-active-color: #cc6666 !important;
+        }
 
-		input {
-			max-width:250px;
-			min-width: 150px;
-			--width:20%;
-			--font-size: 15px;
-			color:#24293d;
-		}
+        p{
+        	font-size: 12px;
+        }	
 
-		.toolbarIcon:active {
-			padding:10px;
-		}
+    </style>
 
-		.toolbarPlayIcon {
-			 border:1px solid;
-			 padding:0px;
-			 height:23px;
-			 width:23px;
-		}
+    <template>
 
-		.toolbarPlayIcon:active {
-			 padding:3px;
-		}
+    	<iron-signals on-iron-signal-partially-completed-backtest='updatePct'>
+    	</iron-signals>
 
-		paper-tabs {
-			height:35px;
-		}
+        <paper-toolbar>
+            <div id='toolbar' class="flex layout horizontal center">
+                <paper-icon-button 
+                		noink id='back-icon' 
+            			class="flex toolbarIcon" 
+            			icon="aq-icons:arrow-back"
+            			title="Go Back"
+                        on-tap='goBack'>
+                </paper-icon-button>
 
-		.inputbox {
-			margin-left:10px;
-			margin-right:10px;
-			@apply(--layout-horizontal);
-		}
+                <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
 
-		.input-span {
-			color:#24293d;
-			font-weight: bold;
-			font-size: 14px;
-		}
+                <!--div class="flex" style="max-width:5%"></div-->
+			 	
+			 	<div class="flex"></div> 
+                
+                <template is='dom-if' if='{{isRunning}}'>
+                    <p style="color:[[getStatusColor(pctCompleted)]]">[[getStatusMessage(pctCompleted)]]</p>
+                </template>
 
-		#box {
-			max-width: 130px;
-			font-weight: normal;
-			--border:1px solid black;
-			min-width:100px;
+                <div class="flex"></div>
 
-		}
-		
-	</style>
-	
-	<template>
-		<paper-toolbar>
-			<div id='toolbar' class="flex layout horizontal">
-				<paper-icon-button noink id='back-icon' class="flex toolbarIcon" icon="aq-icons:arrow-back" title="Go Back" on-tap='goBack'></paper-icon-button>
-				<input class="flex" id ='strategyName' value="[[strategyName]]" type="text">
-	     		 
-	        	<div class="flex" style="max-width:5%"></div>
+                <paper-icon-button 
+                		noink 
+                		class="flex toolbarIcon" 
+                		icon="aq-icons:add" 
+                		title="New Strategy"
+                       	on-tap='onCreate'>
+                </paper-icon-button>
 
-	        	<!--paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:code" title="Toggle Code/Design" on-tap='toggleDesign'></paper-icon-button-->
+                <paper-icon-button 
+                		noink 
+                		class="flex toolbarIcon" 
+                		icon="aq-icons:content-copy" 
+                		title="Clone Strategy"
+                        on-tap='onClone'>
+                </paper-icon-button>
 
-	        	<span class="self-center separator"></span>
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:save" title="Save Strategy" on-tap='onSave'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:add" title="New Strategy" on-tap='onCreate'></paper-icon-button>	
-		 		<paper-icon-button noink class="flex toolbarIcon" icon="aq-icons:content-copy" title="Clone Strategy" on-tap='onClone'></paper-icon-button>
-		 		
-		 		<span class="self-center separator"></span>
-				
-				<paper-icon-button noink class="flex toolbarIcon" icon="vaadin-icons:line-bar-chart" title="Analyze all Backtests" on-tap='onAnalyze'></paper-icon-button>
+                <paper-icon-button 
+                		noink 
+                		class="flex toolbarIcon" 
+                		icon="aq-icons:save" 
+                		title="Save Strategy"
+                        on-tap='onSave'>
+                </paper-icon-button>
 
-		 		<paper-icon-button id='runButton' noink class="flex self-center toolbarPlayIcon" icon="aq-icons:play-arrow" title="Run Backtest" on-tap='onRun'></paper-icon-button>
+                <div class="separator"></div>
 
-	        	<template is='dom-if' if="[[checkToggleCondition(isProgrammer, narrow)]]">	
-	            	<div class="flex"></div>
-	            	<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer"></paper-icon-button>
-		        </template>
+             	<!--paper-icon-button 
+                		noink 
+                		class="flex toolbarIcon" 
+                		icon="aq-icons:code" 
+                		title="Toggle Code/Design" 
+                		on-tap='toggleDesign'>
+        		</paper-icon-button-->
 
-		        
-       		</div> 
-		</paper-toolbar>
+              	<paper-icon-button noink 
+              			class= "flex toolbarIcon" 
+              			icon= "vaadin-icons:line-bar-chart"
+                        title="Analyze all Backtests" 
+                        on-tap='onAnalyze'>
+                </paper-icon-button>
 
+                <paper-icon-button 
+                		id='runButton' 
+                		noink 
+                		class="flex self-center toolbarPlayIcon"
+                        icon="aq-icons:play-arrow" 
+                        title="Run Backtest" 
+                        on-tap='onRun'>
+                </paper-icon-button>
+
+               	<div class="separator"></div>
+
+                <paper-icon-button 
+                		id='toggleIcon' 
+            			noink 
+            			class="flex self-center green" 
+            			toggles
+            			active="[[!narrow]]"
+                        title="Toggle Menu" 
+                        on-tap='toggleDrawer'
+                        icon="vaadin-icons:split-h">
+                </paper-icon-button>
+
+            </div>
+        	
+    	</paper-toolbar>
+
+  	    <template is='dom-if' if='{{isRunning}}'>
+            <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+                <paper-progress value='{{pctCompleted}}'>
+                </paper-progress>
+            </template>
+
+            <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+                <paper-progress indeterminate class="self-center">
+                </paper-progress>
+            </template>
+        </template>
 	</template>
 
-	<script>
-		Polymer({
-			is:'aq-editor-toolbar',
+    <script>
+        Polymer({
+            is: 'aq-editor-toolbar',
 
-			properties: {
-				narrow : {
-					type:Boolean,
-				},
+            properties: {
+                narrow: {
+                    type: Boolean,
+                },
 
-				isProgrammer: {
-					type:Boolean,
-				}, 
+                isProgrammer: {
+                    type: Boolean,
+                },
 
-				strategyName:String,
-				strategyDesc:String,
-				strategyId:String,
-			},
+                strategyName: String,
+                
+                strategyDesc: String,
+                
+                strategyId: String,
 
-			closeAll: function() {
-				this.fire('close-all');
-			},
+                isRunning: {
+                	type: Boolean,
+                	value: false,
+                	observer: '_isRunningChanged',
+                },
 
-			openDrawer: function() {
-				this.fire('open-drawer');
-			},
+                pctCompleted: {
+                	type: Number,
+                	value: 0,
+                },
+            },
 
-			closeDrawer: function() {
-				this.fire('close-drawer');
-			},
+            closeAll: function () {
+                this.fire('close-all');
+            },
 
-			toggleDrawer: function() {
-				this.fire('toggle-drawer');
-			},
+            openDrawer: function () {
+                this.fire('open-drawer');
+            },
 
-			toggleConsole: function() {
-				this.fire('toggle-console');
-			},
+            closeDrawer: function () {
+                this.fire('close-drawer');
+            },
 
-			toggleDesign: function(){
-				this.fire('toggle-design');
-			},
+            toggleDrawer: function () {
+                this.fire('toggle-drawer');
+            },
 
-			goBack: function() {
-				//this.onSave();
-        		this.fire('backClicked');
-			},
+            toggleConsole: function () {
+                this.fire('toggle-console');
+            },
 
-			onAnalyze: function() {
-				this.fire('analyzeClicked', {id:this.strategyId});
-			},
+            toggleDesign: function () {
+                this.fire('toggle-design');
+            },
 
-			onSave: function() {
-				this.strategyName = this.$.strategyName.value;
-				this.fire('save-action',{name:this.strategyName});
-			},
+            goBack: function () {
+                //this.onSave();
+                this.fire('backClicked');
+            },
 
-			onCreate: function() {
-				this.fire('newClicked');
-			},
+            onAnalyze: function () {
+                this.fire('analyzeClicked', {id: this.strategyId});
+            },
 
-			onClone: function() {	
-				this.fire('cloneClicked');	
-			},
+            onSave: function () {
+                this.strategyName = this.$.strategyName.value;
+                this.fire('save-action', {name: this.strategyName});
+            },
 
-			onRun: function() {
-				this.strategyName = this.$.strategyName.value;
-				this.fire('run-action',{name:this.strategyName});
-			},
+            onCreate: function () {
+                this.fire('newClicked');
+            },
 
-			checkToggleCondition: function(isProgrammer, narrow) {
-				return isProgrammer && narrow;
-			},
+            onClone: function () {
+                this.fire('cloneClicked');
+            },
 
-		});
-	</script>
+            onRun: function () {
+                this.strategyName = this.$.strategyName.value;
+                this.fire('run-action', {name: this.strategyName});
+            },
+
+            checkToggleCondition: function (isProgrammer, narrow) {
+                return isProgrammer && narrow;
+            },
+
+            updatePct: function(e) {
+            	this.pctCompleted = e.detail.pctCompleted;
+            },
+
+            isCompletionPositive: function (pctCompleted) {
+                return pctCompleted > 0 && pctCompleted != 100;
+                
+            },
+
+            isBacktestComplete: function (pctCompleted) {
+                return pctCompleted == 100;
+            },
+
+            isBacktestWarmingUp: function (pctCompleted) {
+                return pctCompleted == 0;
+            },
+
+            isBacktestException: function (pctCompleted) {
+                return pctCompleted == -1;
+            },
+
+            _isRunningChanged: function() {
+            	if(!this.isRunning) {
+            		this.pctCompleted = 0;
+            	}
+            },
+
+            getStatusMessage: function(pctCompleted) {
+            	if (this.isCompletionPositive(pctCompleted)) {
+            		return "Progress: " + pctCompleted.toString() +"%";
+            	} else if (this.isBacktestWarmingUp(pctCompleted)) {
+            		return "Warming Up";
+            	} else if (this.isBacktestComplete(pctCompleted)) {
+            		return "Complete";
+            	} else if (this.isBacktestException(pctCompleted)) {
+            		return "Exception";
+            	}
+            },
+
+            getStatusColor: function(pctCompleted) {
+        	 	if (this.isBacktestException(pctCompleted)) {
+            		return "#cc6666";
+        		}
+        		return "teal";
+            },
+
+        });
+    </script>
 </dom-module>

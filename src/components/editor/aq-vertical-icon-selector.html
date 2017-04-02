@@ -1,0 +1,111 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+
+
+<dom-module id='aq-vertical-icon-selector'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+    </style> 
+	
+	<style>
+
+		paper-icon-button {
+			width: 50px;
+			height:50px;
+			padding:7px;
+			background-color: #fff;
+			border-left: 1px solid #E5E5E5;
+		}
+
+		.container {
+			background-color: white;
+			padding: 0px;
+		}
+
+		#topPadding {
+			border-left: 1px solid #E5E5E5;
+			height: 50px;
+			background-color: white;
+		}
+
+		#bottomPadding {
+			border-left: 1px solid #E5E5E5;
+			height: 100%;
+			background-color: white;
+		}
+
+		paper-icon-button:focus {
+			border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+		}
+
+		paper-icon-button:active {
+			border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+		}
+
+		.iron-selected {
+            border-top: 1px solid #E5E5E5;
+			border-bottom: 1px solid #E5E5E5;
+			border-left: none;
+			color: teal;
+        }
+
+		
+	</style>	
+
+	<template>
+		<div id='topPadding'></div>
+		<iron-selector selected="{{selected}}">
+			<template is="dom-repeat" items="{{iconsArray}}">
+				<paper-icon-button noink class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
+			</template> 
+		</iron-selector>
+		<div id='bottomPadding' class="flex"></div>
+		
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-vertical-icon-selector',
+			properties: {
+				iconsArray: {
+					type: Array,
+				},
+
+				selected: {
+					type:Number,
+					//value:0,
+					notify:true,
+				}
+
+			},
+
+			attached: function() {
+				console.log(this.selected)
+				//this.firstItem = this.iconsArray[0];
+				//console.log(this.firstItem);
+			},
+
+			isActive: function(item) {
+				//console.log(item);
+				//console.log(this.firstItem);
+				return item == this.firstItem;
+			},
+
+			changeIndex: function(e) {
+				this.selected = this.iconsArray.indexOf(e.target.icon);
+				this.fire('open-sidebar-panel');
+			},
+		});
+	</script>
+</dom-module>

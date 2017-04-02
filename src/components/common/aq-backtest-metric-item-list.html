@@ -18,7 +18,7 @@
       
         <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
 
-		<div class="layout horizontal">
+		<div id='container' class="layout horizontal">
 			
 			<template is='dom-repeat' id='repeater' items="{{metricItems}}">
                 <aq-backtest-metric-item class="flex"
@@ -54,6 +54,14 @@
 					this.metricItems =  this.deepCopy(this.originalItems);
 				} else {
 					this.originalItems = this.deepCopy(this.metricItems);
+					
+					if (this.active) {
+						if(this.originalItems.length > 6) {
+							this.splice('originalItems', 6, this.originalItems.length - 6);
+						}
+
+						this.metricItems =  this.deepCopy(this.originalItems);
+					}
 				}
 
 				if(this.metricItems) {
@@ -85,6 +93,8 @@
 			deepCopy: function(array) {
 				return JSON.parse(JSON.stringify(array));
 			},
+
+
 		});
 	</script>
 </dom-module>

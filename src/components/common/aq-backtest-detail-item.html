@@ -47,107 +47,20 @@
             width: 100%;
         }
 
-        .detail {
-            --margin: 10px;
-            --margin-bottom: 0px !important;
-            --height: 250px;
-            --width: 50%;
-        }
-
-        .detailmetric {
-            --border: 1px solid teal;
-            height: 73px;
-            --border-bottom: 1px solid teal;
-            --border-right: 1px solid teal;
-        }
-
-        .detailmetric span {
-            vertical-align: center;
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .mdcontainer {
-            margin-left: 10px;
-            margin-right: 10px;
-            --margin-top: 5px;
-            margin-bottom: 8px;
-            height: 62px;
-        }
-
-        #detail-header {
-            --margin-top: 20px;
-            --margin-bottom: 20px;
-            margin-left: 10px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #detail-header-bottom {
-            margin-top: 2px;
-            margin-left: 10px;
-            font-weight: bold;
-        }
-
         .chart {
             width: 95%;
-        }
-
-        .tooltip: {
-            margin-top: -10px;
-
-        }
-
-        .width_tab {
-            width: 144px;
-        }
-
-        .paper_body {
-            color: #24293d;
-            width: 100%;
-            --margin: 0 auto;
-            padding:0px !important;
-        }
-
-        .card-actions {
-            background-color: var(--card-action-background-color,#fff);
-            border:none;
-            border-radius: 4px;
         }
 
         paper-tabs {
             --paper-tabs-selection-bar-color: teal;
 
             --paper-tabs: {
-                --height: 100%;
                 margin-bottom: 10px;
             };
 
-            margin-right: 10px;
-        }
-
-        paper-progress {
-            --paper-progress-height: 10px;
-            --paper-progress-active-color: #0375b4;
-            opacity: 0.6;
-            width: 120px;
-            --paper-progress-indeterminate-cycle-duration: 5s;
-        }
-
-        #progressDiv p {
-            margin-bottom: 2px;
-            font-size: 12px;
-            color: #0375b4;
-        }
-
-        #errProgress {
-            --paper-progress-active-color: #cc6666 !important;
         }
 
         .lower-container {
-            padding: 0 20px;
             margin-top: 10px;
             background-color: #f5f5f5;
         }
@@ -156,72 +69,55 @@
             padding-top: 10px;
         }
 
+        paper-card {
+        	--paper-card:{
+	        	color: #24293d;
+	            margin: 0 auto;
+	            height: 100%;
+	            background-color: var(--aq-backtest-detail-item-background-color, #fff);
+            }
+        }
+
+        .card-content{
+        	color: #24293d;
+        }
+        
+
     </style>
 
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <paper-card class="flex layout vertical paper_body" elevation="{{elevation}}">
-            <div class='card-actions'>
-                <div id='detail-header-bottom' class="layout horizontal flex">
-                    <div class="flex"></div>
-                </div>
-
-                <div class="middle-container">
-
+        <paper-card class="layout vertical flex" elevation="{{elevation}}">
+        	<div class="card-content" >
+                <div class="middle-container self-center flex">
                 	<template is='dom-if' if='[[backtestHeader]]'>
                 		<aq-backtest-header-item header-items="{{backtestHeader}}">
                 		</aq-backtest-header-item>
             		</template>
-                   
                 </div>
 
                 <div class="bar"></div>
 
-                <div class="lower-container">
+                <div class="lower-container flex">
                 	<template is='dom-if' if='{{metrics}}'>
                 		<aq-backtest-metric-item-list 
-                			metric-items = "{{metrics}}">
+                			metric-items = "{{metrics}}"
+                			active="{{active}}">
             			</aq-backtest-metric-item-list> 
                 	</template>
                 </div>
 
-                <div id='detail-header' class="layout horizontal">
-
-                    <template is='dom-if' if='{{active}}'>
-                        <div class="layout vertical" id='progressDiv'>
-
-                            <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
-                                <p>Progress: {{pctCompleted}}%</p>
-                                <paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-                            </template>
-
-                            <template is='dom-if' if='[[isBacktestComplete(pctCompleted)]]'>
-                                <p>Complete</p>
-                                <paper-progress class="self-center" value='{{pctCompleted}}'></paper-progress>
-                            </template>
-
-                            <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
-                                <p>Warming up</p>
-                                <paper-progress indeterminate class="self-center"></paper-progress>
-                            </template>
-
-                            <template is='dom-if' if='[[isBacktestException(pctCompleted)]]'>
-                                <p style="color:#cc6666">Exception</p>
-                                <paper-progress id='errProgress' value="100" class="self-center"></paper-progress>
-                            </template>
-
-                        </div>
-                    </template>
-
-                    <paper-tabs noink selected="{{graphType}}">
-                        <paper-tab>Cumulative Return</paper-tab>
-                        <template is='dom-if' if='[[!active]]'>
-                            <paper-tab>Monthly Returns</paper-tab>
-                        </template>
-                    </paper-tabs>
-
+                <div class="layout horizontal">
+	                <div class="flex"></div>
+	                <paper-tabs noink selected="{{graphType}}">
+	                    <paper-tab>Cumulative Return</paper-tab>
+	                    <template is='dom-if' if='[[!active]]'>
+	                        <paper-tab>Monthly Returns</paper-tab>
+	                    </template>
+	                </paper-tabs>
+	                <div class="flex"></div>
                 </div>
 
                 <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
@@ -234,10 +130,9 @@
                     </template>
 
                 </iron-pages>
-
-            </div>
+          	</div>
         </paper-card>
-
+      
         <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
 
         <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
@@ -262,7 +157,8 @@
             properties: {
                 elevation:{
                     type:Number,
-                    value:1
+                    value:1,
+                    notify:true
                 },
                 index:{
                     type:String
@@ -463,9 +359,13 @@
 
                     if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
                         this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
+
+                        this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
+
                     }
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
                     this.pctCompleted = -1;
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
                 }
             },
 
@@ -796,23 +696,6 @@
                     this.$$('aq-aggregatedreturns-barchart').resizeChart();
                 }
             },
-
-            isCompletionPositive: function (pctCompleted) {
-                return pctCompleted > 0 && pctCompleted != 100;
-            },
-
-            isBacktestComplete: function (pctCompleted) {
-                return pctCompleted == 100;
-            },
-
-            isBacktestWarmingUp: function (pctCompleted) {
-                return pctCompleted == 0;
-            },
-
-            isBacktestException: function (pctCompleted) {
-                return pctCompleted == -1;
-            },
-
         });
     </script>
     <script type="text/javascript" src="DateTime.js"></script>

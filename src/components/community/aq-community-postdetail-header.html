@@ -3,7 +3,7 @@
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 
 <link rel="import" href="./aq-community-postdetail-content.html">
-<link rel="import" href="../profile-img.html">
+<link rel="import" href="../aq-profile-img.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <link rel="import" href="../common/aq-profile-pic-element.html">
@@ -18,13 +18,14 @@
             font-family: 'Lato', sans-serif;
         }
 
-        .container {
+        #post-header{
+            background-color: #fff;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
             border-radius: 4px;
             background-color: white;
         }
-
+        
         #heading {
             font-size: 1.2em;
             font-weight: 700;
@@ -68,14 +69,17 @@
             } --paper-tooltip-opacity: 1.0;
             --paper-tooltip-background: teal;
         }
+
         .middle-container{
             position: relative;
         }
+
         .right-container{
             position: absolute;
             top:-20px;
             right:0;
         }
+
         #followIcon{
             font-size: 0.7em;
             --paper-button-color:#7c7c7c;
@@ -85,13 +89,17 @@
             height: 25px;
             top:-2px;
         }
+
         paper-button{
             border: 1px solid #cc6666;
         }
+
         aq-community-postdetail-content{
             position: relative;
             top:20px;
         }
+
+
     </style>
 
     <template>
@@ -107,7 +115,7 @@
                 debounce-duration="300">
         </iron-ajax>
 
-        <div id='post-header' class="container">
+        <div id='post-header'>
             <div id='heading'>
                 <span>[[postHeader.title]]</span>
             </div>

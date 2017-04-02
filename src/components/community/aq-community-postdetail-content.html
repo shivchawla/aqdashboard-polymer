@@ -3,7 +3,7 @@
 
 <link rel="import" href="../help/aq-help-marked-item.html">
 <link rel="import" href="../common/aq-backtest-detail-item.html">
-<link rel="import" href="../profile-img.html">
+<link rel="import" href="../aq-profile-img.html">
 <link rel="import" href="../common/aq-profile-pic-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <link rel="import" href="../common/aq-label-content-item.html">
@@ -34,23 +34,12 @@
         }
 
         #post-content {
-            margin-bottom: 20px;
+            margin-bottom: 50px;
             box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
-            padding: var(--aq-community-postdetail-content-padding, 0);
             border-radius: 4px;
-            padding: 20px;
             background-color: white;
-        }
-
-        .markdown-html {
-            border: 1px solid #efefef;
-            --margin-left: 5px;
-            padding-left: 5px;
-            margin-top: 5px;
-            font-size: 13px;
-            min-height: 50px;
-            --max-height: 350px;
-            overflow: auto;
+            margin-bottom:10px;
+            padding: var(--post-content-padding, 0px);
         }
 
         i {
@@ -88,11 +77,11 @@
         }
 
         aq-backtest-detail-item {
-            --card-action-background-color: var(post-content-background-color, #fafafb);
+            --aq-backtest-detail-item-background-color: #fafafb;
         }
 
         polymer-quill-html-render {
-          border-bottom: 1px solid #efefef;
+          --border-bottom: 1px solid #efefef;
 
           margin-top: 5px;
           margin-bottom: 15px;
@@ -105,7 +94,7 @@
     <template>
         <div id='post-content'>
             <div id='author' class="layout horizontal center">
-                <profile-img class="self-center" id='img' letter="[[getinitials(postContent)]]" class="self-end"></profile-img>
+                <aq-profile-img class="self-center" id='img' letter="[[getinitials(postContent)]]" class="self-end"></aq-profile-img>
                 
                 <span class="self-center" id="author-name">by 
                   <span class="self-center author-name-detail">[[postContent.user.firstName]] [[postContent.user.lastName]]</span>

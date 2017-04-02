@@ -2,6 +2,8 @@
 <link rel='import' href ="../common/aq-backtest-detail-item.html">
 <link rel='import' href='../../../bower_components/web-socket/web-socket.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
+
 
 <link rel='import' href='../../icons/aq-iconset.html'>
 
@@ -11,29 +13,23 @@
 	
 	<style>
 		#container {
-			width:97%;
-			margin: 0 auto;
 			height:100%;
+			padding:5px;
+			background-attachment: #e5e5e5;
 		}
-		
+
+		paper-button {
+			text-transform: none;
+			font-size: 14px;
+			color:#cc6666;
+		 	margin-bottom: 10px;
+            margin-left: 5px;
+		}
 	</style>
 
 	<template>
-		<div id='container' class="flex">
-			<div class="goBackButton layout horizontal">
-	            <paper-icon-button noink class="self-center" title="Go Back" icon="aq-icons:arrow-back" on-tap="onBack">
-	            </paper-icon-button>
-	            <h3>Back to Strategy Editor</h3>
-	            <div class="flex"></div>
-	         	
-	         	<template is='dom-if' if='[[narrow]]'>
-	         		<paper-icon-button noink class="toolbarIcon" icon="vaadin-icons:split-h" title="Toggle-Left" on-tap="toggleDrawer">
-	         		</paper-icon-button>
-	         	</template>
-
-	      	</div>
-
-	      	<aq-backtest-detail-item class="flex" id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
+		<div id='container'>
+	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
 	      	</aq-backtest-detail-item>
 		</div>
 

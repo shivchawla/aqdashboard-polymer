@@ -5,9 +5,10 @@
 <link rel="import" href="../common/aq-sub-toolbar.html">
 
 <dom-module id='aq-analyze-home-menu'>
-	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+    
     <style>
-
 		#search {
 		  height: 60px;
 		  line-height: 48px;
@@ -52,19 +53,19 @@
 		  border-color: #cfd8dc;
 		}
 
-		#searchbox::-webkit-search-cancel-button{
-		  position: relative;
-		  right: 15px;
+		#searchbox::-webkit-search-cancel-button {
+	  		position: relative;
+	  		right: 15px;
 		}
+
 		#backButton {
 			margin:auto 0;
 			outline: none !important;
 		}
 
-
 		paper-tooltip.iconTooltip {
         	--paper-tooltip: {
-          		font-size: 13px;
+          		font-size: 11px;
           		min-width: 40px;
           		text-align: center;
         	};
@@ -72,40 +73,71 @@
         	--paper-tooltip-opacity: 1.0;
 			--paper-tooltip-background: teal;
 		}
+
         paper-button{
             border:none;
         }
+
         #expand_all{
             color:#cc6666;
             font-size: 13px;
             position: relative;
             top:2px;
         }
-        paper-checkbox{
+
+        .checkbox-all {
             --paper-checkbox-checked-color: #cc6666;
+            margin-left: 10px;
         }
+
         .iconTooltip {
             --paper-tooltip: {
-                font-size: 13px;
+                font-size: 12px;
                 min-width: 40px;
                 text-align: center;
             };
             --paper-tooltip-opacity: 1.0;
             --paper-tooltip-background: teal;
         }
+        
+        paper-icon-button{
+            --paper-icon-button:{
+                color:#cc6666;
+            };
+
+            width:40px;
+            height:40px;
+        }
 
 	</style>
 	
 	<template>
         <aq-sub-toolbar>
-            <!--<paper-icon-button noink id="backButton" title="Go Back" icon="aq-icons:arrow-back" on-tap="goToEditor">-->
-            <!--</paper-icon-button>-->
+            <paper-icon-button noink id="backButton" icon="aq-icons:chevron-left" on-tap="goToEditor">
+            </paper-icon-button>
+
             <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
-                            on-change='onCheckAllBacktest'></paper-checkbox>
+                            on-change='onCheckAllBacktest'>
+            </paper-checkbox>
+
             <p class="self-center flex">All Backtests</p>
 
             <div id='menu-icons'>
-                <paper-button noink id="expand_all" on-tap="expandAll">EXPAND ALL</paper-button>
+
+                <template is='dom-if' if="[[!expand]]">
+                	<paper-icon-button  id='foldMoreIcon' noink class="iconButton" icon="aq-icons:unfold-more" on-tap="expandAll" ></paper-icon-button>
+
+                	<paper-tooltip for='foldMoreIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show More</paper-tooltip>
+
+                </template>
+
+                <template is='dom-if' if="[[expand]]">
+                	<paper-icon-button  id='foldLessIcon' noink class="iconButton" icon="aq-icons:unfold-less" on-tap="expandAll" ></paper-icon-button>
+
+                	 <paper-tooltip for='foldLessIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show Less</paper-tooltip>
+       
+                </template>
+
                 <paper-icon-button  id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
                 </paper-icon-button>
 
@@ -115,6 +147,8 @@
 
         </aq-sub-toolbar>
 
+        <paper-tooltip for='backButton' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Go Back</paper-tooltip>
+        
   		<paper-tooltip for='compareIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Compare</paper-tooltip>
         		
     	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>

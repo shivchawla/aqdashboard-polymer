@@ -8,10 +8,10 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"
         charset="utf-8"></script>
-<script src="../common/code-editor-element/ace-diff.js"></script>
-<script src="../common/code-editor-element/diff-match-patch.js"></script>
-<link rel="import" href="../common/code-editor-element/code-editor-element.html">
-
+<script src="../common/aq-code-editor-element/ace-diff.js"></script>
+<script src="../common/aq-code-editor-element/diff-match-patch.js"></script>
+<link rel="import" href="../common/aq-code-editor-element/aq-code-editor-element.html">
+<link rel="import" href="../common/aq-code-summary-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <dom-module id='aq-analyze-backtest-comparison-item'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -148,14 +148,21 @@
             color:#cc4444;
             font-weight: 700;
         }
-        code-editor-element{
-            --code-editor-element-width: 100%;
-            --code-editor-element-height: 500px;
+        aq-code-editor-element{
+            --aq-code-editor-element-width: 100%;
+            --aq-code-editor-element-height: 500px;
             position: relative;
             /*max-height: 700px;*/
         }
         .pages-container{
             margin-bottom: 20px;
+        }
+        paper-card{
+            overflow: hidden;
+            overflow-y: scroll;
+        }
+        #back-btn-text{
+            cursor: pointer;
         }
     </style>
 
@@ -166,7 +173,7 @@
             <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="chevron-left"
                                on-tap="goBackAllBacktests">
             </paper-icon-button>
-            <p class="self-center back-btn-text">Back</p>
+            <p id="back-btn-text" class="self-center back-btn-text" on-tap="goBackAllBacktests">Back</p>
             <p class="comparison-text">
                 <template is="dom-repeat" items="{{indexArray}}">
                     <span class="backtest-item">{{item}}</span>
@@ -187,7 +194,7 @@
                         <paper-tab>Total Return</paper-tab>
                         <paper-tab>Monthly Returns</paper-tab>
                         <paper-tab>Code Compare</paper-tab>
-                        <!--paper-tab>Risk Metrics</paper-tab-->
+                        <paper-tab>Summary</paper-tab
                     </paper-tabs>
                 </div>
             </div>
@@ -197,8 +204,10 @@
                     <div id='cumRetLineChartDiv'></div>
                     <div id='barChartDiv'></div>
                     <div id='codeCompare'>
-
-                        <code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></code-editor-element>
+                        <aq-code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></aq-code-editor-element>
+                    </div>
+                    <div id="codeSummary">
+                        <aq-code-summary-element backtests="{{backtests}}" backtest-index-array="{{indexArray}}"></aq-code-summary-element>
                     </div>
                 </iron-pages>
             </paper-card>
@@ -259,7 +268,7 @@
                     notify:true
                 },
 
-                header: Object,
+                header: Object
 
             },
 
@@ -267,7 +276,7 @@
                 this.async(this.resetComparison, 200);
                 if (this.active) {
                     this.async(this.doComparison, 200);
-                    console.log(this.indexArray);
+//                    console.log(this.indexArray);
                 }
 
             },
@@ -288,6 +297,7 @@
             doComparison: function () {
                 console.log(this.compareItems);
                 for (var key in this.compareItems) {
+//                    console.log(this.compareItems[key]);
                     if (this.compareItems[key]) {
                         if (!this.backtests[key]) {
 
@@ -309,14 +319,14 @@
                 this.backtests[backtest._id] = backtest;
                 this.addBacktestToComparison(backtest);
                 var backtestResponseArray = Object.values(this.backtests);
-                console.log(backtestResponseArray);
                 if (Object.keys(this.compareItems).length === backtestResponseArray.length) {
                     console.log("Request Completed");
-                    console.log(backtestResponseArray);
-                    var code_editor = this.$$('code-editor-element');
+                    var code_editor = this.$$('aq-code-editor-element');
+                    var code_summary_element = this.$$('aq-code-summary-element');
                     var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
                     var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";
-                    code_editor.init();
+                    code_editor.init(backtestResponseArray);
+                    code_summary_element.init(backtestResponseArray);
                     code_editor.setCodeLeft(backtestResponseArray[0].code);
                     code_editor.setCodeRight(backtestResponseArray[1].code);
                 }

@@ -1,0 +1,202 @@
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.min.js">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<dom-module id="aq-code-summary-element">
+
+    <template>
+
+        <style is="custom-style" include="iron-flex iron-flex-alignment iron-positioning">
+            :host {
+                font-family: 'Lato', sans-serif;
+                font-size: 14px;
+            }
+
+            .container {
+
+            }
+
+            .time-period {
+                display: inline;
+                position: relative;
+                top: 12px;
+                color:#cc4444;
+            }
+
+            .calendar-item {
+                background-color: #f2f2f2;
+                padding: 5px 10px;
+                margin: 5px;
+                cursor: pointer;
+
+            }
+
+            .calendar-item span {
+                font-size: 14px;
+            }
+
+            .calendar-container {
+                margin-top: 7px;
+            }
+
+            paper-radio-button {
+                --paper-radio-button-checked-color: #cc4444;
+            }
+
+            .year-container .iron-selected , .month-container .iron-selected {
+                background: #fff;
+                border: 1px solid teal;
+                color: teal;
+            }
+            .heavy-span{
+                font-weight: 700;
+                color:#cc4444;
+            }
+            .upper-container{
+                margin-bottom: 20px;
+            }
+            vaadin-grid {
+                --primary-color: transparent;
+
+            }
+            .header-item{
+                color:#000;
+                font-weight: 700;
+            }
+            #calendar-container{
+                transition: all 0.3s ease-in-out;
+            }
+        </style>
+        <div class="container layout vertical flex">
+            <div class="upper-container layout horizontal">
+                <div class="checkbox-container layout horizontal center-justified">
+                    <span class="time-period">Time Period</span>
+                    <paper-radio-group selected="0">
+                        <paper-radio-button noink name="0">All</paper-radio-button>
+                        <paper-radio-button noink name="1">Last 252 Days</paper-radio-button>
+                        <paper-radio-button noink name="2">Custom</paper-radio-button>
+                    </paper-radio-group>
+                </div>
+                <div id="calendar-container" class="calendar-container layout vertical flex">
+                    <div class="calendar-item-container year-container layout horizontal">
+                        <iron-selector attr-for-selected="year" class="layout horizontal" selected="2002">
+                            <template is="dom-repeat" items="{{years}}">
+                                <div year="{{item}}" class="calendar-item"><span>{{item}}</span></div>
+                            </template>
+                        </iron-selector>
+                    </div>
+
+                    <div class="calendar-item-container month-container layout horizontal">
+                        <iron-selector attr-for-selected="month" selected="Jan" class="layout horizontal">
+                            <template is="dom-repeat" items="{{months}}">
+                                <div month="{{item}}" class="calendar-item"><span>{{item}}</span></div>
+                            </template>
+                        </iron-selector>
+                    </div>
+                </div>
+            </div>
+            <span>Showing Data from <span class="heavy-span">September 2002</span></span>
+            <vaadin-grid>
+                <table>
+                    <colgroup>
+                        <col>
+                        <template is="dom-repeat" items="{{headers}}">
+                            <col>
+                        </template>
+                    </colgroup>
+                    <thead class="thead">
+                    <tr>
+                        <th class="header"><span style="color:transparent">Some</span></th>
+                        <template is="dom-repeat" items="{{headers}}">
+                            <th class="header"><span class="header-item">{{item}}</span></th>
+                        </template>
+                    </tr>
+                    </thead>
+                </table>
+            </vaadin-grid>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "aq-code-summary-element",
+            properties: {
+                data: {
+                    type: Array,
+                    value: []
+                },
+                users: {
+                    type: Object,
+                    value: {}
+                },
+                headers: {
+                    type: Array,
+                    value: [
+                        'Total Return', 'Annual Return', 'Volatility', 'Sharpe Ratio', 'Information ratio',
+                        'Max Drawdown', 'Calmar Ratio', 'Beta', 'Stability', 'Alpha'
+                    ]
+                },
+                years: {
+                    type: Array,
+                    value: [2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010]
+                },
+                months: {
+                    type: Array,
+                    value: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                backtestIndexArray:{
+                    type:Array,
+                    value:[]
+                },
+                backtests:{
+                    type:Array,
+                    value:[]
+                }
+            },
+            ready: function () {
+                var element = this;
+                var paperRadioGroup = this.$$('paper-radio-group');
+                paperRadioGroup.addEventListener('iron-select', function () {
+                    if(paperRadioGroup.selected == "2"){
+                        element.$$('#calendar-container').style.transform = "translate(0,0)";
+                    }else{
+                        element.$$('#calendar-container').style.transform = "translate(0,-150px)";
+                    }
+                });
+            },
+            init:function (backtestResponseArray) {
+                var grid = this.$$('vaadin-grid');
+                this.backtests = backtestResponseArray;
+                var element = this;
+                this.data = this.getBacktestData(this.backtestIndexArray,this.backtests);
+                grid.items = function (params, callback) {
+                    callback(element.data.slice(params.index, params.index + params.count));
+                };
+                grid.size = this.data.length;
+            },
+            getBacktestData:function (indexArray,backtests) {
+                var result = [];
+                for(var i=0 ;i<backtests.length;i++){
+                    result.push([
+                            indexArray[i],
+                        backtests[i].output.summary.totalreturn+'%',
+                        backtests[i].output.summary.annualreturn+'%',
+                        backtests[i].output.summary.annualstandarddeviation+'%',
+                        backtests[i].output.summary.sharperatio,
+                        backtests[i].output.summary.informationratio,
+                        backtests[i].output.summary.maxdrawdown+'%',
+                        backtests[i].output.summary.calmarratio,
+                        backtests[i].output.summary.beta,
+                        backtests[i].output.summary.stability,
+                        backtests[i].output.summary.alpha
+                    ]);
+                }
+                console.log(result);
+                return result;
+            }
+        })
+    </script>
+</dom-module>
