@@ -52,27 +52,22 @@
         }
 
         .tags-container {
-            list-style: none;
             padding: 0;
             margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .tags-container li {
-            display: inline;
+            --margin-bottom: 10px;
         }
 
         .tags-header {
             font-size: 0.8em;
             color: #727272;
-            margin-right: 20px;
+            margin-right: 10px;
         }
 
         aq-backtest-detail-item {
             --aq-backtest-detail-item-width: 100%;
         }
 
-        tag-element {
+        aq-tag-element {
             margin-bottom: 10px;
         }
 
@@ -103,20 +98,32 @@
                 <span class="self-center created-text">&nbsp on 
                   <span class="self-center created-date">[[format(postContent.updatedAt)]]</span>
                 </span>
+                
+                <div class="flex"></div>
+
+                <template is="dom-if" if="[[postContent.tags.length]]">
+                <div class="tags-div layout horizontal">
+                    <span class="tags-header self-center">Tags:</span>
+                    <div class="tags-container layout horizontal self-center">
+                        <template is="dom-repeat" items="[[postContent.tags]]">
+                            <aq-tag-element class="self-center" label="{{item}}"></aq-tag-element>
+                        </template>
+                    </div>
+                </div>
+                </template>
+
             </div>
             
-            <template is="dom-if" if="[[postContent.tags.length]]">
-                <div class="tags-div layout horizontal center">
-                    <span class="tags-header">Tags: &nbsp;</span>
-                    <ul class="tags-container">
+            <!--template is="dom-if" if="[[postContent.tags.length]]">
+                <div class="tags-div layout horizontal">
+                    <span class="tags-header self-center">Tags:</span>
+                    <div class="tags-container layout horizontal self-center">
                         <template is="dom-repeat" items="[[postContent.tags]]">
-                            <li>
-                                <tag-element label="{{item}}"></tag-element>
-                            </li>
+                            <aq-tag-element class="self-center" label="{{item}}"></aq-tag-element>
                         </template>
-                    </ul>
+                    </div>
                 </div>
-            </template>
+            </template-->
 
             <polymer-quill-html-render content="[[postContent.markdownText]]">
             </polymer-quill-html-render>

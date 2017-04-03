@@ -12,9 +12,9 @@
 
     <style>
         #previewContainer {
-            width: 90%;
+            width: 95%;
             margin: 0 auto;
-            margin-top: 30px;
+            --margin-top: 30px;
         }
 
         #postNbacktest {
@@ -24,9 +24,10 @@
         }
 
         paper-button {
-            /*border: 1px solid #24293d;*/
+            border: 1px solid teal;
             height: 30px;
             font-size: 13px;
+            color: teal;
         }
 
         #buttons {
@@ -43,13 +44,13 @@
     <template>
 
         <div class="layout vertical flex" id="previewContainer">
-            <template is="dom-if" if="[[!disableButtons]]">
+            <!--template is="dom-if" if="[[!disableButtons]]">
                 <div class="layout horizontal">
                     <div class="flex"></div>
                     <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
                     <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
                 </div>
-            </template>
+            </template-->
 
             <template is='dom-if' if='[[reply]]'>
                 <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>

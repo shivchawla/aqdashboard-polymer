@@ -46,7 +46,7 @@
             font-size: 18px;
             font-family: 'Lato',sans-serif;
             font-weight: 700;
-            color: #fff;
+            color: teal;
             margin-left: 20px;
         }
 
@@ -68,26 +68,25 @@
         }
 
         #strategyPanel {
-            background-color: #f2fbf7;
+            background-color: #fff;
             width: 250px;
         }
 
         paper-item {
             --paper-item-selected: {
 
-                background-color: #e3f6ed;
-                -- #f4f9fb;
-                border: 1px solid #e24e42;
+                background-color: #f2f2f2;
+                --border: 1px solid #e24e42;
             }
         }
 
         paper-listbox {
-            background-color: #f2fbf7;
+            --background-color: #f2fbf7;
         }
 
         #toolbar, #toolbar1 {
             --paper-toolbar-height: 35px;
-            --paper-toolbar-background: #e3f6ed;
+            --paper-toolbar-background: #fff;
             margin-bottom: 5px;
         }
 
@@ -99,30 +98,17 @@
             margin: 0;
         }
 
-        paper-toolbar.red {
-            --paper-toolbar-background: red;
-            --paper-toolbar-title: {
-                font-style: italic;
-                font-weight: bold;
-            };
-        }
         .outer{
             width: 100%;
             position: absolute;
             height:40px;
             margin: 0;
             padding: 0;
-            background-color: #00AAAA;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
+
         .inner paper-drawer-panel{
             margin-top: 45px;
-        }
-        #attachButton,#closeButton{
-            color:#fff;
-        }
-        #toolbar1{
-            background-color: transparent;
         }
 
     </style>
@@ -140,18 +126,16 @@
                                    title="Attach Backtest"></paper-icon-button>
                 <paper-icon-button on-tap="closeDialog" id='closeButton'
                                    noink icon="clear"
-                                   title="Attach Backtest"></paper-icon-button>
+                                   title="Close"></paper-icon-button>
             </div>
             <div class="inner">
                 <paper-drawer-panel right-drawer>
                     <paper-header-panel id="btPanel" main mode="seamed">
                         <paper-toolbar id="toolbar1">
                             <div class="flex"></div>
-                            <!--<paper-icon-button id='attachButton' disabled=[[!isAttachButtonActive(checkedCount)]] noink-->
-                                               <!--on-tap='onAttach' icon="aq-icons:attach-file"-->
-                                               <!--title="Attach Backtest"></paper-icon-button>-->
                             <paper-icon-button id="menuButton" icon="menu" paper-drawer-toggle
-                                               title="Toggle Strategies"></paper-icon-button>
+                                               title="Toggle Strategies">
+                            </paper-icon-button>
                         </paper-toolbar>
 
                         <div id='container-bt' class="flex">

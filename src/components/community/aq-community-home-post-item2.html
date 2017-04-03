@@ -52,14 +52,9 @@
             }
 
             .tags-container {
-                list-style: none;
                 padding: 0;
                 margin-top: 10px;
                 margin-bottom: 10px;
-            }
-
-            .tags-container li {
-                display: inline;
             }
 
             .bar {
@@ -75,7 +70,7 @@
                 color: #5d5d5d;
                 font-family: 'Lato', sans-serif;
                 font-weight: 400;
-                font-size: 16px;
+                font-size: 17px;
             }
 
             .attachment-btn {
@@ -121,6 +116,7 @@
             .upper-container-header {
                 position: relative;
                 left: 15px;
+                min-height: 60px;
             }
 
             label-content-item {
@@ -141,7 +137,7 @@
 
             .by {
                 font-weight: 300;
-                font-size: 0.8em;
+                font-size: 12px;
                 color: #646464;
             }
 
@@ -164,25 +160,18 @@
             <div class="layout horizontal">
                 <iron-icon class="post-icon" icon="{{icon}}"></iron-icon>
                 <div class="layout vertical upper-container-header">
+                    <div class="flex"></div>
                     <h1 class="header">[[thread.title]]</h1>
-                    <ul class="tags-container">
-                        <li>
-                            <tag-element label="Julia"></tag-element>
-                        </li>
-                        <li>
-                            <tag-element label="Python"></tag-element>
-                        </li>
-                        <li>
-                            <tag-element label="C++"></tag-element>
-                        </li>
-                        <li>
-                            <tag-element label="Java"></tag-element>
-                        </li>
-                        <li>
-                            <tag-element label="HTML 5"></tag-element>
-                        </li>
-                    </ul>
+                    
+                    <div class="tags-container layout horizontal">
+                      <template is='dom-repeat' items="[[thread.tags]]">
+                        <aq-tag-element label="[[item]]">
+                        </aq-tag-element>
+                      </template>  
+                    </div>
+                    <div class="flex"></div>
                 </div>
+
                 <template is='dom-if' if='[[hasBacktest(thread)]]'>
                     <paper-icon-button class="attachment-btn" icon="attachment"></paper-icon-button>
                 </template>
@@ -219,20 +208,27 @@
     <script>
         Polymer({
             is: 'aq-community-home-post-item2',
+            
             properties: {
                 thread: {
                     type: Object
                 },
+
                 icon: {
                     type: String,
                     value: "lightbulb-outline"
                 }
             },
-            ready: function () {
+            
+            attached: function () {
                 if (this.icon === 'communication:forum') {
                     this.$$('.post-icon').style.transform = "scale(1,1)";
                 }
+
+                console.log(this.thread);
             },
+
+            
             getInitials: function (firstName, lastName) {
                 return firstName.charAt(0) + lastName.charAt(0);
             },

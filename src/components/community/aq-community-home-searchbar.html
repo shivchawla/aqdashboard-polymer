@@ -81,7 +81,7 @@
             border-radius: 2px;
             height: 35px;
         }
-        tag-element {
+        aq-tag-element {
             margin-top: 5px;
             margin-bottom: 6px;
             --tag-element-background-color: #D7D7D7;
@@ -118,9 +118,9 @@
                            on-keydown="onChange" on-keyup="scrollToBottom">
                     <div id="tagsContainer" class="tags-container">
                         <template is="dom-repeat" items="{{tags}}">
-                            <tag-element label="{{item}}">
+                            <aq-tag-element label="{{item}}">
                                 <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
-                            </tag-element>
+                            </aq-tag-element>
                         </template>
                     </div>
                 </aq-tags-input-container>

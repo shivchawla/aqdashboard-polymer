@@ -186,7 +186,7 @@
             color: #727272;
         }
 
-        tag-element {
+        aq-tag-element {
             margin-top: 5px;
             margin-bottom: 6px;
             --tag-element-background-color: #D7D7D7;
@@ -266,10 +266,6 @@
             background-color: #cccccc;
         }
 
-        aq-sub-toolbar {
-            margin-bottom: 20px;
-            --toolbar-height:50px;
-        }
         aq-sub-toolbar h4{
             font-weight: 400;
             margin-left: 20px;
@@ -319,21 +315,26 @@
                     debounce-duration="300">
             </iron-ajax>
 
-
             <template is='dom-if' if="[[preview]]">
-                <aq-sub-toolbar>
-                    <h4>Post Preview</h4>
-                    <div class="toolbar-element">
-                        <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
-                        <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
-                    </div>
+            <div class="fit">
+                <paper-header-panel>
+                    <aq-sub-toolbar class="paper-header">
+                        <h4>Post Preview</h4>
+                        <div class="toolbar-element">
+                            <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
+                            <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
+                        </div>
 
-                </aq-sub-toolbar>
-                <aq-community-previewpost thread-data="[[threadData]]" disable-buttons></aq-community-previewpost>
+                    </aq-sub-toolbar>
+                    <aq-community-previewpost thread-data="[[threadData]]" disable-buttons>
+                    </aq-community-previewpost>
+                </paper-header-panel>
+
             </template>
 
             <aq-community-attachbacktest-dialog id='btDialog'>
             </aq-community-attachbacktest-dialog>
+            
             <template is='dom-if' if="[[!preview]]">
                 <div class="main-container">
                     <div style="padding-left: 10px" class="layout horizontal center header-container">
@@ -354,9 +355,9 @@
                                            on-keydown="onChange" on-keyup="scrollToBottom">
                                     <div id="tagsContainer" class="tags-container">
                                         <template is="dom-repeat" items="{{tags}}">
-                                            <tag-element label="{{item}}">
+                                            <aq-tag-element label="{{item}}">
                                                 <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
-                                            </tag-element>
+                                            </aq-tag-element>
                                         </template>
                                     </div>
                                 </aq-tags-input-container>
@@ -372,8 +373,6 @@
                                     <paper-radio-button noink name="Questions and Answers"><span>Quesions and Answers</span>
                                     </paper-radio-button>
                                     <br>
-                                    <!--<paper-radio-button noink disabled name="News and Anoouncements"><span>News/Announcement</span>-->
-                                    <!--</paper-radio-button>-->
                                     <br>
                                 </paper-radio-group>
                             </div>
@@ -616,11 +615,10 @@
             _backtestIdChanged: function (nId, oId) {
                 this.async(this.handleAttachedBacktest, 500);
             },
-            onCategoryChanged: function () {
-                console.log(this.$$('#selectedCategory').selected);
-            },
+
             onChange: function (e) {
-                if (e.keyCode == 13 && e.target.value.length >= 1) {
+                var maxTags = 5;
+                if (e.keyCode == 13 && e.target.value.length >= 1 && this.tags.length < maxTags) {
                     this.push('tags', e.target.value);
                     console.log(this.tags);
                     if (this.$$('#tagsInput')) {
@@ -628,6 +626,7 @@
                     }
                 }
             },
+
             removeTag: function (e) {
                 var itemName = e.model.item;
                 var index = this.tags.indexOf(itemName);

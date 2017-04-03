@@ -1,4 +1,4 @@
-<dom-module id="tag-element">
+<dom-module id="aq-tag-element">
     <template>
         <style>
             :host{
@@ -22,18 +22,18 @@
                 padding-bottom:3px;
             }
         </style>
-        <div class="tag-container layout horizontal center">
-            <span class="tag-content">{{label}}</span>
+        <div class="tag-container layout horizontal self-center">
+            <span class="tag-content">[[label]]</span>
             <content></content>
         </div>
     </template>
     <script>
         Polymer({
-            is:"tag-element",
+            is:"aq-tag-element",
             properties:{
                 label:{
                     type:String,
-                    value:"HTML 5"
+                    value:"",
                 }
             }
         });
