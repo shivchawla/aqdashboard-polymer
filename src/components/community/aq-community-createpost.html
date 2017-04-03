@@ -29,7 +29,7 @@
             width: 100%;
             font-family: 'Lato', sans-serif;
             font-size: 16px;
-            background-color: transparent;
+            --background-color: transparent;
         }
 
         h1, h2, h3, h4, h5 {
@@ -65,16 +65,6 @@
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
-        aq-dropdown {
-            --dropdown-width: 220px;
-            --dropdown-height: 46px;
-            --dropdown-button-color: teal;
-            --dropdown-background-color: #f2fbf7;
-            --dropdown-color: teal;
-
-            --dropdown-item-border: 1px solid #cc6666;
-
-        }
 
         p {
             font-size: 28px;
@@ -272,25 +262,17 @@
             font-size: 0.9em;
         }
 
-        .toolbar-element {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            position: fixed;
-            right:20px;
-        }
     </style>
 
 
     <template>
         <div class="container layout vertical">
             <aq-check-authentication id='authItem'></aq-check-authentication>
-            <app-location route="{{route}}" quer-params="{{queryParams}}" use-hash-as-path></app-location>
+            <app-location route="{{route}}" use-hash-as-path></app-location>
 
             <app-route
                     route="{{route}}"
                     pattern="/dashboard/community/create"
-                    active="{{active}}"
                     query-params="{{queryParams}}">
             </app-route>
 
@@ -320,10 +302,12 @@
                 <paper-header-panel>
                     <aq-sub-toolbar class="paper-header">
                         <h4>Post Preview</h4>
-                        <div class="toolbar-element">
-                            <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
-                            <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
-                        </div>
+                        
+                        <div class="flex"></div>
+                        
+                        <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
+                        
+                        <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
 
                     </aq-sub-toolbar>
                     <aq-community-previewpost thread-data="[[threadData]]" disable-buttons>
@@ -334,7 +318,7 @@
 
             <aq-community-attachbacktest-dialog id='btDialog'>
             </aq-community-attachbacktest-dialog>
-            
+
             <template is='dom-if' if="[[!preview]]">
                 <div class="main-container">
                     <div style="padding-left: 10px" class="layout horizontal center header-container">
@@ -434,22 +418,25 @@
                 },
 
                 attachedMessage: String,
+                
                 messageAttached: {
                     type: Boolean,
                     value: false
                 },
+                
                 share: String,
 
                 newThreadId: String,
 
-                active: Boolean,
                 queryParams: Object,
+                
                 tags: {
                     type: Array,
                     value: []
                 }
 
             },
+            
             listeners: {
                 'edit-clicked': 'onEdit',
                 'submit-clicked': 'postThread',
@@ -457,7 +444,11 @@
                 'paper-radio-group-changed': 'onCategoryChanged'
             },
 
-            observers: ['_activeChanged(active, queryParams)'],
+            attached: function() {
+              this.resetView();
+              this.attachedBacktestId = this.queryParams.backtestId;
+            },
+
             computeFollowPostUrl: function (threadId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                 return APIEndPoint + '/thread/' + threadId + '/follow';
@@ -564,7 +555,6 @@
                         return false;
                     }
                 } catch (err) {
-                    //console.log(err);
                     this.error = "No preview available for empty post. Please create a valid post and a header.";
                     this.$$('paper-toast').open();
                 }
@@ -577,22 +567,6 @@
             onEdit: function () {
                 this.threadData = {};
                 this.preview = false;
-            },
-
-            _activeChanged: function (active, queryParams) {
-
-                if (active) {
-                    if (!this.$.authItem.checkHasToken()) {
-                        this.fire('rt-changed', {route: '/user/signin'});
-                        return;
-                    }
-                }
-
-                this.resetView();
-
-                if (active && queryParams.backtestId) {
-                    this.attachedBacktestId = queryParams.backtestId;
-                }
             },
 
             resetView: function () {
