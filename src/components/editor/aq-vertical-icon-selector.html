@@ -84,21 +84,12 @@
 
 				selected: {
 					type:Number,
-					//value:0,
 					notify:true,
 				}
 
 			},
 
-			attached: function() {
-				console.log(this.selected)
-				//this.firstItem = this.iconsArray[0];
-				//console.log(this.firstItem);
-			},
-
 			isActive: function(item) {
-				//console.log(item);
-				//console.log(this.firstItem);
 				return item == this.firstItem;
 			},
 
