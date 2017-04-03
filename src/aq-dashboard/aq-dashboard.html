@@ -48,6 +48,10 @@
           height: 100%;
           background-color: #fafafa;
           will-change: transform;
+          
+          --paper-drawer-panel-left-drawer-container :{
+              z-index: 1002;
+          };
       }
 
       paper-header-panel {
@@ -366,6 +370,7 @@
         openMenu: function(e) {
           this.$.drawerpanel.openDrawer();
           this.showSidebar = true;
+
         },
 
         closeMenu: function() {
@@ -378,6 +383,7 @@
 
         toggleMenu: function(e) {
           this.$.drawerpanel.togglePanel();
+          this.fire('iron-signal',{name:'main-drawer-opened'});
         },
 
          _currentTabChanged: function(newTab, oldTab) {        

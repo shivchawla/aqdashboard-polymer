@@ -103,6 +103,13 @@
           background-color: #E5E5E5;
         }
 
+        paper-drawer-panel {
+          --paper-drawer-panel-right-drawer-container :{
+              z-index: 1;
+          };
+      }
+
+
         aq-editor-edit-backtest-screen {
             width: calc(100% - 50px);
         } 
@@ -167,7 +174,8 @@
                         class="paper-header"
                         strategy-name="[[strategy.name]]" 
                         strategy-desc="[[strategy.description]]"
-                        narrow="[[narrow]]" 
+                        narrow="[[narrow]]"
+                        toggle-active="[[checkToggleActive(narrow, showSideBar)]]" 
                         strategy-id="[[strategyId]]">
                     </aq-editor-toolbar>
                     
@@ -349,7 +357,7 @@
 
             _narrowChanged: function (newVal, oldVal) {
                 if (!newVal && !this.isRunning && this.$$('#codeEditorPanel')) {
-                    this.$$('#codeEditorPanel').style.display = 'block';
+                    //this.$$('#codeEditorPanel').style.display = 'block';
                 }
             },
 
@@ -385,28 +393,21 @@
             },
 
             toggleDrawer: function () {
+            
                 if (this.showSideBar && this.narrow) {
                     this.$$('#drawerpanel').togglePanel();
-
-                    var x = this.$$('#codeEditorPanel').style.display;
-
-                    if (x == 'none' && !this.isRunning) {
-                        this.$$('#codeEditorPanel').style.display = 'block';
-                    } else {
-                        this.$$('#codeEditorPanel').style.display = 'none';
-                    }
-
                 } else if (this.showSideBar && !this.narrow) {
                     this.closeDrawer();
                 } else {
                     this.openDrawer();
                 }
 
+
             },
 
             openDrawer: function () {
-                this.$$('#drawerpanel').openDrawer();
                 this.showSideBar = true;
+                this.$$('#drawerpanel').openDrawer();
             },
 
             closeDrawer: function () {
@@ -415,6 +416,10 @@
                 if (this.showSideBar && !this.narrow) {
                     this.showSideBar = false;
                 }
+            },
+
+            checkToggleActive: function(narrow, showSideBar) {
+                return !narrow && showSideBar;
             },
 
             isSelectedSidebarRun: function (selectedSidebar) {

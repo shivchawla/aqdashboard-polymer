@@ -150,6 +150,9 @@
     	<iron-signals on-iron-signal-partially-completed-backtest='updatePct'>
     	</iron-signals>
 
+    	<iron-signals on-iron-signal-main-drawer-opened='closeDrawer'>
+    	</iron-signals>
+
         <paper-toolbar>
             <div id='toolbar' class="flex layout horizontal center">
                 <paper-icon-button 
@@ -229,7 +232,7 @@
             			noink 
             			class="flex self-center green" 
             			toggles
-            			active="[[!narrow]]"
+            			active="[[toggleActive]]"
                         title="Toggle Menu" 
                         on-tap='toggleDrawer'
                         icon="vaadin-icons:split-h">
@@ -259,6 +262,10 @@
             properties: {
                 narrow: {
                     type: Boolean,
+                },
+
+                toggleActive: {
+                	type:Boolean,
                 },
 
                 isProgrammer: {
