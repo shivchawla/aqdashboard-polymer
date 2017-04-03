@@ -17,6 +17,16 @@
             --margin-top: 30px;
         }
 
+        #previewContainer[reply] {
+            margin-top: 50px;
+            --width: 100% !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            padding: 15px 20px 10px 20px;
+            margin-bottom: 25px;
+            border-radius: 2px;
+            background-color: #fff;
+        }
+
         #postNbacktest {
             width: 100%;
             --height: 30px;
@@ -24,7 +34,6 @@
         }
 
         paper-button {
-            border: 1px solid teal;
             height: 30px;
             font-size: 13px;
             color: teal;
@@ -43,7 +52,7 @@
 
     <template>
 
-        <div class="layout vertical flex" id="previewContainer">
+        <div class="layout vertical flex" id="previewContainer" reply$=[[reply]]>
             <!--template is="dom-if" if="[[!disableButtons]]">
                 <div class="layout horizontal">
                     <div class="flex"></div>
@@ -63,8 +72,8 @@
             <template is="dom-if" if="[[!disableButtons]]">
                 <div class="layout horizontal">
                     <div class="flex"></div>
-                    <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
-                    <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
+                    <paper-button style="background-color:#cccccc; color: #fff;" raised noink on-tap='onEdit'>Edit</paper-button>
+                    <paper-button style="color:#fff; background-color: teal;" raised noink on-tap='onSubmit'>Submit</paper-button>
                 </div>
             </template>
         </div>
