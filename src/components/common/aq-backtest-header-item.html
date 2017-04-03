@@ -5,6 +5,12 @@
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
 
+	<style>
+		.container {
+			padding-left: 30px;
+		}
+	</style>
+
 	<template>
 		<iron-media-query query="(max-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
         <iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
@@ -13,8 +19,8 @@
       
         <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
 
-		<div class="layout horizontal">
-			<div class="flex"></div>
+		<div class="container layout horizontal">
+			<!--div class="flex"></div-->
 	        
 	        <template is='dom-repeat' items="{{headerItems}}">
 	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]"></aq-qqq>
@@ -91,7 +97,6 @@
 	  	.text-label {
 	        font-size: 12px;
 	        font-weight: 300;
-	        text-align: center;
 	    }
 
 	    .text-content {
@@ -114,7 +119,7 @@
         </template>
 
         <template is='dom-if' if='[[semiWide]]'>
-			<div class="layout vertical center">
+			<div class="layout vertical">
 				<span class="text-content">[[metric]]</span>
 				<span class="text-label">[[label]]</span>
 	        </div>

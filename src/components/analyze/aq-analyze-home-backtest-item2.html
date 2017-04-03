@@ -169,8 +169,8 @@
                 <h1 class="header-text">BackTest [[formatIndex(index)]]</h1>
                 
                 <div class="topbar-icon-container">
-                    <paper-icon-button id="share-icon" on-tap="onShare" icon="social:share"></paper-icon-button>
-                    <paper-icon-button id="trending-icon" on-tap="onBacktestDetail"
+                    <paper-icon-button id="share-icon" title="Share" on-tap="onShare" icon="social:share"></paper-icon-button>
+                    <paper-icon-button id="trending-icon" title="Detail" on-tap="onBacktestDetail"
                                        icon="trending-up"></paper-icon-button>
                 </div>
             </div>
@@ -198,7 +198,13 @@
 	                <div class="bar"></div>
 	            </iron-collapse>
 	            
-	            <paper-icon-button noink id="expandBtn" on-click="toggle" icon="expand-more"></paper-icon-button>
+	            <template is='dom-if' if='[[!expand]]'>
+	            	<paper-icon-button noink id="expandBtn" title="Show More" on-click="toggle" icon="expand-more"></paper-icon-button>
+            	</template>
+
+	            <template is='dom-if' if='[[expand]]'>
+	            	<paper-icon-button noink id="expandBtn" title="Show Less" on-click="toggle" icon="expand-less"></paper-icon-button>
+	            </template>
             </template>
             <div class="side-bar"></div>
         </div>
@@ -217,21 +223,6 @@
                     type: Object,
                 },
 
-                detailActive: {
-                    type: Boolean,
-                    value: false,
-                },
-
-                detailIcon: {
-                    type: Boolean,
-                    value: false,
-                },
-
-                shareIcon: {
-                    type: Boolean,
-                    value: false,
-                },
-
                 index: String,
 
                 processedBacktest: {
@@ -240,6 +231,11 @@
                 },
 
                 backtestId: String,
+
+                expand: {
+                	type:Boolean,
+                	value:false,
+                },
                
             },
 
@@ -369,12 +365,9 @@
             	}
             	
                 this.ironCollapse.toggle();
-                if (!isOpen) {
-                    this.$$('#expandBtn').style.transform = "rotate(180deg)";
-                } else {
-                    this.$$('#expandBtn').style.transform = "rotate(0deg)";
-                }
-            },
+
+                this.expand = this.ironCollapse.opened;
+                            },
 
             onChange: function () {
                 this.fire('backtestChecked', {
