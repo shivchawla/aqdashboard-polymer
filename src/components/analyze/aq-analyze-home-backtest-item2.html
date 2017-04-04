@@ -169,9 +169,14 @@
                 <h1 class="header-text">BackTest [[formatIndex(index)]]</h1>
                 
                 <div class="topbar-icon-container">
-                    <paper-icon-button id="share-icon" title="Share" on-tap="onShare" icon="social:share"></paper-icon-button>
-                    <paper-icon-button id="trending-icon" title="Detail" on-tap="onBacktestDetail"
+                    <template is='dom-if' if="[[shareIcon]]">
+                    	<paper-icon-button id="share-icon" title="Share" on-tap="onShare" icon="social:share"></paper-icon-button>
+                    </template>
+
+                    <template is='dom-if' if="[[detailIcon]]">
+                    	<paper-icon-button id="trending-icon" title="Detail" on-tap="onBacktestDetail"
                                        icon="trending-up"></paper-icon-button>
+                	</template>
                 </div>
             </div>
 
@@ -236,6 +241,9 @@
                 	type:Boolean,
                 	value:false,
                 },
+
+                detailIcon: Boolean,
+                shareIcon: Boolean,
                
             },
 

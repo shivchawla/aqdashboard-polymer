@@ -1,18 +1,26 @@
 <link rel='import' href='../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+
+<link rel='import' href='../../icons/aq-iconset.html'>
+
 <link rel='import' href='../common/aq-check-authentication.html'>
+<link rel='import' href='../common/aq-loading-progress.html'>
+
 <link rel='import' href='../common/aq-cumret-linechart.html'>
 <link rel='import' href='../common/aq-aggregatedreturns-barchart.html'>
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
-<link rel='import' href='../../icons/aq-iconset.html'>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"
         charset="utf-8"></script>
 <script src="../common/aq-code-editor-element/ace-diff.js"></script>
 <script src="../common/aq-code-editor-element/diff-match-patch.js"></script>
 <link rel="import" href="../common/aq-code-editor-element/aq-code-editor-element.html">
-<link rel="import" href="../common/aq-code-summary-element.html">
+<link rel="import" href="../common/aq-backtest-summary-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+
 <dom-module id='aq-analyze-backtest-comparison-item'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
@@ -22,6 +30,11 @@
             font-family: 'Lato',sans-serif;
             padding-bottom: 20px;
         }
+
+        #comparisonContainer {
+        	--display: none;
+        }
+
         paper-icon-button {
             width: 35px;
             height: 35px;
@@ -49,7 +62,7 @@
 
         .pages_select {
             /*text-align: -webkit-center;*/
-            margin: 30px 0 30px 10px;
+            margin: 0px 10px 0px 10px;
         }
 
         vaadin-grid {
@@ -60,11 +73,6 @@
         #table_details__comparison {
             overflow: scroll;
             width: 100%;
-        }
-
-        .sub_header {
-            display: flex;
-            justify-content: space-between;
         }
 
         .vertical-textGraphs {
@@ -80,7 +88,7 @@
             background-color: transparent;
             margin-top: 0px;
             margin: 0 auto;
-            width: 95%;
+            --width: 95%;
             /*padding: 10px;*/
         }
 
@@ -90,6 +98,7 @@
         }
 
         paper-tabs {
+        	color:#8c8c8c;
             --paper-tabs-selection-bar-color: teal;
         }
 
@@ -169,6 +178,10 @@
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
+        <aq-loading-progress loading="[[!isComparisonReady(isDataReady)]]">
+        </aq-loading-progress>
+
+        <div id='comparisonContainer'>
         <div class="goBackButton layout horizontal">
             <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="chevron-left"
                                on-tap="goBackAllBacktests">
@@ -177,7 +190,7 @@
             <p class="comparison-text">
                 <template is="dom-repeat" items="{{indexArray}}">
                     <span class="backtest-item">{{item}}</span>
-                    <template is="dom-if" if="[[showVs(index,indexArray)]]">
+                    <template is="dom-if" if="[[showVs(index, indexArray)]]">
                         <span class="vs-text">vs</span>
                     </template>
                 </template>
@@ -188,34 +201,57 @@
         <div id='comparison-return' class="layout vertical center">
 
             <div class="layout horizontal tabs-container">
-                <!--<p>Comparing Backtests for <i>{{strategyName}}</i></p>-->
-                <div class="sub_header">
-                    <paper-tabs noink selected={{graphType1}}>
-                        <paper-tab>Total Return</paper-tab>
-                        <paper-tab>Monthly Returns</paper-tab>
-                        <paper-tab>Code Compare</paper-tab>
-                        <paper-tab>Summary</paper-tab
-                    </paper-tabs>
-                </div>
+                <paper-tabs noink selected="{{comparisonType}}" fallback-selection="0">
+                    <paper-tab>SUMMARY</paper-tab>
+                    <paper-tab>CODE</paper-tab>
+                    <paper-tab>RETURNS</paper-tab>
+                </paper-tabs>
             </div>
+            
             <paper-card class="pages-container">
-                <iron-pages class="pages_select" selected={{graphType1}} on-iron-resize='onResize'>
+                <iron-pages 
+                		class="pages_select" 
+        				selected="{{computePageType(comparisonType)}}"	
+        				attr-for-selection="page"
+    					fallback-selection="0">
+        			
+        				<div page="0">
+        					<template is='dom-if' if='[[isDataReady]]'>
+	        			    	<aq-backtest-summary-element 
+	                    			compare-items="[[compareItems]]">
+	                        	</aq-backtest-summary-element>
+                        	</template>
+                        </div>
+                    
+	                    <div id='codeCompare' page="1">
+	                    	<template is='dom-if' if='[[isDataReady]]'>
+		                        <aq-code-editor-element 
+		                        	compare-items="[[compareItems]]"
+	                        	 	theme="ace/theme/monokai" 
+	                        	 	mode="ace/mode/julia">
+	                    	 	</aq-code-editor-element>
+                    	 	</template>
+	                    </div>
 
-                    <div id='cumRetLineChartDiv'></div>
-                    <div id='barChartDiv'></div>
-                    <div id='codeCompare'>
-                        <aq-code-editor-element backtest-index-array="{{indexArray}}" theme="ace/theme/monokai" mode="ace/mode/julia"></aq-code-editor-element>
-                    </div>
-                    <div id="codeSummary">
-                        <aq-code-summary-element backtests="{{backtests}}" backtest-index-array="{{indexArray}}"></aq-code-summary-element>
-                    </div>
+	                    <div id='graphComparison' page="3">
+	                    	<div class="layout horizontal">
+		                    	<div class="flex"></div>
+		                    	<paper-tabs noink selected={{returnType}}>
+		                    		<paper-tab>Cumulative Return</paper-tab>
+		                    		<paper-tab>Monthly Returns</paper-tab>
+		                    	</paper-tabs>
+	                    	</div>
+
+	                    	<iron-pages selected={{returnType}} on-iron-resize='onResize'>
+	                    		<div id='cumRetLineChartDiv'></div>
+	                    		<div id='barChartDiv'></div>
+	                    	</iron-pages>
+	                    </div>
                 </iron-pages>
             </paper-card>
         </div>
-
-        <div id='comparison-risk' class="layout horizontal flex">
         </div>
-
+        
         <iron-ajax
                 url="[[computeGetBacktestUrl(backtestId)]]"
                 method='GET'
@@ -238,12 +274,6 @@
                     type: Object,
                 },
 
-                active: {
-                    type: Boolean,
-                    value: false,
-                    observer: '_isActiveChanged',
-                },
-
                 backtests: {
                     type: Object,
                     value: {},
@@ -258,35 +288,35 @@
 
                 backtestId: String,
 
-                graphType1: {
+                comparisonType: {
                     type: Number,
                     value: 0,
                 },
+
+                returnType: {
+                	type:Number,
+                	value: 0,
+                },
+
                 indexArray:{
                     type:Array,
                     value:[],
                     notify:true
                 },
 
-                header: Object
+                header: Object,
+
+                isDataReady: {
+                	type:Boolean,
+                	value: false,
+            	},
 
             },
 
             attached: function () {
-                this.async(this.resetComparison, 200);
-                if (this.active) {
-                    this.async(this.doComparison, 200);
-//                    console.log(this.indexArray);
-                }
-
-            },
-
-            _isActiveChanged: function (newVal, oldVal) {
-                if ((oldVal + 1) && newVal) {
-
-                    this.async(this.resetComparison, 200);
-                    this.async(this.doComparison, 200);
-                }
+                this.indexArray = this.compareItems.map(x=>x.index);
+                this.resetComparison();
+                this.doComparison();
             },
 
             computeGetBacktestUrl: function (backtestId) {
@@ -295,47 +325,49 @@
             },
 
             doComparison: function () {
-                console.log(this.compareItems);
-                for (var key in this.compareItems) {
-//                    console.log(this.compareItems[key]);
-                    if (this.compareItems[key]) {
-                        if (!this.backtests[key]) {
-
-                            this.backtestId = key;
-                            if (this.$.authItem.checkHasToken()) {
-                                this.header = this.$.authItem.getHeader();
-                                this.$.getBacktestsQuery.generateRequest();
-                            }
-
-                        } else {
-                            this.addBacktestToComparison(this.backtests[key]);
-                        }
+                for (var item of this.compareItems) {
+                    this.backtestId = item.id;
+                    if (this.$.authItem.checkHasToken()) {
+                        this.header = this.$.authItem.getHeader();
+                        this.$.getBacktestsQuery.generateRequest();
                     }
                 }
             },
 
             onGetBacktestSuccess: function (e) {
                 var backtest = e.detail.response;
-                this.backtests[backtest._id] = backtest;
-                this.addBacktestToComparison(backtest);
-                var backtestResponseArray = Object.values(this.backtests);
-                if (Object.keys(this.compareItems).length === backtestResponseArray.length) {
-                    console.log("Request Completed");
-                    var code_editor = this.$$('aq-code-editor-element');
-                    var code_summary_element = this.$$('aq-code-summary-element');
-                    var codeLeft = "var a = {\n propertyA: 12,\n propertyB: 123456, \n propertyC: 321, \n}";
-                    var codeRight = "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}";
-                    code_editor.init(backtestResponseArray);
-                    code_summary_element.init(backtestResponseArray);
-                    code_editor.setCodeLeft(backtestResponseArray[0].code);
-                    code_editor.setCodeRight(backtestResponseArray[1].code);
+                var idx = this.compareItems.map(x=>x.id).indexOf(backtest._id);
+
+                if(idx != -1 && idx < this.compareItems.length) {
+                    this.compareItems[idx].backtest = backtest;
                 }
+                
+                var ct = 0;
+                for (var item of this.compareItems) {
+                    if(item.backtest) {
+                        ct++;
+                    }
+                }     
+                
+                if (ct == this.compareItems.length)
+                    this.onComparisonReady();
             },
 
-            addBacktestToComparison: function (backtest) {
-                this.processLineChartData(backtest);
-                this.processBarChartData(backtest);
-                //this.processMetricsData(backtest);
+            onComparisonReady: function() {
+            	var compareItems = this.compareItems;
+            	this.set('compareItems', []);
+            	this.set('compareItems', compareItems);
+
+        		this.isDataReady = true;
+
+        		for(var i=0;i<this.compareItems.length; i++) {
+        			this.addBacktestToComparison(this.compareItems[i].backtest, this.compareItems[i].index);
+        		}
+            },
+
+            addBacktestToComparison: function (backtest, label) {
+                this.processLineChartData(backtest, label);
+                this.processBarChartData(backtest, label);
                 this.counter++;
 
                 /*if (this.counter == Object.keys(this.compareItems).length) {
@@ -345,7 +377,7 @@
                  }*/
             },
 
-            processLineChartData: function (data) {
+            processLineChartData: function (data, label) {
 
                 var colors = ["#fc4a1a", "#0375b4", "#FFAA1D", "#007849", "#6e2667"];
                 var equityData = data.output.totalreturn.algorithm;
@@ -358,7 +390,7 @@
                             dataset[i] = [Date.parse(v), equityData[v] + 100.0];
                         });
 
-                this.$$('aq-cumret-linechart').addSeries(data._id, dataset, false,
+                this.$$('aq-cumret-linechart').addSeries(label, dataset, false,
                         {
                             lineWidth: 1,
                             color: colors[this.counter],
@@ -380,7 +412,7 @@
 
             },
 
-            processBarChartData: function (data) {
+            processBarChartData: function (data, label) {
                 var colors = ["#fc4a1a", "#0375b4", "#FFAA1D", "#007849", "#6e2667"];
                 var aggregatedReturns = data.output.returns.monthly.algorithm;
                 var keys = Object.keys(aggregatedReturns);
@@ -391,7 +423,7 @@
                             dataset[i] = [Date.parse(v.substring(0, 4) + "-" + v.substring(4, 6)), aggregatedReturns[v]];
                         });
 
-                this.$$('aq-aggregatedreturns-barchart').addSeries(data._id, dataset, false,
+                this.$$('aq-aggregatedreturns-barchart').addSeries(label, dataset, false,
                         {
                             color: colors[this.counter],
                             tooltip: {
@@ -426,31 +458,38 @@
             },
 
             resetComparison: function () {
-                this.counter = 0;
-                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
-                if (child) {
+            	var graphComparisonDiv = this.$$('#graphComparison');
 
-                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
-                }
+            	if(graphComparisonDiv) {
 
-                var el = document.createElement('aq-cumret-linechart');
-                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+	                this.counter = 0;
+	                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
+	                if (child) {
 
-                Polymer.dom.flush();
+	                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+	                }
 
-                var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
+	                var el = document.createElement('aq-cumret-linechart');
+	                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
 
-                if (child) {
-                    Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
-                }
+	                Polymer.dom.flush();
 
-                var el = document.createElement('aq-aggregatedreturns-barchart');
-                Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+	                var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
 
-                Polymer.dom.flush();
+	                if (child) {
+	                    Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
+	                }
 
-                this.$$('aq-cumret-linechart').updateProperties();
-                this.$$('aq-aggregatedreturns-barchart').updateProperties();
+	                var el = document.createElement('aq-aggregatedreturns-barchart');
+	                Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+
+	                Polymer.dom.flush();
+
+	                this.$$('aq-cumret-linechart').updateProperties();
+	                this.$$('aq-aggregatedreturns-barchart').updateProperties();
+	            }
+
+	            this.isDataReady = false;
             },
 
             goBackAllBacktests: function () {
@@ -467,9 +506,24 @@
                     this.$$('aq-aggregatedreturns-barchart').resizeChart();
                 }
             },
+
             showVs:function (index,array) {
                 return index < array.length - 1;
+            },
 
+            computePageType: function(comparisonType) {
+            	return comparisonType.toString();
+            },
+
+            isComparisonReady: function(isDataReady) {
+            	
+            	if(isDataReady) {
+            		this.$.comparisonContainer.style.display = 'block';
+            	} else {
+            		this.$.comparisonContainer.style.display = 'none';
+            	}
+
+            	return isDataReady;
             }
 
         });

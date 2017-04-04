@@ -17,6 +17,7 @@
             height: var(--aq-code-editor-element-height, 100%);
             overflow: auto;
             justify-content: center;
+            margin-top: 20px;
         }
 
         ul {
@@ -90,7 +91,7 @@
         .red-bar {
             width: 4px;
             height: 20px;
-            color: #cc4444;
+            background-color: #cc4444; 
         }
 
         .iron-selected {
@@ -100,7 +101,7 @@
         }
         .lower-container {
             padding: 0 20px;
-            margin-top: 10px;
+            margin-top: 5px;
             background-color: #f5f5f5;
             border:none;
             height: 60px;
@@ -109,7 +110,7 @@
     <template>
         <div id="flex-container">
             <div class="flex-container-inside">
-                <ul class="selected-backtest-left">
+                <ul class="selected-backtest-left center">
                     <iron-selector id="leftSelector" selected="{{selectedLeft}}">
                         <template is="dom-repeat" items="{{backtestIndexArray}}">
                             <li class="selected-backtest-left-li">
@@ -155,7 +156,7 @@
             </div>
 
             <div id="acediff-gutter">
-                <div class="red-bar"></div>
+                <!--div class="red-bar"></div-->
             </div>
 
             <div class="flex-container-inside">
@@ -233,14 +234,6 @@
                 editors: {
                     type: Object
                 },
-                backtestIndexArray: {
-                    type: Array,
-                    value: []
-                },
-                backtests: {
-                    type: Array,
-                    value: []
-                },
                 selectedLeft: {
                     type: Number,
                     value: 0
@@ -248,63 +241,57 @@
                 selectedRight: {
                     type: Number,
                     value: 1
+                },
+                compareItems: {
+                    type:Array,
+                    value:[],
+                    observer:'_compareItemsChanged',
                 }
             },
-            listeners:{
-//                'iron-select':'selectionChanged'
-            },
-//            ready:function () {
-//                var element = this;
-//                this.$$('#leftSelector').addEventListener('iron-select',function () {
-//                    console.log("Selection Changed Left");
-//                    console.log(element.$$('#leftSelector').selected);
-//                    element.setCodeLeft(element.backtests[element.$$('#leftSelector').selected].code);
-//                });
-//                this.$$('#rightSelector').addEventListener('iron-select',function () {
-//                    console.log("Selection Changed Right");
-//                    console.log(element.$$('#rightSelector').selected);
-//                    element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
-//                });
-//            },
-            init: function (backtestArray) {
+            
+            compareCode: function() {    
                 var element = this;
                 var aceDiffer = this.getAceDiff();
                 this.editors = aceDiffer.getEditors();
-                this.backtests = backtestArray;
-                console.log(backtestArray);
+                this.backtests = this.compareItems.map(x=>x.backtest); 
+                this.backtestIndexArray = this.compareItems.map(x=>x.index);
+
                 for (var i = 0; i < this.backtests.length; i++) {
                     this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
                 }
-                console.log(this.backtests);
                 this.$$('#leftSelector').addEventListener('iron-select',function () {
-                    console.log("Selection Changed Left");
-                    console.log(element.$$('#leftSelector').selected);
                     element.setCodeLeft(element.backtests[element.$$('#leftSelector').selected].code);
                 });
                 this.$$('#rightSelector').addEventListener('iron-select',function () {
-                    console.log("Selection Changed Right");
-                    console.log(element.$$('#rightSelector').selected);
                     element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
                 });
             },
+
+            _compareItemsChanged: function() {
+                this.async(this.compareCode, 500);
+            },
+
             setCodeLeft: function (codeLeft) {
                 this.codeLeft = codeLeft;
                 this.editors.left.setValue(this.codeLeft, 1);
                 // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
                 this.editors.left.getSession().setUndoManager(new ace.UndoManager());
             },
+            
             setCodeRight: function (codeRight) {
                 this.codeRight = codeRight;
                 this.editors.right.setValue(this.codeRight, 1);
                 // Optional to prevent CTRL-Z and remove original content as the content was dinamically added
                 this.editors.right.getSession().setUndoManager(new ace.UndoManager());
             },
+
             getCode: function () {
                 return {
                     left: this.editors.left.getValue(),
                     right: this.editors.right.getValue()
                 };
             },
+
             getAceDiff: function () {
                 var aceDiffer = new AceDiff({
                     mode: null,
@@ -329,30 +316,18 @@
                         editable: this.editable,
                         copyLinkEnabled: true
                     },
-//                    classes: {
-//                        gutterID: 'acediff-gutter',
-//                        diff: 'acediff-diff',
-//                        connector: 'acediff-connector',
-//                        newCodeConnectorLink: 'acediff-new-code-connector-copy',
-//                        newCodeConnectorLinkContent: '&#8594;',
-//                        deletedCodeConnectorLink: 'acediff-deleted-code-connector-copy',
-//                        deletedCodeConnectorLinkContent: '&#8592;',
-//                        copyRightContainer: 'acediff-copy-right',
-//                        copyLeftContainer: 'acediff-copy-left'
-//                    }
                 });
                 return aceDiffer;
             },
+            
             formatDateTime: function (dateVar) {
                 return date.formatDateTime(dateVar);
             },
+            
             formatDate: function (dateVar) {
                 return date.formatDate(dateVar);
             },
-            selectionChanged:function () {
-                console.log("Left "+this.selectedLeft);
-                console.log("Right "+this.selectedRight);
-            }
+            
         });
 
     </script>
