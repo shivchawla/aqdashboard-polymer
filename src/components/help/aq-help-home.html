@@ -244,13 +244,10 @@
             },
 
             blur: function() {
-              console.log("fcuk");
               this.$$('#search_input').value="";
             },
 
             onGetHelpContentSuccess: function (e) {
-
-                console.log(e.detail.response);
                 this.set('itemsHelpContent', e.detail.response.Help);
                 var array = []
                 for (i in e.detail.response.Help) {

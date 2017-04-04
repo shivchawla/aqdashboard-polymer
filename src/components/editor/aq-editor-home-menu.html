@@ -101,11 +101,6 @@
                 }
             },
             
-            ready: function () {
-                //this.$$('#searchbox').focus();
-                console.log("Searchbox element intiialized");
-            },
-
             toggle: function () {
                 var d = this.$$('#search').style.display;
                 if (d == 'block') {
@@ -138,8 +133,6 @@
 
             onCheckAllStrategies: function () {
                 this.checkAll = this.$$('paper-checkbox').checked;
-                console.log("Firing signal");
-                console.log(this.$$('paper-checkbox').checked);
                 this.fire('iron-signal', {name: 'select-strategy', data: {checked: this.$$('paper-checkbox').checked}});
             },
             focusInputBox: function () {

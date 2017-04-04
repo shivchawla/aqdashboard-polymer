@@ -229,15 +229,6 @@
                 }
             },
 
-            /*blur: function(e) {
-             if(this.$$('#searchbox').value=="") {
-             //this.$$('#searchdiv').style.display = 'none';
-             //this.$$('#searchIcon').style.display = 'inline';
-             console.log("in blur");
-             this.search();
-             }
-             },*/
-
             checkForKeys: function (e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
@@ -251,7 +242,6 @@
             onChange: function (e) {
                 if (e.keyCode == 13 && e.target.value.length >= 1) {
                     this.push('tags', e.target.value);
-                    console.log(this.tags);
                     if (this.$$('#tagsInput')) {
                         this.$$('#tagsInput').value = "";
                     }
@@ -264,17 +254,13 @@
                 var itemName = e.model.item;
                 var index = this.tags.indexOf(itemName);
                 this.splice('tags', index, 1);
-                console.log(this.tags);
             },
             
             scrollToBottom: function () {
-                //                if (e.keyCode == 13) {
                 var element = document.getElementById("tagsContainer");
                 if (element) {
-                    console.log("Element Found");
                     element.scrollTop = element.scrollHeight;
                 }
-                //                }
             },
 
             toggleAddTag: function() {

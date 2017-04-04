@@ -358,13 +358,6 @@
                 // 'check-all-strategies': 'onCheckAllStrategies',
             },
 
-            onCheckAllStrategies : function() {
-                //console.log("Helllooosss");
-                //this.fire('iron-signal', {name:'select-strategy'}); 
-            },
-
-            //observers:['_activeChanged(subroute, queryParams)'],
-
             attached: function () {
                 if (!this.$.authItem.checkHasToken()) {
                     this.fire('rt-changed', {route: '/user/signin'});
@@ -386,7 +379,6 @@
 
             onGetStrategiesResponse: function (data) {
                 this.strategies = data.detail.response;
-                console.log(this.strategies);
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
                     this.dirtyBit = 0;
                 } else {
@@ -536,13 +528,10 @@
                     this.checkedCount -= 1;
                 }
 
-                //console.log("Hola");
-                console.log(this.checkedCount);
                 if(this.checkedCount > this.strategies.length){
                     this.checkedCount = this.strategies.length;
                 }
                 this.checkAll = this.checkedCount == this.strategies.length;
-                //console.log(e.detail);
             },
 
             hasCheckedStrategies: function (checkedCount) {
@@ -647,36 +636,6 @@
 
             isActive: function (active, subroute) {
                 return active && !this.hasTail(subroute);
-            },
-
-            _activeChanged: function (subroute, queryParams) {
-
-                console.log("Current Active: " + active);
-                if (active) {
-                    if (!this.$.authItem.checkHasToken()) {
-                        this.fire('rt-changed', {route: '/user/signin'});
-                        return;
-                    }
-                }
-
-                if (active && !this.hasTail(subroute)) {
-
-                    if (this.queryParams && this.queryParams.create) {
-                        this.create = this.queryParams.create;
-                    } else {
-                        this.fire('close-action');
-                    }
-
-                    if (this.dirtyBit == 1 || !(this.dirtyBit + 1)) {
-                        this.set('strategies', []);
-                        this.fetchResults();
-                    }
-
-                } else {
-
-                    this.checkedItems = {};
-                    this.checkedCount = 0;
-                }
             },
 
             hasStrategies: function (strategies, searchParam) {

@@ -342,8 +342,6 @@
                 'view-action': 'onView',
             },
 
-            //observers:['_activeChanged(active, subroute)'],
-
             attached: function () {
                 var x = localStorage.getItem('my-app-storage');
                 if (x) {
@@ -445,7 +443,6 @@
 
             processparams: function () {
                 var category;
-                //console.log(this.searchCategory);
                 var categorySearch=["","Share your Idea","Questions and Answers","News and Announcements"];
                 if (this.selected == 0) {
                     this.orderby = 'views';
@@ -457,12 +454,10 @@
 
                 var currentPage = (this.currentPage) ? this.currentPage : 1;
                 if(this.isSearchActive(this.searchText,this.searchCategory)){
-                    console.log("Search Active , Selected Item is "+this.categorySelected);
                     category = categorySearch[this.categorySelected];
                 }else{
                     category = this.searchCategory === "All" ? "" : this.searchCategory;
                 }
-                console.log(category);
                 this.searchParam = {
                     "skip": this.perPage * (currentPage - 1),
                     "limit": this.perPage,
@@ -518,7 +513,6 @@
             },
 
             onPostAdded: function () {
-                console.log("Post Added");
                 this.dirtyBit = 1;
             },
 

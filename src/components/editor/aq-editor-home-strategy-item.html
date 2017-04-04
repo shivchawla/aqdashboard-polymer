@@ -206,16 +206,11 @@
                 
             },
 
-            attached: function() {
-            	console.log(this.narrowViewport);
-            },
-
             goToEditor: function () {
                 this.fire('editorClicked', {id: this.strategyId});
             },
 
             goToAnalyze: function () {
-                console.log("Hello");
                 if (this.numBacktest > 0) {
                     this.fire('analyzeClicked', {id: this.strategyId});
                 }
