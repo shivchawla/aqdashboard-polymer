@@ -29,7 +29,10 @@
 
 	<template>
 		<div id='container'>
-	      	<aq-backtest-detail-item id="detailItem" backtest-id={{backtestId}} active="{{isRunning}}" id='backtestDisplay'>
+	      	<aq-backtest-detail-item 
+	      		backtest-id={{backtestId}} 
+	      		active="{{isRunning}}" 
+	      		forced-semi-wide="[[isForcedSemWide(narrow, showSidebar)]]"> 
 	      	</aq-backtest-detail-item>
 		</div>
 
@@ -43,7 +46,6 @@
 				isRunning: {
 					type:Boolean,
 					value:false,
-					//observer:'_isRunningChanged',
 					notify:true,
 				},
 
@@ -52,17 +54,22 @@
 					value:true,
 				},
 
+				showSidebar: Boolean,
+
 				backtestId:String,
 			},
 
 			onBack: function() {
-
 				this.isRunning = false;
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
 			},
 
 			toggleDrawer: function() {
 				this.fire('toggle-drawer');
+			},
+
+			isForcedSemWide: function(narrow, showSidebar) {
+				return showSidebar;
 			},
 
 		});

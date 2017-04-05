@@ -28,7 +28,15 @@
 	        --paper-icon-button-hover: {
        	 		outline:1px solid;
 	        };
+
+	       --paper-icon-button-disabled-text: grey;
+
+	       --paper-icon-button-disabled: {
+                color: #cacaca !important;
+            };
         }
+
+
 
         paper-toolbar {
             --paper-toolbar-height: 40px;
@@ -175,11 +183,24 @@
 
                 <div class="flex"></div>
 
+                <template is='dom-if' if=[[isRunning]]>
+	                <paper-icon-button 
+	                		noink 
+	                		class="flex toolbarIcon" 
+	                		icon="aq-icons:code" 
+	                		title="Code Editor"
+	                       	on-tap='toEditor'>
+	                </paper-icon-button>
+
+	                <div class="separator"></div>
+                </template>
+
                 <paper-icon-button 
                 		noink 
                 		class="flex toolbarIcon" 
                 		icon="aq-icons:add" 
                 		title="New Strategy"
+                		disabled="[[isRunning]]"
                        	on-tap='onCreate'>
                 </paper-icon-button>
 
@@ -188,6 +209,7 @@
                 		class="flex toolbarIcon" 
                 		icon="aq-icons:content-copy" 
                 		title="Clone Strategy"
+                		disabled="[[isRunning]]"
                         on-tap='onClone'>
                 </paper-icon-button>
 
@@ -196,6 +218,7 @@
                 		class="flex toolbarIcon" 
                 		icon="aq-icons:save" 
                 		title="Save Strategy"
+                		disabled="[[isRunning]]"
                         on-tap='onSave'>
                 </paper-icon-button>
 
@@ -213,6 +236,7 @@
               			class= "flex toolbarIcon" 
               			icon= "vaadin-icons:line-bar-chart"
                         title="Analyze all Backtests" 
+                        disabled="[[isRunning]]"
                         on-tap='onAnalyze'>
                 </paper-icon-button>
 
@@ -222,6 +246,7 @@
                 		class="flex self-center toolbarPlayIcon"
                         icon="aq-icons:play-arrow" 
                         title="Run Backtest" 
+                        disabled="[[isRunning]]"
                         on-tap='onRun'>
                 </paper-icon-button>
 
@@ -281,6 +306,7 @@
                 isRunning: {
                 	type: Boolean,
                 	value: false,
+                	notify:true,
                 	observer: '_isRunningChanged',
                 },
 
@@ -390,6 +416,10 @@
         		}
         		return "teal";
             },
+
+            toEditor: function() {
+            	this.isRunning = false;
+            }
 
         });
     </script>

@@ -11,11 +11,14 @@
 		:host {
 			display: block;
 			height: 100%;
+			
+			background-color: black; 
 		};
 		
 		#logcontainer {
 			background-color: black; 
 			color: white;
+			overflow-y: scroll;
 			--margin: auto 0;	
 		}
 
@@ -101,7 +104,10 @@
 					}
 					
 				}
-				this.fire('scroll-log');
+
+				//this.$$('#logcontainer').scroller.scrollTop += this.$$('#logcontainer').scroller.scrollHeight;
+				
+				//this.fire('scroll-log');
 				
 			},
 

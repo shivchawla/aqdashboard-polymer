@@ -93,7 +93,9 @@
         	<div class="card-content" >
                 <div class="middle-container self-center flex">
                 	<template is='dom-if' if='[[backtestHeader]]'>
-                		<aq-backtest-header-item header-items="{{backtestHeader}}">
+                		<aq-backtest-header-item 
+                			forced-semi-wide = "[[forcedSemiWide]]"
+                			header-items="{{backtestHeader}}">
                 		</aq-backtest-header-item>
             		</template>
                 </div>
@@ -103,6 +105,7 @@
                 <div class="lower-container flex">
                 	<template is='dom-if' if='{{metrics}}'>
                 		<aq-backtest-metric-item-list 
+                			forced-semi-wide = "[[forcedSemiWide]]"
                 			metric-items = "{{metrics}}"
                 			active="{{active}}">
             			</aq-backtest-metric-item-list> 
@@ -223,6 +226,11 @@
                     value: 0,
                 },
 
+                forcedSemiWide: {
+                	type: Boolean,
+                	value: false,
+                },
+
             },
 
             _backtestIdChanged: function (nId, oId) {
@@ -238,7 +246,7 @@
             },
 
             resetMetrics: function () {
-                this.metricss = [{
+                this.metrics = [{
                     "metricName": "Total Return",
                     "metricValue": "-",
                     "metricDescription": "Total Return"
@@ -337,14 +345,13 @@
                 this.set('realtimeXLabels', []);
                 this.set('trackVarKeysArray', []);
                 this.graphsInitialized = false;
+                this.backtestHeader = [];
             },
 
             subscribeData: function () {
                 this.async(function () {
                     this.fire('subscribe-data', {backtestId: this.backtestId})
                 }, 1000);
-                //this.reset();
-
             },
 
             onBacktestData: function (e) {
@@ -633,7 +640,6 @@
                 
                 if (this.backtest.status == "active") {
                     this.active = true;
-                    //this.reset();
                     this.subscribeData();
                     return;
                 }

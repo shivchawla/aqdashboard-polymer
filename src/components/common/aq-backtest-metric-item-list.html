@@ -26,7 +26,7 @@
 
 		<div id='container' class="layout horizontal">
 			
-			<template is='dom-repeat' id='repeater' items="{{metricItems}}">
+			<template is='dom-repeat' id='repeater' items="{{modifiedItems}}">
                 <aq-backtest-metric-item class="flex"
                 	metric-name="{{item.metricName}}"
                  	metric-value="{{item.metricValue}}">
@@ -43,36 +43,41 @@
 				metricItems:{
 					type:Array,
 					value:[],
+					observer:'_metricItemschanged',
 				},
+
+				modifiedItems: Array,
 
 				narrow: Boolean,
 				narrowWide: Boolean,
 				semiWide: Boolean,
 				wide:Boolean,
-				superWide:Boolean
+				superWide:Boolean,
+				forcedSemiWide:Boolean,
 			},
 
-			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide)'],
+			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide, forcedSemiWide)'],
 
 			_widthChanged: function() {
-				
-				if(this.originalItems) {
-					this.metricItems =  this.deepCopy(this.originalItems);
-				} else {
-					this.originalItems = this.deepCopy(this.metricItems);
-					
-					if (this.active) {
-						if(this.originalItems.length > 6) {
-							this.splice('originalItems', 6, this.originalItems.length - 6);
-						}
-
-						this.metricItems =  this.deepCopy(this.originalItems);
-					}
-				}
-
 				if(this.metricItems) {
+					this.modifiedItems = this.deepCopy(this.metricItems);
+					this.manageWidth(); 
+				}
+			},
 
-					var nItems = this.metricItems.length;
+			deepCopy: function(array) {
+				return JSON.parse(JSON.stringify(array));
+			},
+
+			_metricItemschanged: function() {
+				this.modifiedItems = this.deepCopy(this.metricItems);
+				this.manageWidth();
+			},
+
+			manageWidth: function() {
+				if(this.modifiedItems) {
+
+					var nItems = this.modifiedItems.length;
 					let eIdx;
 
 					if(nItems > 0) {
@@ -90,14 +95,15 @@
 		            		eIdx = nItems;
 		            	}
 
+		            	// behave as if it's sem-wide
+		            	if(this.forcedSemiWide && (!this.narrow || !this.narrowWide)) {
+							eIdx = nItems >= 5 ? 5 : nItems;
+		            	}
+
 		            	var ct = nItems - eIdx;
-		            	this.splice('metricItems', eIdx, ct);
+		            	this.splice('modifiedItems', eIdx, ct);
 	            	}
 				}
-			},
-
-			deepCopy: function(array) {
-				return JSON.parse(JSON.stringify(array));
 			},
 
 

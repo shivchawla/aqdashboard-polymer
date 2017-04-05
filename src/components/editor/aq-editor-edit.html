@@ -175,7 +175,7 @@
                         strategy-name="[[strategy.name]]" 
                         strategy-desc="[[strategy.description]]"
                         narrow="[[narrow]]"
-                        toggle-active="[[checkToggleActive(narrow, showSideBar)]]" 
+                        toggle-active="[[checkToggleActive(narrow, showSidebar)]]" 
                         strategy-id="[[strategyId]]">
                     </aq-editor-toolbar>
                     
@@ -187,7 +187,7 @@
                           right-drawer
                           responsive-width='840px'
                           narrow="{{narrow}}"
-                          force-narrow="{{!showSideBar}}">
+                          force-narrow="{{!showSidebar}}">
 
                           <template 
                               is='dom-if' 
@@ -205,6 +205,7 @@
                                     is-running="{{isRunning}}"
                                     id='backtestScreen'
                                     narrow="[[narrow]]"
+                                    show-sidebar="[[showSidebar]]"
                                     backtest-id="[[activeBacktestId]]">
                               </aq-editor-edit-backtest-screen>
                           </template>
@@ -239,20 +240,18 @@
             is: 'aq-editor-edit',
 
             properties: {
-                showSideBar: {
+                showSidebar: {
                     type: Boolean,
                     value: true,
                 },
 
                 narrow: {
                     type: Boolean,
-                    observer: '_narrowChanged',
                 },
 
                 selectedSidebar: {
                     type: Number,
                     value: 0,
-                    observer: "_isSelectedSidebarChanged",
                 },
 
                 sideBarOpen: {
@@ -355,12 +354,6 @@
                 return APIEndPoint + '/strategy/' + strategyId + '/exec';
             },
 
-            _narrowChanged: function (newVal, oldVal) {
-                if (!newVal && !this.isRunning && this.$$('#codeEditorPanel')) {
-                    //this.$$('#codeEditorPanel').style.display = 'block';
-                }
-            },
-
             computeDrawerWidth: function (isProgrammer, isRunning) {
                 if (isProgrammer && isRunning) {
                     return "440px";
@@ -394,9 +387,9 @@
 
             toggleDrawer: function () {
             
-                if (this.showSideBar && this.narrow) {
+                if (this.showSidebar && this.narrow) {
                     this.$$('#drawerpanel').togglePanel();
-                } else if (this.showSideBar && !this.narrow) {
+                } else if (this.showSidebar && !this.narrow) {
                     this.closeDrawer();
                 } else {
                     this.openDrawer();
@@ -406,20 +399,20 @@
             },
 
             openDrawer: function () {
-                this.showSideBar = true;
+                this.showSidebar = true;
                 this.$$('#drawerpanel').openDrawer();
             },
 
             closeDrawer: function () {
                 this.$$('#drawerpanel').closeDrawer();
 
-                if (this.showSideBar && !this.narrow) {
-                    this.showSideBar = false;
+                if (this.showSidebar && !this.narrow) {
+                    this.showSidebar = false;
                 }
             },
 
-            checkToggleActive: function(narrow, showSideBar) {
-                return !narrow && showSideBar;
+            checkToggleActive: function(narrow, showSidebar) {
+                return !narrow && showSidebar;
             },
 
             isSelectedSidebarRun: function (selectedSidebar) {
@@ -527,16 +520,8 @@
                 //let the event propagate
             },
 
-            _isSelectedSidebarChanged: function (nSelect, oSelect) {
-                if (nSelect == 0 && this.$$('#rightPanel')) {
-                    this.$$('#rightPanel').style.backgroundColor = 'white';
-                } else if (this.$$('#rightPanel')) {
-                    this.$$('#rightPanel').style.backgroundColor = 'black';
-                }
-            },
-
             onScroll: function () {
-                //this.$$('#rightPanel').scroller.scrollTop += this.$$('#rightPanel').scroller.scrollHeight;
+                this.$$('#logContainer').scroller.scrollTop += this.$$('#logContainer').scroller.scrollHeight;
             },
 
             showProgrammerWindow: function (isRunning, isProgrammer) {

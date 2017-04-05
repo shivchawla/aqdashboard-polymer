@@ -23,7 +23,7 @@
 			<!--div class="flex"></div-->
 	        
 	        <template is='dom-repeat' items="{{headerItems}}">
-	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]"></aq-qqq>
+	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
 	        	<div class="flex"></div>	
 	        </template>
     	</div>
@@ -42,6 +42,7 @@
 				narrowWide: Boolean,
 				semiWide: Boolean,
 				wide:Boolean,
+				forcedSemiWide:Boolean,
 			},
 
 			observers:['_widthChanged(narrow, narrowWide, semiWide, wide)'],
@@ -111,14 +112,14 @@
 
 		<iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
        	
-		<template is='dom-if' if='[[!semiWide]]'>
+		<template is='dom-if' if='[[!isSemiWide(semiWide, forcedSemiWide)]]'>
 			<div class="text-label">
 				[[label]]:
 				<span class="text-content">[[metric]]</span>
 	        </div>
         </template>
 
-        <template is='dom-if' if='[[semiWide]]'>
+        <template is='dom-if' if='[[isSemiWide(semiWide, forcedSemiWide)]]'>
 			<div class="layout vertical">
 				<span class="text-content">[[metric]]</span>
 				<span class="text-label">[[label]]</span>
@@ -137,6 +138,15 @@
 					type:Boolean,
 					value: false,
 				},
+
+				forcedSemiWide: {
+					type: Boolean,
+					value:false,
+				},
+			},
+
+			isSemiWide: function(semiWide, forcedSemiWide) {
+				return semiWide || forcedSemiWide;
 			},
 
 		});
