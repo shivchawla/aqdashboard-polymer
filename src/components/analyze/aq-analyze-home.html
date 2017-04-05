@@ -111,6 +111,7 @@
 		
 		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
 
+		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 		<iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(showComparison)}}" fallback-selection="home">
          
 	        <template is='iron-lazy-page' page="home">
@@ -147,6 +148,7 @@
 			</template>
 
 		</iron-lazy-pages>
+		</template>
 		
 	    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
 			 message="Are you sure to delete [[checkedItems.length]] backtest[[getMessageSuffix(checkedItems)]]?"

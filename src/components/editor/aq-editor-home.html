@@ -98,7 +98,7 @@
             margin: 0 auto;
             color: #24293d;
             width: 100%;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
         #actions aq-editor-home-elementmenu {
@@ -226,10 +226,12 @@
               debounce-duration="300">
       </iron-ajax>
 
-      <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
       
       <div class="fit"> 
-          
+        <template is='dom-if' if='[[loading]]'>
+          <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
+        </template>
+        
         <paper-header-panel fixed mode="seamed">
 
         <aq-editor-home-menu check-all="{{checkAll}}" 
@@ -237,7 +239,7 @@
                 class="paper-header">  
         </aq-editor-home-menu>
 
-        <template is='dom-if' if='{{!loading}}'>
+        <!--template is='dom-if' if='{{!loading}}'-->
             <div id='container'>
                 <div class="search-bar">
                   <input id="searchbox" placeholder="Search your strategy" class="flex"
@@ -267,7 +269,7 @@
                     <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
                 </template>
           </div>    
-        </template>
+        <!--/template-->
         </paper-header-panel>
       </div>
 

@@ -74,9 +74,7 @@
                 homeActive: Boolean,
                 detailActive: Boolean,
             },
-            listeners: {
-                'rt-changed':'handleRtChange'
-            },
+           
             computeAnalyzePage: function (homeActive, detailActive) {
 
                 var x = "";
@@ -89,13 +87,6 @@
                 return x;
 
             },
-
-            /*handleRtChange: function (e) {
-                if(e.detail.index !== undefined) {
-                    //alert("Route Changed Clicked, index is " + e.detail.index);
-                    this.index = e.detail.index + 1;
-                }
-            }*/
 
         });
     </script>

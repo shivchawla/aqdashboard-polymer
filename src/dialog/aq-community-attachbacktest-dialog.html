@@ -294,7 +294,6 @@
 
             onAttach: function () {
                 var key = "";
-                console.log(this.checkedId);
                 for (key in this.checkedId) {
                     if (this.checkedId[key]) {
                         break;
@@ -303,6 +302,7 @@
                 this.fire('backtest-attached', {id: key});
                 this.$.selectBacktestDialog.close();
             },
+            
             closeDialog: function () {
                 this.$$('paper-dialog').close();
             }

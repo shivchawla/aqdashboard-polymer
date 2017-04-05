@@ -385,9 +385,8 @@
             </template>
         </div>
     </template>
+    
     <script>
-
-
         Polymer({
             is: 'aq-community-createpost',
 
@@ -525,7 +524,6 @@
                         "markdownText": markdownText,
                         "user": {"firstName": user.firstName, "lastName": user.lastName},
                         "updatedAt": new Date(),
-                        "followers": user.followers,
                         "tags": this.tags
                     };
 
@@ -589,7 +587,6 @@
                 var maxTags = 5;
                 if (e.keyCode == 13 && e.target.value.length >= 1 && this.tags.length < maxTags) {
                     this.push('tags', e.target.value);
-                    console.log(this.tags);
                     if (this.$$('#tagsInput')) {
                         this.$$('#tagsInput').value = "";
                     }
@@ -600,16 +597,12 @@
                 var itemName = e.model.item;
                 var index = this.tags.indexOf(itemName);
                 this.splice('tags', index, 1);
-                console.log(this.tags);
             },
             scrollToBottom: function () {
-                //                if (e.keyCode == 13) {
                 var element = document.getElementById("tagsContainer");
                 if (element) {
-                    console.log("Element Found");
                     element.scrollTop = element.scrollHeight;
                 }
-                //                }
             }
 
         });

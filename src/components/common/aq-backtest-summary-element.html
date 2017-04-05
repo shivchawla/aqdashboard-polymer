@@ -68,7 +68,8 @@
                 color:#000;
                 font-weight: 700;
             }
-            .container {
+            #container {
+                display: none;
                 margin-top: 30px;
                 margin-bottom: 10px;
             }
@@ -88,7 +89,7 @@
             debounce-duration="300">
         </iron-ajax>
 
-        <div class="container layout vertical flex">
+        <div id='container' class="layout vertical flex">
             <div class="upper-container layout horizontal">
                 <div class="checkbox-container layout horizontal center-justified">
                     <span class="time-period">Time Period</span>
@@ -184,6 +185,10 @@
 
             _compareItemsChanged: function() {
                 this.selectedButton = "0";
+                
+                if(this.$.container) {
+                    this.$.container.style.display = 'none';
+                }
 
                 if(this.compareItems.length > 0) {
                     this.compare();
@@ -215,15 +220,18 @@
                 var grid = this.$$('vaadin-grid');
                 var element = this;
 
-                var indexArray = this.compareItems.map(x=>x.index);
-                var backtests = this.compareItems.map(x=>x.backtest);
+                var indexArray = this.compareItems.map(function(x) {return x.index;})
+                var backtests = this.compareItems.map(function(x) {return x.backtest;});
 
                 this.data = this.getBacktestData(indexArray, backtests);
                 
                 grid.items = function (params, callback) {
                     callback(element.data.slice(params.index, params.index + params.count));
                 };
+
                 grid.size = this.data.length;
+
+                this.$.container.style.display = 'block';
 
             },
 
