@@ -226,7 +226,7 @@
                         <aq-vertical-icon-selector
                               id="verticalSelector"
                               selected="{{selectedSidebar}}"
-                              icons-array="[[iconsArray]]">
+                              items-array="[[itemsArray]]">
                         </aq-vertical-icon-selector>
                     </div>
   
@@ -290,7 +290,7 @@
 
                 loading: Boolean,
 
-                iconsArray: {
+                itemsArray: {
                     type: Array, 
                 },
 
@@ -333,9 +333,11 @@
 
             _isRunningChanged: function() {
                 if(this.isRunning) {
-                    this.iconsArray = ["aq-icons:settings", "aq-icons:graphic-eq"];
+                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}, {title:"Logs", icon:"aq-icons:graphic-eq"}];
+                    this.selectedSidebar = 1;
                   } else {
-                    this.iconsArray = ["aq-icons:settings"]; 
+                    this.selectedSidebar = 0;
+                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}]; 
                   }
             },
 

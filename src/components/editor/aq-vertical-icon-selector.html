@@ -66,8 +66,8 @@
 	<template>
 		<div id='topPadding'></div>
 		<iron-selector selected="{{selected}}">
-			<template is="dom-repeat" items="{{iconsArray}}">
-				<paper-icon-button noink class="self-center" icon="[[item]]" on-tap="changeIndex"></paper-icon-button>
+			<template is="dom-repeat" items="{{itemsArray}}">
+				<paper-icon-button noink class="self-center" title=[[item.title]] icon="[[item.icon]]" on-tap="changeIndex"></paper-icon-button>
 			</template> 
 		</iron-selector>
 		<div id='bottomPadding' class="flex"></div>
@@ -78,7 +78,7 @@
 		Polymer({
 			is:'aq-vertical-icon-selector',
 			properties: {
-				iconsArray: {
+				itemsArray: {
 					type: Array,
 				},
 
@@ -94,7 +94,7 @@
 			},
 
 			changeIndex: function(e) {
-				this.selected = this.iconsArray.indexOf(e.target.icon);
+				this.selected = this.itemsArray.map(function(x){return x.icon;}).indexOf(e.target.icon);
 				this.fire('open-sidebar-panel');
 			},
 		});

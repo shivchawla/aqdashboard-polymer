@@ -346,11 +346,9 @@
 	        		
                     if(this.checkedItems.map(x => x.id).indexOf(checkedId) == -1) {
                         this.push('checkedItems', {id: checkedId, index: checkedIndex});
-                        //this.checkedCount += 1;
                     }
 	        	} else {
                     this.splice('checkedItems',this.checkedItems.map(x => x.id).indexOf(checkedId),1);
-                    //this.checkedCount -= 1;
 	        	}
 	        	
 	        	this.checkAll = this.checkedItems.length == this.backtests.length;
