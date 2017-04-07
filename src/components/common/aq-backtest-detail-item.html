@@ -346,6 +346,7 @@
                 this.set('trackVarKeysArray', []);
                 this.graphsInitialized = false;
                 this.backtestHeader = [];
+                this.rtData = [];
             },
 
             subscribeData: function () {
@@ -355,47 +356,22 @@
             },
 
             onBacktestData: function (e) {
+                
                 //process data obnly when element is active
                 if (!this.active) {
                     return
                 }
 
                 data = e.detail;
+
                 if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
+                    
                     this.addRealTimeData(data);
 
-                    if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
-                        this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
-
-                        this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
-
-                    }
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
                     this.pctCompleted = -1;
                     this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
                 }
-            },
-
-            onBacktestBulkData: function (e) {
-                //process data obnly when element is active
-                if (!this.active) {
-                    return;
-                }
-
-                var data = e.detail;
-                if (data && data.length > 0) {
-                    this.addLineBulkData(e.detail);
-                }
-            },
-
-            addLineBulkData: function (data) {
-                //this.addRealTimeBulkData(data);
-                for (i in data) {
-                    if ((data[i].outputtype == "performance" || data[i].outputtype == "labels") && this.active) {
-                        this.addRealTimeData(data[i]);
-                    }
-                }
-
             },
 
             addRealTimeData: function (data) {
@@ -418,7 +394,8 @@
                         this.initializeCumRetGraphs(data);
                     }
 
-                    this.updateCumRetGraphsWithData(data);
+                	this.rtData.push(data);
+                	this.debounce('hola', this.updateCumRetGraphsWithData, 1000);
                     this.addMetricData(data);
                 }
             },
@@ -426,25 +403,51 @@
             updateCumRetGraphsWithData: function (data) {
                 var types = ["totalreturn", "totalreturn_benchmark"];
                 var legends = ["Strategy", "Benchmark"];
-                var ct = this.counter++;
+                
+                for (var k=0;k<this.rtData.length;k++) {
+	                
+	                if(k >= this.counter) {
+	                	
+	                	var data = this.rtData[k];
+	                	var ct = this.counter++;
 
-                if (this.hasTrackVarData && this.$$('aq-cumret-linechart') && this.active) {
+		                if (this.hasTrackVarData && this.$$('aq-cumret-linechart') && this.active) {
 
-                    var keysArray = this.trackVarKeysArray;
+		                    var keysArray = this.trackVarKeysArray;
 
-                    for (var i = 0; i < keysArray.length; i++) {
+		                    for (var i = 0; i < keysArray.length; i++) {
+		                        this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
+		                    }
+		                }
 
-                        this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
-                    }
+		                for (var i = 0; i < types.length; i++) {
+		                    if (this.$$('aq-cumret-linechart') && this.active) {
+
+		                         	this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
+
+		                    }
+		                }
+		            }
+	        	}
+
+	        	//redraw the chart 
+	        	this.$$('aq-cumret-linechart').redrawChart();
+
+	        	//update the percentage completed
+	        	if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
+                        this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
+
+                        this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
+
                 }
 
-                for (var i = 0; i < types.length; i++) {
-                    if (this.$$('aq-cumret-linechart') && this.active) {
-
-                        this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
-                    }
+                //Update the status
+                if(this.pctCompleted == 100) {
+                	this.backtestHeader[2].metric = "Complete";
+                	var backtestHeader = this.deepCopy(this.backtestHeader);
+                	this.backtestHeader = [];
+                	this.backtestHeader = backtestHeader;
                 }
-
             },
 
             initializeCumRetGraphs: function (data) {
@@ -498,14 +501,15 @@
                 var legends = ["Strategy", "Benchmark"]
                 var colors = ["#0375b4", "#cc6666", "#FFAA1D", "#007849", "#6e2667", "#fc4a1a"];
 
-                var dataset = new Array(this.realtimeXLabels.length);
+                var dataset_str = new Array(this.realtimeXLabels.length);
+                var dataset_ben = new Array(this.realtimeXLabels.length);
 
                 for (var i = 0; i < this.realtimeXLabels.length; i++) {
-                    dataset[i] = [this.realtimeXLabels[i], NaN];
-
+               		dataset_str[i] = [this.realtimeXLabels[i], NaN];
+               		dataset_ben[i] = [this.realtimeXLabels[i], NaN];
                 }
 
-                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset, false,
+                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset_str, false,
                         {
                             color: colors[0],
                             lineWidth: 2,
@@ -526,7 +530,7 @@
                         }
                 );
 
-                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset, false,
+                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset_ben, false,
                         {
                             color: colors[1],
                             lineWidth: 1,
@@ -547,7 +551,6 @@
 
                         }
                 );
-
             },
 
             addMetricData: function (data) {
@@ -702,6 +705,10 @@
                     this.$$('aq-aggregatedreturns-barchart').resizeChart();
                 }
             },
+
+            deepCopy: function(array) {
+				return JSON.parse(JSON.stringify(array));
+			},
         });
     </script>
     <script type="text/javascript" src="DateTime.js"></script>

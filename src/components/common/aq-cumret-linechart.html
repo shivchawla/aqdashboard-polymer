@@ -19,7 +19,7 @@
   		</template>
 	</template>
 
-	<iron-signals on-iron-signal-redraw-chart='onRedrawChart'></iron-signals>
+	<!--iron-signals on-iron-signal-redraw-chart='onRedrawChart'></iron-signals-->
 
 	<script>
 
@@ -113,6 +113,7 @@
 						navigator:{
 							height:30,
 							margin:10,
+							//enabled:false,
 						},
 					},
 				},
@@ -140,6 +141,7 @@
 					type:Object,
 					value:{
 						series: {
+                			showInNavigator: true,
 							cropThreshold:2500,
 							turboThreshold:2500,
 							point: {
@@ -306,6 +308,7 @@
 
 			addSeries: function(name, data, colorByPoint, options) {
 
+				//console.log(data);
 				this.$$('#cumRetLineChart').addSeries(name, data, false, options);
 
 				this.$$('#cumRetLineChart')._chart.redraw();
@@ -329,7 +332,8 @@
 		   			}); 
 
 					this.$$('#cumRetLineChart').addSeries(legend[index], dataset, false, 
-						{lineWidth: width[index], 
+							{		
+							lineWidth: width[index], 
 							color:colors[index], 
 							compare:'percent', 
 							tooltip:{
@@ -376,8 +380,7 @@
       				var i=0;
       				for (var key in dataArrays) {
       					this.$$('#cumRetLineChart').addSeries(key, dataArrays[key], false, 
-  							{
-  								color:colors[i++], 
+  							{	color:colors[i++], 
   								lineWidth:1, 
   								yAxis:1,
   								tooltip:{
@@ -400,20 +403,16 @@
 				if(valid) {
 					
 					var seriesArray = this.$$('#cumRetLineChart')._chart.series;
+					
+					var idx = seriesArray.map(function(x){return x.name;}).indexOf(name);
 
-					for (i=0; i<seriesArray.length; i++) {
-						if(seriesArray[i].name == name) {
-							
-							if(this.$$('#cumRetLineChart')._chart.series[i].data[counter]){	
-								this.$$('#cumRetLineChart')._chart.series[i].data[counter].update(dataPoint, false);
-							}
-							
-							break;
+					if(idx!=-1) {
+						
+						if(this.$$('#cumRetLineChart')._chart.series[idx].data[counter]){	
+								this.$$('#cumRetLineChart')._chart.series[idx].data[counter].update(dataPoint, false);
 						}
 					}
 				
-		 			this.waitAndRedrawChart();
-
 		 			if(counter == nLabels - 1) {
 			 			this.$$('#cumRetLineChart')._chart.redraw();
 			 		}
@@ -426,12 +425,8 @@
 				}
 			},
 
-			onRedrawChart: function(e) {
+			redrawChart: function() {
 				this.$$('#cumRetLineChart')._chart.redraw();
-			},
-
-			waitAndRedrawChart: function() {
-				this.debounce('redraw', this.onRedrawChart, 1000);
 			},
 
 			getSeriesNameToIndexMap: function() {

@@ -586,7 +586,7 @@
 
         },
 
-        // Updates every 1 seconds and updates maximum of 50 points at once.
+        // Updates every 1 seconds and updates maximum of 200 points at once.
         sendDataSlowly: function(key) {
             var timeGap = 1000;
             var maxLimit = 200;
@@ -594,6 +594,7 @@
             if(this.backtests[key]) {
 
                 if(this.backtests[key].subscription) {
+
                   var currentIndex = this.backtests[key].currentIndex;
                   var currentLength = this.backtests[key].data.length;
                   
@@ -605,14 +606,12 @@
                           this.backtests[key].currentIndex = i+1;
                           j++;
                       }
-
-                      this.fire('iron-signal', {name:'redraw-chart', backtestId: key});
-
                   }
 
                   this.async(function(){this.sendDataSlowly(key);}, timeGap);
 
                 }
+              
             }
         },
 
