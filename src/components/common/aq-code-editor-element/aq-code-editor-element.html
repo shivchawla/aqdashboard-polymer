@@ -1,6 +1,11 @@
 <link rel='import' href='../../common/aq-backtest-metric-item.html'>
 <link rel="import" href="../../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+<script src="../../../../resources/scripts/DateTime.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"></script>
+<script src="../../../../resources/scripts/ace-diff.js"></script>
+<script src="../../../../resources/scripts/diff-match-patch.js"></script>
+
 <dom-module id="aq-code-editor-element">
     <link rel="stylesheet" href="aq-code-editor-element.css">
     <style>
@@ -253,8 +258,8 @@
                 var element = this;
                 var aceDiffer = this.getAceDiff();
                 this.editors = aceDiffer.getEditors();
-                this.backtests = this.compareItems.map(x=>x.backtest); 
-                this.backtestIndexArray = this.compareItems.map(x=>x.index);
+                this.backtests = this.compareItems.map(function(x){return x.backtest;}); 
+                this.backtestIndexArray = this.compareItems.map(function(x) {return x.index;});
 
                 for (var i = 0; i < this.backtests.length; i++) {
                     this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
@@ -331,6 +336,6 @@
         });
 
     </script>
-    <script type="text/javascript" src="../../common/DateTime.js"></script>
+    
 </dom-module>
 

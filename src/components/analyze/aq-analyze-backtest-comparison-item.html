@@ -13,10 +13,6 @@
 <link rel='import' href='../common/aq-cumret-linechart.html'>
 <link rel='import' href='../common/aq-aggregatedreturns-barchart.html'>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"
-        charset="utf-8"></script>
-<script src="../common/aq-code-editor-element/ace-diff.js"></script>
-<script src="../common/aq-code-editor-element/diff-match-patch.js"></script>
 <link rel="import" href="../common/aq-code-editor-element/aq-code-editor-element.html">
 <link rel="import" href="../common/aq-backtest-summary-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
@@ -314,7 +310,7 @@
             },
 
             attached: function () {
-                this.indexArray = this.compareItems.map(x=>x.index);
+                this.indexArray = this.compareItems.map(function(x){return x.index;});
                 this.resetComparison();
                 this.doComparison();
             },
@@ -325,8 +321,8 @@
             },
 
             doComparison: function () {
-                for (var item of this.compareItems) {
-                    this.backtestId = item.id;
+                for (var i=0; i<this.compareItems.length; i++) {
+                    this.backtestId = this.compareItems[i].id;
                     if (this.$.authItem.checkHasToken()) {
                         this.header = this.$.authItem.getHeader();
                         this.$.getBacktestsQuery.generateRequest();
@@ -336,14 +332,15 @@
 
             onGetBacktestSuccess: function (e) {
                 var backtest = e.detail.response;
-                var idx = this.compareItems.map(x=>x.id).indexOf(backtest._id);
+                var idx = this.compareItems.map(function(x) {return x.id;}).indexOf(backtest._id);
 
                 if(idx != -1 && idx < this.compareItems.length) {
                     this.compareItems[idx].backtest = backtest;
                 }
                 
                 var ct = 0;
-                for (var item of this.compareItems) {
+                for (var i=0; i<this.compareItems.length;i++) {
+                	var item = this.compareItems[i];
                     if(item.backtest) {
                         ct++;
                     }

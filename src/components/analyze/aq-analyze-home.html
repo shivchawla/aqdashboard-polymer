@@ -344,11 +344,11 @@
 	        	var checkedIndex = e.detail.index;
 	        	if (checked == true) {
 	        		
-                    if(this.checkedItems.map(x => x.id).indexOf(checkedId) == -1) {
+                    if(this.checkedItems.map(function(x) {return x.id;}).indexOf(checkedId) == -1) {
                         this.push('checkedItems', {id: checkedId, index: checkedIndex});
                     }
 	        	} else {
-                    this.splice('checkedItems',this.checkedItems.map(x => x.id).indexOf(checkedId),1);
+                    this.splice('checkedItems',this.checkedItems.map(function(x){return x.id;}).indexOf(checkedId),1);
 	        	}
 	        	
 	        	this.checkAll = this.checkedItems.length == this.backtests.length;
@@ -370,7 +370,8 @@
 	        onDeletion: function(e) {
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
-	        	for (var item of this.checkedItems) {
+	        	for (var i=0; i<this.checkedItems.length;i++) {
+	        		var item = this.checkedItems[i];
 	        		var idx = this.backtests.map(function(x) {return x._id;}).indexOf(item.id);
 	        		if(idx != -1) {
 	        			this.deleteId = item.id;
@@ -389,7 +390,7 @@
 	        	if(idx != -1) {
 	        		this.splice('backtests', idx, 1);
     				
-    				this.splice('checkedItems', this.checkedItems.map(x=>x.id).indexOf(deleteId), 1);
+    				this.splice('checkedItems', this.checkedItems.map(function(x){return x.id;}).indexOf(deleteId), 1);
 
     				this.fire('iron-signal', {name:'backtest-deleted'});
 	        	}
