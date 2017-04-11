@@ -1,25 +1,27 @@
 {
 	"announcements": [
 		{
-			"header": "Announcement 1",
-			"subHeader":"I don't care",
-			"announcement": ["It is a long established fact that a reader will be distracted by the readable content of a page when",
-                          "looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution",
-                          "of letters, as opposed to using 'Content here, content here', making it look like readable English. Many",
-                          "desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a",
-                          "search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have",
-                          "evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."]
+			"header": "Announcement",
+			"subHeader":"New and Improved UI",
+			"announcement": ["We have improved the UI for better and",
+			 "faster navigation through the platform. Now the backtests’",
+			 "performance can be compared for various periods in tabular",
+			 "as well as graphical form. We have also added a code comparison",
+			 "feature to compare the strategy code across various backtests.",
+			 "The code editor is also more intuitive and changing settings is much",
+			 "easier. The web-app is still beta and we rely on your inputs to",
+			 "improve it further. Please send your feedback using the \"Send us Feedback\" link."]
 			
 		},
 		{
-			"header": "Announcement 2",
-			"subHeader":"I don't care",
-			"announcement": ["It is a long established fact that a reader will be distracted by the readable content of a page when",
-                          "looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution",
-                          "of letters, as opposed to using 'Content here, content here', making it look like readable English. Many",
-                          "desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a",
-                          "search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have",
-                          "evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."]
+			"header": "Announcement",
+			"subHeader":"Faster Backtests",
+			"announcement": ["We have improved our underlying algorithms to improve",
+							"the algorithm execution speed. The current version is much",
+							"faster (10 - 20 times) faster than the last version. Also,",
+							"given the current execution speeds, only one concurrent",
+							"backtest can be run per user. We plan to increase this limit",
+							"in the future. Please let us know your feedback by using the \"Send us Feedback” link\"."]
 			
 		}
 	]
