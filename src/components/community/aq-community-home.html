@@ -8,15 +8,16 @@
 <link rel='import' href='../../../bower_components/paper-tooltip/paper-tooltip.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item2.html">
 <link rel='import' href='../common/aq-pagination.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
-<link rel="import" href="../common/announcement-card.html">
+<link rel="import" href="./aq-announcement-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <dom-module id="aq-community-home">
 
@@ -101,8 +102,8 @@
             margin: 0 auto;
         }
 
-        announcement-card {
-            --announcement-card-width: 300px;
+        aq-announcement-card {
+            --aq-announcement-card-width: 300px;
             margin-bottom: 30px;
         }
 
@@ -121,7 +122,7 @@
             list-style: none;
         }
 
-        .announcement-container {
+        .aq-announcement-container {
             position: relative;
             top: 18px;
         }
@@ -172,6 +173,17 @@
                 loading='{{loading}}'>
         </iron-ajax>
 
+        <iron-ajax
+                url="../../../resources/community/announcement.json"
+                method='GET'
+                id='getAnnouncementsQuery'
+                handle-as="json"
+                on-response="onGetAnnouncementsResponse"
+                on-error="onGetAnnouncementsError"
+                headers='{{header}}'
+                debounce-duration="300">
+        </iron-ajax>
+
         <iron-signals on-iron-signal-post-added='onPostAdded'></iron-signals>
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
@@ -219,30 +231,15 @@
                 </ul>
                 
                 <template is='dom-if' if="{{wide}}">
-                  <div class="announcement-container layout vertical">
-                      <announcement-card header="Important Announcement"
-                                         sub-header="This is a very important announcement">
-                      <span>
-                          It is a long established fact that a reader will be distracted by the readable content of a page when
-                          looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
-                          of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
-                          desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
-                          search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
-                          evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                      </span>
-                      </announcement-card>
-
-                      <announcement-card header="Important Announcement"
-                                         sub-header="This is a very important announcement">
-                      <span>
-                          It is a long established fact that a reader will be distracted by the readable content of a page when
-                          looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
-                          of letters, as opposed to using 'Content here, content here', making it look like readable English. Many
-                          desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
-                          search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
-                          evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                      </span>
-                      </announcement-card>
+                    <div class="aq-announcement-container layout vertical">
+                      
+                        <template is='dom-repeat' items='{{announcements}}'>  
+                            <aq-announcement-card header="[[item.header]]"
+                                             sub-header="[[item.subHeader]]"
+                                             >
+                             <span>[[item.announcement]]</span>
+                            </aq-announcement-card>
+                        </template>
                   </div>
                 </template>
             </div>
@@ -359,6 +356,8 @@
                     this.processparams();
                     this.dirtyBit = 0;
                 }
+
+                this.$.getAnnouncementsQuery.generateRequest();
 
             },
 
@@ -518,7 +517,21 @@
 
             onSetDirtyBit: function (e) {
                 this.dirtyBit = e.detail;
-            }
+            },
+
+            onGetAnnouncementsResponse: function(e) {
+                var announcements = e.detail.response.announcements;
+
+                for(var i=0;i< announcements.length; i++) {
+                    announcements[i].announcement = announcements[i].announcement.join(' '); 
+                }
+
+                this.announcements = announcements;
+            },
+
+            onGetAnnouncementsError: function(e) {
+
+            },
 
         });
     </script>

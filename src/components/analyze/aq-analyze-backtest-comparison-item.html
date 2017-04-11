@@ -184,9 +184,9 @@
             </paper-icon-button>
             <p id="back-btn-text" class="self-center back-btn-text" on-tap="goBackAllBacktests">Back</p>
             <p class="comparison-text">
-                <template is="dom-repeat" items="{{indexArray}}">
+                <template id='comparisonList' is="dom-repeat" items="{{indexArray}}">
                     <span class="backtest-item">{{item}}</span>
-                    <template is="dom-if" if="[[showVs(index, indexArray)]]">
+                    <template is="dom-if" if="[[showVs(item, indexArray)]]">
                         <span class="vs-text">vs</span>
                     </template>
                 </template>
@@ -297,7 +297,8 @@
                 indexArray:{
                     type:Array,
                     value:[],
-                    notify:true
+                    notify:true,
+                    observer:'_indexArrayChanged',
                 },
 
                 header: Object,
@@ -310,6 +311,7 @@
             },
 
             attached: function () {
+                this.indexArray = [];
                 this.indexArray = this.compareItems.map(function(x){return x.index;});
                 this.resetComparison();
                 this.doComparison();
@@ -504,8 +506,8 @@
                 }
             },
 
-            showVs:function (index,array) {
-                return index < array.length - 1;
+            showVs:function (item, array) {
+                return array.indexOf(item) < array.length - 1;
             },
 
             computePageType: function(comparisonType) {
@@ -521,7 +523,11 @@
             	}
 
             	return isDataReady;
-            }
+            },
+
+            _indexArrayChanged: function() {
+                this.$.comparisonList.render();
+            },
 
         });
     </script>

@@ -1,12 +1,12 @@
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-<dom-module id="announcement-card">
+<dom-module id="aq-announcement-card">
     <template>
         <style>
             :host{
                 display: inline-block;
             }
             .container{
-                width: var(--announcement-card-width , 100%);
+                width: var(--aq-announcement-card-width , 100%);
                 display: flex;
                 justify-content: flex-start;
                 padding: 15px 20px;
@@ -20,12 +20,12 @@
             }
             .header{
                 font-weight: 400;
-                font-size: 14px;
+                font-size: 16px;
                 color:teal;
             }
             .sub-header{
                 font-weight: 700;
-                font-size: 16px;
+                font-size: 14px;
                 margin-top: 13px;
                 color:#474747;
             }
@@ -44,13 +44,13 @@
         </style>
         <div class="container">
             <h1 class="header">{{header}}</h1>
-            <h3 class="sub-header">{{header}}</h3>
+            <h3 class="sub-header">{{subHeader}}</h3>
             <content class="content-wrapper"></content>
         </div>
     </template>
     <script>
         Polymer({
-            is:"announcement-card",
+            is:"aq-announcement-card",
             properties:{
                 header:{
                     type:String,

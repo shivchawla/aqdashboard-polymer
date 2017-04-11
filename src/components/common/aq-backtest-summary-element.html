@@ -78,17 +78,6 @@
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <iron-ajax
-            url="[[computeGetBacktestUrl(backtestId)]]"
-            method='GET'
-            id='getBacktestsQuery'
-            handle-as="json"
-            on-response="onGetBacktestSuccess"
-            on-error="onGetBacktestError"
-            headers='{{header}}'
-            debounce-duration="300">
-        </iron-ajax>
-
         <div id='container' class="layout vertical flex">
             <div class="upper-container layout horizontal">
                 <div class="checkbox-container layout horizontal center-justified">
@@ -103,7 +92,7 @@
                 <template is='dom-if' if='[[isCustomBar(selectedButton)]]'>
                     <div id="calendar-container" class="layout vertical flex">
                         <div class="calendar-item-container year-container layout horizontal">
-                            <iron-selector attr-for-selected="year" class="layout horizontal" selected="2002">
+                            <iron-selector  on-iron-select='onYearChange' attr-for-selected="year" selected="[[year]]" class="layout horizontal">
                                 <template is="dom-repeat" items="{{years}}">
                                     <div year="{{item}}" class="calendar-item"><span>{{item}}</span></div>
                                 </template>
@@ -111,7 +100,7 @@
                         </div>
 
                         <div class="calendar-item-container month-container layout horizontal">
-                            <iron-selector attr-for-selected="month" selected="Jan" class="layout horizontal">
+                            <iron-selector on-iron-select='onMonthChange' attr-for-selected="month" selected="[[month]]" class="layout horizontal">
                                 <template is="dom-repeat" items="{{months}}">
                                     <div month="{{item}}" class="calendar-item"><span>{{item}}</span></div>
                                 </template>
@@ -121,7 +110,7 @@
                 </template>
             </div>
 
-            <span style="margin-left: 20px;">Showing Data from <span class="heavy-span">September 2002</span></span>
+            <span style="margin-left: 20px;">Showing Data for&nbsp<span class="heavy-span">[[durationText]]</span></span>
 
             <vaadin-grid>
                 <table>
@@ -165,11 +154,10 @@
                 },
                 years: {
                     type: Array,
-                    value: [2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010]
                 },
                 months: {
                     type: Array,
-                    value: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    value: ['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
                 },
 
                 compareItems: {
@@ -179,6 +167,8 @@
 
                 selectedButton: {
                     type:String,
+                    value:"0",
+                    observer:'_selectedButtonChanged',
                 },
 
             },
@@ -191,40 +181,157 @@
                 }
 
                 if(this.compareItems.length > 0) {
+                    var indexArray = this.compareItems.map(function(x) {return x.index;})
+                    var backtests = this.compareItems.map(function(x) {return x.backtest;});
+
+                    this.resetYearsMonths(backtests);
+
                     this.compare();
                 }
             },
 
             getBacktestData: function(indexArray, backtests) {
+                
                 var result = [];
                 for(var i=0; i<backtests.length; i++){
-                    result.push([
+                    
+                    if(this.selectedButton=='0') {
+                        
+                        var summary = backtests[i].output.summary;
+
+                        result.push([
                             indexArray[i],
-                        backtests[i].output.summary.totalreturn+'%',
-                        backtests[i].output.summary.annualreturn+'%',
-                        backtests[i].output.summary.annualstandarddeviation+'%',
-                        backtests[i].output.summary.sharperatio,
-                        backtests[i].output.summary.informationratio,
-                        backtests[i].output.summary.maxdrawdown+'%',
-                        backtests[i].output.summary.calmarratio,
-                        backtests[i].output.summary.beta,
-                        backtests[i].output.summary.stability,
-                        backtests[i].output.summary.alpha
-                    ]);
+                            summary.totalreturn+'%',
+                            summary.annualreturn+'%',
+                            summary.annualstandarddeviation+'%',
+                            summary.sharperatio,
+                            summary.informationratio,
+                            summary.maxdrawdown+'%',
+                            summary.calmarratio,
+                            summary.beta,
+                            summary.stability,
+                            summary.alpha
+                        ]);
+                    } else if(this.selectedButton == '1') {
+                        
+                        var rolling = backtests[i].output.analytics.rolling;
+                        
+                        result.push([
+                            indexArray[i],
+                            rolling.totalreturn+'%',
+                            rolling.annualreturn+'%',
+                            rolling.annualstandarddeviation+'%',
+                            rolling.sharperatio,
+                            rolling.informationratio,
+                            rolling.maxdrawdown+'%',
+                            rolling.calmarratio,
+                            rolling.beta,
+                            rolling.stability,
+                            rolling.alpha
+                        ]);
+                    } else if(this.selectedButton == '2') {
+                        
+                        var year = this.year.toString();
+                        var month = this.month;
+
+                        if(month == 'All') {
+                            var yearField = backtests[i].output.analytics.fixed.yearly[year];
+
+                            if(yearField) {
+
+                                result.push([
+                                    indexArray[i],
+                                    yearField.totalreturn+'%',
+                                    yearField.annualreturn+'%',
+                                    yearField.annualstandarddeviation+'%',
+                                    yearField.sharperatio,
+                                    yearField.informationratio,
+                                    yearField.maxdrawdown+'%',
+                                    yearField.calmarratio,
+                                    yearField.beta,
+                                    yearField.stability,
+                                    yearField.alpha
+                                ]); 
+                            } else {
+                                result.push([
+                                    indexArray[i],
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                ]);
+                            }
+                        } else {
+                            var numericMonth = this.months.indexOf(month);
+                            if(numericMonth < 10) {
+                                numericMonth = '0' + numericMonth.toString();
+                            } else {
+                                numericMonth = numericMonth.toString();
+                            }
+
+                            var key = year.toString() + numericMonth;
+                            var monthField = backtests[i].output.analytics.fixed.monthly[key];
+
+                            if(monthField) {
+
+                                result.push([
+                                    indexArray[i],
+                                    monthField.totalreturn+'%',
+                                    monthField.annualreturn+'%',
+                                    monthField.annualstandarddeviation+'%',
+                                    monthField.sharperatio,
+                                    monthField.informationratio,
+                                    monthField.maxdrawdown+'%',
+                                    monthField.calmarratio,
+                                    monthField.beta,
+                                    monthField.stability,
+                                    monthField.alpha
+                                ]); 
+                            } else {
+                                result.push([
+                                    indexArray[i],
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                    '-',
+                                ]);
+                            }
+
+                        }
+                    }
                 }
                 return result;
             },
 
             compare: function() {
+                
+                this.$.container.style.display = 'none';
 
                 var grid = this.$$('vaadin-grid');
                 var element = this;
 
                 var indexArray = this.compareItems.map(function(x) {return x.index;})
+                
                 var backtests = this.compareItems.map(function(x) {return x.backtest;});
+
+                this.computeYearMonth();
 
                 this.data = this.getBacktestData(indexArray, backtests);
                 
+                grid.items = [];
+
                 grid.items = function (params, callback) {
                     callback(element.data.slice(params.index, params.index + params.count));
                 };
@@ -235,13 +342,70 @@
 
             },
 
-            computeGetBacktestUrl: function (backtestId) {
-                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/backtest/' + backtestId;
+            resetYearsMonths: function(backtests) {
+                
+                this.years = [];
+                var ydict = {};
+                for(var i=0; i<backtests.length; i++) {
+                    
+                    if(backtests[i].output.analytics.fixed.yearly) {
+                        var years = Object.keys(backtests[i].output.analytics.fixed.yearly);
+
+                        for(var j=0; j<years.length; j++) {
+                            ydict[years[j]] = 1;
+                        }
+                        
+                    }
+                }
+
+                this.years = Object.keys(ydict).sort();
+                this.year = this.years[0];
+                this.month = this.months[0];
+
             },
+
 
             isCustomBar: function(selectedButton) {
                 return selectedButton == "2";
+            },
+
+            _selectedButtonChanged: function() {
+                if(this.compareItems) {
+                    this.compare();
+                }
+            },
+
+            onMonthChange: function(e) {
+                this.month = e.detail.item.month;
+                this.compare();
+            },
+
+            onYearChange: function(e) {
+                this.year = e.detail.item.year;
+                this.compare();
+            },
+
+            computeYearMonth: function() {
+                
+                var selectedButton = this.selectedButton;
+                var year = this.year;
+                var month = this.month;
+
+                var txt = "";
+
+                if(selectedButton == "2") { 
+                    if(month == 'All') {
+                        txt = year.toString();
+                    } else {
+                        txt = month.toString() + ' ' + year.toString();
+                    }
+                } else if (selectedButton == "0") {
+                    txt = "Full Duration"; 
+                } else if (selectedButton == "1") {
+                    txt = "Last 252 Days"; 
+                }
+
+                this.durationText = txt;
             },
 
         });
