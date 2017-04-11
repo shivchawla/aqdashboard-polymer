@@ -48,12 +48,30 @@
 
 				modifiedItems: Array,
 
-				narrow: Boolean,
-				narrowWide: Boolean,
-				semiWide: Boolean,
-				wide:Boolean,
-				superWide:Boolean,
-				forcedSemiWide:Boolean,
+				narrow: {
+					type:Boolean,
+					value:false,
+				},
+				narrowWide: {
+					type:Boolean,
+					value:false,
+				},
+				semiWide: {
+					type:Boolean,
+					value:false,
+				},
+				wide:{
+					type:Boolean,
+					value:false,
+				},
+				superWide:{
+					type:Boolean,
+					value:false,
+				},
+				forcedSemiWide:{
+					type:Boolean,
+					value:false,
+				},
 			},
 
 			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide, forcedSemiWide)'],
