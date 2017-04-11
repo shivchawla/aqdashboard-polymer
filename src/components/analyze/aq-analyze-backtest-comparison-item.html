@@ -13,7 +13,7 @@
 <link rel='import' href='../common/aq-cumret-linechart.html'>
 <link rel='import' href='../common/aq-aggregatedreturns-barchart.html'>
 
-<link rel="import" href="../common/aq-code-editor-element/aq-code-editor-element.html">
+<link rel="import" href="../common/aq-code-comparison-element.html">
 <link rel="import" href="../common/aq-backtest-summary-element.html">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
@@ -153,9 +153,9 @@
             color:#cc4444;
             font-weight: 700;
         }
-        aq-code-editor-element{
-            --aq-code-editor-element-width: 100%;
-            --aq-code-editor-element-height: 500px;
+        aq-code-comparison-element{
+            --aq-code-comparison-element-width: 100%;
+            --aq-code-comparison-element-height: 500px;
             position: relative;
             /*max-height: 700px;*/
         }
@@ -221,11 +221,11 @@
                     
 	                    <div id='codeCompare' page="1">
 	                    	<template is='dom-if' if='[[isDataReady]]'>
-		                        <aq-code-editor-element 
+		                        <aq-code-comparison-element 
 		                        	compare-items="[[compareItems]]"
 	                        	 	theme="ace/theme/monokai" 
 	                        	 	mode="ace/mode/julia">
-	                    	 	</aq-code-editor-element>
+	                    	 	</aq-code-comparison-element>
                     	 	</template>
 	                    </div>
 
