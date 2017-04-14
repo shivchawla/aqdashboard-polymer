@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
+<script src="../../../resources/scripts/DateTime.js"></script>
 
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 <dom-module id='aq-editor-home-strategy-item'>
@@ -166,7 +167,7 @@
             			narrow-viewport$="{{narrowViewport}}">
 	                <div class="strategy-created-date" 
                 			narrow-viewport$="{{narrowViewport}}">
-	                	<h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">09/01/2017 9:53PM</span></h4>
+	                	<h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">[[createdAt]]</span></h4>
 	                </div>
 
 	                <div class="flex"></div>
@@ -203,6 +204,8 @@
                 },
 
                 strategyId: String,
+
+                createdAt: String,
                 
             },
 
