@@ -421,6 +421,12 @@
               return;
           }
 
+	  //When token is available..SKIP signin
+          if(newTab>=3 && !this.hasToken) {
+              this.currentTab = 1;
+              return;
+          }
+
           if (this.URLcontains(path[newTab])) {
             return;
           } else {
