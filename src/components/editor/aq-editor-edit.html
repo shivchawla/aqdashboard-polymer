@@ -191,7 +191,7 @@
 
                           <template 
                               is='dom-if' 
-                              if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
+                              if='[[showProgrammerWindow(isRunning, activeBacktestId,  isProgrammer)]]'>
                               <aq-editor-edit-programmer 
                                   main 
                                   code="[[strategy.code]]"
@@ -199,7 +199,7 @@
                               </aq-editor-edit-programmer>
                           </template>
 
-                          <template is='dom-if' if='[[isRunning]]'>
+                          <template is='dom-if' if='[[computeIsRunning(isRunning, activeBacktestId)]]'>
                               <aq-editor-edit-backtest-screen 
                                     main
                                     is-running="{{isRunning}}"
@@ -286,7 +286,10 @@
 
                 runStrategyData: Object,
 
-                activeBacktestId: String,
+                activeBacktestId: {
+		     type: String,
+		     value:""
+		},	
 
                 loading: Boolean,
 
@@ -330,6 +333,10 @@
 
                 this.isRunning = false;
             },
+	
+	    computeIsRunning: function(isRunning, activeBacktestId) {
+                return isRunning && activeBacktestId!="";
+            },
 
             _isRunningChanged: function() {
                 if(this.isRunning) {
@@ -337,7 +344,8 @@
                     this.selectedSidebar = 1;
                   } else {
                     this.selectedSidebar = 0;
-                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}]; 
+                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}];
+			this.activeBacktestId = ""; 
                   }
             },
 
@@ -451,12 +459,19 @@
                     if (this.$.authItem.checkHasToken()) {
                         this.header = this.$.authItem.getHeader();
                         this.$.runStrategyQuery.generateRequest();
-                    }
+                    } else {
+			this.isRunning = false;
+		    }
+
                 }
 
             },
 
             onStrategySavedError: function (data) {
+		if(this.runSwitch == 1) {
+			this.runSwitch =0;
+			this.isRunning = false;
+		}
             },
 
             runStrategyFromPanel: function () {
@@ -484,6 +499,7 @@
                 this.runStrategyData = this.$$('#runSidebar').getSettings();
 
                 this.runSwitch = 1;
+		this.isRunning = true;
                 this.saveStrategy(e);
 
                 //Reset log container
@@ -502,7 +518,7 @@
                 //BUT has no output
 
                 // Send Execution request via web-sockets
-                this.isRunning = true;
+               
                 this.selectedSidebar = 1;
 
                 this.fire('execute-backtest', {backtestId: this.activeBacktestId});
@@ -512,7 +528,8 @@
             },
 
             onStrategyExecutionError: function (data) {
-                console.log(data.detail);
+                 this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
+		console.log(data.detail);
                 //This get back the created backtest object with just the settings,
                 //HAS no output
             },
@@ -526,8 +543,8 @@
                 this.$$('#logContainer').scroller.scrollTop += this.$$('#logContainer').scroller.scrollHeight;
             },
 
-            showProgrammerWindow: function (isRunning, isProgrammer) {
-                return !isRunning && isProgrammer;
+            showProgrammerWindow: function (isRunning, activeBacktestId, isProgrammer) {
+                return !this.computeIsRunning(isRunning,activeBacktestId)  && isProgrammer;
             },
 
             _strategyIdChanged: function (nId, oId) {

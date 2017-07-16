@@ -642,7 +642,12 @@
                 	}
             	];
                 
-                if (this.backtest.status == "active") {
+        	if (this.backtest.status == "exception") {
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
+		    return ;
+		}        
+	
+		if (this.backtest.status == "active") {
                     this.active = true;
                     this.subscribeData();
                     return;

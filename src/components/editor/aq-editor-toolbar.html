@@ -388,9 +388,14 @@
                 return pctCompleted == 0;
             },
 
-            isBacktestException: function (pctCompleted) {
+            isBacktestRunException: function (pctCompleted) {
                 return pctCompleted == -1;
             },
+
+	    isBacktestInternalException: function(pctCompleted) {
+		return pctCompleted == -2;
+            },
+
 
             _isRunningChanged: function() {
             	if(!this.isRunning) {
@@ -405,9 +410,12 @@
             		return "Warming Up";
             	} else if (this.isBacktestComplete(pctCompleted)) {
             		return "Complete";
-            	} else if (this.isBacktestException(pctCompleted)) {
-            		return "Exception";
-            	}
+            	} else if (this.isBacktestRunException(pctCompleted)) {
+            		return "Run Exception";
+            	} else if (this.isBacktestInternalException(pctCompleted)) {
+			return "Internal Exception";
+		}
+
             },
 
             getStatusColor: function(pctCompleted) {
