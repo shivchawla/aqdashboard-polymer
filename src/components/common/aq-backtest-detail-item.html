@@ -90,67 +90,69 @@
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <paper-card class="layout vertical flex" elevation="{{elevation}}">
-        	<div class="card-content" >
-                <div class="middle-container self-center flex">
-                	<template is='dom-if' if='[[backtestHeader]]'>
-                		<aq-backtest-header-item 
-                			forced-semi-wide = "[[forcedSemiWide]]"
-                			header-items="{{backtestHeader}}">
-                		</aq-backtest-header-item>
-            		</template>
-                </div>
-
-                <div class="bar"></div>
-
-                <div class="lower-container flex">
-                	<template is='dom-if' if='{{metrics}}'>
-                		<aq-backtest-metric-item-list 
-                			forced-semi-wide = "[[forcedSemiWide]]"
-                			metric-items = "{{metrics}}"
-                			active="{{active}}">
-            			</aq-backtest-metric-item-list> 
-                	</template>
-                </div>
-
-                <div class="layout horizontal">
-	                <div class="flex"></div>
-	                <paper-tabs noink selected="{{graphType}}">
-	                    <paper-tab>Cumulative Return</paper-tab>
-	                    <template is='dom-if' if='[[!active]]'>
-	                        <paper-tab>Monthly Returns</paper-tab>
-	                    </template>
-	                </paper-tabs>
-	                <div class="flex"></div>
-                </div>
-
-                <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
-                    <div id='cumRetLineChartDiv'>
+        <!--template is='dom-if' if="[[isBacktestIdValid(backtestId)]]"-->
+            <paper-card class="layout vertical flex" elevation="{{elevation}}">
+            	<div class="card-content" >
+                    <div class="middle-container self-center flex">
+                    	<template is='dom-if' if='[[backtestHeader]]'>
+                    		<aq-backtest-header-item 
+                    			forced-semi-wide = "[[forcedSemiWide]]"
+                    			header-items="{{backtestHeader}}">
+                    		</aq-backtest-header-item>
+                		</template>
                     </div>
 
-                    <template is='dom-if' if='[[!active]]'>
-                        <div id='barChartDiv'>
-                        </div>
-                    </template>
+                    <div class="bar"></div>
 
-                </iron-pages>
-          	</div>
-        </paper-card>
+                    <div class="lower-container flex">
+                    	<template is='dom-if' if='{{metrics}}'>
+                    		<aq-backtest-metric-item-list 
+                    			forced-semi-wide = "[[forcedSemiWide]]"
+                    			metric-items = "{{metrics}}"
+                    			active="{{active}}">
+                			</aq-backtest-metric-item-list> 
+                    	</template>
+                    </div>
+
+                    <div class="layout horizontal">
+    	                <div class="flex"></div>
+    	                <paper-tabs noink selected="{{graphType}}">
+    	                    <paper-tab>Cumulative Return</paper-tab>
+    	                    <template is='dom-if' if='[[!active]]'>
+    	                        <paper-tab>Monthly Returns</paper-tab>
+    	                    </template>
+    	                </paper-tabs>
+    	                <div class="flex"></div>
+                    </div>
+
+                    <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
+                        <div id='cumRetLineChartDiv'>
+                        </div>
+
+                        <template is='dom-if' if='[[!active]]'>
+                            <div id='barChartDiv'>
+                            </div>
+                        </template>
+
+                    </iron-pages>
+              	</div>
+            </paper-card>
+        <!--/template-->
       
         <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
 
         <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
         <iron-ajax
-                url="[[computeGetBacktestUrl(backtestId)]]"
-                method='GET'
-                id='getBacktestsQuery'
-                handle-as="json"
-                on-response="onGetBacktestSuccess"
-                on-error="onGetBacktestError"
-                headers='{{header}}'
-                debounce-duration="300"
-                loading='{{loading}}'>
+            url="[[computeGetBacktestUrl(backtestId)]]"
+            method='GET'
+            id='getBacktestsQuery'
+            handle-as="json"
+            on-response="onGetBacktestSuccess"
+            on-error="onGetBacktestError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
         </iron-ajax>
 
     </template>
@@ -175,6 +177,7 @@
                 active: {
                     type: Boolean,
                     value: false,
+                    observer: '_activeChanged',
                 },
 
                 metrics: Object,
@@ -235,9 +238,16 @@
             },
 
             _backtestIdChanged: function (nId, oId) {
-                if (nId) {
+                if (nId && nId!= "") {
                     this.reset();
                     this.requestStaticData();
+                }
+            },
+
+            _activeChanged: function() {
+                if(!this.active && this.backtestId != "") {
+                    this.fire('unsubscribe-data',{backtestId:this.backtestId});
+                    this.reset();
                 }
             },
 
@@ -642,12 +652,12 @@
                 	}
             	];
                 
-        	if (this.backtest.status == "exception") {
-                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
-		    return ;
-		}        
-	
-		if (this.backtest.status == "active") {
+            	if (this.backtest.status == "exception") {
+                        this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
+    		        return ;
+	            }        
+    	
+	            if (this.backtest.status == "active") {
                     this.active = true;
                     this.subscribeData();
                     return;

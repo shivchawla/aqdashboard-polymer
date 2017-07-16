@@ -177,9 +177,9 @@
 			 	
 			 	<div class="flex"></div> 
                 
-                <template is='dom-if' if='{{isRunning}}'>
-                    <p style="color:[[getStatusColor(pctCompleted)]]">[[getStatusMessage(pctCompleted)]]</p>
-                </template>
+                <!--template is='dom-if' if="{{isRunning}}"-->
+                    <p style="color:[[getStatusColor(isRunning, pctCompleted)]]">[[getStatusMessage(isRunning, pctCompleted)]]</p>
+                <!--/template-->
 
                 <div class="flex"></div>
 
@@ -312,7 +312,8 @@
 
                 pctCompleted: {
                 	type: Number,
-                	value: 0,
+                    observer:'_isPctChanged',
+                	//value: 0,
                 },
             },
 
@@ -372,6 +373,8 @@
             },
 
             updatePct: function(e) {
+                //console.log("Signal Received");
+                //console.log(e.detail.pctCompleted);
             	this.pctCompleted = e.detail.pctCompleted;
             },
 
@@ -392,34 +395,42 @@
                 return pctCompleted == -1;
             },
 
-	    isBacktestInternalException: function(pctCompleted) {
-		return pctCompleted == -2;
+    	    isBacktestInternalException: function(pctCompleted) {
+    		  return pctCompleted == -2;
             },
-
 
             _isRunningChanged: function() {
-            	if(!this.isRunning) {
-            		this.pctCompleted = 0;
-            	}
+                //console.log("Running Changed");
+                this.pctCompleted = 0;
+            }, 
+
+            _isPctChanged: function() {
+                //console.log("pCt Changed " + this.pctCompleted);
             },
 
-            getStatusMessage: function(pctCompleted) {
-            	if (this.isCompletionPositive(pctCompleted)) {
-            		return "Progress: " + pctCompleted.toString() +"%";
-            	} else if (this.isBacktestWarmingUp(pctCompleted)) {
-            		return "Warming Up";
-            	} else if (this.isBacktestComplete(pctCompleted)) {
-            		return "Complete";
-            	} else if (this.isBacktestRunException(pctCompleted)) {
-            		return "Run Exception";
-            	} else if (this.isBacktestInternalException(pctCompleted)) {
-			return "Internal Exception";
-		}
+            getStatusMessage: function(isRunning, pctCompleted) {
+                //console.log("Pct Completed " + this.pctCompleted + this.isRunning);
+                if(isRunning) {
+                    if (this.isCompletionPositive(this.pctCompleted)) {
+                		return "Progress: " + this.pctCompleted.toString() +"%";
+                	} else if (this.isBacktestWarmingUp(this.pctCompleted)) {
+                		return "Warming Up";
+                	} else if (this.isBacktestComplete(this.pctCompleted)) {
+                		return "Complete";
+                	} else if (this.isBacktestRunException(this.pctCompleted)) {
+                		return "Run Exception";
+                	} else if (this.isBacktestInternalException(this.pctCompleted)) {
+            			return "Internal Exception";
+            		}
+                } else {
+                    return "";
+                }
 
             },
 
-            getStatusColor: function(pctCompleted) {
-        	 	if (this.isBacktestException(pctCompleted)) {
+            getStatusColor: function(isRunning, pctCompleted) {
+        	 	
+                if (this.isBacktestRunException(pctCompleted) || this.isBacktestInternalException(pctCompleted)) {
             		return "#cc6666";
         		}
         		return "teal";

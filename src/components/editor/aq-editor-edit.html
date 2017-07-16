@@ -169,8 +169,8 @@
 
                     <aq-editor-toolbar 
                         id='editorToolbar' 
-                        is-programmer={{isProgrammer}}
-                        is-running={{isRunning}}
+                        is-programmer="{{isProgrammer}}"
+                        is-running="{{isRunning}}"
                         class="paper-header"
                         strategy-name="[[strategy.name]]" 
                         strategy-desc="[[strategy.description]]"
@@ -191,7 +191,7 @@
 
                           <template 
                               is='dom-if' 
-                              if='[[showProgrammerWindow(isRunning, activeBacktestId,  isProgrammer)]]'>
+                              if='[[showProgrammerWindow(isRunning, isProgrammer)]]'>
                               <aq-editor-edit-programmer 
                                   main 
                                   code="[[strategy.code]]"
@@ -199,7 +199,7 @@
                               </aq-editor-edit-programmer>
                           </template>
 
-                          <template is='dom-if' if='[[computeIsRunning(isRunning, activeBacktestId)]]'>
+                          <template is='dom-if' if='[[isRunning]]'>
                               <aq-editor-edit-backtest-screen 
                                     main
                                     is-running="{{isRunning}}"
@@ -499,7 +499,7 @@
                 this.runStrategyData = this.$$('#runSidebar').getSettings();
 
                 this.runSwitch = 1;
-		this.isRunning = true;
+		        this.isRunning = true;
                 this.saveStrategy(e);
 
                 //Reset log container
@@ -528,8 +528,8 @@
             },
 
             onStrategyExecutionError: function (data) {
-                 this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
-		console.log(data.detail);
+                this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
+                console.log(data.detail);
                 //This get back the created backtest object with just the settings,
                 //HAS no output
             },
@@ -543,8 +543,8 @@
                 this.$$('#logContainer').scroller.scrollTop += this.$$('#logContainer').scroller.scrollHeight;
             },
 
-            showProgrammerWindow: function (isRunning, activeBacktestId, isProgrammer) {
-                return !this.computeIsRunning(isRunning,activeBacktestId)  && isProgrammer;
+            showProgrammerWindow: function (isRunning,isProgrammer) {
+                return !isRunning && isProgrammer;
             },
 
             _strategyIdChanged: function (nId, oId) {

@@ -28,13 +28,15 @@
 	</style>
 
 	<template>
-		<div id='container'>
-	      	<aq-backtest-detail-item 
-	      		backtest-id={{backtestId}} 
-	      		active="{{isRunning}}" 
-	      		forced-semi-wide="[[isForcedSemWide(narrow, showSidebar)]]"> 
-	      	</aq-backtest-detail-item>
-		</div>
+		<template is='dom-if' if='[[isActive(isRunning,backtestId)]]'>
+			<div id='container'>
+		      	<aq-backtest-detail-item 
+		      		backtest-id={{backtestId}} 
+		      		active="[[isActive(isRunning,backtestId)]]" 
+		      		forced-semi-wide="[[isForcedSemWide(narrow, showSidebar)]]"> 
+		      	</aq-backtest-detail-item>
+			</div>
+		</template>
 
 	</template>
 
@@ -56,12 +58,18 @@
 
 				showSidebar: Boolean,
 
-				backtestId:String,
+				backtestId:{
+					type:String,
+				}
+			},
+
+			isActive: function(isRunning, backtestId) {
+				return isRunning && (backtestId && backtestId !="");
 			},
 
 			onBack: function() {
 				this.isRunning = false;
-				this.fire('unsubscribe-data',{backtestId:this.backtestId});
+				//this.fire('unsubscribe-data',{backtestId:this.backtestId});
 			},
 
 			toggleDrawer: function() {
