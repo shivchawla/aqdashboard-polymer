@@ -164,6 +164,9 @@
         debounce-duration="300">
         </iron-ajax>
 
+        <iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'>
+        </iron-signals>
+
   </template>
 
   <script>
@@ -657,6 +660,15 @@
       
         },
 
+        onBacktestCompleted: function(e) {
+          var backtestId = e.detail.id;
+
+          if(backtestId) {
+              delete this.backtests[backtestId];    
+          }
+
+        },
+
         managesubscriptions: function(){ 
           if(Object.keys(this.backtests).length > 0) {
              for (var key in this.backtests) {
@@ -677,7 +689,7 @@
                 }
              } 
 
-             this.async(this.managesubscriptions, 60000);
+             this.async(this.managesubscriptions, 10000);
           }
 
         },
@@ -692,6 +704,7 @@
         },
 
         onGetBacktestError: function(e){
+            console.log(e);
             if(e.request.response.id) {
               var backtestId = e.request.response.id; 
               delete this.backtests[backtestId];    
@@ -744,7 +757,6 @@
             ctab = 3;
           }
 
-    
           this.currentTab = ctab;
         },
 

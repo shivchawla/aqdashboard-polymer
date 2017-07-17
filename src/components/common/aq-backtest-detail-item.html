@@ -458,6 +458,7 @@
                 	var backtestHeader = this.deepCopy(this.backtestHeader);
                 	this.backtestHeader = [];
                 	this.backtestHeader = backtestHeader;
+                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
                 }
             },
 

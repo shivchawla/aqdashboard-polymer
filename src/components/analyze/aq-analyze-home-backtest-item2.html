@@ -265,7 +265,7 @@
 
                 if (this.backtest.output && this.backtest.output.summary) {
                     var data = this.backtest.output.summary;
-                    this.set('processedBacktest.metrics', [{
+                    var processedMetrics = [{
                         "metricName": "Total Return",
                         "metricValue": data.totalreturn.toFixed(2).toString() + '%',
                         "metricDescription": "Total Return"
@@ -315,9 +315,12 @@
 		                    "metricValue":"-",
 		                    "metricDescription":"Avg. Concentration"
                      	}*/
-                        ]);
-                }
+                        ];
 
+                    this.processedBacktest = {metrics: processedMetrics};
+                    
+                }
+                
                 this.set('processedBacktest.startDate', date.formatDate(this.backtest.settings.startDate));
                 this.set('processedBacktest.endDate', date.formatDate(this.backtest.settings.endDate));
                 this.set('processedBacktest.status', this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1));
