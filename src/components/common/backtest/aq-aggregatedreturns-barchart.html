@@ -1,5 +1,5 @@
 
-<link rel='import' href='../../../bower_components/highcharts-chart/highcharts-stock.html'>
+<link rel='import' href='../../../../bower_components/highcharts-chart/highcharts-stock.html'>
 
 <dom-module id='aq-aggregatedreturns-barchart'>
 	<template>
@@ -101,10 +101,10 @@
 			                point: {
 			                    events: {
 			                        mouseOver: function () {
-			                        	var text = '<div style="border:1px solid black"> Date: ' + Highcharts.dateFormat('%b \ %y', this.x) + '</div>';
+			                        	var text = '<div style="border:1px solid black; color: teal;"> Date: ' + Highcharts.dateFormat('%b \ %y', this.x) + '</div>';
 			                            var chart = this.series.chart;
 			                            if (!chart.lbl) {
-                                			chart.lbl = chart.renderer.label(text, 0, -15)
+                                			chart.lbl = chart.renderer.label(text, 950, 0)
                                     			.attr({
                                     			padding: 15,
                                         		

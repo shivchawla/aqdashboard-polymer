@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../common/aq-allpage-layout.html">
+
 <link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-postdetail-header.html">
 <link rel="import" href="./aq-community-postdetail-content.html">
@@ -11,17 +13,22 @@
     </style>
 
     <style>
+
         #previewContainer {
-            width: 95%;
-            margin: 0 auto;
-            --margin-top: 30px;
+            --margin-top: 15px;
+            --margin-bottom: 30px;
         }
 
-        #previewContainer[reply] {
+        .preview-internal {
+            --margin-left: 7%;
+            --margin-right: 7%;
+        }
+
+        .previewContainer[reply] {
             margin-top: 50px;
             --width: 100% !important;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            padding: 15px 20px 10px 20px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --padding: 15px 20px 10px 20px;
             margin-bottom: 25px;
             border-radius: 2px;
             background-color: #fff;
@@ -36,7 +43,8 @@
         paper-button {
             height: 30px;
             font-size: 13px;
-            color: teal;
+            color: #cc6666;
+            border: 1px solid #cc6666;
         }
 
         #buttons {
@@ -48,35 +56,59 @@
             margin-top: 30px;
         }
 
+        #lower-button-group {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        #bar {
+            border-bottom: 1px solid #d5d5d5;
+        }
+
     </style>
 
     <template>
 
-        <div class="layout vertical flex" id="previewContainer" reply$=[[reply]]>
-            <!--template is="dom-if" if="[[!disableButtons]]">
-                <div class="layout horizontal">
-                    <div class="flex"></div>
-                    <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
-                    <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
+        <aq-allpage-layout header="Preview Post" current-path="[[currentPath]]">
+            
+            <div class="header-button layout horizontal self-center">
+                
+                <paper-button noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button noink on-tap='onSubmit'>Submit</paper-button>
+            
+            </div>
+
+            <div class="internal-content" 
+                id="previewContainer" reply$=[[reply]]>
+
+                <div class='preview-internal'> 
+                    <template is='dom-if' if='[[reply]]'>
+                        <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
+                    </template>
+
+                    <template is='dom-if' if='[[!reply]]'>
+                        <aq-community-postdetail-header preview=1 post-header="[[threadData]]"></aq-community-postdetail-header>
+                    </template>
                 </div>
-            </template-->
 
-            <template is='dom-if' if='[[reply]]'>
-                <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
-            </template>
+                <template is='dom-if' if='[[!reply]]'>
+                    <div id='bar'></div> 
+                </template>
 
-            <template is='dom-if' if='[[!reply]]'>
-                <aq-community-postdetail-header preview=1 post-header="[[threadData]]"></aq-community-postdetail-header>
-            </template>
-
-            <template is="dom-if" if="[[!disableButtons]]">
-                <div class="layout horizontal">
-                    <div class="flex"></div>
-                    <paper-button style="background-color:#cccccc; color: #fff;" raised noink on-tap='onEdit'>Edit</paper-button>
-                    <paper-button style="color:#fff; background-color: teal;" raised noink on-tap='onSubmit'>Submit</paper-button>
+                <div class='preview-internal'>  
+                    <template is='dom-if' if='[[!reply]]'>
+                        <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
+                    </template>
                 </div>
-            </template>
-        </div>
+            </div>
+
+            <div class="footer-button layout horizontal">
+                <div class="flex"></div>
+                <paper-button noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button noink on-tap='onSubmit'>Submit</paper-button>
+            </div>
+
+        </all-page-layout>
     </template>
 
     <script>
@@ -94,7 +126,12 @@
                 disableButtons: {
                     type: Boolean,
                     value: false
-                }
+                },
+
+                currentPath: {
+                    type: Array,
+                    value: ["Home", "Research", "Community", "Preview Post"]
+                },
 
             },
             onEdit: function () {

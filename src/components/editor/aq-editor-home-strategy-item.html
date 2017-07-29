@@ -6,7 +6,7 @@
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
 <script src="../../../resources/scripts/DateTime.js"></script>
 
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet"-->
 <dom-module id='aq-editor-home-strategy-item'>
 
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
@@ -15,31 +15,19 @@
         :host {
             display: inline-block;
             width: 100%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease-in-out;
-            font-family: 'Lato', sans-serif;
             font-size: 16px;
-            border-radius:2px;
-            margin-bottom: 20px;
-        }
-
-        :host:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            --border-radius:2px;
+            margin-bottom: 0px;
         }
 
         .row {
-            display: flex;
-            flex-direction: column;
-            --border-bottom: 1px solid #e5e5e5;
+            border: 1px solid #e1e1e1;
+            border-bottom: none;
             background-color: white;
-            color: #24293d;
+            color: #3c3c3c;
             box-sizing: border-box;
             overflow: hidden;
             font-weight: 400;
-            --min-width: 590px;
-            border-radius: 2px;
-            justify-content: flex-start;
-            position: relative;
         }
 
         .row paper-checkbox {
@@ -52,8 +40,21 @@
             --paper-checkbox-checked-color: #cc6666;
         }
 
+        .strategy-name {
+            font-weight: 400;
+            font-size: 16px;
+        }
+
         .strategy-bt {
-    	 	min-width: 150px !important;
+    	 	width: 100px !important;
+            color: #cc6666;
+            border: 1px solid #cc6666;
+            padding: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-right: 20px;
+            font-size: 14px;
+            border-radius: 4px;
         }
 
         .strategy-bt(:not([narrow-viewport])) {
@@ -67,45 +68,29 @@
 
         .strategy-bt:hover {
         	cursor: pointer;
-        	text-decoration: underline;
+        	--text-decoration: underline;
         }
 
         .strategy-desc {
             width: 100%;
             position: relative;
             margin-bottom: 15px;
-            min-width: 200px;
-        }
-
-        .strategy-created-date(:not([narrow-viewport])) {
-            width: 100%;
-            text-align: center;
-            pointer-events: none;
-            min-width: 200px;
-        }
-
-        .strategy-created-date[narrow-viewport]{
-        	text-align: left;
-        	min-width: 200px;
-        }
-
-        .strategy-desc-text {
             margin-left: 55px;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
-        .bar {
-            height: 100%;
-            width: 5px;
-            background-color: #cc6666;
-            position: absolute;
-            margin-right: 10px;
-            transform: scale(0,1);
-            transform-origin: left;
-            transition: all 0.2s ease-in-out;
+        .strategy-created-date {
+            width: 100%;
+            text-align: left;
+            pointer-events: none;
+            font-size: 12px;
+            margin-top: 3px;
         }
 
-        .strategy-name span:hover {
+        .strategy-name:hover {
             cursor: pointer;
+            text-decoration: underline;;
         }
 
         iron-icon {
@@ -139,6 +124,10 @@
         	@apply(--layout-flex);
         }
 
+        #strategy-content-container {
+            margin-top: 15px;
+        }
+
     </style>
 
     <template>
@@ -153,36 +142,25 @@
             <div class="layout horizontal center">
                 <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
                 
-                <div class="strategy-name self-center flex">
-                	<span class="st-header" on-tap='goToEditor'>
-                    [[strategyName]]</span>
-                    <div class="flex"></div>
+                <div id="strategy-content-container">
+                    <div on-tap='goToEditor' class="strategy-name self-center flex">
+                        [[strategyName]]
+                    </div>
+
+                    <div class="strategy-created-date">
+                        Created At:&nbsp;[[createdAt]]
+                    </div>
                 </div>
                 
-                <template is='dom-if' if='[[narrowViewport]]'>
-                	<div class="flex"></div>	
-                </template>
-                
-                <div class='right-container layout horizontal flex' 
-            			narrow-viewport$="{{narrowViewport}}">
-	                <div class="strategy-created-date" 
-                			narrow-viewport$="{{narrowViewport}}">
-	                	<h4 class="st-li-header">Created At:&nbsp; <span class="st-li-detail">[[createdAt]]</span></h4>
-	                </div>
-
+                <div class='right-container layout horizontal flex'>
 	                <div class="flex"></div>
-
-	                <div class="strategy-bt" on-tap='goToAnalyze'
-	                		narrow-viewport$="{{narrowViewport}}">
-	                    <span class="st-li-header">Number of Backtest:</span> 
-	                    <span class="st-li-detail">[[numBacktest]]</span>
+	                <div class="strategy-bt" on-tap='goToAnalyze'>
+                        Backtests ([[numBacktest]]) 
 	                </div>
                 </div>
-
             </div>
             
-            <div class="strategy-desc"><span class="st-li-header strategy-desc-text">[[strategyDesc]]</span></div>
-            <div class="bar"></div>
+            <div class="strategy-desc">[[strategyDesc]]</div>
         </div>
 
     </template>
@@ -221,11 +199,6 @@
 
             onCheck: function () {
                 this.fire('check-action', {id: this.strategyId, checked: this.$.checkbox.checked});
-                if (this.$.checkbox.checked) {
-                    this.$$('.bar').style.transform = "scale(1,1)";
-                } else {
-                    this.$$('.bar').style.transform = "scale(0,1)";
-                }
             },
 
             onSelectStrategy: function(e) {

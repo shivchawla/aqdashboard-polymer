@@ -1,5 +1,7 @@
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
+
+<link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
@@ -10,12 +12,14 @@
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 
-
+<link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../common/aq-check-authentication.html'>
-<link rel="import" href="./aq-community-home-searchbar.html">
-<link rel="import" href="./aq-community-home-post-item2.html">
 <link rel='import' href='../common/aq-pagination.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
+
+<link rel="import" href="./aq-community-home-searchbar.html">
+<link rel="import" href="./aq-community-home-post-item2.html">
+
 <link rel="import" href="./aq-announcement-card.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
 
@@ -45,39 +49,41 @@
             color: black;
         }
 
-        #container {
-            margin: 0 auto;
-            margin-top: 20px;
-            color: #24293d;
-            width: 95%;
-            --margin-left: 2%;
-
-            --overflow-y: scroll;
-            --height: 100%;
+        #community-container {
         }
 
-        #fab {
-            background: teal;
-            -- #24293d;
-            --float: right;
-            position: fixed;
-            right: 25px;
-            bottom: 30px;
-        }
-
-        paper-tab:hover {
-            font-weight: bold;
-            font-size: 18px;
+        .right-container {
+            margin-left: 30px;
         }
 
         #community-tabs,#search-tabs {
             max-width: 350px;
+
             font-size: 16px;
-            margin: 0 auto;
             border-bottom: 1px solid #e5e5e5;
-            --paper-tabs-selection-bar-color: teal;
-        !important;
-            margin-bottom: -10px;
+            margin-top: 30px;
+            --paper-tabs-selection-bar-color: #cc6666;
+            --paper-tabs-selection-bar: {
+                height: 4px;
+            }
+        }
+
+        paper-tab {
+            --paper-tab-content: {
+                color: #cc6666;
+            }
+
+            --paper-tab-content-unselected: {
+                color: #3c3c3c;
+            }
+        }
+
+        .filter-container {
+            margin: 20px;
+        }
+
+        .tabs-filter-container {
+            margin-bottom: 5px;
         }
 
         #ifsearch {
@@ -108,14 +114,14 @@
         }
 
         .main-container {
-            position: relative;
-            top: 30px;
+            --position: relative;
+            --top: 30px;
         }
 
         .list-container {
-            margin-right: 60px;
+            --margin-right: 60px;
             width: 100%;
-            padding-left: 10px;
+            --padding-left: 10px;
         }
 
         ul {
@@ -123,16 +129,18 @@
         }
 
         .aq-announcement-container {
-            position: relative;
-            top: 18px;
+            --position: relative;
+            --top: 18px;
+            margin-top: 100px;
         }
 
         .flex {
-            width: 20%;
+            --width: 20%;
         }
 
-        #searchbar {
-            width: 100%;
+        #fearchbar {
+            width: 70%;
+            max-width: 650px;
         }
 
         .search-result {
@@ -151,6 +159,32 @@
             width: 100%;
             height: 1px;
             background-color: #BDBDBD;
+        }
+
+        paper-button {
+            border: none;
+            font-size: 13px;
+            background-color: #cc6666;
+            color: white;
+            padding: 0 20px;
+            border-radius: 2px;
+            height: 35px;
+        }
+
+        paper-checkbox {
+            --paper-checkbox-checked-color: #cc6666;
+            --paper-checkbox-label-color: #3c3c3c;
+            --paper-checkbox-unchecked-color: #e1e1e1;
+            --paper-checkbox-size: 12px;
+            margin-right: 10px;
+            --paper-checkbox-label: {
+                font-size: 12px;
+            }
+        }
+
+        #pagination {
+            --width: 40%;
+            --min-width: 140px !important;
         }
 
     </style>
@@ -190,78 +224,94 @@
 
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
-        <div id='container' class="layout vertical flex">
-            <aq-community-home-searchbar id='searchbar'
-                                         class="self-end"
-                                         active="[[isSearchActive(searchText)]]"
-                                         search-value="[[searchText]]">
-            </aq-community-home-searchbar>
-            
-            <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
-                <!--<div id="ifsearch">-->
-                <p class="search-result">Search results for <span class="search-string">"[[searchText]]"&nbsp</span>
-                </p>
-                <div class="hr-bar"></div>
-                <!--</div>-->
-            </template>
-            <template is='dom-if' if='[[!isSearchActive(searchText, searchCategory)]]'>
-                <paper-tabs on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
-                    <paper-tab id="popular">Popular</paper-tab>
-                    <paper-tab id="newest">Newest</paper-tab>
-                    <paper-tab id="following">Following</paper-tab>
-                    <paper-tab id="personal">Personal</paper-tab>
-                </paper-tabs>
-            </template>
-            <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
-                <paper-tabs on-iron-select="onActivateTab" id="search-tabs" selected="{{categorySelected}}" noink>
-                    <paper-tab id="all">ALL</paper-tab>
-                    <paper-tab id="ideas">IDEAS</paper-tab>
-                    <paper-tab id="quesions">QUESTIONS</paper-tab>
-                    <paper-tab id="news">NEWS</paper-tab>
-                </paper-tabs>
-            </template>
-            <div class="main-container layout horizontal">
-                <ul class="list-container layout vertical">
-                    <template is="dom-repeat" items="{{threads}}">
-                        <li>
-                            <aq-community-home-post-item2 thread="[[item]]">
-                            </aq-community-home-post-item2>
-                        </li>
-                    </template>
-                </ul>
-                
-                <template is='dom-if' if="{{wide}}">
-                    <div class="aq-announcement-container layout vertical">
-                      
-                        <template is='dom-repeat' items='{{announcements}}'>  
-                            <aq-announcement-card header="[[item.header]]"
-                                             sub-header="[[item.subHeader]]"
-                                             >
-                             <span>[[item.announcement]]</span>
-                            </aq-announcement-card>
-                        </template>
-                  </div>
-                </template>
+        <aq-allpage-layout header="Community" 
+            current-path="[[currentPath]]">
+
+            <div class="header-button self-center">
+                <paper-button class="self-center" noink on-tap='createPost'>New Post</paper-button>
             </div>
 
-            <div class="flex"></div>
+            <div id="community-container" class="internal-content" class="layout vertical">
+                <div class="layout horizontal">
+                    <div class="left-container flex">
+                        <aq-community-home-searchbar 
+                            active="[[isSearchActive(searchText)]]" search-value="[[searchText]]">
+                        </aq-community-home-searchbar>
+                    
+                        <template is='dom-if' if='[[isSearchActive(searchText, searchCategory)]]'>
+                            
+                            <p class="search-result">Search results for <span class="search-string">"[[searchText]]"&nbsp</span>
+                            </p>
+                            <div class="hr-bar"></div>
+                           
+                        </template>
 
-            <template is='dom-if' if='[[hasThreads(threads)]]'>
-                <aq-pagination class="self-center"
-                               per-page="[[perPage]]"
-                               current-page="{{currentPage}}"
-                               total-items="[[totalThreads]]">
-                </aq-pagination>
-            </template>
+                        <div class="tab-filter-container layout vertical">
+                            <paper-tabs class="self-start" on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
+                                <paper-tab id="popular">Popular</paper-tab>
+                                <paper-tab id="newest">Newest</paper-tab>
+                                <paper-tab id="following">Following</paper-tab>
+                                <paper-tab id="personal">Personal</paper-tab>
+                            </paper-tabs>
 
-        </div>
+                            <div class="filter-container self-end">
+                                <paper-checkbox id="checkbox-all"
+                                    on-change="onCheck" noink>All
+                                </paper-checkbox>
+                                
+                                <paper-checkbox id="checkbox-ideas"
+                                    on-change="onCheck" noink>Ideas
+                                </paper-checkbox>
+                                
+                                <paper-checkbox id="checkbox-questions"
+                                    on-change="onCheck" noink>Questions
+                                </paper-checkbox>
+                                
+                                <paper-checkbox id="checkbox-news"
+                                    on-change="onCheck" noink>News</paper-checkbox>
+                            </div> 
 
-        <paper-fab id='fab' noink icon="aq-icons:add" on-tap='createPost'></paper-fab>
+                        </div>
+                        
+                    
+                        <div class="list-container layout vertical">
+                            <template is="dom-repeat" items="{{threads}}">
+                                <aq-community-home-post-item2 thread="[[item]]">
+                                </aq-community-home-post-item2>
+                            </template>
+                        </div>
+                    </div>
+                   
+                    <div class="right-container">
+                        <template is='dom-if' if="{{wide}}">
+                            <div class="aq-announcement-container layout vertical">
+                                
+                                <template is='dom-repeat' items='{{announcements}}'>  
+                                    <aq-announcement-card header="[[item.header]]"
+                                                     sub-header="[[item.subHeader]]"
+                                                     >
+                                     <span>[[item.announcement]]</span>
+                                    </aq-announcement-card>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
 
-        <paper-tooltip for='fab' offset="2" class='self-center iconTooltip' position="top" animation-delay="0"
-                       fit-to-visible-bounds>New Post
-        </paper-tooltip>
+                <div id="pagination" class="layout horizontal self-center">
+                    <div class="flex"></div>
+                    <template is='dom-if' if='[[hasThreads(threads)]]'>
+                        <aq-pagination per-page="[[perPage]]"
+                                       current-page="{{currentPage}}"
+                                       total-items="[[totalThreads]]">
+                        </aq-pagination>
+                    </template>
+                    <div class="flex"></div>
+                </div>
+            </div>
+        </aq-allpage-layout>
     </template>
+
     <script>
 
         Polymer({
@@ -272,11 +322,6 @@
                     type: String,
                     value: 0
                 },
-                categorySelected:{
-                    type:String,
-                    value:0
-                },
-
 
                 threads: {
                     type: Array,
@@ -332,6 +377,11 @@
                     value: 1,
                 },
 
+                currentPath: {
+                    type: Array,
+                    value: ["Home", "Research", "Community"],
+                },
+
             },
 
             listeners: {
@@ -352,7 +402,11 @@
                     }
                 }
 
-                if (!this.isSearchActive(this.searchText, this.searchCategory) || this.dirtyBit == 1) {
+                console.log(this.searchCategory);
+
+                this.setupSearchCategoryFilters(this.searchCategory);
+
+                if (!this.isSearchActive(this.searchText) || this.dirtyBit == 1) {
                     this.processparams();
                     this.dirtyBit = 0;
                 }
@@ -366,7 +420,7 @@
             },
 
             onActivateTab: function () {
-                if(this.isSearchActive(this.searchText,this.searchCategory)) {
+                if(this.isSearchActive(this.searchText)) {
                     if (this.categorySelected != this.oldselected) {
                         this.oldselected = this.categorySelected;
 
@@ -391,7 +445,6 @@
                         }
                     }
                 }
-
             },
 
             onGetAllThreadsResponse: function (data) {
@@ -442,7 +495,7 @@
 
             processparams: function () {
                 var category;
-                var categorySearch=["","Share your Idea","Questions and Answers","News and Announcements"];
+                var categorySearch=["", "Share your Idea", "Questions and Answers", "News and Announcements"];
                 if (this.selected == 0) {
                     this.orderby = 'views';
                 } else {
@@ -452,11 +505,9 @@
                 this.updateCommunityState();
 
                 var currentPage = (this.currentPage) ? this.currentPage : 1;
-                if(this.isSearchActive(this.searchText,this.searchCategory)){
-                    category = categorySearch[this.categorySelected];
-                }else{
-                    category = this.searchCategory === "All" ? "" : this.searchCategory;
-                }
+                
+                category = this.searchCategory.indexOf("All") != -1 ? "" : this.searchCategory; 
+
                 this.searchParam = {
                     "skip": this.perPage * (currentPage - 1),
                     "limit": this.perPage,
@@ -496,8 +547,9 @@
                 });
             },
 
-            isSearchActive: function (searchText, searchCategory) {
-                return searchText.length > 0 || (searchCategory && searchCategory != "All" && searchCategory.length > 0);
+            isSearchActive: function (searchText) {
+                return searchText.length > 0;
+                // || (searchCategory && searchCategory.indexOf("All") == -1 && searchCategory.length > 0);
             },
 
             hasThreads: function (threads) {
@@ -533,6 +585,81 @@
 
             },
 
+            onCheck: function(e) {
+                this.debounce('computeSearchCategory', this.computeSearchCategory, 500);
+            },
+
+            computeSearchCategory: function() {
+                var all = this.$$('#checkbox-all').checked;
+                var news = this.$$('#checkbox-news').checked;
+                var ideas = this.$$('#checkbox-ideas').checked;
+                var questions = this.$$('#checkbox-questions').checked;
+
+                var oldSearchCategory = this.searchCategory;
+
+                //reset search category
+                this.searchCategory = "";
+
+                if(all || (ideas && news && questions)) {
+                    
+                    var str = "All";
+                    this.searchCategory = this.searchCategory == "" ? str : this.searchCategory.concat(" | ").concat(str);
+
+                } 
+
+                if(ideas) {
+                    var str = "Share your Idea";
+                    this.searchCategory = this.searchCategory == "" ? str : this.searchCategory.concat(" | ").concat(str);
+
+                }
+
+                 if(questions) {
+                    var str = "Questions and Answers";
+                    this.searchCategory = this.searchCategory == "" ? str : this.searchCategory.concat(" | ").concat(str);
+                }
+                
+                if(news) {
+                    var str = "News and Announcements";
+                    this.searchCategory = this.searchCategory == "" ? str : this.searchCategory.concat(" | ").concat(str);
+
+                }
+
+                //ALl is included in both before and after
+                if (oldSearchCategory.indexOf("All") != -1 && this.searchCategory.indexOf("All") != -1) {
+                    return
+                }
+
+                if(oldSearchCategory.concat(this.searchCategory) == "All") {
+                    return; 
+                }
+
+                if(oldSearchCategory != this.searchCategory) {
+                    console.log(this.searchCategory);
+                    this.processparams();
+                }
+
+            },
+
+            setupSearchCategoryFilters: function(searchCategory) {
+                if(searchCategory.indexOf("All")!=-1 
+                        || searchCategory == "") {
+                    this.$$('#checkbox-all').checked = true;
+                }
+
+                if(searchCategory.indexOf("News")!=-1) {
+                    this.$$('#checkbox-news').checked = true;
+                }
+
+                if(searchCategory.indexOf("Share")!=-1) {
+                    this.$$('#checkbox-ideas').checked = true;
+                }
+
+                if(searchCategory.indexOf("Questions")!=-1) {
+                    this.$$('#checkbox-questions').checked = true;
+                }
+
+            }
+ 
         });
     </script>
 </dom-module>

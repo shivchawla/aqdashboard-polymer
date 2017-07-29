@@ -5,7 +5,7 @@
 <link rel="import" href="./aq-community-postdetail-content.html">
 <link rel="import" href="../aq-profile-img.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 <link rel="import" href="../common/aq-profile-pic-element.html">
 <dom-module id="aq-community-postdetail-header">
 
@@ -16,12 +16,14 @@
         :host {
             display: block;
             font-family: 'Lato', sans-serif;
+            color: #3c3c3c;
         }
 
         #post-header{
             background-color: #fff;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            padding-bottom: 5px !important;
             border-radius: 4px;
             background-color: white;
         }
@@ -29,26 +31,14 @@
         #heading {
             font-size: 1.2em;
             font-weight: 700;
-            color: teal;
+            color: #3c3c3c;
         }
 
         #category {
             font-size: 0.8em;
             margin-top: 5px;
+            --color: #3c3c3c;
             color: #cc6666;
-        }
-
-        #author {
-            margin-top: 40px;
-        }
-
-        #img {
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-
-        #author-desc {
-            margin-bottom: 5px;
         }
 
         #header-content {
@@ -59,6 +49,7 @@
             font-size: 0.8em;
             color: #24293d;
             margin-right: 10px;
+            margin-top:5px;
         }
 
         paper-tooltip.iconTooltip {
@@ -75,9 +66,9 @@
         }
 
         .right-container{
-            position: absolute;
-            top:-20px;
-            right:0;
+            --position: absolute;
+            --top:-20px;
+            --right:0;
         }
 
         #followIcon{
@@ -87,10 +78,10 @@
             padding: 0 20px;
             border-radius: 0;
             height: 25px;
-            top:-2px;
+            --top:-2px;
         }
 
-        paper-button{
+        paper-button {
             border: 1px solid #cc6666;
         }
 
@@ -99,6 +90,43 @@
             top:20px;
         }
 
+        .post-icon {
+            color: #cc4444;
+            transform: scale(1.8, 1.8);
+            position: relative;
+            top: 10px
+        }
+
+        #header-container {
+            margin-left: 15px;
+            min-height: 60px;
+        }  
+
+        .tags-container {
+            padding: 0;
+            margin-top: 10px;
+            --margin-bottom: 10px;
+        }
+
+        .tags-header {
+            font-size: 0.8em;
+            color: #919191;
+            margin-right: 10px;
+        } 
+
+        #author {
+            --margin-top: 40px;
+            --margin-bottom: 15px;
+            font-size: 14px;
+            font-family: 'Lato', sans-serif;
+            --border-bottom: 1px solid #efefef;
+            padding-bottom: 5px;
+        }
+
+        #img {
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }   
 
     </style>
 
@@ -115,25 +143,61 @@
                 debounce-duration="300">
         </iron-ajax>
 
-        <div id='post-header'>
-            <div id='heading'>
-                <span>[[postHeader.title]]</span>
-            </div>
-
-            <div class="layout horizontal middle-container self-center">
-                <span id='category' class="self-top"><i>[[postHeader.category]]</i></span>
-                <!--<div class="flex"></div>-->
-                <div class="right-container">
-                    <template is="dom-if" if="[[hasFollowers(followers)]]">
-                        <span id='followers' class="self-end">Following: [[followers.length]]</span>
-                    </template>
-                    <paper-button noink id='followIcon' disabled="[[preview]]"
-                                       on-tap='onFollow'>[[computeFollowTitle(followers)]]</paper-button>
+        <div id='post-header' class="layout vertical">
+            <div class="layout horizontal">
+                
+                <iron-icon class="post-icon self-start" icon="[[computeIcon(postHeader.category)]]"></iron-icon>
+                
+                <div id="header-container" class="self-center">
+                    <div id='heading'>[[postHeader.title]]</div>
+                    <div id='category'><i>[[postHeader.category]]</i></div>
                 </div>
+
+                <div class="flex"></div>
+                
+                <div id='followers' class="self-start"> 
+                    <template is="dom-if" if="[[hasFollowers(followers)]]">
+                        <span>Following: [[followers.length]]</span>
+                    </template>
+                </div>
+                <paper-button class="self-start"
+                    noink id='followIcon' disabled="[[preview]]"
+                    on-tap='onFollow'>[[computeFollowTitle(followers)]]
+                </paper-button>        
             </div>
 
-            <aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content>
+            <div id='author' class="layout horizontal center">
+                <aq-profile-img class="self-center" id='img' letter="[[getinitials(postHeader)]]" class="self-end"></aq-profile-img>
+                
+                <div> 
+                    <div id='author-detail'> 
+                        <span class="self-center" id="author-name">
+                          <span class="self-center author-name-detail">[[postHeader.user.firstName]] [[postHeader.user.lastName]]</span>
+                        </span>
+                    </div>
+                    
+                    <div id='created'>
+                        <span class="self-center created-text">on 
+                          <span class="self-center created-date">[[format(postHeader.updatedAt)]]</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="flex"></div>
 
+                <template is="dom-if" if="[[postHeader.tags.length]]">
+                <div class="tags-div layout horizontal">
+                    <div class="tags-header self-center">Tags:</div>
+                    
+                    <template is="dom-repeat" items="[[postHeader.tags]]">
+                        <aq-tag-element class="self-center" label="{{item}}"></aq-tag-element>
+                    </template>
+                
+                </div>
+                </template>
+            </div>
+
+            <!--aq-community-postdetail-content post-content="[[postHeader]]"></aq-community-postdetail-content-->
         </div>
 
     </template>
@@ -159,6 +223,14 @@
                     type: Array,
                     value: [],
                 },
+            },
+
+            computeIcon: function(category) {
+                if (category == "Share your Idea") {
+                    return "lightbulb-outline";
+                } else {
+                    return "add";
+                }
             },
 
             _postHeaderChanged: function () {
@@ -222,6 +294,22 @@
                     return "Follow";
                 }
 
+            },
+
+            getinitials: function (item) {
+                if (item && item.user) {
+                    return item.user.firstName[0] + item.user.lastName[0];
+                } else
+                    return "";
+            },
+
+            format: function (date) {
+                var options = {
+                    weekday: "long", year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"
+                };
+
+                return new Date(date).toLocaleTimeString("en-us", options);
             },
 
         });

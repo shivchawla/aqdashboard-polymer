@@ -9,59 +9,14 @@
 	</style>
     
     <style>
-		#search {
-		  height: 60px;
-		  line-height: 48px;
-		  --margin-bottom: 12px;
-		  position: relative;
-		  display:none;
-		}
-	
-		#search iron-icon {
-		  margin-left: 16px;
-		  margin-right: 8px;
-		  position: absolute;
-		  top: 12px;
-		  left: 2px;
-		}
+    	#menu-container {
+    		margin-bottom: -5px;
+    		color: #555555;
+    	}
 
-		#search paper-icon-button {
-		  margin-left: 8px;
-		  margin-right: 8px;
-		  position: absolute;
-		  top: 6px;
-		  left: 2px;
-		}
-
-		#searchbox {
-		  height: 46px;
-		  -webkit-appearance: none;
-		  line-height: 46px;
-		  border: 0;
-		  margin: 0;
-		  padding-left: 50px;
-		  border: 1px solid #e5e5e5;
-		  @apply(--paper-font-body1);
-		  width:100%;
-		  font-size: 16px;
-		  /*z-index: 2;*/
-		}
-
-		#searchbox:focus {
-		  outline: 0;
-		  background-color: #eceff1;
-		  border-color: #cfd8dc;
-		}
-
-		#searchbox::-webkit-search-cancel-button {
-	  		position: relative;
-	  		right: 15px;
-		}
-
-		#backButton {
-			margin:auto 0;
-			outline: none !important;
-		}
+    	#header {
+    		font-size: 18px;
+    	}
 
 		paper-tooltip.iconTooltip {
         	--paper-tooltip: {
@@ -74,10 +29,21 @@
 			--paper-tooltip-background: teal;
 		}
 
-        paper-button{
-            border:none;
+        paper-button {
+        	color: #cc6666;
+        	border: 1px solid #cc6666;
+        	background-color: white;
+        	height: 22px;
+        	font-size: 14px;
+        	text-transform: none;
         }
 
+        paper-button[disabled] {
+        	border: 1px solid lightgray;
+    		color: lightgray;
+    		background-color: white;
+        }
+        
         #expand_all{
             color:#cc6666;
             font-size: 13px;
@@ -109,49 +75,56 @@
             height:40px;
         }
 
+        iron-icon {
+        	height: 17px;
+        	width: 17px
+        }
+
 	</style>
 	
 	<template>
-        <aq-sub-toolbar>
-            <paper-icon-button noink id="backButton" icon="aq-icons:chevron-left" on-tap="goToEditor">
-            </paper-icon-button>
+        <div id="menu-container" class="layout horizontal">
+            <!--paper-icon-button noink id="backButton" icon="aq-icons:chevron-left" on-tap="goToEditor">
+            </paper-icon-button-->
 
-            <paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
+            <!--paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
                             on-change='onCheckAllBacktest'>
-            </paper-checkbox>
+            </paper-checkbox-->
 
-            <p class="self-center flex">All Backtests for <i>[[strategyName]]</i></p>
+            <p id="header">All Backtests for <i>[[strategyName]]</i></p>
+            <div class="flex"></div>
+            <div id='menu-icons' class="layout horizontal">
 
-            <div id='menu-icons'>
+        	 	<paper-button  id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">Compare
+                </paper-button>
+               
+            	<paper-button  id='deleteButton' class="self-center" noink on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]"><iron-icon icon="aq-icons:delete"></iron-icon>Delete Selected
+                </paper-button>
 
                 <template is='dom-if' if="[[!expand]]">
-                	<paper-icon-button  id='foldMoreIcon' noink class="iconButton" icon="aq-icons:unfold-more" on-tap="expandAll" ></paper-icon-button>
+                	<paper-icon-button  id='foldMoreIcon' noink class="iconButton self-center" icon="aq-icons:unfold-more" on-tap="expandAll" ></paper-icon-button>
 
                 	<paper-tooltip for='foldMoreIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show More</paper-tooltip>
 
                 </template>
 
                 <template is='dom-if' if="[[expand]]">
-                	<paper-icon-button  id='foldLessIcon' noink class="iconButton" icon="aq-icons:unfold-less" on-tap="expandAll" ></paper-icon-button>
+                	<paper-icon-button  id='foldLessIcon' noink class="iconButton self-center" icon="aq-icons:unfold-less" on-tap="expandAll" ></paper-icon-button>
 
                 	 <paper-tooltip for='foldLessIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show Less</paper-tooltip>
        
                 </template>
 
-                <paper-icon-button  id='deleteIcon' noink class="iconButton" icon="aq-icons:delete" on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]">
-                </paper-icon-button>
-
-                <paper-icon-button  id='compareIcon' noink class="iconButton" icon="aq-icons:chrome-reader-mode" on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">
-                </paper-icon-button>
+                
             </div>
 
-        </aq-sub-toolbar>
+        </div>
 
-        <paper-tooltip for='backButton' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Go Back</paper-tooltip>
+        <!--paper-tooltip for='backButton' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Go Back</paper-tooltip>
         
   		<paper-tooltip for='compareIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Compare</paper-tooltip>
         		
-    	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip>
+    	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip-->
 	</template>
 	
 	<script>
@@ -209,10 +182,6 @@
         	    this.expand = !this.expand;
         	    this.fire('iron-signal',{name:'expand-backtest',data:{expand:this.expand}});
             },
-
-            onCheckAllBacktest: function () {
-                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.$$('paper-checkbox').checked}});
-            }
 
 		});
 		

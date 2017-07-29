@@ -13,8 +13,9 @@
 <link rel="import" href="./aq-community-postdetail-reply.html">
 
 <link rel="import" href="../common/aq-loading-progress.html">
+<link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 <dom-module id="aq-community-postdetail">
 
   <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -26,16 +27,17 @@
           font-size: 16px;
       }
 
-      #container {
-          width: 95%;
-          margin: 0 auto;
-          margin-top: 10px;
-          color: #24293d;
-          height: 100%;
+      #post-container {
+          --margin-left: 2%;
+          --margin-right:2%;
       }
 
       paper-icon-button {
           padding-left: 0px;
+      }
+
+      paper-card {
+        width: 100%;
       }
 
       .reply-no{
@@ -84,15 +86,14 @@
         margin-bottom: 10px;
       }
 
-      aq-community-postdetail-header {
-        margin-bottom: 10px;
-      }
-
       .postContent {
           --post-content-padding: 20px;
       }
 
-
+      #bar {
+          border-top: 1px solid #e1e1e1;
+      }
+      
   </style>  
 
   <template>
@@ -122,31 +123,41 @@
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
         <template is='dom-if' if='{{!loading}}'>
-            <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
-                
-                <paper-button noink id='backButton' class="self-center" title="Go Back" on-tap='goBack'><iron-icon icon="chevron-left" ></iron-icon>Back</paper-button>
+        <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
+            
+            <aq-allpage-layout header="Post Detail" current-path="[[currentPath]]">  
+            
+                <div class="internal-content" id="post-container">
+                    <paper-card id="header" clas="flex">
+                          <aq-community-postdetail-header
+                                  post-header='{{threadDetails}}'>
+                          </aq-community-postdetail-header>
 
-                <div id='container'>
+                          <div id="bar"></div>
 
-                    <aq-community-postdetail-header
-                            post-header='{{threadDetails}}'>
-                    </aq-community-postdetail-header>
-                    
-                    <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
-                    
-                    <div id="replyContainer">
-                        <template is="dom-repeat"
-                                  items="{{threadDetails.replies}}"
-                                  initial-count=5>
-                            <aq-community-postdetail-content class="postContent" post-content="{{item}}"></aq-community-postdetail-content>
-                        </template>
-                    </div>
+                          <aq-community-postdetail-content
+                                  post-content='{{threadDetails}}'>
+                          </aq-community-postdetail-content>
+                    </paper-card>
+                      
+                      <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
+                      
+                      <div id="replyContainer">
+                          <template is="dom-repeat"
+                                    items="{{threadDetails.replies}}"
+                                    initial-count=5>
+                              <aq-community-postdetail-content class="postContent" post-content="{{item}}"></aq-community-postdetail-content>
+                          </template>
+                      </div>
 
-                    <aq-community-postdetail-reply id="replyEditor"
-                                                   thread-id="[[threadDetails._id]]"></aq-community-postdetail-reply>
+                      <aq-community-postdetail-reply 
+                          id="replyEditor"
+                          thread-id="[[threadDetails._id]]">
+                      </aq-community-postdetail-reply>
 
                 </div>
-            </template>
+            </aq-allpage-layout>    
+        </template>
         </template>
 
   </template>
@@ -174,6 +185,11 @@
         },
 
         loading:Boolean,
+
+        currentPath: {
+            type: Array,
+            value:["Home", "Research", "Community", "Post Detail"],
+        }
 
       },
 

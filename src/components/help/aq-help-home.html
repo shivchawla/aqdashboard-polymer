@@ -13,6 +13,9 @@
 <link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="./aq-help-marked-item.html">
 <link rel="import" href="../common/aq-search-input.html">
+<link rel="import" href="../common/aq-navigation-item.html">
+<link rel="import" href="../common/aq-allpage-layout.html">
+
 <dom-module id="aq-help-home">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
@@ -25,6 +28,7 @@
             /*border-right: 1px solid;*/
             background-color: #fff;
             color: #24293d;
+            height: 100%;
         }
 
         .selectableCategories {
@@ -50,6 +54,7 @@
             background-color: #f2f2f2;
             border: none;
             padding: 10px 10px 0 10px;
+            height: 100%;
         }
 
         paper-listbox {
@@ -120,11 +125,28 @@
         img {
             margin: auto 0;
             max-height: 650px;
-
         }
 
         #drawer {
             padding: 10px;
+        }
+
+        #navigation {
+            height: 70px;
+            margin-left: 30px;
+        }
+
+        #content {
+            --width: 90%;
+            --margin: 0 auto;
+        }
+
+        #help-container {
+            margin-left: 0px !important;
+            margin-right: 0px !important;
+
+            overflow-y: scroll;
+            height: 75vh !important;
         }
 
 
@@ -153,27 +175,31 @@
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
             <template is='dom-if' if='[[!loading]]'>
-                <paper-drawer-panel id="drawerPanel" right-drawer>
+                <!--aq-allpage-layout header="Help" current-path="[[currentPath]]">
+                 
+                 <div class="internal-content flex" id="help-container" style="height: 100%;"-->
+                 <paper-drawer-panel  id="drawerPanel" right-drawer >
 
-                    <paper-header-panel id='mainPanel' mode="seamed" main>
-
-                        <!--<div id='top'></div>-->
+                    <paper-header-panel id='mainPanel' mode="scroll" main>
+                        <div id='navigation' class="paper-header"> 
+                            <aq-navigation-item header="Help" path="[[currentPath]]">
+                            </aq-navigation-item>
+                        </div>
 
                         <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
-                            <template is="dom-repeat" items="{{itemsHelpContent}}">
-                                <div id='content' class="layout vertical">
 
+                            <template is="dom-repeat" items="{{itemsHelpContent}}">
+                                 <div id='content' class="layout vertical">
+                                        
                                     <aq-help-marked-item help-text="[[item.text]]">
                                     </aq-help-marked-item>
 
                                     <template is='dom-if' if='[[item.img_src]]'>
                                         <img class="self-center" src="{{item.img_src}}">
                                     </template>
-
                                 </div>
-
-
                             </template>
+                            
                         </iron-auto-scroll-spy>
 
                         <div id='bottom'></div>
@@ -192,8 +218,9 @@
                         </paper-listbox>
                     </paper-header-panel>
 
-
-                </paper-drawer-panel>
+                </paper-drawer-panel><!--/div>
+                </aq-allpage-layout-->
+            
             </template>
         </template>
 
@@ -221,6 +248,11 @@
                 loading: {
                     type: Boolean,
                     observer: '_loadingChanged',
+                },
+
+                currentPath: {
+                    type: Array,
+                    value: ["Home", "Research", "Help"],
                 },
 
             },
@@ -270,7 +302,7 @@
                 if (nAct) {
                     this.$.getHelpContentQuery.generateRequest();
                 }
-            }
+            },
 
         });
     </script>

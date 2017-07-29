@@ -1,12 +1,13 @@
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet"-->
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
@@ -15,7 +16,7 @@
 <link rel="import" href="../common/backtest/aq-backtest-header-item.html">
 <script src="../../../resources/scripts/DateTime.js"></script>
 
-<dom-module id='aq-analyze-home-backtest-item2'>
+<dom-module id='aq-analyze-home-backtest-item'>
     <template>
     	<style  include="iron-flex iron-flex-alignment iron-positioning">
     	</style>
@@ -24,75 +25,25 @@
             :host {
                 font-family: 'Lato', sans-serif;
                 font-size: 16px;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
                 display: inline-block;
                 width: 100%;
-                border-radius: 2px;
-                color: #646464;
-                margin-bottom: 30px;
+                color: #2f2f2f;
+                border: 1px solid #e1e1e1;
+                border-top: none;
             }
 
             paper-checkbox {
                 --paper-checkbox-checked-color: #cc6666;
-
+                margin-right: 5px;
             }
 
             h1, h2, h3, h4, h5 {
                 margin: 0;
             }
 
-            .row-container {
-                --position: relative;
-                padding: 10px 0;
-                padding-bottom: 35px;
-            }
-
-            .upper-container {
-                --display: flex;
-                --flex-direction: row;
-                padding: 5px 20px;
-                position: relative;
-            }
-
-            ul {
-                list-style: none;
-                padding-left: 0;
-                margin: 0;
-            }
-
-            .middle-container {
-                padding-top: 10px;
-                margin-left: 
-            }
-
-            .middle-container ul {
-                padding: 0 20px;
-                justify-content: space-between;
-            }
-
-            li {
-                display: inline-block;
-                margin-right: 20px;
-            }
-
-            .bar {
-                width: 95%;
-                height: 1px;
-                background-color: #D8D8D8;
-                position: relative;
-                margin: 0 auto;
-                margin-top: 7px;
-            }
-
             .lower-container {
-                padding: 0 20px;
-                margin-top: 10px;
-            }
-
-            .lower-container ul {
-                display: flex;
-                justify-content: space-between;
-                margin: 15px 0;
+                margin-left: 10px;
+                margin-right: 10px;
             }
 
             .li-container {
@@ -132,24 +83,33 @@
 
             #expandBtn {
                 transition: all 0.4s ease-in-out 0.3s;
-                right: 5px;
-                position: absolute;
+                padding: 0px;
+                height: 25px;
+                width: 25px;
+                transform: rotate(-45deg);
+                color: #e1e1e1;
+            }
+
+            paper-button {
+                color: #cc6666;
+                border: 1px solid #cc6666;
+                background-color: white;
+                height: 16px;
+                font-size: 13px;
+                text-transform: none;
+                width: 60px;
+                margin-top: 10px;
+            }
+
+            paper-button:hover {
+                background-color: #cc6666;
+                color: white;
+            }
+
+            iron-icon {
                 margin-right: 5px;
-                bottom: -2px;
-            }
-
-            .topbar-icon-container {
-                position: absolute;
-                right: 10px;
-                top: -5px;
-            }
-
-            paper-icon-button {
-                color: teal;
-            }
-
-            #share-icon {
-                transform: scale(0.9, 0.9);
+                height: 17px;
+                width: 17px;
             }
 
             iron-collapse {
@@ -160,65 +120,110 @@
             	display: inline-block;
             }
 
+            .header-item {
+                font-size: 12px;
+                width: 160px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            #backtest-name {
+                padding-left: 10px;
+                --width: 150px !important;
+            }
+
+            #button-container {
+                width: 70px;
+                margin-right: 10px;
+            }
+
+            /*date-range*/
+            #header-item-1 {
+                width: 180px !important;
+            }
+
+            /*status*/
+            #header-item-2 {
+                width: 140px !important;
+            }
+
+            /*return & sharpe-*/
+            #header-item-3 {
+                width: 140px !important;
+            }
+
+             #header-item-4 {
+                width: 140px !important;
+            }
+
+
         </style>
 
         <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
         <iron-signals on-iron-signal-select-backtest="selectBacktest"></iron-signals>
+
         <div class="row-container">
-            <div class="upper-container">
-                <paper-checkbox on-change="onChange" noink></paper-checkbox>
-                <h1 class="header-text">BackTest [[formatIndex(index)]]</h1>
+
+            <div class="middle-container layout horizontal end">
                 
-                <div class="topbar-icon-container">
-                    <template is='dom-if' if="[[shareIcon]]">
-                    	<paper-icon-button id="share-icon" title="Share" on-tap="onShare" icon="social:share"></paper-icon-button>
-                    </template>
+                <div id="backtest-name" class="layout horizontal">
+                    <paper-checkbox class="self-center" on-change="onChange" noink></paper-checkbox>
 
-                    <template is='dom-if' if="[[detailIcon]]">
-                    	<paper-icon-button id="trending-icon" title="Detail" on-tap="onBacktestDetail"
-                                       icon="trending-up"></paper-icon-button>
-                	</template>
+                    <p class="header-item">BACKTEST 1</p>
                 </div>
-            </div>
-
-            <div class="middle-container">
-            	<template is='dom-if' if='[[backtestHeader]]'>
-        			<aq-backtest-header-item header-items="[[backtestHeader]]"></aq-backtest-header-item>
+            	
+                <template is='dom-if' if='[[backtestHeader]]'>
+                    <template is='dom-repeat' items="{{backtestHeader}}">
+    			         <p class="header-item" id="header-item-[[index]]">[[item.metric]]</p>
+                     </template>
         		</template>
+
+                <template is='dom-if' if="[[shareIcon]]">
+                    <div id="button-container">
+                        <template is='dom-if' if="[[shareIcon]]">
+                            <paper-button id="share-icon" on-tap="onShare"><iron-icon icon="social:share"></iron-icon>Share</paper-button>
+                        </template>
+
+                        <template is='dom-if' if="[[detailIcon]]">
+                            <paper-button id="trending-icon" on-tap="onBacktestDetail"><iron-icon icon="trending-up"></iron-icon>Detail</paper-button>
+                        </template>
+                    </div>
+                </template>
             </div>
 
-            <div class="bar"></div>
+            <!--div class="bar"></div-->
+            <div class="lower-container">
+                <template is='dom-if' if='[[!processedBacktest.metrics]]'>
+                    <div style="height: 25px;"></div>
+                </template>
 
+                <template is='dom-if' if='[[processedBacktest.metrics]]'>
+    	            <iron-collapse>
+    	                <div class="lower-container">
+                       	    <aq-backtest-metric-item-list 
+    		            		metric-items="{{processedBacktest.metrics}}">
+    		                </aq-backtest-metric-item-list>
+    	                </div>
+    	            </iron-collapse>
+    	            
+                    <div class="layout horizontal">
+                        <div class="flex"></div>
+        	            <template is='dom-if' if='[[!expand]]'>
+        	            	<paper-icon-button noink id="expandBtn" title="Show More" on-click="toggle" icon="expand-more"></paper-icon-button>
+                    	</template>
 
-            <template is='dom-if' if='[[processedBacktest.metrics]]'>
-		            
-	            <iron-collapse>
-	                <div class="lower-container">
-	                   
-                   	    <aq-backtest-metric-item-list 
-		            		metric-items="{{processedBacktest.metrics}}">
-		                </aq-backtest-metric-item-list>
-
-	                </div>
-
-	                <div class="bar"></div>
-	            </iron-collapse>
-	            
-	            <template is='dom-if' if='[[!expand]]'>
-	            	<paper-icon-button noink id="expandBtn" title="Show More" on-click="toggle" icon="expand-more"></paper-icon-button>
-            	</template>
-
-	            <template is='dom-if' if='[[expand]]'>
-	            	<paper-icon-button noink id="expandBtn" title="Show Less" on-click="toggle" icon="expand-less"></paper-icon-button>
-	            </template>
-            </template>
-            <div class="side-bar"></div>
+        	            <template is='dom-if' if='[[expand]]'>
+        	            	<paper-icon-button noink id="expandBtn" title="Show Less" on-click="toggle" icon="expand-less"></paper-icon-button>
+        	            </template>
+                    </div>
+                </template>
+            </div>
         </div>
 
     </template>
     <script>
         Polymer({
-            is: 'aq-analyze-home-backtest-item2',
+            is: 'aq-analyze-home-backtest-item',
             
          	observers: [
             	'_widthChanged(narrow, narrowWide, semiWide, wide)'
@@ -250,7 +255,7 @@
 
             attached: function () {
             	this.$$('paper-checkbox').checked = false;
-            	this.$$('.side-bar').style.transform = "scale(0,1)";
+            	//this.$$('.side-bar').style.transform = "scale(0,1)";
                 this.backtestId = this.backtest._id;
                 this.processBacktestData();
             },

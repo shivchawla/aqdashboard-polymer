@@ -1,0 +1,103 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./aq-navigation-item.html'>
+
+<dom-module id='aq-allpage-layout'>
+	
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		:host {
+		  display: block;
+		  height: 100%;
+		}
+
+		#container {
+            margin: 0 auto;
+            color:#3c3c3c;
+            width: 90%;
+            height: 100%;
+            background-color: #f9f9f9;
+        }
+
+        paper-card {
+        	width: 100%;
+        	height: 100%;
+        }
+
+        #navigation-panel {
+        	margin-top: 5px;
+        	margin-bottom: 20px;
+        }
+
+        ::content .internal-content {
+        	margin-left: 5%;
+        	margin-right: 5%;
+        	margin-top: 30px;
+        	margin-bottom: 30px;
+        	height: 100%;
+        	color: #3c3c3c;
+        }
+
+        ::content .internal-content-header {
+        	margin-left: 2%;
+        	margin-right: 2%;
+        	margin-top: 10px;
+        	margin-bottom: 10px;
+        	height: 100%;
+        	color: #3c3c3c;
+        }
+
+        #lower-container {
+        	margin-top: 20px;
+        	margin-bottom: 20px;
+        }
+
+	</style>
+
+	<template>
+		<div id='container' class="layout vertical">  
+    		<div id="navigation-panel" class="layout horizontal">
+		        <aq-navigation-item id="navigation-item" 
+    				header="[[header]]" 
+    				path="[[currentPath]]">
+				</aq-navigation-item>
+				
+				<div class="flex"></div>
+				
+				<content id="button-content" select="header-button, .header-button"></content>
+				
+		    </div>
+
+            <paper-card class="self-center">
+        		<content id="content-head" select="internal-content-header, .internal-content-header">
+        		</content>
+
+        		<content id="content" select="internal-content, .internal-content">
+        		</content>
+
+        		<div class="flex"></div>
+    		
+        	</paper-card>
+
+        	<div id="lower-container">
+        		<content id="lower-button-content" select="footer-button, .footer-button"></content>
+        	</div>
+
+    	</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-allpage-layout',
+			
+			properties: {
+				header: String,
+				currentPath: Array,
+			},
+
+
+		})
+	</script>
+</dom-module>

@@ -13,7 +13,7 @@
 <link rel="import" href="../common/aq-label-content-item.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../common/aq-profile-pic-element.html">
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet"-->
 
 <dom-module id="aq-community-home-post-item2">
     <template>
@@ -30,16 +30,20 @@
 
             .container {
                 display: flex;
-                width: 97%;
+                width: 100%;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
                 flex-direction: column;
                 justify-content: center;
-                padding: 15px 20px 10px 20px;
+                
                 margin-bottom: 25px;
                 border-radius: 2px;
                 transition: all 0.2s ease-in-out;
                 cursor: pointer;
                 background-color: #fff;
+            }
+
+            .inner-container {
+                padding: 15px 20px 10px 20px;
             }
 
             .container:hover {
@@ -55,6 +59,8 @@
                 padding: 0;
                 margin-top: 10px;
                 margin-bottom: 10px;
+                font-size: 14px;
+                color: #3c3c3c;
             }
 
             .bar {
@@ -67,7 +73,7 @@
             }
 
             .header {
-                color: #5d5d5d;
+                color: #2f2f2f;
                 font-family: 'Lato', sans-serif;
                 font-weight: 400;
                 font-size: 17px;
@@ -112,10 +118,9 @@
                 top: 10px
             }
 
-
             .upper-container-header {
-                position: relative;
-                left: 15px;
+                --position: relative;
+                margin-left: 15px;
                 min-height: 60px;
             }
 
@@ -152,24 +157,38 @@
                 font-size: 1.1em;
                 color: #646464;
             }
+
+            #category {
+                font-size: 0.8em;
+                margin-top: 5px;
+                color: #3c3c3c;
+                --color: #cc6666;
+            }
         </style>
 
         <iron-media-query query="(min-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
        
         <div class="container" on-tap='goToDetail'>
-            <div class="layout horizontal">
-                <iron-icon class="post-icon" icon="{{icon}}"></iron-icon>
-                <div class="layout vertical upper-container-header">
-                    <div class="flex"></div>
+            <div class="inner-container">
+            <div class="title-container layout horizontal">
+                <iron-icon class="post-icon" icon="[[computeIcon(thread.category)]]"></iron-icon>
+                <div class="upper-container-header layout vertical flex">
                     <h1 class="header">[[thread.title]]</h1>
-                    
-                    <div class="tags-container layout horizontal">
-                      <template is='dom-repeat' items="[[thread.tags]]">
-                        <aq-tag-element label="[[item]]">
-                        </aq-tag-element>
-                      </template>  
+                    <span id='category' class="self-top"><i>[[thread.category]]</i></span>
+
+                    <div class="layout horizontal">
+                        <div class="flex"></div>    
+                        <template is='dom-if' if=[[hasTags(thread.tags)]]>
+                            <div class="tags-container">
+                                Tags:&nbsp 
+                                <template is='dom-repeat' items="[[thread.tags]]">
+                                    <aq-tag-element label="[[item]]">
+                                    </aq-tag-element>
+                                </template>
+                            </div>    
+                        </template> 
                     </div>
-                    <div class="flex"></div>
+                    <!--div class="flex"></div-->
                 </div>
 
                 <template is='dom-if' if='[[hasBacktest(thread)]]'>
@@ -180,21 +199,21 @@
             <div class="bar"></div>
             
             <div class="layout horizontal center">
-                  <aq-profile-img id='img' class="self-start"
+                <aq-profile-img id='img' class="self-start"
                                letter="[[getInitials(thread.user.firstName, thread.user.lastName)]]"></aq-profile-img>
 
-                  <div class="post-container layout vertical">
-                      <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span>
-                      </h3>
-                      <span class="time">[[format(thread.createdAt)]]</span>
-                  </div>
+                <div class="post-container layout vertical">
+                    <h3 class="by"><span class="user-name">[[getAuthorFullName(thread.user.firstName, thread.user.lastName)]]</span>
+                    </h3>
+                    <span class="time">[[format(thread.createdAt)]]</span>
+                </div>
 
                   <!--div class="flex"></div>  
                       <h3 class="by">Last Reply by <span class="user-name">[[getReplyAuthor(thread)]]</span></h3>
                       <span class="time">[[getReplyDate(thread)]]</span>
                   </div-->
 
-                  <div class="flex"></div>
+                <div class="flex"></div>
 
                 <div class="right-part layout vertical" wide-layout$="[[wide]]">
                     <label-content-item label="Views" text="[[thread.views]]"></label-content-item>
@@ -202,6 +221,8 @@
                     <label-content-item label="Followers" text="[[thread.followers.length]]"></label-content-item>
                 </div>
             </div>
+            </div>
+        </div>
     </template>
 
 
@@ -213,10 +234,13 @@
                 thread: {
                     type: Object
                 },
+            },
 
-                icon: {
-                    type: String,
-                    value: "lightbulb-outline"
+            computeIcon: function(category) {
+                if (category == "Share your Idea") {
+                    return "lightbulb-outline";
+                } else {
+                    return "add";
                 }
             },
             
@@ -294,6 +318,14 @@
             hasReplies: function (thread) {
                 return thread.replies && thread.replies.length > 0;
             },
+
+            hasTags: function(tags) {
+                if (tags) {
+                    return tags.length > 0;
+                }
+
+                return false;
+            }
 
 
         });

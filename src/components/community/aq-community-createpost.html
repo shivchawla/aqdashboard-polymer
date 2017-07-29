@@ -1,26 +1,30 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
+
+<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
+
+<link rel="import" href="../common/aq-tag-element.html">
+<link rel='import' href='../common/aq-dropdown.html'>
+<link rel="import" href="../common/aq-tags-input-container.html">
 <link rel="import" href="../common/aq-check-authentication.html">
+
+<link rel='import' href='../../icons/aq-iconset.html'>
 
 <link rel="import" href="../aq-html-editor.html">
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
-<link rel='import' href='../common/aq-dropdown.html'>
-<link rel='import' href='../../icons/aq-iconset.html'>
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../common/aq-tag-element.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../common/aq-sub-toolbar.html">
-<link rel="import" href="../common/aq-tags-input-container.html">
+
 <dom-module id="aq-community-createpost">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
@@ -41,11 +45,14 @@
           cursor: pointer;
         }
 
-        .container {
-            width: 100%;
+        #container {
             margin: 0 auto;
             color: #24293d;
-            background-color: transparent;
+            width: 90%;
+        }
+
+        paper-card {
+            width: 100%;
         }
 
         .goBackButton {
@@ -59,12 +66,11 @@
             border: 0;
             margin: 0;
             -webkit-appearance: none;
-            border: 1px solid #e5e5e5;
+            border: 1px solid #e1e1e1;
             font-size: 16px;
             background-color: #fff;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
-
 
         p {
             font-size: 28px;
@@ -80,7 +86,6 @@
             --white;
             background-color: transparent;
             border-radius: 5px;
-
         }
 
         #attachButton {
@@ -134,26 +139,15 @@
 
         .title-text-container {
             width: 100%;
-    
+            border: 1px solid #e1e1e1;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-bottom: 5px;
         }
-        #topicInput{
-            outline: none;
-        }
+
         aq-tags-input-container{
             --tags-container-padding-left:0;
             --tags-container-background-color:transparent;
-        }
-        #tagsInput {
-            width: 100%;
-            margin: 0;
-            height: 35px;
-            border: 0;
-            margin: 0;
-            -webkit-appearance: none;
-            border: 1px solid #e5e5e5;
-            font-size: 16px;
-            background-color: #fff;
-            display: inline-block;
         }
 
         .left-container {
@@ -185,13 +179,14 @@
 
         .middle-container {
             margin-top: 10px;
-            margin-bottom: 20px;
+            --margin-bottom: 20px;
         }
 
         paper-radio-button {
             padding: 0;
             --paper-radio-button-checked-color: #cc4444;
             --paper-radio-button-size: 14px;
+            margin-right: 15px;
         }
 
         paper-radio-button span {
@@ -213,7 +208,7 @@
         }
 
         #previewBtn {
-            color: teal;
+            color: #cc6666;
             font-weight: 700;
             border: 1px solid !important;
         }
@@ -258,132 +253,166 @@
             font-size: 0.9em;
         }
 
+        #create-post-container {
+            margin-left: 8%;
+            margin-right: 8%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        #topicInput {
+            --paper-input-container-input: {
+                font-size: 26px;
+                color: #cc6666;
+            }
+
+            --paper-input-container: {
+                padding-bottom: 15px;
+            }
+            --paper-input-container-focus-color: #cc6666;
+
+            --paper-input-container-label-floating: {
+                color: #3c3c3c;
+            }
+        }
+
+        #tagsInput {
+            --paper-input-container: {
+                --padding-bottom: 15px;
+            }
+        }
+
+        paper-input {
+            --paper-input-container-underline: {
+                height: 0px;
+            };
+
+            --paper-input-container-underline-focus: {
+                height: 0px;
+            }; 
+
+             --paper-input-container: {
+                padding-left: 20px;
+                border: 1px solid #e1e1e1;
+            }
+        }
+
+        #limit-tags-text {
+            font-size: 12px;
+            color: #3c3c3c;
+            margin-top: 5px;
+        }
+
     </style>
 
-
     <template>
-        <div class="container layout vertical">
-            <aq-check-authentication id='authItem'></aq-check-authentication>
-            <app-location route="{{route}}" use-hash-as-path></app-location>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
 
-            <app-route
-                    route="{{route}}"
-                    pattern="/dashboard/community/create"
-                    query-params="{{queryParams}}">
-            </app-route>
+        <app-route
+            route="{{route}}"
+            pattern="/dashboard/community/create"
+            query-params="{{queryParams}}">
+        </app-route>
 
-            <iron-ajax
-                    url=""
-                    body="{{threadData}}"
-                    method='POST'
-                    id='postThreadQuery'
-                    headers='{{header}}'
-                    handle-as="json"
-                    on-response="onPostThreadResponse"
-                    on-error="onPostThreadError"
-                    debounce-duration="300">
-            </iron-ajax>
+        <iron-ajax
+            url=""
+            body="{{threadData}}"
+            method='POST'
+            id='postThreadQuery'
+            headers='{{header}}'
+            handle-as="json"
+            on-response="onPostThreadResponse"
+            on-error="onPostThreadError"
+            debounce-duration="300">
+        </iron-ajax>
 
-            <iron-ajax
-                    url="[[computeFollowPostUrl(newThreadId)]]"
-                    method="POST"
-                    id='followPostQuery'
-                    handle-as="json"
-                    headers='{{header}}'
-                    debounce-duration="300">
-            </iron-ajax>
+        <iron-ajax
+            url="[[computeFollowPostUrl(newThreadId)]]"
+            method="POST"
+            id='followPostQuery'
+            handle-as="json"
+            headers='{{header}}'
+            debounce-duration="300">
+        </iron-ajax>
 
-            <template is='dom-if' if="[[preview]]">
-            <div class="fit">
-                <paper-header-panel>
-                    <aq-sub-toolbar class="paper-header">
-                        <h4>Post Preview</h4>
-                        
-                        <div class="flex"></div>
-                        
-                        <paper-button id="previewSubmitBtn" on-tap="postThread">Submit</paper-button>
-                        
-                        <paper-button id="previewEditBtn" on-tap="onEdit">Edit</paper-button>
+        <template is='dom-if' if="[[preview]]">
+            <aq-community-previewpost 
+                thread-data="[[threadData]]" disable-buttons>
+            </aq-community-previewpost>
+        </template>
 
-                    </aq-sub-toolbar>
-                    <aq-community-previewpost thread-data="[[threadData]]" disable-buttons>
-                    </aq-community-previewpost>
-                </paper-header-panel>
+        <aq-community-attachbacktest-dialog id='btDialog'>
+        </aq-community-attachbacktest-dialog>
 
-            </template>
+        <template is='dom-if' if="[[!preview]]">
+            <aq-allpage-layout header="Create a Post" current-path="[[currentPath]]">
+                <div class="internal-content" id="create-post-container">
+                    <paper-input type="text" id="topicInput" class="flex" placeholder="Title"></paper-input>
+                    
+                    <div class="middle-container layout vertical">
+                        <aq-tags-input-container>
+                            <paper-input type="text" id="tagsInput" 
+                                class="flex" placeholder="Add tags here"
+                                no-label-float
+                                on-keydown="onChange" 
+                                on-keyup="scrollToBottom">
+                            </paper-input>
 
-            <aq-community-attachbacktest-dialog id='btDialog'>
-            </aq-community-attachbacktest-dialog>
-
-            <template is='dom-if' if="[[!preview]]">
-                <div class="main-container">
-                    <div style="padding-left: 10px" class="layout horizontal center header-container">
-                        <paper-icon-button id="backIcon" noink class="self-center" title="Go Back" icon="chevron-left"
-                                           on-tap="goBack"></paper-icon-button>
-
-                        <h1 on-tap="goBack">Back to Community</h1>
+                            <div class="tags-container">
+                                <template is="dom-repeat" items="{{tags}}">
+                                    <aq-tag-element label="{{item}}">
+                                        <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
+                                    </aq-tag-element>
+                                </template>
+                            </div>
+                        </aq-tags-input-container>
+                        <div id="limit-tags-text" class="self-end">Add upto 5 tags</div>
                     </div>
-                    <div class="layout vertical secondary-container">
-                        <div class="title-text-container layout horizontal">
-                            <input id="topicInput" class="flex" placeholder="Title">
-                        </div>
-                        
-                        <div class="layout horizontal middle-container">
-                            <div class="layout vertical left-container">
-                                <aq-tags-input-container>
-                                    <input type="text" id="tagsInput" class="flex" placeholder="Add tags here"
-                                           on-keydown="onChange" on-keyup="scrollToBottom">
-                                    <div id="tagsContainer" class="tags-container">
-                                        <template is="dom-repeat" items="{{tags}}">
-                                            <aq-tag-element label="{{item}}">
-                                                <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
-                                            </aq-tag-element>
-                                        </template>
-                                    </div>
-                                </aq-tags-input-container>
-                              </div>
                             
-                            <div class="layout horizontal right-container">
-                                <span class="tags-header">Post Type: &nbsp;</span>
-                                <paper-radio-group id="selectedCategory" aria-labelledby="label1"
-                                                   selected="Share your Idea">
-                                    <paper-radio-button noink name="Share your Idea"><span>Share your Idea</span>
-                                    </paper-radio-button>
-                                    <br>
-                                    <paper-radio-button noink name="Questions and Answers"><span>Quesions and Answers</span>
-                                    </paper-radio-button>
-                                    <br>
-                                    <br>
-                                </paper-radio-group>
-                            </div>
+                    <div class="layout horizontal">
+                        <div class="self-center">
+                        <span class="tags-header">Post Type: &nbsp;</span>
                         </div>
-                        <div class="layout horizontal attachment-container">
-                            <div class="flex"></div>
-                            <template is='dom-if' if='[[messageAttached]]'>
-                                <paper-button style="color:#444;" id='attachButton' raised
-                                              on-tap='onAttachRequest'>
-                                    Attach
-                                    <iron-icon icon="aq-icons:attach-file"></iron-icon>
-                                </paper-button>
-                            </template>
-                            <div id="attachedMessageDiv" class="layout horizontal self-end">
-                                <span class="self-end">[[attachedMessage]]</span>
-                                <paper-icon-button id='removeIcon' class="self-end" title="Remove"
-                                                   on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
-                            </div>
-                        </div>
-                        <aq-html-editor id="editor"></aq-html-editor>
-
-                        <div id='buttons' class="layout horizontal">
-                            <paper-button id="previewBtn" on-tap='onPreview'>Preview</paper-button>
-                            <div class="flex"></div>
-                            <paper-button id="submitBtn" on-tap="postThread">Submit</paper-button>
+                        
+                        <paper-radio-group id="selectedCategory" class="self-center" aria-labelledby="label1"
+                                           selected="Share your Idea">
+                            <paper-radio-button noink name="Share your Idea"><span>Share your Idea</span>
+                            </paper-radio-button>
+                            <paper-radio-button noink name="Questions and Answers"><span>Quesions and Answers</span>
+                            </paper-radio-button>
+                        </paper-radio-group>
+                    </div>
+                        
+                    <div class="layout horizontal attachment-container">
+                        <div class="flex"></div>
+                        <template is='dom-if' if='[[messageAttached]]'>
+                            <paper-button style="color:#444;" id='attachButton' raised
+                                          on-tap='onAttachRequest'>
+                                Attach
+                                <iron-icon icon="aq-icons:attach-file"></iron-icon>
+                            </paper-button>
+                        </template>
+                        <div id="attachedMessageDiv" class="layout horizontal self-end">
+                            <span class="self-end">[[attachedMessage]]</span>
+                            <paper-icon-button id='removeIcon' class="self-end" title="Remove"
+                                               on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
                         </div>
                     </div>
-                </div> <!-- Main Container Ends -->
-                <paper-toast text="[[error]]"></paper-toast>
-            </template>
-        </div>
+                    <aq-html-editor id="editor"></aq-html-editor>
+
+                    <div id='buttons' class="layout horizontal">
+                        <paper-button id="previewBtn" on-tap='onPreview'>Preview</paper-button>
+                        <div class="flex"></div>
+                        <paper-button id="submitBtn" on-tap="postThread">Submit</paper-button>
+                    </div>
+                    
+                </div> <!--Create Post Container ends-->
+            </aq-allpage-layout>
+
+            <paper-toast text="[[error]]"></paper-toast>
+            
+        </template>
     </template>
     
     <script>
@@ -428,6 +457,11 @@
                 tags: {
                     type: Array,
                     value: []
+                },
+
+                currentPath: {
+                    type: Array,
+                    value: ["Home", "Research", "Community", "Create a Post"],
                 }
 
             },
@@ -599,7 +633,7 @@
                 this.splice('tags', index, 1);
             },
             scrollToBottom: function () {
-                var element = document.getElementById("tagsContainer");
+                var element = document.getElement(".tags-container");
                 if (element) {
                     element.scrollTop = element.scrollHeight;
                 }

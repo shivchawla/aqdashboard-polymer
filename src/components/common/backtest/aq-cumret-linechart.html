@@ -1,11 +1,47 @@
 
-<link rel='import' href='../../../bower_components/highcharts-chart/highcharts-stock.html'>
-<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
-
+<link rel='import' href='../../../../bower_components/highcharts-chart/highcharts-stock.html'>
+<link rel='import' href='../../../../bower_components/iron-signals/iron-signals.html'>
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <dom-module id='aq-cumret-linechart'>
+ 	<style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+    	.tooltip {
+    		--width: 70%;
+    		padding-left: 20%;
+    		padding-right: 20%;
+    	}
+
+    	#tooltip-Strategy {
+    		color: #0375b4;
+    		--width: 200px;
+    	}
+
+    	#tooltip-Bencmark {
+    		color: #cc6666;
+    		--width: 200px;
+    	}
+
+    	#tooltip-portfoliovalue {
+    		color: yellow;
+    		--width: 200px;
+    	}
+
+    </style>
+
 	<template>
 		<template is='dom-if' if='[[axisReady]]' id='cumRetLineChartTemplate'>
+			
+			<div class="tooltip layout horizontal justified">
+				<!--div class="gap"></div-->
+				<div id='tooltip-Strategy'></div>
+				<div id='tooltip-Benchmark'></div>
+				<div id='tooltip-portfoliovalue'></div>
+				<!--div class="flex"></div-->
+			</div>
+
 			<highcharts-stock 
 	  			id="cumRetLineChart"
 	  			type="line"  
@@ -121,7 +157,7 @@
 				legend:{
 					type:Object,
 					value: {
-						enabled:true,
+						enabled:false,
 		          		align:"left",
 		          		verticalAlign:'top',
 		          		y:15,
@@ -147,10 +183,20 @@
 							point: {
 			                    events: {
 			                        mouseOver: function () {
-			                        	var text = '<div style="border:1px solid black"> Date: ' + Highcharts.dateFormat('%e %b %Y', this.x) + '</div>';
+			                        	//console.log(this.series.name);
+			                        	var change = (this.series.point.change) ? this.series.point.change.toFixed(2) : 0.0;
+			                        	var cType = "%";
+			                        	if(!this.series.point.change) {
+			                        		var change = (this.series.point.y) ? this.series.point.y.toFixed(2) : 0.0;
+			                        		var cType =""
+			                        	}
+
+			                        	$('#tooltip-'+this.series.name).html(this.series.name+ ": "+ change+cType);
+			                        	//this.currentValue[this.series.name] = this.series.point.change;
+			                        	var text = '<div style="border:1px solid black; color: teal;"> Date: ' + Highcharts.dateFormat('%e %b %Y', this.x) + '</div>';
 			                            var chart = this.series.chart;
 			                            if (!chart.lbl) {
-                                			chart.lbl = chart.renderer.label(text, 0, -15)
+                                			chart.lbl = chart.renderer.label(text, 930, 0)
                                     			.attr({
                                     			padding: 15,
                                         		
@@ -180,6 +226,17 @@
 					}
 				},
 
+				currentValue: {
+					type: Object,
+					value: {},
+					notify: true,
+					observer: '_currentValueChanged',
+				},
+
+			},
+
+			_currentValueChanged: function() {
+				console.log(this.currentValue);
 			},
 
 			updateProperties: function() {
@@ -212,8 +269,8 @@
 		            }]);
 
 			    this.set('legend', {
-			          		enabled:true,
-			          		align:"right",
+			          		enabled:false,
+			          		align:"left",
 			          		verticalAlign:'top',
 			          		margin:0,
 			          		itemStyle: {
@@ -266,8 +323,8 @@
 			            }]);
 
 				this.set('legend', {
-			          		enabled:true,
-			          		align:"right",
+			          		enabled:false,
+			          		align:"left",
 			          		verticalAlign:'top',
 			          		margin:0,
 			          		itemStyle: {

@@ -1,5 +1,5 @@
-<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel='import' href='./aq-backtest-metric-item.html'>
 
 <dom-module id='aq-backtest-metric-item-list'>
@@ -8,26 +8,35 @@
 
 	<style>
 		#container {
-			padding-left: 10px;
+			--padding-left: 10px;
+			--background-color: #f5f5f5;
 		}
+
+		#header {
+			margin-top: 20px;
+			margin-bottom: 5px;
+			font-size: 14px;
+			font-weight: 700;
+		}
+
 	</style>
 
 	<template>
-		<iron-media-query query="(max-width: 1050px)" query-matches="{{superWide}}"></iron-media-query>
+		<iron-media-query query="(min-width: 1250px)" query-matches="{{superWide}}"></iron-media-query>
 
-        <iron-media-query query="(max-width: 960px)" query-matches="{{wide}}">
+        <iron-media-query query="(min-width: 1000px)" query-matches="{{wide}}">
         </iron-media-query>
 
-        <iron-media-query query="(max-width: 800px)" query-matches="{{semiWide}}"></iron-media-query>
+        <iron-media-query query="(min-width: 800px)" query-matches="{{semiWide}}"></iron-media-query>
       	
-      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
+      	<iron-media-query query="(min-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
       
-        <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+        <iron-media-query query="(min-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
 
-		<div id='container' class="layout horizontal">
-			
+        <div id="header">[[heading]]</div>
+		<div id='container' class="layout horizontal around-justified">
 			<template is='dom-repeat' id='repeater' items="{{modifiedItems}}">
-                <aq-backtest-metric-item class="flex"
+                <aq-backtest-metric-item 
                 	metric-name="{{item.metricName}}"
                  	metric-value="{{item.metricValue}}">
              	</aq-backtest-metric-item>
@@ -72,6 +81,8 @@
 					type:Boolean,
 					value:false,
 				},
+
+				heading: String,
 			},
 
 			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide, forcedSemiWide)'],
@@ -99,19 +110,19 @@
 					var eIdx;
 
 					if(nItems > 0) {
-						if(this.narrow) {
-							eIdx = nItems >=3 ? 3: nItems;
-		            	} else if (this.narrowWide) {
-		            		eIdx = nItems >=4 ? 4 : nItems;
+	            		eIdx = 2;
+
+						if (this.superWide) {
+		            		eIdx = nItems >= 8 ? 8 : nItems;
+		            	}  else if (this.wide) {
+		            		eIdx = nItems >= 6 ? 6 : nItems;
 		            	} else if (this.semiWide) {
 		            		eIdx = nItems >= 5 ? 5 : nItems;
-		            	} else if (this.wide) {
-		            		eIdx = nItems >= 6 ? 6 : nItems;
-		            	} else if (this.superWide) {
-		            		eIdx = nItems >= 8 ? 8 : nItems;
-		            	} else {
-		            		eIdx = nItems;
-		            	}
+		            	} else if (this.narrowWide) {
+		            		eIdx = nItems >=4 ? 4 : nItems;
+		            	} else if(this.narrow) {
+							eIdx = nItems >=3 ? 3: nItems;
+		            	}   
 
 		            	// behave as if it's sem-wide
 		            	if(this.forcedSemiWide && (!this.narrow || !this.narrowWide)) {

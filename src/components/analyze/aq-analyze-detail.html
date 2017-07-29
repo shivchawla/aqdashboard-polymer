@@ -3,31 +3,15 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel='import' href='../../icons/aq-iconset.html'>
-<link rel="import" href="../common/aq-backtest-detail-item.html">
+<link rel="import" href="../common/backtest/aq-backtest-detail-item.html">
 <link rel="import" href="../common/aq-check-authentication.html">
 <link rel="import" href="../common/aq-loading-progress.html">
+<link rel="import" href="../common/aq-allpage-layout.html">
 
 <dom-module id="aq-analyze-detail">
 	
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
-
-	<style>
-		#container {
-			width: 95%;
-			margin-top: 0px;
-		    color: #24293d; 
-		    margin: 0 auto;
-	  	}
-
-		paper-button {
-			text-transform: none;
-			font-size: 14px;
-			color:#cc6666;
-		 	margin-bottom: 10px;
-            width: 50px;
-		}
-  	</style>
 
 	<template>
 	 	<aq-check-authentication id='authItem'></aq-check-authentication>
@@ -35,17 +19,11 @@
     		<aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 		  	
 	  	 	<template is='dom-if' if='{{!loading}}'>
-			   
-		  		<div id='container' class='layout vertical'>
-			      	
-			  		<div class="layout horizontal">
-				      	<paper-button  noink id='backButton' title="Go Back" on-tap="goBackAllBacktests"><iron-icon icon="chevron-left" ></iron-icon> Back
-			            </paper-button>
-			            <div class="flex"></div>
-		            </div>
-
-			      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
-      			</div>
+			    <aq-allpage-layout header="Backtest Detail" current-path=[[currentPath]]>
+			  		<div class="internal-content">
+				      	<aq-backtest-detail-item loading="{{loading}}" backtest-id="[[backtestId]]" index="{{index}}"></aq-backtest-detail-item>
+	      			</div>
+      			</aq-allpage-layout>
       		</template>
 	</template>
 
@@ -65,6 +43,10 @@
 				},
 				index:{
 					type:String
+				},
+				currentPath: {
+					type: Array,
+					value: ["Home", "Research", "All Strategies", "All Backtests", "Backtest Detail"]
 				}
 			},
 

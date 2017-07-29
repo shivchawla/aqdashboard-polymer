@@ -5,11 +5,17 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
-<link rel='import' href='../components/analyze/aq-analyze-home-backtest-item2.html'>
+
+<link rel='import' href='../components/analyze/aq-analyze-home-backtest-item.html'>
+<link rel='import' href='../components/analyze/aq-analyze-home-header.html'>
+
 <link rel='import' href='../components/common/aq-check-authentication.html'>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 <dom-module id="aq-community-attachbacktest-dialog">
 
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -18,36 +24,40 @@
     <style>
 
         paper-button {
-            --border: 1px solid #24293d;
             height: 30px;
             font-size: 13px;
-            color: teal;
+            color: white;
+            background-color: #cc6666;
         }
 
-        paper-icon-button {
-            color: #cc6666;
+        #closeButton{
+            color: #3c3c3c;
+            background-color: white;
         }
 
-        paper-icon-button:active {
-            padding: 10px;
-        }
-
-        #buttons {
-            margin-bottom: 10px;
+        #button-group {
+            margin-right: 20px;
         }
 
         #container-bt {
-            width: 95%;
-            margin: 0 auto;
-            margin-top: 15px;
+            width: 70%;
+            margin-left: 3%;
+            margin-right: 3%;
+            --margin: 0 auto;
+            --margin-top: 15px;
+        }
+
+        #container-strategy {
+            
+            margin-left: 3%;
+            --margin-right: 3%;
         }
 
         .heading {
             font-size: 18px;
             font-family: 'Lato',sans-serif;
             font-weight: 700;
-            color: teal;
-            margin-left: 20px;
+            color: #3c3c3c;
         }
 
         paper-dialog {
@@ -61,18 +71,8 @@
             z-index: 200;
         }
 
-        paper-drawer-panel {
-            height: 90%;
-            width: 100%;
-            margin-left: 20px;
-        }
-
-        #strategyPanel {
-            background-color: #fff;
-            width: 250px;
-        }
-
         paper-item {
+            font-size: 13px;
             --paper-item-selected: {
 
                 background-color: #f2f2f2;
@@ -84,24 +84,14 @@
             --background-color: #f2fbf7;
         }
 
-        #toolbar, #toolbar1 {
-            --paper-toolbar-height: 35px;
-            --paper-toolbar-background: #fff;
-            margin-bottom: 5px;
-        }
-
-        #btPanel {
-            width: 100%;
-        }
-
         paper-dialog > * {
             margin: 0;
         }
 
-        .outer{
+        .outer {
             width: 100%;
             position: absolute;
-            height:40px;
+            height:48px;
             margin: 0;
             padding: 0;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
@@ -111,6 +101,62 @@
             margin-top: 45px;
         }
 
+        #container {
+            width: 90%;
+            border: 1px solid #e1e1e1;
+            margin-top: 100px;
+            align-content: center;
+            height: 100%;
+        }
+
+        .heading {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #3c3c3c;
+        }
+
+        .header {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 30px;
+            font-size: 20px;
+            color: #3c3c3c;
+        }
+
+        #heading-st {
+            margin-left: 30px;
+        }
+
+        .special-item {
+            background: white;
+            height: 40px;
+        }
+
+        .special-item-text {
+            font-size: 15px;
+            margin: auto auto;
+            color: #3c3c3c;
+        }
+
+        .bar {
+            width: 3px;
+            background-color:none;
+        }
+
+        .iron-selected {
+            background: #f8eaea;
+        }
+
+        .iron-selected .bar {
+            background-color: #cc6666;
+        }
+
+        .iron-selected .special-item-text {
+            color: #cc6666;
+        }
+
+
     </style>
 
     <template>
@@ -119,48 +165,49 @@
 
         <paper-dialog id='selectBacktestDialog'>
             <div class="outer layout horizontal center">
-                <p class="heading">Attach a Backtest</p>
+                <p class="header">Select a Backtest</p>
                 <div class="flex"></div>
-                <paper-icon-button id='attachButton' disabled=[[!isAttachButtonActive(checkedCount)]] noink
-                                   on-tap='onAttach' icon="aq-icons:attach-file"
-                                   title="Attach Backtest"></paper-icon-button>
-                <paper-icon-button on-tap="closeDialog" id='closeButton'
-                                   noink icon="clear"
-                                   title="Close"></paper-icon-button>
+                <div class="layout horizontal" id="button-group">
+                    <paper-button id='attachButton' 
+                        disabled=[[!isAttachButtonActive(checkedCount)]] 
+                        noink on-tap='onAttach' icon="aq-icons:attach-file">Attach</paper-button>
+                    <paper-button on-tap="closeDialog" id='closeButton'
+                       noink>Cancel</paper-button>
+                </div>
             </div>
-            <div class="inner">
-                <paper-drawer-panel right-drawer>
-                    <paper-header-panel id="btPanel" main mode="seamed">
-                        <paper-toolbar id="toolbar1">
-                            <div class="flex"></div>
-                            <paper-icon-button id="menuButton" icon="menu" paper-drawer-toggle
-                                               title="Toggle Strategies">
-                            </paper-icon-button>
-                        </paper-toolbar>
 
-                        <div id='container-bt' class="flex">
-                            <template is='dom-repeat' items="[[backtests]]">
-                                <aq-analyze-home-backtest-item2 class="self-center" index="[[index]]"
-                                                                backtest="[[item]]">
-                                </aq-analyze-home-backtest-item2>
+            <div class="layout vertical flex" style="height: 100%">
+                <div id="container" class="layout horizontal self-center">
+                    <div id="container-strategy">
+                        <div class="heading" id="heading-st">Strategy</div>
+                        <iron-selector selected="{{currentStrategyIndex}}">
+                            <template is='dom-repeat' items="[[strategies]]">
+                                <div class="special-item layout horizontal">
+                                    <div class="bar"></div>
+                                    <div class="special-item-text"> [[item.name]]
+                                    </div>
+                                </div>
                             </template>
-                        </div>
-
-                    </paper-header-panel>
-
-                    <div id="strategyPanel" drawer>
-                        <paper-toolbar id="toolbar">
-                            <i class="heading" style="color:#24293d">Select a Strategy</i>
-                        </paper-toolbar>
-
-                        <paper-listbox selected="{{currentStrategyIndex}}"
-                        ">
-                        <template is='dom-repeat' items="[[strategies]]">
-                            <paper-item>[[item.name]]</paper-item>
-                        </template>
-                        </paper-listbox>
+                        </iron-selector>
                     </div>
-                </paper-drawer-panel>
+
+                    <div id='container-bt' class="flex">
+                        <div class="heading">Backtests for [[strategyName]]</div>
+                        <template is='dom-if' if="[[backtests]]">
+                            <aq-analyze-home-header 
+                                check-all="{{checkAll}}"
+                                num-active-backtests="[[checkedItems.length]]">
+                            </aq-analyze-home-header>
+                            <template is='dom-repeat' items="[[backtests]]">
+                                <aq-analyze-home-backtest-item 
+                                    class="self-center" 
+                                    index="[[index]]"
+                                    backtest="[[item]]">
+                                </aq-analyze-home-backtest-item>
+                            </template>
+                        </template>
+                    </div>
+                </div>
             </div>
         </paper-dialog>
 
@@ -205,6 +252,8 @@
 
                 strategyId: String,
 
+                strategyName: String,
+
                 checkedCount: {
                     type: Number,
                     value: 0,
@@ -236,17 +285,21 @@
 
             onGetStrategiesResponse: function (data) {
                 this.strategies = data.detail.response;
-                this.strategyId = this.strategies[0]._id;
-                if (this.$.authItem.checkHasToken()) {
-                    this.header = this.$.authItem.getHeader();
-                    this.$.getBacktestsQuery.generateRequest();
+                if(this.strategies) {
+                    if(this.strategies.length > 0) {
+                        this.strategyId = this.strategies[0]._id;
+                        this.strategyName = this.strategies[0].name;
+                        if (this.$.authItem.checkHasToken()) {
+                            this.header = this.$.authItem.getHeader();
+                            this.$.getBacktestsQuery.generateRequest();
+                        }
+                    }
                 }
             },
 
             onGetAllBacktestsForStrategy: function (data) {
                 this.backtests = [];
                 this.backtests = data.detail.response;
-
             },
 
             onCheckedBacktest: function (e) {
@@ -287,9 +340,24 @@
                 if (this.strategies) {
                     if (this.strategies[newVal]) {
                         this.strategyId = this.strategies[newVal]._id;
+                        this.strategyName = this.strategies[newVal].name;
+                        console.log(this.strategyName);
                         this.$.getBacktestsQuery.generateRequest();
                     }
                 }
+            },
+
+            computeStrategyName: function(currentStrategyIndex) {
+                
+                console.log(this.strategies);
+                if (this.strategies 
+                        && this.strategies.length > 0 
+                        && this.strategies.length > currentStrategyIndex + 1
+                        && currentStrategyIndex > -1) {
+                    return this.strategies[currentStrategyIndex].name;
+                }
+
+                return "";
             },
 
             onAttach: function () {

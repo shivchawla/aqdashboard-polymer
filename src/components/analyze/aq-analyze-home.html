@@ -10,9 +10,12 @@
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../common/aq-loading-progress.html">
+<link rel="import" href="../common/aq-navigation-item.html">
+<link rel="import" href="../common/aq-allpage-layout.html">
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
-<link rel='import' href='./aq-analyze-home-backtest-item2.html'>
+<link rel='import' href='./aq-analyze-home-header.html'>
+<link rel='import' href='./aq-analyze-home-backtest-item.html'>
 
 <link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
 
@@ -23,15 +26,18 @@
 	</style>
 
 	<style>
-
 		#container {
-			margin:0 auto;
-		    margin-top: 30px;
-		    color: #24293d;
-	  	}
-		.backtest-item{
-			width: 95%;
-		}
+            margin: 0 auto;
+            color: #24293d;
+            width: 90%;
+        }
+
+        #backtest-container {
+            margin-left: 4%;
+            margin-right: 4%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
 
 	  	#dialog{
 			width:80%;
@@ -114,38 +120,42 @@
 		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 		<iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(showComparison)}}" fallback-selection="home">
          
-	        <template is='iron-lazy-page' page="home">
-				<div class="fit"> 
-		        	<paper-header-panel fixed mode="seamed">
-			            <aq-analyze-home-menu
-				        	check-all="{{checkAll}}"
-				        	num-active-backtests="[[checkedItems.length]]"
-			              	strategy-name="{{strategyName}}"
-			              	class="paper-header">
-			          	</aq-analyze-home-menu>
+        <template is='iron-lazy-page' page="home">
+        	
+            <aq-allpage-layout header="All Backtests" current-path="[[currentPath]]">
 
-				        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
-							<div id='container'>
-								<div class="layout vertical center">
-								<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-									<aq-analyze-home-backtest-item2  class="backtest-item" index="{{index}}" backtest="{{item}}" detail-icon share-icon></aq-analyze-home-backtest-item2>
-								</template>
+            	<div id="acktest-container" class="internal-content">
+			        <aq-analyze-home-menu
+			        	check-all="{{checkAll}}"
+			        	num-active-backtests="[[checkedItems.length]]"
+		              	strategy-name="{{strategyName}}">
+		          	</aq-analyze-home-menu>
 
-								<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
-									<div class="spacer"></div>
-								</template>
-								</div>
-
-							</div>
+			        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+						
+			        	<aq-analyze-home-header 
+			        		check-all="{{checkAll}}"
+			        		num-active-backtests="[[checkedItems.length]]"
+			        		share-icon>
+		        		</aq-analyze-home-header>
+		              	
+						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
+							<aq-analyze-home-backtest-item  class="backtest-item" index="{{index}}" backtest="{{item}}" detail-icon share-icon></aq-analyze-home-backtest-item>
 						</template>
-					</paper-header-panel>
-				</div>
-			</template>
 
-			<template is='iron-lazy-page' page="comparison">
-				<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
-				</aq-analyze-backtest-comparison-item>
-			</template>
+						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
+							<div class="spacer"></div>
+						</template>
+					</template>
+				</div>
+			</aq-allpage-layout>
+
+		</template>
+
+		<template is='iron-lazy-page' page="comparison">
+			<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
+			</aq-analyze-backtest-comparison-item>
+		</template>
 
 		</iron-lazy-pages>
 		</template>
@@ -232,7 +242,12 @@
 				indexArray:{
                 	type:Array,
 					value:[]
-				}
+				},
+
+				currentPath: {
+					type: Array,
+					value: ["Home", "Research", "All Strategies", "All Backtests"],
+				},
 
     		},
 

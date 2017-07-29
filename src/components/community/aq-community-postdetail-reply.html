@@ -8,7 +8,7 @@
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 <dom-module id="aq-community-postdetail-reply">
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
@@ -29,6 +29,7 @@
             border: 1px solid #24293d;
             height: 30px;
             font-size: 13px;
+            border: 1px solid;
         }
 
         #buttons {
@@ -53,9 +54,7 @@
             width: 32px;
             height: 32px;
         }
-        paper-button{
-            border: 1px solid;
-        }
+       
         aq-html-editor{
             --aq-html-editor-box-shadow:0 3px 8px rgba(0,0,0,0.2);
             --aq-html-editor-border:none;
@@ -65,13 +64,16 @@
             margin-bottom: 10px;
         }
         #previewBtn {
-            color: teal;
+            --color: teal;
             font-weight: 700;
+            color: #cc6666;
+            
         }
 
         #reply-btn {
             font-weight: 700;
-            color: #cc4444;
+            color: #cc6666;
+            --color: white;
         }
         paper-toast {
             --paper-toast-background-color: #cc4444;

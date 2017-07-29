@@ -1,9 +1,10 @@
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+<!--link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet"-->
+
 <dom-module id="aq-backtest-metric-item">
 	<template>
 		<style>
 			:host{
-				color:#646464;
+				color:#555555;
 				display: inline-block;
 				font-family: 'Lato', sans-serif;
 				font-size: 16px;
@@ -11,22 +12,26 @@
 			}
 			h1, h2, h3, h4, h5 {  margin: 0;  }
 			.text-label{
-				font-size: var(--aq-backtest-metric-item-text-label-font-size,0.8em);
-				font-weight: 300;
+				font-size: var(--aq-backtest-metric-item-text-label-font-size,12px);
+				font-weight: 400;
 			}
 			.text-content{
 				font-weight: 400;
-				font-size: var(--aq-backtest-metric-item-text-content-font-size,1em);
+				font-size: var(--aq-backtest-metric-item-text-content-font-size, 14px);
 			}
 			.li-container {
-				--text-align: center;
+				text-align: left;
 				margin-top: 5px;
 				margin-bottom: 5px;
+				border: 1px solid #e1e1e1;
+				padding: 10px;
+				width: 100px;
+
 			}
 		</style>
 		<div class="li-container">
-			<h3 class="text-label">{{metricName}}</h3>
 			<span class="text-content">{{metricValue}}</span>
+			<h3 class="text-label">{{metricName}}</h3>
 		</div>
 	</template>
 	<script>

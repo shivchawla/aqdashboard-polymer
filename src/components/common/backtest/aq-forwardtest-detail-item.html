@@ -1,0 +1,523 @@
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tabs.html'>
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tab.html'>
+<link rel='import' href='../../../../bower_components/paper-card/paper-card.html'>
+<link rel='import' href='../../../../bower_components/iron-signals/iron-signals.html'>
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../../../bower_components/iron-selector/iron-selector.html'>
+<link rel='import' href='../../../../bower_components/paper-progress/paper-progress.html'>
+
+<link rel="import" href="../../../../bower_components/juicy-ace-editor/juicy-ace-editor.html">
+
+<link rel='import' href='../aq-check-authentication.html'>
+
+<link rel='import' href='./aq-backtest-metric-item.html'>
+<link rel='import' href='./aq-backtest-header-item.html'>
+<link rel='import' href='./aq-backtest-metric-item-list.html'>
+<link rel='import' href='./aq-backtest-performance-detail-item.html'>
+
+<script src="../../../../resources/scripts/DateTime.js"></script>
+
+<dom-module id='v-tab'>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+
+        #container {
+            height: 100px;
+            width: 120px;
+            border: 1px solid #e1e1e1;
+            border-bottom:none;
+            color: #555555;
+            background-color: #f9f9f9;
+        }
+
+        #container.selected {
+            background-color: white;
+            color: #cc6666;
+            border-right: none;
+        }
+
+        #container:hover {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #sidebar {
+            width: 3px;
+            height: 100%;
+            background-color: var(--v-tab-sidebar-color, #f9f9f9);
+        }
+
+        #sidebar.selected {
+            background-color: #cc6666;
+        } 
+
+        #int-container {
+            margin: 0 auto;
+        } 
+
+    </style>
+
+    <template>
+        <div id="container" class$="[[computeSelectedClass(selected)]] layout horizontal center">
+            
+            <div id="sidebar" class$="[[computeSelectedClass(selected)]]">
+            </div>
+            
+            <div id="int-container" class="layout vertical center">
+                <iron-icon icon="[[icon]]"></iron-icon>
+                <content></content>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'v-tab',
+
+            properties: {
+                icon: String,
+                selected: Boolean,
+            },
+
+            computeSelectedClass: function(selected) {
+                return selected ? "selected" : "";
+            }
+
+        });
+    </script>
+</dom-module>
+
+<dom-module id='aq-forwardtest-detail-item'>
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+        paper-tabs {
+            --paper-tabs-selection-bar-color: #cc6666;
+
+            --paper-tabs: {
+                margin-bottom: 10px;
+            };
+        }
+
+        .lower-container {
+            margin-top: 10px;
+            --background-color: #f5f5f5;
+            --padding-left: 20px;
+        }
+
+        .middle-container {
+            padding-top: 10px;
+        }
+
+        paper-card {
+        	--paper-card:{
+	        	color: #555555;
+	            margin: 0 auto;
+	            height: 100%;
+	            --background-color: var(--aq-backtest-detail-item-background-color, #fff);
+            }
+        }
+
+        .card-content {
+        	color: #555555;
+            --padding-left: 0px;
+            --padding-right: 0px;
+            padding-top: 0px;
+        }
+
+        #tab-container {
+            border-bottom: 1px solid #e1e1e1;
+            height: 47px;
+        }
+
+        .backtest-detail {
+            margin-top: 15px;
+            border: 1px solid #e1e1e1;
+        }
+        
+        #code-container {
+            min-height: 200px;
+            padding-top: 10px;
+        }
+
+    </style>
+
+    <template>
+
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+    	<div class="layout vertical">
+            <div class="top-container self-center flex">
+            	<template is='dom-if' if='[[forwardTestHeader]]'>
+            		<aq-forward-header-item
+                        heading="[[heading]]" 
+            			header-items="{{forwardTestHeader}}">
+            		</aq-forward-header-item>
+        		</template>
+            </div>
+
+            <div class="middle-container flex">
+            	<template is='dom-if' if='{{metrics}}'>
+            		<aq-backtest-metric-item-list 
+                        heading="Metrics"
+            			forced-semi-wide = "[[forcedSemiWide]]"
+            			metric-items = "{{metrics}}">
+        			</aq-backtest-metric-item-list> 
+            	</template>
+            </div>
+
+            <div class="backtest-detail layout horizontal">
+                <div class="layout" id="vertical-tab-container">
+	                <iron-selector selected="{{detailType}}" 
+                        fallback-selection="0">
+	                    <v-tab selected=[[isSelected(detailType,0)]] icon="add">Performance
+                        </v-tab>
+                        
+                        <v-tab selected=[[isSelected(detailType,1)]] icon="add">Code
+                        </v-tab>
+                        
+                        <v-tab selected=[[isSelected(detailType,2)]] icon="add">Portfolio
+                        </v-tab>
+                        
+                        <v-tab selected=[[isSelected(detailType,3)]] icon="add">Transactions</v-tab>
+                        
+                        <v-tab selected=[[isSelected(detailType,4)]] icon="add">Logs</v-tab>
+                    </iron-selector>
+                </div>
+                
+                <iron-pages selected="{{detailType}}">
+                    <div id="performance-container">
+                        <aq-backtest-performance-detail-item 
+                            active="[[active]]"
+                            backtest="[[backtest]]">
+                        </aq-backtest-performance-detail-item>
+                    </div>
+                    <div id="code-container">
+                        <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">"Code"
+                        </juicy-ace-editor>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </iron-pages>
+            </div>
+      	</div>
+            
+        <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
+
+        <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
+
+        <iron-ajax
+            url="[[computeGetBacktestUrl(backtestId)]]"
+            method='GET'
+            id='getBacktestsQuery'
+            handle-as="json"
+            on-response="onGetBacktestSuccess"
+            on-error="onGetBacktestError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
+        </iron-ajax>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'aq-forwardtest-detail-item',
+
+            properties: {
+                elevation:{
+                    type:Number,
+                    value:1,
+                    notify:true
+                },
+
+                hide: {
+                    type: Boolean,
+                    value: true,
+                },
+
+                active: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_activeChanged',
+                },
+
+                metrics: Object,
+
+                detailType:{
+                    type: Number,
+                    value:0,
+                },
+
+                backtestId: {
+                    type: String,
+                    observer: '_backtestIdChanged',
+                },
+
+                backtest: Object,
+
+                header: Object,
+
+                APIEndPoint: String,
+
+                loading: {
+                    type: Boolean,
+                    readOnly: true,
+                    notify: true,
+                    value: false
+                },
+
+                pctCompleted: {
+                    type: Number,
+                    value: 0,
+                },
+
+                forcedSemiWide: {
+                	type: Boolean,
+                	value: false,
+                },
+
+                heading: {
+                    type: String,
+                    value: "Backtest Details",
+                },
+
+            },
+
+            isSelected: function(detailType, val) {
+                return detailType == val;
+            },
+
+            _backtestIdChanged: function (nId, oId) {
+                if (nId && nId!= "") {
+                    this.reset();
+                    this.requestStaticData();
+                }
+            },
+
+            _activeChanged: function() {
+                if(!this.active && this.backtestId != "") {
+                    console.log("Unsubscribing");
+                    this.fire('unsubscribe-data',{backtestId:this.backtestId});
+                    this.reset();
+                }
+            },
+
+            computeGetBacktestUrl: function (backtestId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/backtest/' + backtestId;
+            },
+
+            reset: function () {
+                this.$$('aq-backtest-performance-detail-item').reset();
+                this.resetMetrics();
+            },
+
+            resetMetrics: function () {
+                this.metrics = [{
+                    "metricName": "Total Return",
+                    "metricValue": "-",
+                    "metricDescription": "Total Return"
+                },
+                {
+                    "metricName": "Annual Return",
+                    "metricValue": "-",
+                    "metricDescription": "Annual Return",
+                },
+                {
+                    "metricName": "Volatility",
+                    "metricValue": "-",
+                    "metricDescription": "Volatility"
+                },
+                {
+                    "metricName": "Sharpe Ratio",
+                    "metricValue": "-",
+                    "metricDescription": "Sharpe Ratio"
+                },
+                {
+                    "metricName": "Information Ratio",
+                    "metricValue": "-",
+                    "metricDescription": "Information Ratio"
+                },
+                {
+                    "metricName": "Sortino Ratio",
+                    "metricValue": "-",
+                    "metricDescription": "Sortino Ratio"
+                },
+                {
+                    "metricName": "Avg. Drawdown",
+                    "metricValue": "-",
+                    "metricDescription": "Avg. Drawdown"
+                },
+                {
+                    "metricName": "Max Drawdown",
+                    "metricValue": "-",
+                    "metricDescription": "Max Drawdown"
+                },
+                {
+                    "metricName": "Calmar Ratio",
+                    "metricValue": "-",
+                    "metricDescription": "Calmar Ratio"
+                },
+                {
+                    "metricName": "Beta",
+                    "metricValue": "-",
+                    "metricDescription": "Beta"
+                },
+                {
+                    "metricName": "Stability",
+                    "metricValue": "-",
+                    "metricDescription": "Stability"
+                },
+                {
+                    "metricName": "Avg. Concentration",
+                    "metricValue": "-",
+                    "metricDescription": "Avg. Concentration"
+                },];
+            },
+
+            subscribeData: function () {
+                this.async(function () {
+                    this.fire('subscribe-data', {backtestId: this.backtestId})
+                }, 1000);
+            },
+
+            onBacktestData: function (e) {
+                
+                //process data only when element is active
+                if (!this.active) {
+                    return
+                }
+
+                data = e.detail;
+
+                if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
+                    
+                    this.$$('aq-backtest-performance-detail-item').addRealTimeData(data);
+
+                } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
+                    this.pctCompleted = -1;
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
+                }
+            },
+
+            requestStaticData: function () {
+                if (this.backtestId && this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
+                    this.$.getBacktestsQuery.generateRequest();
+                }
+            },
+
+            onGetBacktestSuccess: function (e) {
+
+                this.set('backtest', e.detail.response);
+
+                this.backtestHeader = 
+                [
+                    {   
+                        label: "Created",
+                        metric: date.formatDateTime(this.backtest.createdAt), 
+                    }, 
+
+                    {
+                        label: "Date Range",
+                        metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
+                    },
+
+                    {
+                        label: "Status",
+                        metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
+                    }
+                ];
+                
+                if (this.backtest.status == "exception") {
+                        this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
+                    return ;
+                }        
+        
+                if (this.backtest.status == "active") {
+                    this.active = true;
+                    this.subscribeData();
+                    return;
+                }
+
+                if (this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
+                    this.addMetricData(this.backtest.output.analytics.rolling);
+                }
+
+                if (this.backtest.output.variables) {
+                    // this variable is used because array changes are somehow not relaying back the template
+                    this.hasTrackVarData = true;
+                }
+
+                this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);
+
+                this.$$('aq-backtest-performance-detail-item').plotGraphs(); 
+            },
+
+            onGetBacktestError: function (e) {
+                console.log(e);
+            },
+
+            addMetricData: function (data) {
+                this.metrics = [{
+                    "metricName": "Total Return",
+                    "metricValue": data.totalreturn.toString() + '%',
+                    "metricDescription": "Total Return"
+                },
+                    {
+                        "metricName": "Annual Return",
+                        "metricValue": data.annualreturn.toString() + '%',
+                        "metricDescription": "Annual Return",
+                    },
+                    {
+                        "metricName": "Volatility",
+                        "metricValue": data.annualstandarddeviation.toString() + '%',
+                        "metricDescription": "Volatility"
+                    },
+                    {
+                        "metricName": "Sharpe Ratio",
+                        "metricValue": data.sharperatio,
+                        "metricDescription": "Sharpe Ratio"
+                    },
+                    {
+                        "metricName": "Information Ratio",
+                        "metricValue": data.informationratio,
+                        "metricDescription": "Information Ratio"
+                    },
+                    //{"metricName":"Sortino Ratio", "metricValue":"2.5", "metricDescription":"Sortino Ratio"},
+                    //{"metricName":"Avg. Drawdown", "metricValue":data.drawdown.toFixed(2).toString()+'%', "metricDescription":"Avg. Drawdown"},
+                    {
+                        "metricName": "Max Drawdown",
+                        "metricValue": data.maxdrawdown.toString() + '%',
+                        "metricDescription": "Max Drawdown"
+                    },
+                    {
+                        "metricName": "Calmar Ratio",
+                        "metricValue": data.calmarratio,
+                        "metricDescription": "Calmar Ratio"
+                    },
+                    {"metricName": "Beta", "metricValue": data.beta, "metricDescription": "Beta"},
+                    {
+                        "metricName": "Stability",
+                        "metricValue": (data.stability) ? data.stability : "-",
+                        "metricDescription": "Stability"
+                    },
+                    {"metricName": "Alpha", "metricValue": data.alpha.toString() + '%', "metricDescription": "Alpha"},
+                    //{"metricName":"Avg. Concentration", "metricValue":"0.43", "metricDescription":"Avg. Concentration"},
+                ];
+            },
+
+            deepCopy: function(array) {
+				return JSON.parse(JSON.stringify(array));
+			},
+        });
+    </script>
+    
+</dom-module>
+
+
+

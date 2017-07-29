@@ -22,14 +22,14 @@
         }
 
         paper-toolbar {
-            height: 8vh;
+            height: 55px; --8vh;
             color: teal;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         paper-toolbar {
             --paper-toolbar-background: white;
-            border-bottom: 1px solid teal;
+            border-bottom: 1px solid grey;
         }
 
         #profile {
@@ -65,9 +65,14 @@
         }
 
         paper-tabs {
+            color: black !important;
             --paper-tabs-selection-bar-color: #cc6666;
             --paper-tabs-container: {
                 height: 70%
+            };
+
+            --paper-tabs-selection-bar: {
+                height: 4px;
             }
         }
 

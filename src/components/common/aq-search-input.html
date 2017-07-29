@@ -12,10 +12,20 @@
                 justify-content: flex-start;
                 background-color: var(--search-element-background-color,#fff);
                 padding: 5px 10px;
-                border-radius: 4px;
+                --border-radius: 4px;
                 min-width: 220px;
+                border: 1px solid #e1e1e1;
+                height: var(--search-element-height, 20px);
             }
             ::content input{
+                border:none;
+                outline:none;
+                margin-left: 10px;
+                font-size: 12px;
+                background-color: transparent;
+                width: 100%;
+            }
+            input{
                 border:none;
                 outline:none;
                 margin-left: 10px;
@@ -30,7 +40,7 @@
         </style>
         <div class="search-container">
             <iron-icon icon="{{icon}}"></iron-icon>
-            <content></content>
+            <input is="iron-input" placeholder="[[placeholder]]" on-keyup="search" id="search_input" on-blur="blur">
         </div>
 
     </template>
@@ -42,7 +52,19 @@
                     type:String,
                     value:"search"
                 }
-            }
+            },
+
+            search: function () {
+                var search = this.$$('#search_input').value;
+                search = search.toLowerCase();
+                var parent = this;
+            },
+
+            blur: function() {
+              this.$$('#search_input').value="";
+            },
+
+
         })
     </script>
 </dom-module>

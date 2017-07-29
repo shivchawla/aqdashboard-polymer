@@ -1,11 +1,10 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
 
-<link rel="import" href="../help/aq-help-marked-item.html">
-<link rel="import" href="../common/aq-backtest-detail-item.html">
+<link rel="import" href="../common/backtest/aq-backtest-detail-item.html">
+<link rel="import" href="../common/backtest/aq-forwardtest-detail-item.html">
 <link rel="import" href="../aq-profile-img.html">
 <link rel="import" href="../common/aq-profile-pic-element.html">
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 <link rel="import" href="../common/aq-label-content-item.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
@@ -20,47 +19,17 @@
             color: #24293d;
         }
 
-        #author {
-            --margin-top: 40px;
-            --margin-bottom: 15px;
-            font-size: 14px;
-            font-family: 'Lato', sans-serif;
-            border-bottom: 1px solid #efefef;
-        }
-
-        #img {
-            margin-right: 10px;
-            margin-bottom: 5px;
-        }
-
         #post-content {
             margin-bottom: 50px;
-            box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
+            --box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
             border-radius: 4px;
             background-color: white;
             margin-bottom:10px;
-            padding: var(--post-content-padding, 0px);
+            padding: var(--post-content-padding, 10px);
         }
 
         i {
             font-size: 12px;
-        }
-
-        aq-help-marked-item {
-            color: #8c8c8c;
-            font-size: 12px;
-        }
-
-        .tags-container {
-            padding: 0;
-            margin-top: 10px;
-            --margin-bottom: 10px;
-        }
-
-        .tags-header {
-            font-size: 0.8em;
-            color: #727272;
-            margin-right: 10px;
         }
 
         aq-backtest-detail-item {
@@ -76,61 +45,40 @@
         }
 
         polymer-quill-html-render {
-          --border-bottom: 1px solid #efefef;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            min-height: 100px;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+            color: #3c3c3c;
+            padding-left: 30px
+            padding-right: 30px;
+        }
+        
+        .bar {
+            border-bottom: 1px solid #e1e1e1;
+        }
 
-          margin-top: 5px;
-          margin-bottom: 15px;
-          min-height: 100px;
-          --polymer-quill-html-padding: 10px;
+        #quill {
         }
 
     </style>
 
     <template>
         <div id='post-content'>
-            <div id='author' class="layout horizontal center">
-                <aq-profile-img class="self-center" id='img' letter="[[getinitials(postContent)]]" class="self-end"></aq-profile-img>
-                
-                <span class="self-center" id="author-name">by 
-                  <span class="self-center author-name-detail">[[postContent.user.firstName]] [[postContent.user.lastName]]</span>
-                </span>
-              
-                <span class="self-center created-text">&nbsp on 
-                  <span class="self-center created-date">[[format(postContent.updatedAt)]]</span>
-                </span>
-                
-                <div class="flex"></div>
-
-                <template is="dom-if" if="[[postContent.tags.length]]">
-                <div class="tags-div layout horizontal">
-                    <span class="tags-header self-center">Tags:</span>
-                    <div class="tags-container layout horizontal self-center">
-                        <template is="dom-repeat" items="[[postContent.tags]]">
-                            <aq-tag-element class="self-center" label="{{item}}"></aq-tag-element>
-                        </template>
-                    </div>
-                </div>
-                </template>
-
-            </div>
             
-            <!--template is="dom-if" if="[[postContent.tags.length]]">
-                <div class="tags-div layout horizontal">
-                    <span class="tags-header self-center">Tags:</span>
-                    <div class="tags-container layout horizontal self-center">
-                        <template is="dom-repeat" items="[[postContent.tags]]">
-                            <aq-tag-element class="self-center" label="{{item}}"></aq-tag-element>
-                        </template>
-                    </div>
-                </div>
-            </template-->
-
-            <polymer-quill-html-render content="[[postContent.markdownText]]">
+            <polymer-quill-html-render 
+                content="[[postContent.markdownText]]">
             </polymer-quill-html-render>
 
+            <div class="bar"></div>
+            
             <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
-                <aq-backtest-detail-item elevation="0" backtest-id="[[getBacktestId(postContent)]]">
-                </aq-backtest-detail-item>
+                <!--aq-backtest-detail-item title="Attached Backtest Details" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
+                </aq-backtest-detail-item-->
+
+                <aq-forwardtest-detail-item heading="Sample Forward Backtest" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
+                </aq-forwardtest-detail-item>
             </template>
 
         </div>
@@ -151,22 +99,6 @@
                 }
 
                 return false;
-            },
-
-            getinitials: function (item) {
-                if (item && item.user) {
-                    return item.user.firstName[0] + item.user.lastName[0];
-                } else
-                    return "";
-            },
-
-            format: function (date) {
-                var options = {
-                    weekday: "long", year: "numeric", month: "short",
-                    day: "numeric", hour: "2-digit", minute: "2-digit"
-                };
-
-                return new Date(date).toLocaleTimeString("en-us", options);
             },
 
             isValidBacktestId: function (postContent) {

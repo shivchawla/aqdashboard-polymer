@@ -1,0 +1,81 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<dom-module id='aq-analyze-home-header'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		#header {
+			background-color: lightgray;
+		}
+
+		.header-item {
+			font-size: 12px;
+			width: 160px;
+		}
+
+		paper-checkbox {
+            --paper-checkbox-checked-color: #cc6666;
+            margin-right: 5px;
+		}
+
+		#backtest-name {
+			padding-left: 10px;
+		}
+
+		.status {
+			--width: 160px !important;
+		}
+
+		.dtrange {
+			width: 180px !important;	
+		}
+
+		.small {
+			width: 140px !important;
+		}
+
+		#empty-header {
+			width: 70px;
+		}
+
+	</style>
+
+	<template>
+		<div id="header" class="layout horizontal">
+		 	<div id="backtest-name" class="layout horizontal">
+			 	<paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
+	            	on-change='onCheckAllBacktest'>
+	        	</paper-checkbox>
+
+	        	<p class="header-item">BACKTEST</p>
+        	</div>
+        	<p class="header-item">CREATED ON</p>
+        	<p class="dtrange header-item">DATE RANGE</p>
+        	<p class="small header-item">STATUS</p>
+        	<p class="small header-item">TOTAL RETURN</p>
+        	<p class="small header-item">SHARPE RATIO</p>
+        	<template is='dom-if' if=[[!shareIcon]]>
+        		<div id="empty-header"></div>
+    		</template>
+    	</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-analyze-home-header',
+
+			properties: {
+				checkAll:{
+                    type:Boolean,
+                    value:false
+                },
+			},
+
+			onCheckAllBacktest: function () {
+                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.$$('paper-checkbox').checked}});
+            }
+
+		});
+	</script>
+</dom-module>

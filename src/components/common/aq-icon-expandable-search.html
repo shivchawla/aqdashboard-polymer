@@ -1,0 +1,141 @@
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./aq-search-input.html'>
+<link rel='import' href='../../icons/aq-iconset.html'>
+
+<dom-module id='aq-icon-expandable-search'>
+	<style>
+		paper-icon-button {
+			height: 34px;
+			width: 34px;
+			border: 1px solid #e1e1e1;
+		}
+
+		paper-icon-button.active {
+			color: white;
+			background-color: teal;
+		}
+
+		paper-button {
+			height: 32px;
+			border: 1px solid #e1e1e1;
+			color: teal;
+		}
+
+	 	#searchbox {
+	 		width: 100%;
+            height: 30px;
+            line-height: 46px;
+            border: 0;
+            margin: 0;
+            padding-left: 10px;
+            border: 1px solid #e5e5e5;
+            font-size: 14px;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease-in-out;
+        }
+
+        #searchbox:focus {
+            outline: 0;
+            background-color: #f7f7f7;
+        }
+
+        .search-bar {
+            width: 100%;
+            --margin: 0 auto;
+            --margin-bottom: 10px;
+            --margin-top: 10px;
+        }
+
+	</style>
+
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<template>
+		<div class="layout horizontal end">
+            <template is='dom-if' if='[[active]]'>  
+                <div class="search-bar">
+                    <input id="searchbox" placeholder="Search your strategy"
+                        value="{{searchText::change}}"
+                        on-keydown="checkForKeys">
+                </div>
+            </template>
+            
+            <div class="flex"></div>
+            
+            <template is='dom-if' if='[[icon]]'>
+            	<paper-icon-button class$="[[computeSearchClass(active)]]" icon="aq-icons:search" on-tap="onSearch"></paper-icon-button>
+            </template>
+
+         	<template is='dom-if' if='[[!icon]]'>
+            	<paper-button noink class$="[[computeSearchClass(active)]]"  on-tap="onSearch">Search</paper-button>
+            </template>
+
+        </div>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-icon-expandable-search',
+
+			property: {
+				active :{
+					type: Boolean,
+					value: false,
+				},
+
+				icon: {
+					type: Boolean,
+					value: false,
+				}
+			},
+
+			onBlur: function() {
+				
+
+				//this.$$('paper-icon-button').style.display = 'block';
+			},
+
+			onSearch: function() {
+				if(this.active){
+
+				} else {
+					this.active = true;
+				}
+				
+				//this.$$('paper-icon-button').style.display = 'none';
+			},
+
+			computeSearchClass: function(active) {
+				
+				console.log(active);
+				if (active) {
+					return "active";
+				} else {
+					return "";
+				}
+
+			},
+
+		 	checkForKeys: function (e) {
+                // check if 'esc' was pressed
+                if (e.keyCode === 27) {
+                    
+                	if(this.$$('#searchbox').value != "") {
+                		this.$$('#searchbox').value = ""; 	
+                	} else {
+                		this.active = false;
+						this.$$('#searchbox').blur();	
+                	}
+                } else if (e.keyCode === 13) {
+                    this.debounce('search', this.onSearch, 50);
+                }
+            },
+
+		});
+	</script>
+</dom-module>

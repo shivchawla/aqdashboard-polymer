@@ -48,8 +48,8 @@
         }
 
         .tag-bar {
-        	width: 30%;
-        	min-width: 375px;
+        	width: 85%;
+        	--min-width: 375px;
         }
 
         .add-tag span {
@@ -75,8 +75,8 @@
         .search-btn {
             border: none;
             font-size: 13px;
-            background-color: teal;
-            color: #fff;
+            background-color: #cc6666;
+            color: white;
             padding: 0 20px;
             border-radius: 2px;
             height: 35px;
@@ -113,8 +113,8 @@
             </div>
 
             <template is='dom-if' if='[[addTag]]'>
-	             <aq-tags-input-container class="search-bar layout horizontal center-justified">
-                    <input type="text" id="tagsInput" placeholder="Add tags here"
+	             <aq-tags-input-container class="tag-bar layout horizontal center-justified">
+                    <input type="text" id="tagsInput" placeholder="Add tags here and press Enter"
                            on-keydown="onChange" on-keyup="scrollToBottom">
                     <div id="tagsContainer" class="tags-container">
                         <template is="dom-repeat" items="{{tags}}">
@@ -191,10 +191,10 @@
                 this.addTag = false;
             },
 
-            search: function () {
+            search: function (forced = false) {
                 this.searchValue = this.$$('#searchbox').value;
 
-                if (this.lastSelectedCategory != this.selectedCategory || this.lastSearchValue != this.searchValue) {
+                if (this.lastSelectedCategory != this.selectedCategory || this.lastSearchValue != this.searchValue || forced) {
 
                     this.fire('search-action', {
                         text: this.searchValue,
@@ -209,6 +209,14 @@
                 this.lastSearchValue = this.searchValue;
                 this.lastSelectedCategory = this.selectedCategory;
 
+            },
+
+            blur: function() {
+                if (this.$$('#searchbox').value == "") {
+                    this.debounce('search', function(){this.search(true);}, 50);
+                }
+
+                this.async(function(){this.$$('#searchbox').focus();}, 50);
             },
 
             toggle: function () {
@@ -234,7 +242,7 @@
                 if (e.keyCode === 27) {
                     this.$$('#searchbox').value = "";
                     this.selectedCategory = 0;
-                    this.search();
+                    this.blur();
                 } else if (e.keyCode === 13) {
                     this.search();
                 }

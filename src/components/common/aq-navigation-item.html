@@ -1,0 +1,106 @@
+<link rel='import' href='../../../bower_components/paper-icon-button/paper-icon-button.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./aq-breadcrumb-item.html'>
+
+<dom-module id="aq-navigation-item">
+	<style>
+		#navigation {
+			margin-top: 5px;
+			margin-bottom: 20px;
+			--margin-left: -10px;
+		}
+
+		#header-container {
+			margin-top: 8px;
+		}
+
+		paper-icon-button {
+			color: #cc6666;
+		}
+
+		#header {
+			font-size: 24px;
+			color: #3c3c3c;
+		}
+
+	</style>
+
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<template>
+		
+		<div class="layout horizontal start">
+            <!--paper-icon-button class="start" noink id='backButton' on-tap="goBack" icon="arrow-back">
+            </paper-icon-button-->
+        
+			<div id="header-container" class="layout vertical">
+		    	<div id="header">[[header]]</div>
+		        <aq-breadcrumb-item path="[[path]]"></aq-breadcrumb-item>
+		    </div>
+	    </div>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-navigation-item',
+
+			property:{
+				header: String,
+
+				path: Array,
+			},
+
+			listeners: {
+				'bread-crumb-clicked':'onRoute',
+			},
+
+			onRoute: function(e) {
+				var page = e.detail.page;
+				var idx = page.indexOf(' >');
+				
+				if(idx != -1) {
+					page = page.slice(0, idx);
+				}
+
+				var data = e.detail.data;
+				var route = "";
+
+				switch (page) {
+					case "Home": 
+						route = '/'; 
+						break;
+					case "Research": 
+						route = '/dashboard'; 
+						break;
+					case "All Strategies": 
+						route = '/dashboard/editor'; 
+						break;
+					case "Community": 
+						route = '/dashboard/community'; 
+						break;
+					case "Help": 
+						route = '/dashboard/help'; 
+						break;
+					case "All Backtests":
+						var path = window.location.hash;
+						path = path.slice(2, path.length - 1).split("/");
+						
+						if (path.length >= 3) {
+							route = '/dashboard/analyze/'.concat(path[2]);
+						} 
+
+						break;
+				}
+
+				if(route != "") {
+					this.fire('rt-changed', {route: route});
+				}
+
+			}	
+		})
+		
+	</script>
+</dom-module>
