@@ -8,7 +8,8 @@
 <link rel="import" href="../components/analyze/aq-analyze-compare.html">
 <link rel="import" href="../components/analyze/aq-analyze-compare-results.html">
 
-<link rel="import" href="../components/analyze/aq-analyze-detail.html">
+<link rel="import" href="../components/analyze/aq-analyze-backtest-detail.html">
+<link rel="import" href="../components/analyze/aq-analyze-forwardtest-detail.html">
 
 <dom-module id="aq-analyze-main">
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -23,27 +24,38 @@
         <app-location route="{{route}}" use-hash-as-path></app-location>
 
         <app-route
-                route="{{route}}"
-                pattern="/dashboard/analyze/:strategyId/:backtestId"
-                data="{{detailData}}"
-                active="{{detailActive}}">
+            route="{{route}}"
+            pattern="/dashboard/analyze/:strategyId/:id"
+            data="{{detailData}}"
+            query-params="{{queryParams}}"
+            active="{{detailActive}}">
         </app-route>
 
         <app-route
-                route="{{route}}"
-                pattern="/dashboard/analyze/:strategyId"
-                data="{{homeData}}"
-                active="{{homeActive}}">
+            route="{{route}}"
+            pattern="/dashboard/analyze/:strategyId"
+            data="{{homeData}}"
+            active="{{homeActive}}">
         </app-route>
 
-        <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive)]]">
+        <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive, queryParams)]]">
             <template is="iron-lazy-page" page="home">
                 <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
             </template>
 
-            <template is="iron-lazy-page" page="detail">
-                <aq-analyze-detail backtest-id='[[detailData.backtestId]]'
-                                   strategy-id='[[detailData.strategyId]]' index="{{index}}"></aq-analyze-detail>
+            <template is="iron-lazy-page" page="detail-backtest">
+                <aq-analyze-backtest-detail 
+                    backtest-id='[[detailData.id]]'
+                    strategy-id='[[detailData.strategyId]]' 
+                    heading="[[queryParams.heading]]">
+                </aq-analyze-backtest-detail>
+            </template>
+
+            <template is="iron-lazy-page" page="detail-forwardtest">
+                <aq-analyze-forwardtest-detail 
+                    forwardtest-id='[[detailData.id]]'
+                    strategy-id='[[detailData.strategyId]]'>
+                </aq-analyze-forwardtest-detail>
             </template>
 
         </iron-lazy-pages>
@@ -67,25 +79,30 @@
                     type: Boolean,
                     value: false,
                 },
-                index:{
-                    type:String
-                },
 
                 homeActive: Boolean,
                 detailActive: Boolean,
+                queryParams: Object
             },
-           
-            computeAnalyzePage: function (homeActive, detailActive) {
+
+            computeAnalyzePage: function (homeActive, detailActive, queryParams) {
+
+                console.log(queryParams);
 
                 var x = "";
                 if (detailActive) {
-                    x = "detail";
+                    if(queryParams) {
+                        if (queryParams.type=="forward") {
+                            x = "detail-forwardtest";      
+                        } else if(queryParams.type=="backtest") {
+                            x = "detail-backtest";      
+                        }
+                    }
                 } else {
                     x = "home";
                 }
 
                 return x;
-
             },
 
         });

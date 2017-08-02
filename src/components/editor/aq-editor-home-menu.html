@@ -40,9 +40,13 @@
         }
 
         paper-button[disabled] {
-            border: 1px solid #e1e1e1;
-            color: #e1e1e1;
+            border: 1px solid #c0c0c0;
+            color: #c0c0c0;
             background-color: white;
+        }
+
+        #stop-all-button {
+            width: 120px !important;
         }
 
         iron-icon {
@@ -59,34 +63,32 @@
             font-size: 18px;
         }
 
+        paper-checkbox {
+            --paper-checkbox-unchecked-color: #959595;
+        }
+
     </style>
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
         
-        <!--aq-sub-toolbar-->
         <div id="menu-container" class="layout horizontal">    
             <paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
                             on-change='onCheckAllStrategies'></paper-checkbox>
-            <p class="strategy-header self-center">All Strategies</p>
+            <p class="strategy-header self-center">[[heading]]</p>
             
             <div class="flex"></div>
-
-            <!--aq-icon-expandable-search class="self-center"></aq-icon-expandable-search-->
-
-            <paper-button id='deleteIcon' noink class="iconButton self-center" on-tap="onDelete" disabled="[[!activeDelete]]"><iron-icon icon="aq-icons:delete"></iron-icon> Delete Selected
-            </paper-button>
-
-            <!--div id='menu-icons'>
-                <paper-icon-button id='newIcon' noink class="iconButton" icon="aq-icons:add" on-tap="createNew">
-                </paper-icon-button>
-            </div-->
             
-            <!--paper-tooltip for='newIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>New</paper-tooltip>
+            <template is='dom-if' if='[[forwardTest]]'>
+                <paper-button  id="stop-all-button" noink class="self-center" on-tap="onStopAll" disabled="[[!isSelected]]"> [[computeButtonLabel(forwardTest)]]
+                </paper-button>
+            </template>
 
-            <paper-tooltip for='deleteIcon' offset="2" class='iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip-->
+            <template is='dom-if' if='[[!forwardTest]]'>
+                <paper-button noink class="self-center" on-tap="onDeleteAll" disabled="[[!isSelected]]"><iron-icon icon="aq-icons:delete"></iron-icon> [[computeButtonLabel(forwardTest)]]
+                </paper-button>
+            </template>
 
-        <!--/aq-sub-toolbar-->
         </div>
     </template>
 
@@ -95,7 +97,7 @@
             is: 'aq-editor-home-menu',
 
             properties: {
-                activeDelete: {
+                isSelected: {
                     type: Boolean,
                     value: false,
                 },
@@ -109,7 +111,21 @@
                     type: Boolean,
                     value: false,
                     notify: true,
+                },
+
+                forwardTest: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                heading: {
+                    type: String,
+                    value: "All Strategies",
                 }
+            },
+
+            computeButtonLabel: function(forwardTest) {
+                return forwardTest ? "Stop Selected" : "Delete Selected";
             },
             
             toggle: function () {
@@ -140,8 +156,9 @@
 
             onCheckAllStrategies: function () {
                 this.checkAll = this.$$('paper-checkbox').checked;
-                this.fire('iron-signal', {name: 'select-strategy', data: {checked: this.$$('paper-checkbox').checked}});
+                this.fire('iron-signal', {name: 'select-strategy', data: {checked: this.$$('paper-checkbox').checked, live: this.forwardTest}});
             },
+
             focusInputBox: function () {
                 this.$$('#searchbox').focus();
             }

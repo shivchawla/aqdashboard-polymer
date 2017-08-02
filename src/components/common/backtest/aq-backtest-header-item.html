@@ -1,6 +1,69 @@
 <link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
 
+<dom-module id='aq-forwardtest-header-item'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		.container {
+			border-bottom: 1px solid #e5e5e5;
+			padding-right: 20px;
+			padding-bottom: 3px;
+			--margin-bottom: 5px;
+		}
+
+		aq-qqq {
+			--margin-top: 2px;
+		}
+
+		#ft-name {
+			font-weight: 700;
+			margin-bottom: 10px;
+			
+		}
+
+		paper-button {
+			--paper-button: {
+				color: white;
+				background-color: #cc6666;
+				text-transform: none;
+			};
+		}
+	</style>
+
+	<template>
+		<div class="container layout horizontal">
+	        <div class="layout vertical">
+	        	<div id="ft-name">[[heading]]</div>
+	        	<div class="layout horizontal">
+	        		<div>Test Started 3 hours ago</div>
+	        		<div>Test Running</div> 
+	        	</div>
+        	</div>
+
+        	<div class="flex"></div>
+
+	        <paper-button noink>STOP LIVE TEST</paper-button>
+    	</div>
+	</template>
+
+	<script>
+		Polymer({
+			is:'aq-forwardtest-header-item',
+			properties :{
+				heading: String,
+
+				headerItems:{
+					type:Array,
+					value:[],
+				},
+			},
+
+		});
+	</script>
+</dom-module>
+
 <dom-module id='aq-backtest-header-item'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
@@ -20,6 +83,7 @@
 		#bt-name {
 			font-weight: 700;
 			margin-bottom: 10px;
+			font-size: 18px;
 		}
 	</style>
 

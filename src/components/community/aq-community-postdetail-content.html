@@ -74,11 +74,8 @@
             <div class="bar"></div>
             
             <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
-                <!--aq-backtest-detail-item title="Attached Backtest Details" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
-                </aq-backtest-detail-item-->
-
-                <aq-forwardtest-detail-item heading="Sample Forward Backtest" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
-                </aq-forwardtest-detail-item>
+                <aq-backtest-detail-item title="Attached Backtest Details" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
+                </aq-backtest-detail-item>
             </template>
 
         </div>

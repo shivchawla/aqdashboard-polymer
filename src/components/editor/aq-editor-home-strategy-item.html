@@ -21,10 +21,10 @@
         }
 
         .row {
-            border: 1px solid #e1e1e1;
+            --border: 1px solid #e1e1e1;
             border-bottom: none;
             background-color: white;
-            color: #3c3c3c;
+            color: #494949;
             box-sizing: border-box;
             overflow: hidden;
             font-weight: 400;
@@ -38,6 +38,9 @@
 
         paper-checkbox {
             --paper-checkbox-checked-color: #cc6666;
+            --paper-checkbox-unchecked-color: #959595;
+        }
+
         }
 
         .strategy-name {
@@ -115,6 +118,10 @@
             font-weight: 700;
         }
 
+        .right-container {
+            margin-right: 15px;
+        }
+
         .right-container[narrow-viewport] {
         	@apply(--layout-vertical);
         }
@@ -126,6 +133,28 @@
 
         #strategy-content-container {
             margin-top: 15px;
+        }
+
+        paper-button {
+            width:120px;
+            height:22px;
+            text-transform: none;
+            --paper-button:{
+                color: teal;
+                font-size: 14px;
+                border: 1px solid teal;
+            };
+        }
+
+        paper-button[disabled] {
+            border: 1px solid #c0c0c0;
+            color: #c0c0c0;
+            background-color: white;
+        }
+
+        paper-button:hover {
+            background-color: teal;
+            color: white;
         }
 
     </style>
@@ -152,11 +181,15 @@
                     </div>
                 </div>
                 
-                <div class='right-container layout horizontal flex'>
-	                <div class="flex"></div>
-	                <div class="strategy-bt" on-tap='goToAnalyze'>
+                <div class='right-container layout horizontal flex'> 
+                    <div class="flex"></div>
+	                <paper-button noink on-tap='goToAnalyze' disabled="[[isShowBacktestsDisabled(numBacktest)]]">
                         Backtests ([[numBacktest]]) 
-	                </div>
+	                </paper-button>
+
+                    <!--paper-button noink on-tap='runForwardTest'
+                        disabled="[[!isForwardTestingAvailable(numBacktest, forwardtestId)]]">Forward Test
+                    </paper-button-->
                 </div>
             </div>
             
@@ -181,6 +214,16 @@
                     type: Number,
                 },
 
+                activeForwardtest: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                forwardtestId: {
+                    type: String,
+                    value: "",
+                },
+
                 strategyId: String,
 
                 createdAt: String,
@@ -198,12 +241,26 @@
             },
 
             onCheck: function () {
-                this.fire('check-action', {id: this.strategyId, checked: this.$.checkbox.checked});
+                this.fire('check-action-test', {id: this.strategyId, checked: this.$.checkbox.checked});
             },
 
             onSelectStrategy: function(e) {
-                this.$.checkbox.checked = e.detail.checked;
-            	this.onCheck(); 
+                if(!e.detail.live) {
+                    this.$.checkbox.checked = e.detail.checked;
+                	this.onCheck(); 
+                }
+            },
+           
+            isForwardTestingAvailable: function(numBacktest, forwardtestId){
+                
+            },
+
+            isShowBacktestsDisabled: function(numBacktest) {
+                return numBacktest == 0;
+            },
+
+            runForwardTest: function(e) {
+                this.fire('run-forwardtest-action', {strategyId: this.strategyId});
             }
 
         });

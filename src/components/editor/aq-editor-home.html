@@ -12,6 +12,7 @@
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
 <link rel='import' href='./aq-editor-home-menu.html'>
 <link rel='import' href='./aq-editor-home-strategy-item.html'>
+<link rel='import' href='./aq-editor-home-forward-strategy-item.html'>
 
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
@@ -106,6 +107,7 @@
             margin-left: 8%;
             margin-right: 8%;
             height: 100%;
+            min-height: 450px;
         }
 
         .strategy-result{
@@ -125,7 +127,7 @@
         paper-button {
             font-size: 14px;
             --padding: 0 20px;
-            border-radius: 2px;
+            --border-radius: 2px;
             height: 32px;
             background-color: #cc6666;
             color: white;
@@ -181,8 +183,52 @@
 
         aq-icon-expandable-search {
             --height: 32px;
-            width: 50%;
+            width: 30%;
+            max-width: 400px;
         }
+
+        #test-strategy-item-container {
+            border: 1px solid #e1e1e1;
+        }
+
+        #live-strategy-item-container {
+            --border: 1px solid #e1e1e1;
+            margin-bottom: 5px;
+        }
+
+        #test-strategy-container {
+            border: 1px solid #e1e1e1;
+        }
+
+        #live-strategy-container {
+            border: 1px solid #e1e1e1;
+            margin-bottom: 30px;
+        }
+
+        paper-card {
+            --paper-card :{
+                z-index: 1;
+            }
+        }
+        paper-checkbox {
+            --paper-checkbox-unchecked-color: #c1c1c1;
+        }
+
+        .heading {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform:uppercase;
+        }
+
+        .border {
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .search-header {
+            margin-bottom: 10px;
+        }
+
+
 
     </style>
 
@@ -237,69 +283,79 @@
             current-path="[[currentPath]]">
 
             <div class="header-button self-center">
-                <paper-button noink id="createButton" on-tap="createNew"><iron-icon icon="aq-icons:add"></iron-icon>Create New
+                <paper-button noink id="createButton" on-tap="createNew"><!--iron-icon icon="aq-icons:add"></iron-icon-->Create New
                 </paper-button>
             </div>
 
-            <div class="internal-content-header">
-                <div class="layout horizontal">
-                    <div class="flex"></div>
-                     <aq-icon-expandable-search icon=0 class="self-center"></aq-icon-expandable-search>
-                </div>
-
-                <div id='ifsearch'>
-                    <p class="strategy-result">Strategy results for
-                        <span class="search-string">"[[searchParam.search]]"</span>
-                    </p>
-                    <hr>
-                </div>
-            </div>
+            
 
             <div class="strategy-container internal-content layout vertical">
+                <div class="search-header">
+                    <div class="layout horizontal">
+                        <div class="flex"></div>
+                         <aq-icon-expandable-search has-icon=true class="self-center"></aq-icon-expandable-search>
+                    </div>
 
-                <!--div class="layout horizontal">
-                    <template is='dom-if' if='[[searchActive]]'>  
-                        <div class="search-bar self-center">
-                            <input id="searchbox" placeholder="Search your strategy" class="flex"
-                                value="{{searchText::change}}"
-                                on-keydown="checkForKeys" on-blur='blur'>
-                            <paper-button class="btn search-btn" on-tap="search">Search</paper-button>
+                    <div id='ifsearch'>
+                        <p class="strategy-result">Strategy results for
+                            <span class="search-string">"[[searchParam.search]]"</span>
+                        </p>
+                        <hr>
+                    </div>
+                </div>
+
+                <template is='dom-if' if='[[liveStrategies]]'>
+                    <div id="live-strategy-container">
+                    <div class="card-content">
+                        <div class="heading">Live Tests</div>
+                        <aq-editor-home-menu 
+                            check-all="{{checkAllLive}}" 
+                            is-selected="[[hasCheckedStrategies(checkedCount, 'live')]]"
+                            forward-test
+                            heading="All Tests"> 
+                        </aq-editor-home-menu>
+
+                        <div id="live-strategy-item-container">
+                            <template is="dom-repeat" items="{{liveStrategies}}" id='strategyList'>
+                                <aq-editor-home-forward-strategy-item
+                                    strategy-name="[[item.name]]"
+                                    strategy-id="[[item._id]]"
+                                    forwardtest-id="[[item.forwardtest._id]]"
+                                    created-date="[[formatDateTime(item.forwardtest.createdAt)]]"
+                                    status="[[formatForwardTestStatus(item.forwardtest.error)]]"
+                                    >
+                                </aq-editor-home-forward-strategy-item>
+                                <!--div class="border"></div-->
+                            </template>
                         </div>
-                    </template>
+                    </div>
+                    </div>
+                </template>
 
-                    <template is='dom-if' if='[[!searchActive]]'>
-                        <div class="flex"></div>  
-                        <paper-icon-button icon="aq-icons:search" on-tap="openSearch">Search</paper-icon-button>
-                    </template>
+                <template is='dom-if' if='[[testStrategies]]'>
+                    <div id="test-strategy-container">
+                        <div class="card-content">
+                            <div class="heading">Test Strategies</div>
+                            <aq-editor-home-menu 
+                                check-all="{{checkAllTest}}" 
+                                is-selected="[[hasCheckedStrategies(checkedCount, 'test')]]"> 
+                            </aq-editor-home-menu>
 
-                </div-->
-
-                <!--div class="layout horizontal">
-                    <div class="flex"></div>
-                    <aq-icon-expandable-search class="self-center"></aq-icon-expandable-search>
-                </div-->
-
-                <!--div id='ifsearch'>
-                    <p class="strategy-result">Strategy results for
-                        <span class="search-string">"[[searchParam.search]]"</span>
-                    </p>
-                    <hr>
-                </div-->
-
-                
-
-                <aq-editor-home-menu check-all="{{checkAll}}" 
-                        active-delete="[[hasCheckedStrategies(checkedCount)]]">  
-                </aq-editor-home-menu>
-
-                <template is="dom-repeat" items="{{strategies}}" id='strategyList'>
-                    <aq-editor-home-strategy-item
-                            strategy-name="[[item.name]]"
-                            num-backtest="[[item.backtests]]"
-                            strategy-desc="[[item.description]]"
-                            strategy-id="[[item._id]]"
-                            created-at="[[formatDateTime(item.createdAt)]]">
-                    </aq-editor-home-strategy-item>
+                            <div id="test-strategy-item-container">
+                                <template is="dom-repeat" items="{{testStrategies}}" id='strategyList'>
+                                    <aq-editor-home-strategy-item
+                                        strategy-name="[[item.name]]"
+                                        num-backtest="[[item.numBacktests]]"
+                                        forwardtest-id="[[item.forwardtest]]"
+                                        strategy-desc="[[item.description]]"
+                                        strategy-id="[[item._id]]"
+                                        created-at="[[formatDateTime(item.createdAt)]]">
+                                    </aq-editor-home-strategy-item>
+                                    <div class="border"></div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
                 </template>
 
             </div>
@@ -326,15 +382,21 @@
             is: 'aq-editor-home',
 
             properties: {
-                strategies: {
+                testStrategies: {
                     type: Array,
+                    value: [],
+                },
+
+                liveStrategies: {
+                    type: Array,
+                    value: [],
                 },
 
                 color: {type: String},
 
                 checkedCount: {
-                    type: Number,
-                    value: 0,
+                    type: Object,
+                    value: {},
                 },
 
                 checkedItems: {
@@ -373,9 +435,13 @@
                 loading: Boolean,
 
                 checkAll: {
-                    type: Boolean,
-                    value: false,
+                    type: Object,
+                    value: {},
                 },
+
+                checkAllLive: Boolean,
+
+                checkAllTest: Boolean,
 
                 currentPath: {
                     type: Array,
@@ -387,11 +453,14 @@
                     value: false,
                 },
 
+                runForwardStrategyData: {
+                    type: Object,
+                    value:{},
+                }
+
             },
 
             listeners: {
-                //'mouseover': '_mouseOver',
-                //'mouseleave': '_mouseLeave',
                 'deleteClicked': 'openDeletionDialog',
                 'compareClicked': 'openCompareDialog',
                 'previewClicked': 'openPreview',
@@ -399,14 +468,16 @@
                 'shareClicked': 'goToShare',
                 'cloneClicked': 'goToClone',
                 'editorClicked': 'goToEditor',
-                //'create-action':'createStrategy',
-                'check-action': 'checkStrategy',
+                'check-action-test': 'checkStrategyTest',
+                'check-action-live': 'checkStrategyLive',
                 'delete-action': 'onDeletion',
                 'search-action': 'onSearch',
-                // 'check-all-strategies': 'onCheckAllStrategies',
+                'run-forwardtest-action':'runForwardTest',
+                'route-forwardtest-detail-action':'goToForwardTest',
             },
 
             attached: function () {
+                //this.debounce('fetchResults', function(){this.fetchResults();}, 1000);
                 if (!this.$.authItem.checkHasToken()) {
                     this.fire('rt-changed', {route: '/user/signin'});
                     return;
@@ -419,7 +490,6 @@
                     this.fire('newClicked');
                 }
 
-
             },
 
             computPostDeleteStrategyUrl: function (deleteId) {
@@ -428,7 +498,27 @@
             },
 
             onGetStrategiesResponse: function (data) {
-                this.strategies = data.detail.response;
+                var strategies = data.detail.response;
+               
+                this.testStrategies = strategies.length > 0 ? strategies : null;
+                
+                var liveStrategies = null;
+                
+                //compute live strategies
+                for (var i=0;i<strategies.length;i++) {
+                    if(strategies[i].numForwardtests > 0) {
+                        if(liveStrategies) {
+                            liveStrategies.push(strategies[i]);    
+                        } else {
+                            liveStrategies = [strategies[i]];
+                        }
+                    }
+                }
+
+                this.liveStrategies = liveStrategies;
+                console.log(this.liveStrategies);
+                //Get forward test minor details 
+
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
                     this.dirtyBit = 0;
                 } else {
@@ -437,88 +527,6 @@
             },
 
             onGetStrategiesError: function (data) {
-            },
-
-
-            _currentRowIndex: -1,
-
-            _sharedActionMenu: null,
-
-            _findAncestor: function (node, fn) {
-                while (node && fn.call(this, node)) {
-                    node = node.parentNode;
-                }
-                return node;
-            },
-
-            _mouseOver: function (e) {
-                var row = this._findAncestor(e.target, function (node) {
-                    return node != this && !node.classList.contains('row') && node.id !== 'actions';
-                });
-
-                if (row && row.classList.contains('row')) {
-                    this._hideActions();
-                    this._showActions(row);
-
-                } else if (row.id !== 'actions') {
-                    this._hideActions();
-                }
-            },
-
-            _mouseLeave: function () {
-                this._hideActions();
-            },
-
-            _showActions: function (row) {
-                var sharedActionMenu = this._sharedActionMenu;
-                var rowOffsetTop = row.offsetTop;
-                if (!sharedActionMenu) {
-                    this._sharedActionMenu = document.createElement('aq-editor-home-elementmenu');
-                    this._sharedActionMenu.classList.add('hidden');
-                    Polymer.dom(this.$$('#actions')).appendChild(this._sharedActionMenu);
-                    sharedActionMenu = this._sharedActionMenu;
-                }
-                sharedActionMenu.iconsOnly = true;
-                //sharedActionMenu.strategyId = this.
-                sharedActionMenu.element = "aa";//this.elements[index].name;
-                sharedActionMenu.style.top = rowOffsetTop + 'px';
-                this._layoutIfNeeded(sharedActionMenu);
-                sharedActionMenu.classList.remove('hidden');
-                row.classList.add('hover');
-                //this._currentRowIndex = index;
-                this._currentRow = row;
-            },
-
-            _hideActions: function () {
-                var row = this._currentRow;
-                var sharedActionMenu = this._sharedActionMenu;
-                if (row) {
-                    if (sharedActionMenu) {
-                        sharedActionMenu.classList.add('hidden');
-                    }
-                    row.classList.remove('hover');
-                    this._currentRowIndex = -1;
-                    this._currentRow = null;
-                }
-            },
-
-            _elementLink: function (name) {
-                return '/elements/' + name;
-            },
-
-            _getHeaderStyle: function (color) {
-                return 'background-color: ' + color + ';';
-            },
-
-            _elementsChanged: function () {
-                this.classList.add('hidden');
-                this.async(function () {
-                    this.classList.remove('hidden');
-                }, 1);
-            },
-
-            _layoutIfNeeded: function (el) {
-                return el.offsetTop;
             },
 
             openDeletionDialog: function () {
@@ -548,9 +556,9 @@
             goToClone: function (e) {
                 var strategyId = this._currentRow.id;
 
-                for (i in this.strategies) {
-                    if (strategyId == this.strategies[i]._id) {
-                        e.detail["strategy"] = this.strategies[i]
+                for (i in this.testStrategies) {
+                    if (strategyId == this.testStrategies[i]._id) {
+                        e.detail["strategy"] = this.testStrategies[i]
                         break;
                     }
                 }
@@ -567,29 +575,63 @@
                 this.fire('rt-changed', {route: '/dashboard/editor/' + strategyId});
             },
 
-            checkStrategy: function (e) {
+            checkStrategyLive: function(e) {
+                this.checkStrategy(e, "live");
+            },
+
+            checkStrategyTest: function(e) {
+                this.checkStrategy(e, "test");
+            },            
+
+            checkStrategy: function (e, type) {
                 var checked = e.detail.checked;
 
-                this.checkedItems[e.detail.id] = e.detail.checked;
+                if (!this.checkedItems[type]) {
+                    this.checkedItems[type] = {};
+                }
+
+                if(!this.checkedCount[type]) {
+                    this.checkedCount[type] = 0;
+                }
+
+                this.checkedItems[type][e.detail.id] = e.detail.checked;
 
                 if (checked == true) {
-                    this.checkedCount += 1;
+                    this.checkedCount[type] += 1;
                 } else {
-                    this.checkedCount -= 1;
+                    this.checkedCount[type] -= 1;
                 }
 
-                if(this.checkedCount > this.strategies.length){
-                    this.checkedCount = this.strategies.length;
+                var strategies = [];
+                if (type=="test") {
+                    strategies = this.testStrategies;
+                } else {
+                    strategies = this.liveStrategies;
                 }
-                this.checkAll = this.checkedCount == this.strategies.length;
+
+                if(this.checkedCount[type] > strategies.length){
+                    this.checkedCount[type] = strategies.length;
+                }
+
+                this.checkAll[type] = this.checkedCount[type] == strategies.length;
+
+                this.checkAllLive = this.checkAll["live"];
+                this.checkAllTest = this.checkAll["test"];
+
+                
+                //WEIRD way to capture change in object
+                var checkedCount = this.checkedCount;
+                this.checkedCount = {};
+                this.checkedCount = checkedCount;
+
             },
 
-            hasCheckedStrategies: function (checkedCount) {
-                return checkedCount > 0;
+            hasCheckedStrategies: function (checkedCount, type) {
+                return checkedCount[type] > 0;
             },
 
-            getMessageSuffix: function (checkedCount) {
-                return checkedCount > 1 ? "ies" : "y";
+            getMessageSuffix: function (checkedCount, type) {
+                return checkedCount[type] > 1 ? "ies" : "y";
             },
 
             onSearch: function (e) {
@@ -598,7 +640,9 @@
                     this.fire('rt-changed', {route: '/user/signin'});
                 }
 
-                searchtext = e.detail.searchtext;
+                searchtext = e.detail.searchText;
+
+                console.log(searchtext);
 
                 if (searchtext != "") {
                     this.ifsearch == true;
@@ -616,6 +660,7 @@
                 }
 
 
+
                 if (this.searchParam.search == "" && searchtext == "" && this.dirtyBit == 0) {
                     return;
                 }
@@ -627,10 +672,10 @@
 
             onDeletion: function () {
                 //Send DELETE request to backend
-                for (key in this.checkedItems) {
-                    for (i in this.strategies) {
-                        if (key == this.strategies[i]._id && this.checkedItems[key] == true) {
-                            this.deleteId = this.strategies[i]._id;
+                for (key in this.checkedItems["test"]) {
+                    for (i in this.testStrategies) {
+                        if (key == this.testStrategies[i]._id && this.checkedItems[key] == true) {
+                            this.deleteId = this.testStrategies[i]._id;
                             this.$.deleteStrategyQuery.generateRequest();
                         }
                     }
@@ -646,12 +691,12 @@
 
             onDeleteStrategyResponse: function (data) {
                 var idDeleted = data.detail.response.id;
-                for (i in this.strategies) {
-                    if (idDeleted == this.strategies[i]._id) {
-                        this.splice('strategies', i, 1);
+                for (i in this.testStrategies) {
+                    if (idDeleted == this.testStrategies[i]._id) {
+                        this.splice('testStrategies', i, 1);
 
-                        if (this.strategies.length == 0) {
-                            this.strategies = [];
+                        if (this.testStrategies.length == 0) {
+                            this.testStrategies = [];
                         }
 
                         this.checkedCount -= 1;
@@ -749,9 +794,19 @@
                 return date.formatDateTime(d);
             },
 
+            formatForwardTestStatus: function(error) {
+                return error ? "Error" : "Running";
+            },
+
             createNew: function () {
                 this.fire('newClicked');
             },
+
+            goToForwardTest: function(e) {
+                var strategyId = e.detail.strategyId;
+                var forwardtestId = e.detail.forwardtestId;
+                this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward'});
+            }
 
         });
     </script>

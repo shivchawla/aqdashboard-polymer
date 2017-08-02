@@ -25,12 +25,14 @@
     <style>
 
         #container {
-            height: 100px;
-            width: 120px;
+            height: 70px;
+            width: 100px;
             border: 1px solid #e1e1e1;
-            border-bottom:none;
-            color: #555555;
+            border-top:none;
+            border-left:none;
+            color: #919191;
             background-color: #f9f9f9;
+            font-size: 12px;
         }
 
         #container.selected {
@@ -115,15 +117,15 @@
 
         paper-card {
         	--paper-card:{
-	        	color: #555555;
+	        	color: #2f2f2f;
 	            margin: 0 auto;
 	            height: 100%;
-	            --background-color: var(--aq-backtest-detail-item-background-color, #fff);
+	            --background-color: var(--aq-forwardtest-detail-item-background-color, #fff);
             }
         }
 
         .card-content {
-        	color: #555555;
+        	color: #2f2f2f;
             --padding-left: 0px;
             --padding-right: 0px;
             padding-top: 0px;
@@ -134,14 +136,78 @@
             height: 47px;
         }
 
-        .backtest-detail {
+        .forwardtest-detail {
             margin-top: 15px;
             border: 1px solid #e1e1e1;
+            width: 100%;
         }
-        
+
+        #performance-container {
+            --border: 1px solid #e1e1e1;
+            width: 100%;
+        }
+
         #code-container {
             min-height: 200px;
-            padding-top: 10px;
+            --padding-top: 10px;
+        }        
+
+        juicy-ace-editor {
+            border: 1px solid #e1e1e1;
+            --border-top: none;
+            --border-left: none;
+        }
+
+        #iron-page-container {
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            min-height: 400px;
+        }
+
+        paper-button {
+            --paper-button:{
+                color: white;
+                background-color: #cc6666;
+                height: 24px;
+                font-size: 12px;
+            };
+        }
+
+        #ft-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .label-text {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        #label-text-running {
+            margin-top: 0px !important; 
+            font-size: 14px;  
+        }
+
+        #status-box {
+            width: 7px;
+            height: 7px;
+            background-color: green;
+            margin-right: 5px;
+        }
+
+        #status-container {
+            margin-top: 5px;
+        }
+
+        .heading {
+            font-size: 16px;
+            --margin-top: 10px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            --margin-left: -20px;
+            color: #555555;
         }
 
     </style>
@@ -150,52 +216,68 @@
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
     	<div class="layout vertical">
-            <div class="top-container self-center flex">
-            	<template is='dom-if' if='[[forwardTestHeader]]'>
-            		<aq-forward-header-item
-                        heading="[[heading]]" 
-            			header-items="{{forwardTestHeader}}">
-            		</aq-forward-header-item>
-        		</template>
-            </div>
-
+            <template is='dom-if' if='[[forwardtestHeader]]'>
+                <div class="top-container layout horizontal">
+                    <div class="layout vertical">
+                        <div id="ft-name">LIVE TEST for [[forwardtestHeader.strategyName]]</div>
+                            
+                        <div class="label-text">Created At:&nbsp[[forwardtestHeader.createdAt]]</div>
+                        <div class="label-text">Last updated:&nbsp[[forwardtestHeader.updatedAt]]</div>
+                        
+                    </div>
+                    <div class="flex"></div>
+                    <div class="layout vertical center">
+                        <paper-button on-tap='stopTest' noink>STOP LIVE TEST</paper-button>
+                        <div id='status-container' class="layout horizontal">
+                            <div id="status-box" class="self-center"></div>
+                            <div class="label-text" id="label-text-running">[[forwardtestHeader.status]]</div>
+                        </div>
+                    </div>
+                </div>
+    		</template>
+            
             <div class="middle-container flex">
             	<template is='dom-if' if='{{metrics}}'>
-            		<aq-backtest-metric-item-list 
+            		<aq-forwardtest-metric-item-list 
                         heading="Metrics"
             			forced-semi-wide = "[[forcedSemiWide]]"
             			metric-items = "{{metrics}}">
-        			</aq-backtest-metric-item-list> 
+        			</aq-forwardtest-metric-item-list> 
             	</template>
             </div>
 
-            <div class="backtest-detail layout horizontal">
+            <div class="forwardtest-detail layout horizontal">
                 <div class="layout" id="vertical-tab-container">
 	                <iron-selector selected="{{detailType}}" 
                         fallback-selection="0">
-	                    <v-tab selected=[[isSelected(detailType,0)]] icon="add">Performance
+	                    <v-tab selected=[[isSelected(detailType,0)]] icon="vaadin-icons:line-bar-chart" add">Performance
                         </v-tab>
                         
-                        <v-tab selected=[[isSelected(detailType,1)]] icon="add">Code
+                        <v-tab selected=[[isSelected(detailType,1)]] icon="vaadin-icons:code">Code
                         </v-tab>
                         
-                        <v-tab selected=[[isSelected(detailType,2)]] icon="add">Portfolio
+                        <v-tab selected=[[isSelected(detailType,2)]] icon="vaadin-icons:suitcase">Portfolio
                         </v-tab>
                         
-                        <v-tab selected=[[isSelected(detailType,3)]] icon="add">Transactions</v-tab>
+                        <v-tab selected=[[isSelected(detailType,3)]] icon="aq-icons:view-list">Transactions</v-tab>
                         
                         <v-tab selected=[[isSelected(detailType,4)]] icon="add">Logs</v-tab>
                     </iron-selector>
                 </div>
                 
+                <div id='iron-page-container'>
                 <iron-pages selected="{{detailType}}">
                     <div id="performance-container">
-                        <aq-backtest-performance-detail-item 
-                            active="[[active]]"
-                            backtest="[[backtest]]">
-                        </aq-backtest-performance-detail-item>
+                        <div class="heading">PERFORMANCE</div>
+                        <div style="border: 1px solid #e1e1e1">
+                            <aq-backtest-performance-detail-item 
+                                backtest="[[forwardtest]]">
+                            </aq-backtest-performance-detail-item>
+                        </div>
                     </div>
+
                     <div id="code-container">
+                        <div class="heading">CODE</div>
                         <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">"Code"
                         </juicy-ace-editor>
                     </div>
@@ -203,20 +285,17 @@
                     <div></div>
                     <div></div>
                 </iron-pages>
+                </div>
             </div>
       	</div>
-            
-        <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
-
-        <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
         <iron-ajax
-            url="[[computeGetBacktestUrl(backtestId)]]"
+            url="[[computeGetForwardtestUrl(forwardtestId)]]"
             method='GET'
-            id='getBacktestsQuery'
+            id='getForwardtestQuery'
             handle-as="json"
-            on-response="onGetBacktestSuccess"
-            on-error="onGetBacktestError"
+            on-response="onGetForwardtestSuccess"
+            on-error="onGetForwardtestError"
             headers='{{header}}'
             debounce-duration="300"
             loading='{{loading}}'>
@@ -228,23 +307,6 @@
             is: 'aq-forwardtest-detail-item',
 
             properties: {
-                elevation:{
-                    type:Number,
-                    value:1,
-                    notify:true
-                },
-
-                hide: {
-                    type: Boolean,
-                    value: true,
-                },
-
-                active: {
-                    type: Boolean,
-                    value: false,
-                    observer: '_activeChanged',
-                },
-
                 metrics: Object,
 
                 detailType:{
@@ -252,12 +314,12 @@
                     value:0,
                 },
 
-                backtestId: {
+                forwardtestId: {
                     type: String,
-                    observer: '_backtestIdChanged',
+                    observer: '_forwardtestIdChanged',
                 },
 
-                backtest: Object,
+                forwardtest: Object,
 
                 header: Object,
 
@@ -270,19 +332,9 @@
                     value: false
                 },
 
-                pctCompleted: {
-                    type: Number,
-                    value: 0,
-                },
-
                 forcedSemiWide: {
                 	type: Boolean,
                 	value: false,
-                },
-
-                heading: {
-                    type: String,
-                    value: "Backtest Details",
                 },
 
             },
@@ -291,24 +343,17 @@
                 return detailType == val;
             },
 
-            _backtestIdChanged: function (nId, oId) {
+            _forwardtestIdChanged: function (nId, oId) {
+                console.log("hola");
                 if (nId && nId!= "") {
                     this.reset();
                     this.requestStaticData();
                 }
             },
 
-            _activeChanged: function() {
-                if(!this.active && this.backtestId != "") {
-                    console.log("Unsubscribing");
-                    this.fire('unsubscribe-data',{backtestId:this.backtestId});
-                    this.reset();
-                }
-            },
-
-            computeGetBacktestUrl: function (backtestId) {
+            computeGetForwardtestUrl: function (forwardtestId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/backtest/' + backtestId;
+                return APIEndPoint + '/forwardtest/' + forwardtestId;
             },
 
             reset: function () {
@@ -379,86 +424,44 @@
                 },];
             },
 
-            subscribeData: function () {
-                this.async(function () {
-                    this.fire('subscribe-data', {backtestId: this.backtestId})
-                }, 1000);
-            },
-
-            onBacktestData: function (e) {
-                
-                //process data only when element is active
-                if (!this.active) {
-                    return
-                }
-
-                data = e.detail;
-
-                if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
-                    
-                    this.$$('aq-backtest-performance-detail-item').addRealTimeData(data);
-
-                } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
-                    this.pctCompleted = -1;
-                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
-                }
-            },
-
             requestStaticData: function () {
-                if (this.backtestId && this.$.authItem.checkHasToken()) {
+                console.log("kakak");
+                if (this.forwardtestId && this.$.authItem.checkHasToken()) {
                     this.header = this.$.authItem.getHeader();
-                    this.$.getBacktestsQuery.generateRequest();
+                    console.log("alala");
+                    this.$.getForwardtestQuery.generateRequest();
                 }
             },
 
-            onGetBacktestSuccess: function (e) {
+            onGetForwardtestSuccess: function (e) {
 
-                this.set('backtest', e.detail.response);
+                console.log(e.detail.response);
+                this.set('forwardtest', e.detail.response);
 
-                this.backtestHeader = 
-                [
-                    {   
-                        label: "Created",
-                        metric: date.formatDateTime(this.backtest.createdAt), 
-                    }, 
+                this.forwardtestHeader = 
+                {
+                    "createdAt": date.formatDateTime(this.forwardtest.createdAt), 
+                  
+                    "updatedAt": this.forwardtest.updatedAt ? date.formatDateTime(this.forwardtest.updatedAt): "", 
 
-                    {
-                        label: "Date Range",
-                        metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
-                    },
-
-                    {
-                        label: "Status",
-                        metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
-                    }
-                ];
+                    "status":!this.forwardtest.error ? "Running" : "Stopped",
+                };
                 
-                if (this.backtest.status == "exception") {
-                        this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
-                    return ;
-                }        
-        
-                if (this.backtest.status == "active") {
-                    this.active = true;
-                    this.subscribeData();
-                    return;
+                if (this.forwardtest.output && this.forwardtest.output.analytics && this.forwardtest.output.analytics.rolling) {
+                    this.addMetricData(this.forwardtest.output.analytics.rolling);
                 }
 
-                if (this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
-                    this.addMetricData(this.backtest.output.analytics.rolling);
-                }
-
-                if (this.backtest.output.variables) {
+                if (this.forwardtest.output.variables) {
                     // this variable is used because array changes are somehow not relaying back the template
                     this.hasTrackVarData = true;
                 }
 
                 this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);
 
-                this.$$('aq-backtest-performance-detail-item').plotGraphs(); 
+                this.$$('aq-backtesttest-performance-detail-item').plotGraphs(); 
             },
 
-            onGetBacktestError: function (e) {
+            onGetForwardTestError: function (e) {
                 console.log(e);
             },
 

@@ -123,41 +123,41 @@
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
         <iron-ajax
-                url="[[computeGetStrategyUrl(strategyId)]]"
-                method='GET'
-                id='getStrategyQuery'
-                handle-as="json"
-                on-response="onGetStrategyResponse"
-                on-error="onGetStrategyError"
-                headers='{{header}}'
-                debounce-duration="300"
-                loading='{{loading}}'>
+            url="[[computeGetStrategyUrl(strategyId)]]"
+            method='GET'
+            id='getStrategyQuery'
+            handle-as="json"
+            on-response="onGetStrategyResponse"
+            on-error="onGetStrategyError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
-                url="[[computePutStrategyUrl(strategyId)]]"
-                body="{{putStrategyData}}"
-                method='PUT'
-                id='saveStrategyQuery'
-                headers='{{header}}'
-                handle-as="json"
-                on-response="onStrategySavedResponse"
-                on-error="onStrategySavedResponseError"
-                last-response="{{ajaxResponse}}"
-                debounce-duration="300">
+            url="[[computePutStrategyUrl(strategyId)]]"
+            body="{{putStrategyData}}"
+            method='PUT'
+            id='saveStrategyQuery'
+            headers='{{header}}'
+            handle-as="json"
+            on-response="onStrategySavedResponse"
+            on-error="onStrategySavedResponseError"
+            last-response="{{ajaxResponse}}"
+            debounce-duration="300">
         </iron-ajax>
 
         <iron-ajax
-                url="[[computePostStrategyExecutionUrl(strategyId)]]"
-                body="{{runStrategyData}}"
-                method='POST'
-                id='runStrategyQuery'
-                headers='{{header}}'
-                handle-as="json"
-                on-response="onStrategyExecutionResponse"
-                on-error="onStrategyExecutionError"
-                last-response="{{ajaxResponse}}"
-                debounce-duration="300">
+            url="[[computePostStrategyExecutionUrl(strategyId)]]"
+            body="{{runStrategyData}}"
+            method='POST'
+            id='runStrategyQuery'
+            headers='{{header}}'
+            handle-as="json"
+            on-response="onStrategyExecutionResponse"
+            on-error="onStrategyExecutionError"
+            last-response="{{ajaxResponse}}"
+            debounce-duration="300">
         </iron-ajax>
 
         <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
@@ -567,7 +567,6 @@
                             break;
                     }
                 }
-
             },
 
             onSaveRequest: function () {

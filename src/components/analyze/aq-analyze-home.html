@@ -103,9 +103,23 @@
           	debounce-duration="300">
         </iron-ajax>
 
+         <iron-ajax
+            url=""
+            body="{{runForwardExecData}}"
+            method='POST'
+            id='runForwardStrategyQuery'
+            headers='{{header}}'
+            handle-as="json"
+            on-response="onForwardStrategyExecutionResponse"
+            on-error="onForwardStrategyExecutionError"
+            debounce-duration="300">
+        </iron-ajax>
+
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
 	 	<iron-signals on-iron-signal-backtest-added='onBacktestAdded'></iron-signals>
+
+	 	<iron-signals on-iron-signal-forwardtest-added='onForwardtestAdded'></iron-signals>
 
 	 	<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'></iron-signals>
 
@@ -140,7 +154,10 @@
 		        		</aq-analyze-home-header>
 		              	
 						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
-							<aq-analyze-home-backtest-item  class="backtest-item" index="{{index}}" backtest="{{item}}" detail-icon share-icon></aq-analyze-home-backtest-item>
+							<aq-analyze-home-backtest-item  
+								class="backtest-item" bt-index="{{index}}" backtest="{{item}}" detail-icon share-icon 
+								has-forwardtest="[[hasForwardtest]]">
+							</aq-analyze-home-backtest-item>
 						</template>
 
 						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
@@ -249,6 +266,16 @@
 					value: ["Home", "Research", "All Strategies", "All Backtests"],
 				},
 
+				hasForwardtest: {
+					type: Boolean,
+					value: false,
+				},
+
+				runForwardExecData: {
+					type: Object,
+					value:{},
+				},
+
     		},
 
     		listeners: {
@@ -260,6 +287,7 @@
 				'comparison-off':'toggleComparison',
 				'delete-action':'onDeletion',
 				'detail-action':'onDetail',
+				'execute-forwardtest':'runForwardtest',
 			},
 
             attached: function () {
@@ -341,7 +369,13 @@
 			},
 
 			onGetStrategy: function(data) {
-				this.strategyName = data.detail.response.name;
+				var strategy = data.detail.response;
+				console.log(strategy);
+				this.strategyName = strategy.name;
+
+				this.hasForwardtest = strategy.numForwardtests == 1;
+
+				console.log(this.hasForwardtest);
 
 				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
 
@@ -424,10 +458,14 @@
 
 	        onDetail: function(e) {
 	        	e.stopPropagation();
-	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id , index:e.detail.index});
+	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id +'?type=backtest&heading=Backtest '+(e.detail.index + 1)});
 	        },
 
 	        onBacktestAdded: function() {
+	        	this.dirtyBit = 1;
+	        },
+
+	        onForwardTestAdded: function() {
 	        	this.dirtyBit = 1;
 	        },
 
@@ -455,7 +493,34 @@
 				if(!this.showComparison) {
 					this.resetView();
 				}
-			}
+			},
+
+			runForwardtest: function(e) {
+				console.log("Ahhaaa");
+                var backtestId = e.detail.backtestId;
+
+                console.log(backtestId);
+
+                if (this.$.authItem.checkHasToken()) {
+                    //prepare the data for psoting forward strategy
+                    this.header = this.$.authItem.getHeader();
+                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$.runForwardStrategyQuery.url = APIEndPoint + '/backtest/' + backtestId+'/exec';
+                    this.$.runForwardStrategyQuery.generateRequest();
+                }
+            },
+
+            onForwardStrategyExecutionResponse: function (e) {
+                console.log("Success");
+                console.log(e);
+                this.dirtyBit = 1;
+            },
+
+            onForwardStrategyExecutionError: function (e) {
+                console.log("Error");
+                console.log(e);
+               //Launch a error popup saying forward test cannot be run
+            }, 
 
     	});
     </script>

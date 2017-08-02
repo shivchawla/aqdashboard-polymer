@@ -11,7 +11,7 @@
     <style>
     	#menu-container {
     		margin-bottom: -5px;
-    		color: #555555;
+    		color: #3c3c3c;
     	}
 
     	#header {
@@ -36,21 +36,20 @@
         	height: 22px;
         	font-size: 14px;
         	text-transform: none;
+        	border-radius: 0px;
         }
 
-        paper-button[disabled] {
-        	border: 1px solid lightgray;
-    		color: lightgray;
-    		background-color: white;
+      	paper-button[disabled] {
+            border: 1px solid #c0c0c0;
+            color: #c0c0c0;
+            background-color: white;
+        }
+
+        .iconButton {
+        	background-color: #cc6666 !important;
+        	color: white !important;
         }
         
-        #expand_all{
-            color:#cc6666;
-            font-size: 13px;
-            position: relative;
-            top:2px;
-        }
-
         .checkbox-all {
             --paper-checkbox-checked-color: #cc6666;
             margin-left: 10px;
@@ -102,16 +101,16 @@
                 </paper-button>
 
                 <template is='dom-if' if="[[!expand]]">
-                	<paper-icon-button  id='foldMoreIcon' noink class="iconButton self-center" icon="aq-icons:unfold-more" on-tap="expandAll" ></paper-icon-button>
+                	<paper-button  id='foldMoreIcon' noink class="iconButton self-center" on-tap="expandAll"><!--icon="aq-icons:unfold-more"-->Show More</paper-button>
 
-                	<paper-tooltip for='foldMoreIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show More</paper-tooltip>
+                	<!--paper-tooltip for='foldMoreIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show More</paper-tooltip-->
 
                 </template>
 
                 <template is='dom-if' if="[[expand]]">
-                	<paper-icon-button  id='foldLessIcon' noink class="iconButton self-center" icon="aq-icons:unfold-less" on-tap="expandAll" ></paper-icon-button>
+                	<paper-button  id='foldLessIcon' noink class="iconButton self-center" on-tap="expandAll"><!--  icon="aq-icons:unfold-less"-->Show Less</paper-button>
 
-                	 <paper-tooltip for='foldLessIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show Less</paper-tooltip>
+                	 <!--paper-tooltip for='foldLessIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show Less</paper-tooltip-->
        
                 </template>
 

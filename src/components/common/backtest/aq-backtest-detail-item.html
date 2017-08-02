@@ -15,6 +15,7 @@
 <link rel='import' href='./aq-backtest-header-item.html'>
 <link rel='import' href='./aq-backtest-metric-item-list.html'>
 <link rel='import' href='./aq-backtest-performance-detail-item.html'>
+<link rel="import" href="../common/aq-log-item.html">
 
 <script src="../../../../resources/scripts/DateTime.js"></script>
 
@@ -43,7 +44,7 @@
 
         paper-card {
         	--paper-card:{
-	        	color: #555555;
+	        	color: #3c3c3c;
 	            margin: 0 auto;
 	            height: 100%;
 	            --background-color: var(--aq-backtest-detail-item-background-color, #fff);
@@ -51,7 +52,7 @@
         }
 
         .card-content {
-        	color: #555555;
+        	color: #3c3c3c;
             --padding-left: 0px;
             --padding-right: 0px;
             padding-top: 0px;
@@ -73,17 +74,24 @@
             padding-top: 10px;
         }
 
+        #log-container {
+            height: 400px;
+            overflow-y: scroll;
+            padding-top: 10px;
+            background-color: #323232;
+        }
+
     </style>
 
     <template>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-            <paper-card class="layout vertical flex" elevation="{{elevation}}">
+            <div class="layout vertical flex">
             	<div class="card-content">
                     <div class="middle-container self-center flex">
                     	<template is='dom-if' if='[[backtestHeader]]'>
                     		<aq-backtest-header-item
-                                title="[[title]]" 
+                                heading="[[heading]]"
                     			forced-semi-wide = "[[forcedSemiWide]]"
                     			header-items="{{backtestHeader}}">
                     		</aq-backtest-header-item>
@@ -95,6 +103,7 @@
                     <div class="lower-container flex">
                     	<template is='dom-if' if='{{metrics}}'>
                     		<aq-backtest-metric-item-list 
+                                heading="Backtest Metrics"
                     			forced-semi-wide = "[[forcedSemiWide]]"
                     			metric-items = "{{metrics}}"
                     			active="{{active}}">
@@ -121,18 +130,28 @@
                                 </aq-backtest-performance-detail-item>
                             </div>
                             <div id="code-container">
-                                <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">"Code"
+                                <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">[[backtest.code]]
                                 </juicy-ace-editor>
                             </div>
                             <div></div>
                             <div></div>
-                            <div></div>
+                            
+                            <div id="log-container">
+                                <tempalte is='dom-if' if='[[backtestLogs]]'>
+                                    <template is='dom-repeat' items="[[backtestLogs]]">
+                                        <aq-log-item datetime="[[item.datetime]]"
+                                                    message="[[item.message]]"
+                                                    message-type="[[item.messagetype]]">
+                                        </aq-log-item>
+                                    </template>
+                                </tempalte>
+
+                            </div>
                             
                         </iron-pages>
                     </div>
               	</div>
-            </paper-card>
-        <!--/template-->
+            </div>
       
         <iron-signals on-iron-signal-point-data='onBacktestData'></iron-signals>
 
@@ -156,11 +175,6 @@
             is: 'aq-backtest-detail-item',
 
             properties: {
-                elevation:{
-                    type:Number,
-                    value:1,
-                    notify:true
-                },
 
                 hide: {
                     type: Boolean,
@@ -208,10 +222,9 @@
                 	value: false,
                 },
 
-                title: {
-                    type: String,
-                    value: "Backtest Details",
-                },
+                heading: String,
+
+                backtestLogs: Array,
 
             },
 
@@ -337,12 +350,18 @@
 
             onGetBacktestSuccess: function (e) {
 
+                console.log(e.detail.response);
+
                 this.set('backtest', e.detail.response);
 
                 this.backtestHeader = 
                 [
                     {   
-                        label: "Created",
+                        label: "Strategy Name",
+                        metric: this.backtest.strategy_name, 
+                    }, 
+                    {   
+                        label: "Created At",
                         metric: date.formatDateTime(this.backtest.createdAt), 
                     }, 
 
@@ -356,7 +375,9 @@
                         metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
                     }
                 ];
-                
+
+                this.computeLogs(this.backtest);
+
                 if (this.backtest.status == "exception") {
                         this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
                     return ;
@@ -384,6 +405,24 @@
 
             onGetBacktestError: function (e) {
                 console.log(e);
+            },
+
+            computeLogs:function(backtest) {
+                var logs = backtest ? (backtest.output ? (backtest.output.logs ? backtest.output.logs : null) : null) : null;
+
+                if(logs) {
+                    var logArray = []
+                    Object.keys(logs).sort().forEach(key => {
+                        var logForKey = logs[key];
+                        
+                        logs[key].forEach(log => {
+                            logArray.push(JSON.parse(log));        
+                        });
+                        
+                    });
+
+                    this.backtestLogs = logArray;
+                } 
             },
 
             addMetricData: function (data) {

@@ -10,10 +10,12 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
-<link rel='import' href='../../icons/aq-iconset.html'>
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../common/backtest/aq-backtest-metric-item-list.html">
 <link rel="import" href="../common/backtest/aq-backtest-header-item.html">
+<link rel='import' href='../../icons/aq-iconset.html'>
+
 <script src="../../../resources/scripts/DateTime.js"></script>
 
 <dom-module id='aq-analyze-home-backtest-item'>
@@ -27,7 +29,7 @@
                 font-size: 16px;
                 display: inline-block;
                 width: 100%;
-                color: #2f2f2f;
+                color: #3c3c3c;
                 border: 1px solid #e1e1e1;
                 border-top: none;
             }
@@ -41,7 +43,7 @@
                 margin: 0;
             }
 
-            .lower-container {
+            .inner-middle-container {
                 margin-left: 10px;
                 margin-right: 10px;
             }
@@ -82,27 +84,33 @@
             }
 
             #expandBtn {
-                transition: all 0.4s ease-in-out 0.3s;
-                padding: 0px;
-                height: 25px;
-                width: 25px;
-                transform: rotate(-45deg);
-                color: #e1e1e1;
+                --transition: all 0.4s ease-in-out 0.3s;
+                --padding: 0px;
+                --height: 25px;
+                --width: 65px;
+                --transform: rotate(-45deg);
+                color: teal;
             }
 
             paper-button {
-                color: #cc6666;
-                border: 1px solid #cc6666;
+                color: teal;
+                border: 1px solid teal;
                 background-color: white;
                 height: 16px;
                 font-size: 13px;
                 text-transform: none;
-                width: 60px;
+                width: 80px;
                 margin-top: 10px;
             }
 
+            paper-button[disabled] {
+                border: 1px solid #c0c0c0;
+                color: #c0c0c0;
+                background-color: white;
+            }
+
             paper-button:hover {
-                background-color: #cc6666;
+                background-color: teal;
                 color: white;
             }
 
@@ -110,6 +118,18 @@
                 margin-right: 5px;
                 height: 17px;
                 width: 17px;
+            }
+
+            #runForwardButton {
+                width: 100px;
+            }
+
+            paper-icon-button {
+                color: #cc6666;
+            }
+
+            paper-icon-button[disabled] {
+                color: #c0c0c0;
             }
 
             iron-collapse {
@@ -132,9 +152,21 @@
                 --width: 150px !important;
             }
 
-            #button-container {
-                width: 70px;
+            #button-container-first {
+                --width: 70px;
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+
+            #button-container-second {
+                --width: 70px;
                 margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            #header-item-backtest {
+                width: 140px !important;
+                font-size: 12px;
             }
 
             /*date-range*/
@@ -164,12 +196,12 @@
 
         <div class="row-container">
 
-            <div class="middle-container layout horizontal end">
+            <div id="upper-container" class="layout horizontal end">
                 
                 <div id="backtest-name" class="layout horizontal">
                     <paper-checkbox class="self-center" on-change="onChange" noink></paper-checkbox>
 
-                    <p class="header-item">BACKTEST 1</p>
+                    <p id="header-item-backtest">[[computeHeading(btIndex)]]</p>
                 </div>
             	
                 <template is='dom-if' if='[[backtestHeader]]'>
@@ -177,44 +209,45 @@
     			         <p class="header-item" id="header-item-[[index]]">[[item.metric]]</p>
                      </template>
         		</template>
-
-                <template is='dom-if' if="[[shareIcon]]">
-                    <div id="button-container">
-                        <template is='dom-if' if="[[shareIcon]]">
-                            <paper-button id="share-icon" on-tap="onShare"><iron-icon icon="social:share"></iron-icon>Share</paper-button>
-                        </template>
-
-                        <template is='dom-if' if="[[detailIcon]]">
-                            <paper-button id="trending-icon" on-tap="onBacktestDetail"><iron-icon icon="trending-up"></iron-icon>Detail</paper-button>
-                        </template>
-                    </div>
-                </template>
+                
             </div>
 
-            <!--div class="bar"></div-->
-            <div class="lower-container">
-                <template is='dom-if' if='[[!processedBacktest.metrics]]'>
-                    <div style="height: 25px;"></div>
+            <div id="middle-container" class="layout horizontal end">
+               <template is='dom-if' if='[[!processedBacktest.metrics]]'>
+                    <div style="height: 5px;"></div>
                 </template>
 
                 <template is='dom-if' if='[[processedBacktest.metrics]]'>
-    	            <iron-collapse>
-    	                <div class="lower-container">
-                       	    <aq-backtest-metric-item-list 
-    		            		metric-items="{{processedBacktest.metrics}}">
-    		                </aq-backtest-metric-item-list>
-    	                </div>
-    	            </iron-collapse>
-    	            
-                    <div class="layout horizontal">
-                        <div class="flex"></div>
-        	            <template is='dom-if' if='[[!expand]]'>
-        	            	<paper-icon-button noink id="expandBtn" title="Show More" on-click="toggle" icon="expand-more"></paper-icon-button>
-                    	</template>
+                    <iron-collapse>
+                        <div class="inner-middle-container">
+                            <aq-backtest-metric-item-list 
+                                metric-items="{{processedBacktest.metrics}}">
+                            </aq-backtest-metric-item-list>
+                        </div>
+                    </iron-collapse>
+                </template>
+            </div>
+            
+            <!--div class="bar"></div-->
+            <div id="lower-container" class="layout horizontal">
+                <template is='dom-if' if="[[shareIcon]]">
+                    <div id="button-container-first" class="layout horizontal center">
+                    </div>
 
-        	            <template is='dom-if' if='[[expand]]'>
-        	            	<paper-icon-button noink id="expandBtn" title="Show Less" on-click="toggle" icon="expand-less"></paper-icon-button>
-        	            </template>
+                    <div class="flex"></div>
+
+                    <div id="button-container-second" class="layout horizontal center">
+                        <template is='dom-if' if="[[shareIcon]]">
+                            <paper-button id="share-icon" on-tap="onShare" disabled="[[!isBacktestShareable(backtest)]]"><!--iron-icon icon="social:share"--></iron-icon>Share</paper-button>
+                        </template>
+
+                        <template is='dom-if' if="[[detailIcon]]">
+                            <paper-button id="trending-icon" on-tap="onBacktestDetail" disabled="[[!isBacktestDetailValid(backtest)]]"><!--iron-icon icon="trending-up"--></iron-icon>Detail</paper-button>
+                        </template>
+
+                        <paper-button id='runForwardButton' noink on-tap='runForwardtest' disabled="[[!isForwardTestingAvailable(backtest, hasForwardtest)]]">Run Forward
+                        </paper-button>
+
                     </div>
                 </template>
             </div>
@@ -234,7 +267,7 @@
                     type: Object,
                 },
 
-                index: String,
+                btIndex: String,
 
                 processedBacktest: {
                     type: Object,
@@ -250,7 +283,12 @@
 
                 detailIcon: Boolean,
                 shareIcon: Boolean,
-               
+                
+                hasForwardtest: {
+                    type: Boolean,
+                    value: false,
+                },
+
             },
 
             attached: function () {
@@ -258,6 +296,11 @@
             	//this.$$('.side-bar').style.transform = "scale(0,1)";
                 this.backtestId = this.backtest._id;
                 this.processBacktestData();
+                console.log(this.hasForwardtest);
+            },
+
+            computeHeading: function(btIndex) {
+                return "Backtest " + this.formatIndex(btIndex);
             },
 
             formatIndex: function (index) {
@@ -357,12 +400,26 @@
                 	}];
             },
 
+            isBacktestDetailValid: function(backtest) {
+                return backtest.status != "exception"; 
+            },  
+
+            isBacktestShareable: function(backtest) {
+               return backtest.status == "complete";      
+            },
+
             isBacktestActive: function (backtest) {
                 return backtest.status != "complete"; 
             },
+                
+            isForwardTestingAvailable: function(backtest, hasForwardtest) {
+                 console.log(backtest.status);
+                 console.log(hasForwardtest);
+                 return backtest.status == "complete" && !hasForwardtest;
+            },
 
             onBacktestDetail: function () {
-                this.fire('detail-action', {id: this.backtest._id, index: this.index});
+                this.fire('detail-action', {id: this.backtest._id, index: this.btIndex});
             },
 
             onShare: function () {
@@ -406,6 +463,11 @@
             selectBacktest: function (e) {
                 this.$$('paper-checkbox').checked = e.detail.checked;
                 this.onChange();
+            },
+
+            runForwardtest: function() {
+                console.log("aqui");
+                this.fire('execute-forwardtest', {backtestId: this.backtestId});
             }
 
         });

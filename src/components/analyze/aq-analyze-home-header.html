@@ -6,12 +6,16 @@
 
 	<style>
 		#header {
-			background-color: lightgray;
+			background-color: #e1e1e1;
 		}
 
 		.header-item {
 			font-size: 12px;
 			width: 160px;
+		}
+
+		#header-item-backtest {
+			width: 140px !important;	
 		}
 
 		paper-checkbox {
@@ -48,16 +52,16 @@
 	            	on-change='onCheckAllBacktest'>
 	        	</paper-checkbox>
 
-	        	<p class="header-item">BACKTEST</p>
+	        	<p class="header-item" id="header-item-backtest">BACKTEST</p>
         	</div>
         	<p class="header-item">CREATED ON</p>
         	<p class="dtrange header-item">DATE RANGE</p>
         	<p class="small header-item">STATUS</p>
         	<p class="small header-item">TOTAL RETURN</p>
         	<p class="small header-item">SHARPE RATIO</p>
-        	<template is='dom-if' if=[[!shareIcon]]>
+        	<!--template is='dom-if' if=[[!shareIcon]]>
         		<div id="empty-header"></div>
-    		</template>
+    		</template-->
     	</div>
 	</template>
 
