@@ -1,0 +1,63 @@
+<link rel="import" href="../../../../bower_components/bwt-datatable/bwt-datatable.html">
+
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+
+<dom-module id='aq-backtest-table'>
+
+	<style>
+		paper-button {
+			--paper-button: {
+				background-color: teal;
+				color: white;
+			};
+		}
+	</style>
+
+	<template>
+		<template is='dom-if' if='[[processedBacktests]]'>
+			
+			<paper-datatable data="[[processedBacktests]]" id="datatable" selectable multi-selection>
+				<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" sortable>
+				</paper-datatable-column>
+
+				<paper-datatable-column header="Created At" property="createdAt" sortable></paper-datatable-column>
+
+				<paper-datatable-column header="Date Range" property="dtRange" sortable></paper-datatable-column>
+
+				<paper-datatable-column header="Status" property="status" sortable></paper-datatable-column>
+
+				<paper-datatable-column header="Total Return" property="return" sortable></paper-datatable-column>
+
+				<paper-datatable-column header="Sharpe Ratio" property="sharpe" sortable></paper-datatable-column>
+
+				<paper-datatable-column>
+					<template>
+						<paper-input noink>Forward</paper-input>
+					</template>
+				</paper-datatable-column>
+			</paper-datatable>
+		</template>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-backtest-table',
+
+			properties: {
+				backtests: Array,
+			},
+
+			attached: function() {
+				var processedBacktests = new Array(this.backtests.length);
+
+				for(var i=0; i<this.backtests.length; i++) {
+					processedBacktests[i] = {"name": "Yahoo",
+						"createdAt": "2323223", "dtRange":"abcd -ded",
+						"status":"complete", "return":"23.4 %", "sharpe":"2.34"};
+				}
+
+				this.processedBacktests = processedBacktests;
+			}
+		});
+	</script>
+</dom-module>

@@ -82,8 +82,28 @@
 
 		#bt-name {
 			font-weight: 700;
-			margin-bottom: 10px;
-			font-size: 18px;
+			
+			font-size: 22px;
+		}
+
+		paper-button {
+            --paper-button: {
+                font-size: 0.7em;
+                background-color: teal;
+                color: white;
+                padding: 0 20px;
+                border-radius: 0;
+                height: 25px;
+                border: 1px solid teal;
+                font-weight: 700;
+            };
+
+			margin-right: 20px;
+		}
+
+
+		#name-button-container {
+			margin-bottom: 20px;
 		}
 	</style>
 
@@ -95,7 +115,19 @@
       
         <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
 
-        <div id="bt-name">[[heading]]</div>
+        <div class="layout horizontal" id='name-button-container'>
+        	<div id="bt-name" class="self-center">[[heading]]</div>
+        	<div class="flex"></div>
+
+        	<template is='dom-if' if='[[canShare]]'>
+        		<paper-button noink raised class="self-center" on-tap='onShare'>Share Backtest</paper-button>
+    		</template>
+
+        	<template is='dom-if' if='[[canClone]]'>	
+        		<paper-button noink raised class="self-center" on-tap='onClone'>Clone</paper-button>
+    		</template>
+    	</div>
+
 		<div class="container layout horizontal justified wrap">
 	        <template is='dom-repeat' items="{{headerItems}}">
 	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
@@ -112,6 +144,14 @@
 				headerItems:{
 					type:Array,
 					value:[],
+				},
+
+				canShare: {
+					type: Boolean,
+				},
+
+				canClone: {
+					type: Boolean,
 				},
 
 				narrow: Boolean,
@@ -158,6 +198,14 @@
 			deepCopy: function(array) {
 				return JSON.parse(JSON.stringify(array));
 			},
+
+			onShare: function() {
+				this.fire('share-clicked');
+			},
+
+			onClone: function(){
+				this.fire('clone-clicked');
+			},	
 		});
 	</script>
 </dom-module>
@@ -181,8 +229,6 @@
 	        font-weight: 400;
 	        font-size: 14px;
 	        --margin-left: 5px;
-
-
 	    }
 	</style>
 

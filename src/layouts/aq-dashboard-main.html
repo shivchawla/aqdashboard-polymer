@@ -33,7 +33,7 @@
 
     #mainpanel {
       height:100%;
-      --background-color: #fafafa;
+      background-color: #fafafa;
     }
 
     .paper-header {
@@ -49,7 +49,6 @@
 
   </style>
 
-  
   <template>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
@@ -58,7 +57,21 @@
                     data="{{routeData}}">
         </app-route>
 
-        <div id="content" class="fit">
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+
+        <iron-ajax
+            url=""
+            method='PUT'
+            id='updateForwardtestQuery'
+            handle-as="json"
+            on-response="onUpdateForwardtestSuccess"
+            on-error="onUpdateForwardtestError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
+        </iron-ajax>
+
+        <div id="content">
           <iron-lazy-pages attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
             <template is="iron-lazy-page" page="editor">
                 <aq-editor-main></aq-editor-main>
@@ -81,22 +94,50 @@
   </template>
 
   <script>
-  Polymer({
-    is:'aq-dashboard-main',
-    
-    properties:{
+      Polymer({
+          is:'aq-dashboard-main',
+          
+          properties:{
 
-      routeData:{
-        type:Object,
-      },
-      
-    },
+            routeData:{
+              type:Object,
+            },
+            
+          },
 
-    attached: function() {
-      //this.fire('tabChanged',{tab:1});
-    },
+          
+          listeners :{
+            'stoptest-action':'onStopForwardTest'
+          },
 
+          onStopForwardTest: function(e) {
+              var forwardtestIds = e.detail.forwardtestIds;
 
-  });
+              forwardtestIds.forEach(forwardtestId => {
+                  console.log(forwardtestIds);
+                  console.log(forwardtestId);
+
+                  if(this.$.authItem.checkHasToken()) {
+                      //this.testUpdateData = {active: false};
+                      var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$$('#updateForwardtestQuery').url = APIEndPoint + "/forwardtest/" + forwardtestId +'?active=false';
+
+                      this.header = this.$.authItem.getHeader();
+                      this.$.updateForwardtestQuery.generateRequest()
+                  }
+
+              });
+              
+          },
+
+          onUpdateForwardtestSuccess: function(e) {
+              this.fire('iron-signal', {name:'forwardtest-stopped'});
+          },
+
+          onUpdateForwardtestError: function(e) {
+              console.log(e);
+          },
+
+      });
   </script>
 </dom-module>

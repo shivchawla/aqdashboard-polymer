@@ -1,0 +1,218 @@
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tabs.html'>
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tab.html'>
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='../../../../bower_components/iron-pages/iron-pages.html'>
+
+<link rel='import' href='./aq-cumret-linechart.html'>
+<link rel='import' href='./aq-aggregatedreturns-barchart.html'>
+
+<dom-module id="aq-forwardtest-performance-detail-item">
+ 	<style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+	<style>
+        #netValueLineChart {
+            --width: 100%;
+            --height: 70%;
+        }
+
+        #cumRetLineChart {
+            --height: 250px;
+            width: 100%;
+            --margin-bottom: 20px;
+            margin-left: 5px;
+            --highcharts-container: {
+                width: 98%;
+            };
+        }
+
+        #trackVarLineChart {
+            margin-bottom: 20px;
+            height: 160px;
+            width: 100%;
+            width: 98%;
+        }
+
+        #barChart {
+            height: 400px;
+            width: 100%;
+        }
+
+        .chart {
+            width: 95%;
+        }
+
+        #performance-paper-tabs {
+            width: 170px;
+            border: 1px solid #e1e1e1;
+            height: 20px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        #performance-paper-tabs paper-tab {
+            --paper-tab-content-unselected: {
+                background-color: white;
+                color: gray;
+                --border-right: 1px solid gray;
+                --border: 1px solid #e1e1e1;
+            };    
+        }
+
+        #performance-paper-tabs paper-tab {
+            --paper-tab-content: {
+                --background-color: #cc6666;
+                background-color: #cc6666;
+                color: white;
+                padding:0px;
+                --border: 1px solid #e1e1e1;
+            };    
+        }
+
+        #performance-paper-tabs paper-tab {
+            padding: 0px;
+        }
+
+	</style>
+	<template>
+        <template is='dom-if' if='[[isPerformanceReady]]'>
+    	 	<div id="performance-paper-tabs-container" class="layout horizontal">
+                <div class="flex"></div>
+                <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{graphType}}">
+                    <paper-tab>Cumulative</paper-tab>
+                    <paper-tab>Monthly</paper-tab>
+                </paper-tabs>
+            </div>
+        </template>
+
+        <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
+            <div id='cumRetLineChartDiv'>
+            </div>
+
+            <template is='dom-if' if='[[!active]]'>
+                <div id='barChartDiv'>
+                </div>
+            </template>
+        </iron-pages>
+	</template>
+	<script>
+		Polymer({
+			is: 'aq-forwardtest-performance-detail-item',
+
+			properties: {
+
+				forwardtest: Object,
+
+                graphType: {
+                    type: Number,
+                    value: 0,
+                },
+
+                isPerformanceReady: {
+                    type: Boolean,
+                    value: false,
+                    notify:true,
+                },
+
+			},
+
+            reset: function () {
+
+                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
+                if (child) {
+                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+                }
+
+                var el = document.createElement('aq-cumret-linechart');
+                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+
+                Polymer.dom.flush();
+
+                this.async(
+                        function () {
+                            var child = Polymer.dom(this.$$('#barChartDiv')).querySelector('aq-aggregatedreturns-barchart');
+
+                            if (child) {
+                                Polymer.dom(this.$$('#barChartDiv')).removeChild(child);
+                            }
+
+                            var el = document.createElement('aq-aggregatedreturns-barchart');
+                            Polymer.dom(this.$$('#barChartDiv')).appendChild(el);
+                            Polymer.dom.flush();
+                        },
+                        200);
+
+                this.isPerformanceReady = true;
+
+            },
+
+            updateGraphProperties: function (trackVarFlag) {
+                if (trackVarFlag) {
+                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
+                } else {
+                    this.$$('aq-cumret-linechart').updateProperties();
+                }
+            },
+
+            createCumRetLineChart: function () {
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.totalreturn ? true : false) ? false) : false;
+                if(hasValidData) {
+                    this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest.output.totalreturn);
+                }
+            },
+
+            createMonthlyReturnBarChart: function () {
+                
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.returns ? (this.backtest.output.returns.monthly ? true : false) : false) : false ): false;
+                if (!this.active && hasValidData) {
+                    this.$$('aq-aggregatedreturns-barchart').updateProperties();
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly);
+                }
+            },
+
+            createTrackVarLineChart: function () {
+
+                var hasValidData = this.backtest ? (this.backtest.output ? (this. backtest.output ? (this.backtest.output.variables ? true : false) : false): false) : false;
+
+                if(hasValidData) { 
+                    this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.variables);
+                }
+            },
+
+
+            getYAxisLabel: function (number) {
+                var x = "Net Value"
+                if (number < Math.pow(10, 5)) {
+                    return x;
+                } else if (number > Math.pow(10, 5) && number < Math.pow(10, 7)) {
+
+                    return x + " (Lacs)";
+                } else {
+                    return x + " (Crores)";
+                }
+
+                return label(max);
+            },
+
+            onResize: function () {
+                if (this.$$('aq-cumret-linechart')) {
+                    this.$$('aq-cumret-linechart').resizeChart();
+                }
+
+                if (this.$$('aq-aggregatedreturns-barchart')) {
+                    this.$$('aq-aggregatedreturns-barchart').resizeChart();
+                }
+            },
+
+            plotGraphs: function() {
+            	this.async(this.createCumRetLineChart, 200);
+                this.async(this.createTrackVarLineChart, 200);
+                this.async(this.createMonthlyReturnBarChart, 500);
+            }
+
+		});
+	</script>
+</dom-module>

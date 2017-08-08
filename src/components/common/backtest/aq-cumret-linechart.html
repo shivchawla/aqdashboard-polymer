@@ -34,13 +34,11 @@
 	<template>
 		<template is='dom-if' if='[[axisReady]]' id='cumRetLineChartTemplate'>
 			
-			<div class="tooltip layout horizontal justified">
-				<!--div class="gap"></div-->
+			<!--div class="tooltip layout horizontal justified">
 				<div id='tooltip-Strategy'></div>
 				<div id='tooltip-Benchmark'></div>
 				<div id='tooltip-portfoliovalue'></div>
-				<!--div class="flex"></div-->
-			</div>
+			</div-->
 
 			<highcharts-stock 
 	  			id="cumRetLineChart"
@@ -48,14 +46,12 @@
 	  			y-axis="{{yAxis}}"
 	  			x-axis="{{xAxis}}"
 	  			tooltip-options="[[tooltip]]"
-	  			highchart-options="[[chartOptions]]"
+	  			highchart-options="[[highchartOptions]]"
 	  			legend-options="[[legend]]"
 	  			plot-options="[[plotOptions]]">
 	  		</highcharts-stock>
   		</template>
 	</template>
-
-	<!--iron-signals on-iron-signal-redraw-chart='onRedrawChart'></iron-signals-->
 
 	<script>
 
@@ -63,7 +59,7 @@
 // Author: Torstein Hønsi
 // License: MIT license
 // Last revision: 2013-07-29
-(function (H) {
+/*(function (H) {
     H.Series.prototype.point = {}; // The active point
     H.Chart.prototype.callbacks.push(function (chart) {
         $(chart.container).bind('mousemove', function () {
@@ -84,13 +80,13 @@
                             legendOptions.labelFormatter.call(item)
                     });
                 });
-                chart.legend.render();
+                //chart.legend.render();
             }
         });
     });
     // Hide the tooltip but allow the crosshair
     H.Tooltip.prototype.defaultFormatter = function () { return false; };
-}(Highcharts));
+}(Highcharts));*/
 
 
 		Polymer({
@@ -139,11 +135,14 @@
 					value:{
 				            xDateFormat:'%e-%b %Y',
 				            shared:true,
-
+				            positioner: function () {
+					            return { x: 10, y: 60 };
+					        },
+					        shadow: false,
 				        },
 				},
 
-				chartOptions:{
+				highchartOptions:{
 					type:Object,
 					value:{
 						navigator:{
@@ -157,7 +156,7 @@
 				legend:{
 					type:Object,
 					value: {
-						enabled:false,
+						enabled:true,
 		          		align:"left",
 		          		verticalAlign:'top',
 		          		y:15,
@@ -165,6 +164,15 @@
 		          			fontSize:13,
 		          			fontWeight:"normal",
 		          		},
+
+		          		labelFormatter: function(){
+		          			var name = this.name;
+						 	var color = this.color;
+					 	 	//var y = (this.point.y) ? this.point.y.toFixed(2) : 0.0;
+					 	 	console.log(this.name +" " +this.color);
+	          				return '<span style="color:'+ color+'">' + name + '</span>';
+          					
+	          			}
 		          		
 		          	},
 				},
@@ -177,10 +185,11 @@
 					type:Object,
 					value:{
 						series: {
+							visible: true,
                 			showInNavigator: true,
 							cropThreshold:2500,
 							turboThreshold:2500,
-							point: {
+							/*point: {
 			                    events: {
 			                        mouseOver: function () {
 			                        	//console.log(this.series.name);
@@ -214,7 +223,7 @@
 			                                });
 			                        }
 								}
-							}
+							}*/
 						},
 						
 						line:{
@@ -225,18 +234,6 @@
 				            
 					}
 				},
-
-				currentValue: {
-					type: Object,
-					value: {},
-					notify: true,
-					observer: '_currentValueChanged',
-				},
-
-			},
-
-			_currentValueChanged: function() {
-				console.log(this.currentValue);
 			},
 
 			updateProperties: function() {
@@ -295,7 +292,7 @@
 			          	});
 
 			    this.axisReady = true;
-			    this.$.cumRetLineChartTemplate.render();
+			    //this.$.cumRetLineChartTemplate.render();
 				this.$$('#cumRetLineChart').removeSeries(0);
 			},
 
@@ -323,16 +320,25 @@
 			            }]);
 
 				this.set('legend', {
-			          		enabled:false,
+			          		enabled:true,
 			          		align:"left",
 			          		verticalAlign:'top',
-			          		margin:0,
+			          		y:-15,
+			          		margin:10,
 			          		itemStyle: {
 			          			fontSize:13,
 			          			fontWeight:"normal",
 			          		},
-			          	
-			          		labelFormatter: function() {
+
+			          		labelFormatter: function(){
+			          			var name = this.name;
+							 	var color = this.color;
+						 	 	//var y = (this.point.y) ? this.point.y.toFixed(2) : 0.0;
+		          				return '<span style="color:'+ color+'">' + name + '</span>';
+	          					
+		          			},
+
+			          		/*labelFormatter: function() {
 
 			          			var v = (this.yData && this.yData.length > 0) ? (this.yData[this.yData.length - 1]) : 0.0;
 
@@ -345,17 +351,13 @@
 							 	
 							 	var change = (this.point.change) ? this.point.change.toFixed(2) : (v - 100.0).toFixed(2);
 
-							 	//y = isNaN(y) ? '' : (': '+y.toString());
-
-							 	//change = isNaN(change) ? '' : (': '+change.toString() + '%');
-							 	
 							 	if(name == "Strategy" || name=="Benchmark") {
 							 		
 		          					return '<span style="color:'+ color+'">' + name + ': </span> <b>' + change +'%</b><br/>';
 		          				} else {
 		          					return '<span style="color:'+ color+'">' + name + ': </span> <b>' + y +'</b><br/>';
 		          				}
-		          			},
+		          			},*/
 			          	});
 
   			 	this.axisReady = true;
@@ -363,23 +365,19 @@
 				this.$$('#cumRetLineChart').removeSeries(0);
 			},
 
-			addSeries: function(name, data, colorByPoint, options) {
-
-				//console.log(data);
-				this.$$('#cumRetLineChart').addSeries(name, data, false, options);
-
-				this.$$('#cumRetLineChart')._chart.redraw();
+			addSeries: function(name, data, options) {
+				this.$$('#cumRetLineChart').addSeries(name, data, options,false);
 			},
 
-			createCumRetLineChart: function(backtest) {
+			createCumRetLineChart: function(totalreturn) {
 				var types = ["algorithm","benchmark"];
 				var colors = ["#0375b4","#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
 				var legend = ["Strategy", "Benchmark"];
 				var width = [2, 1];
 
-				for (index=0;index<types.length;index++) {
+				for (var index=0;index<types.length;index++) {
 					
-					var equityData = backtest.output.totalreturn[types[index]];
+					var equityData = totalreturn[types[index]];
 					var keys = Object.keys(equityData);
 					var dataset = new Array(keys.length);
 			
@@ -388,7 +386,7 @@
 		  				dataset[i] = [Date.parse(v), equityData[v] + 100.0];
 		   			}); 
 
-					this.$$('#cumRetLineChart').addSeries(legend[index], dataset, false, 
+					this.addSeries(legend[index], dataset,
 							{		
 							lineWidth: width[index], 
 							color:colors[index], 
@@ -405,14 +403,15 @@
 								 	return '<span style="color:'+ color+'">\u25CF ' + series.name + '</span>: <b>' + change +'%</b><br/>';
 							 	},				                
 							},
-						}
+						}, false
 					);	
+
+					this.redrawChart();
 		  		}	
 			},
 
-		 	createTrackVarLineChart: function(backtest) {
+		 	createTrackVarLineChart: function(variablesData) {
 			 	var colors = ["#6e2667","#fc4a1a","#0375b4","#FFAA1D","#007849"];
-				var variablesData = backtest.output.variables
 
 				if (variablesData) {
 
@@ -436,7 +435,7 @@
 
       				var i=0;
       				for (var key in dataArrays) {
-      					this.$$('#cumRetLineChart').addSeries(key, dataArrays[key], false, 
+      					this.addSeries(key, dataArrays[key],
   							{	color:colors[i++], 
   								lineWidth:1, 
   								yAxis:1,
@@ -445,8 +444,10 @@
   									pointFormat:'<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
   									
   								}
-							}
+							}, false
 						);
+
+						this.redrawChart();
       				}
 
 				}
@@ -483,7 +484,7 @@
 			},
 
 			redrawChart: function() {
-				this.$$('#cumRetLineChart')._chart.redraw();
+				this.$$('#cumRetLineChart').redraw();
 			},
 
 			getSeriesNameToIndexMap: function() {

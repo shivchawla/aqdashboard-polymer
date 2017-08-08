@@ -4,6 +4,9 @@
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
+
+<link rel="import" href="../common/aq-portwidth-detector.html">
+
 <script src="../../../resources/scripts/DateTime.js"></script>
 
 <!--link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet"-->
@@ -41,10 +44,8 @@
             --paper-checkbox-unchecked-color: #959595;
         }
 
-        }
-
         .strategy-name {
-            font-weight: 400;
+            font-weight: 700;
             font-size: 16px;
         }
 
@@ -57,7 +58,7 @@
             padding-right: 15px;
             margin-right: 20px;
             font-size: 14px;
-            border-radius: 4px;
+            --border-radius: 4px;
         }
 
         .strategy-bt(:not([narrow-viewport])) {
@@ -93,7 +94,7 @@
 
         .strategy-name:hover {
             cursor: pointer;
-            text-decoration: underline;;
+            text-decoration: underline;
         }
 
         iron-icon {
@@ -102,20 +103,6 @@
             width: 22px;
             height: 22px;
             cursor: pointer;
-        }
-        
-        .st-li-header {
-            font-weight: 300;
-            font-size: 0.8em;
-            display: inline;
-        }
-        .st-li-detail {
-            font-weight: 400;
-            font-size: 1em;
-        }
-        .st-header{
-            font-size: 0.8em;
-            font-weight: 700;
         }
 
         .right-container {
@@ -135,9 +122,18 @@
             margin-top: 15px;
         }
 
+        #strategy-content-container.flat {
+            @apply(--layout-horizontal);
+            @apply(--layout-flex);
+        }
+
+        #gap.flat {
+            @apply(--layout-flex);
+        }
+
         paper-button {
-            width:120px;
-            height:22px;
+            width:140px;
+            height:25px;
             text-transform: none;
             --paper-button:{
                 color: teal;
@@ -153,8 +149,20 @@
         }
 
         paper-button:hover {
-            background-color: teal;
-            color: white;
+            --background-color: teal;
+            --color: white;
+        }
+
+        #backtests {
+            text-decoration: underline;
+            --font-weight: 700;
+        }
+
+        #backtests:hover {
+            cursor: pointer;
+            --font-size: 17px;
+            color: #3399ff;
+            
         }
 
     </style>
@@ -166,15 +174,15 @@
        
     	<iron-signals on-iron-signal-select-strategy='onSelectStrategy'></iron-signals>
 
-        <div id$="[[strategyId]]" class="row">
+        <aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
+
+        <div id$="[[strategyId]]" class="row" on-mouseover='onMouseOver' on-mouseout='onMouseOut'>
 
             <div class="layout horizontal center">
                 <paper-checkbox id='checkbox' noink on-change='onCheck'></paper-checkbox>
                 
                 <div id="strategy-content-container">
-                    <div on-tap='goToEditor' class="strategy-name self-center flex">
-                        [[strategyName]]
-                    </div>
+                    <div on-tap='goToEditor' class="strategy-name"><span>[[strategyName]]</span></div>
 
                     <div class="strategy-created-date">
                         Created At:&nbsp;[[createdAt]]
@@ -182,14 +190,14 @@
                 </div>
                 
                 <div class='right-container layout horizontal flex'> 
-                    <div class="flex"></div>
-	                <paper-button noink on-tap='goToAnalyze' disabled="[[isShowBacktestsDisabled(numBacktest)]]">
+                    <div class="flex"></div>    
+	                <!--div id="backtests" on-tap='goToAnalyze' disabled="[[isShowBacktestsDisabled(numBacktest)]]">
                         Backtests ([[numBacktest]]) 
-	                </paper-button>
+	                </div-->
 
-                    <!--paper-button noink on-tap='runForwardTest'
-                        disabled="[[!isForwardTestingAvailable(numBacktest, forwardtestId)]]">Forward Test
-                    </paper-button-->
+                    <paper-button on-tap='goToAnalyze' disabled="[[isShowBacktestsDisabled(numBacktest)]]">
+                        Backtests ([[numBacktest]]) 
+                    </paper-button>
                 </div>
             </div>
             
@@ -227,7 +235,29 @@
                 strategyId: String,
 
                 createdAt: String,
+
+                width:{
+                    type: Object,
+                    observer:'_widthChanged',
+                },
+
+                active: {
+                    type: Boolean,
+                    value: false,
+                },
                 
+            },
+
+            _widthChanged: function() {
+                
+            },
+
+            onMouseOver: function() {
+                this.active = true;
+            },
+
+            onMouseOut: function() {
+                this.active = false;
             },
 
             goToEditor: function () {

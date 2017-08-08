@@ -1,68 +1,91 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
+<link rel="import" href="../common/aq-portwidth-detector.html">
+
 <dom-module id='aq-analyze-home-header'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
 	</style>
 
 	<style>
+		
+		paper-checkbox {
+            --paper-checkbox-checked-color: #cc6666;
+            --margin-right: 5px;
+            margin-left: 10px;
+		}
+
 		#header {
-			background-color: #e1e1e1;
+			background-color: #fafafa;
+			border: 1px solid #e1e1e1;
 		}
 
 		.header-item {
-			font-size: 12px;
+			font-size: 13px;
 			width: 160px;
 		}
 
 		#header-item-backtest {
-			width: 140px !important;	
-		}
-
-		paper-checkbox {
-            --paper-checkbox-checked-color: #cc6666;
-            margin-right: 5px;
+			margin-left: 10px;
+			width: 120px !important;	
 		}
 
 		#backtest-name {
-			padding-left: 10px;
-		}
+                padding-left: 10px;
+                --width: 150px !important;
+            }
 
-		.status {
-			--width: 160px !important;
-		}
+		/*created*/
+        #header-item-0 {
+            width: 200px;    
+        }    
 
-		.dtrange {
-			width: 180px !important;	
-		}
+        /*date-range*/
+        #header-item-1 {
+            width: 140px;    
+        }
 
-		.small {
-			width: 140px !important;
-		}
+        /*status*/
+        #header-item-2 {
+            width: 220px ;    
+        }
+
+        /*return & sharpe-*/
+        #header-item-3 {
+            width: 140px ;
+        }
+
+        #header-item-4 {
+            width: 140px ;
+        }
 
 		#empty-header {
-			width: 70px;
+			width: 100px;
+		}
+
+		#only-backtest-header {
+			width: calc(100% - 150px);
 		}
 
 	</style>
 
 	<template>
-		<div id="header" class="layout horizontal">
-		 	<div id="backtest-name" class="layout horizontal">
-			 	<paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
-	            	on-change='onCheckAllBacktest'>
-	        	</paper-checkbox>
+		<aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
 
-	        	<p class="header-item" id="header-item-backtest">BACKTEST</p>
-        	</div>
-        	<p class="header-item">CREATED ON</p>
-        	<p class="dtrange header-item">DATE RANGE</p>
-        	<p class="small header-item">STATUS</p>
-        	<p class="small header-item">TOTAL RETURN</p>
-        	<p class="small header-item">SHARPE RATIO</p>
-        	<!--template is='dom-if' if=[[!shareIcon]]>
-        		<div id="empty-header"></div>
-    		</template-->
-    	</div>
+		<template is='dom-if' if='[[header]]'>
+			<div id="header" class="layout horizontal">
+			 	
+				<paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
+		            	on-change='onCheckAllBacktest'>
+		        	</paper-checkbox>
+		        <div class="layout horizontal" id="only-backtest-header">	
+		        	<p class="header-item" id="header-item-backtest">Backtest</p>
+		        	
+		        	<template is='dom-repeat' items='[[header]]'>
+		        		<p class="header-item" id="header-item-[[index]]">[[item]]</p>
+		        	</template>
+	    		<!--div id="empty-header"></div-->
+	    	</div>
+    	</template>
 	</template>
 
 	<script>
@@ -74,6 +97,40 @@
                     type:Boolean,
                     value:false
                 },
+
+                width: {
+                	type: Object,
+                	observer: '_widthChanged',
+            	}
+			},
+
+			attached: function() {
+				this.computeHeader();
+			},
+
+			computeHeader: function() {
+				if(this.width) {
+                    this.header = null;
+                    var header = ["Created Date", "Status"];
+                     
+                    if(this.width.semiWide) {
+                        header.push("Date Range");
+                    }
+
+                    if (this.width.wide) {
+                       header.push("Total Return");    
+                    }
+
+                    if (this.width.superWide) {
+                        header.push("Sharpe Ratio");
+                    }
+
+                    this.header = header;
+                }
+			},
+
+			_widthChanged: function() {
+				this.computeHeader();
 			},
 
 			onCheckAllBacktest: function () {

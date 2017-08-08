@@ -6,7 +6,6 @@
 <link rel='import' href='../../../bower_components/paper-header-panel/paper-header-panel.html'>
 
 <link rel='import' href='../common/aq-check-authentication.html'>
-<link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
 
 <link rel='import' href='./aq-editor-home-elementmenu.html'>
@@ -14,7 +13,7 @@
 <link rel='import' href='./aq-editor-home-strategy-item.html'>
 <link rel='import' href='./aq-editor-home-forward-strategy-item.html'>
 
-<link rel='import' href='../../dialog/aq-delete-dialog.html'>
+<link rel='import' href='../../dialog/aq-action-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-input-dialog.html'>
 <link rel='import' href='../../dialog/aq-editor-strategy-compare-dialog.html'>
 <script src="../../../resources/scripts/DateTime.js"></script>
@@ -125,12 +124,15 @@
         }
 
         paper-button {
-            font-size: 14px;
-            --padding: 0 20px;
-            --border-radius: 2px;
-            height: 32px;
-            background-color: #cc6666;
-            color: white;
+            --paper-button :{
+                font-size: 12px;
+                font-weight: 700;
+                --height: 32px;
+                background-color: teal;
+                --border: 1px solid teal;
+                --background-color: white;
+                color: white;
+            };
         }
 
         #searchbox {
@@ -175,12 +177,6 @@
             color: #e1e1e1;
         }
 
-        #createButton {
-            color: white;
-            background-color: #cc6666;
-            text-transform: none;
-        }
-
         aq-icon-expandable-search {
             --height: 32px;
             width: 30%;
@@ -209,9 +205,6 @@
             --paper-card :{
                 z-index: 1;
             }
-        }
-        paper-checkbox {
-            --paper-checkbox-unchecked-color: #c1c1c1;
         }
 
         .heading {
@@ -244,6 +237,10 @@
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
+        <iron-signals on-iron-signal-forwardtest-added='onForwardtestAdded'></iron-signals>
+
+        <iron-signals on-iron-signal-forwardtest-stopped='onForwardtestStopped'></iron-signals>
+
         <app-route
             route="{{route}}"
             pattern="/dashboard/editor"
@@ -273,21 +270,14 @@
             headers='{{header}}'
             debounce-duration="300">
         </iron-ajax>
-
-        <template is='dom-if' if='[[loading]]'>
-            <aq-loading-progress loading='{{loading}}'>
-            </aq-loading-progress>
-        </template>
             
-        <aq-allpage-layout class="flex" header="All Strategies" 
+        <aq-allpage-layout loading='{{loading}}' class="flex" header="All Strategies" 
             current-path="[[currentPath]]">
 
             <div class="header-button self-center">
-                <paper-button noink id="createButton" on-tap="createNew"><!--iron-icon icon="aq-icons:add"></iron-icon-->Create New
+                <paper-button raised noink id="createButton" on-tap="createNew">Create New
                 </paper-button>
             </div>
-
-            
 
             <div class="strategy-container internal-content layout vertical">
                 <div class="search-header">
@@ -322,7 +312,7 @@
                                     strategy-id="[[item._id]]"
                                     forwardtest-id="[[item.forwardtest._id]]"
                                     created-date="[[formatDateTime(item.forwardtest.createdAt)]]"
-                                    status="[[formatForwardTestStatus(item.forwardtest.error)]]"
+                                    status="[[formatForwardTestStatus(item.forwardtest.error, item.forwardtest.active)]]"
                                     >
                                 </aq-editor-home-forward-strategy-item>
                                 <!--div class="border"></div-->
@@ -346,7 +336,6 @@
                                     <aq-editor-home-strategy-item
                                         strategy-name="[[item.name]]"
                                         num-backtest="[[item.numBacktests]]"
-                                        forwardtest-id="[[item.forwardtest]]"
                                         strategy-desc="[[item.description]]"
                                         strategy-id="[[item._id]]"
                                         created-at="[[formatDateTime(item.createdAt)]]">
@@ -363,16 +352,27 @@
             <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
                 <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
             </template>
+        </aq-allpage-layout>
           
-            <aq-delete-dialog id="dialog" heading="Delete Strategies"
-                message="Are you sure to delete {{checkedCount}} strateg[[getMessageSuffix(checkedCount)]]?"
-                cancel="Cancel"
-                accept="OK">
-            </aq-delete-dialog>  
+        <aq-action-dialog id="deleteDialog" 
+            heading="Delete Strategies"
+            message="Are you sure to delete [[computeCheckedCount(checkedCount, 'test')]] strateg[[getMessageSuffix(checkedCount, 'test')]]?" 
+            action-type="delete"
+            cancel="Cancel"
+            accept="Delete">
+        </aq-action-dialog>
 
-            <aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+         <aq-action-dialog id="stopForwardTestDialog" 
+            heading="Stop Forward Test" 
+            message="Are you sure to stop [[computeCheckedCount(checkedCount, 'live')]] forward test[[getMessageSuffix(checkedCount, 'live')]]?" 
+            action-type="stoptest" 
+            cancel="Cancel"
+            accept="Stop">
+        </aq-action-dialog>  
 
-            <aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
+        <aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
+
+        <aq-editor-strategy-preview-dialog id="strategyPreviewDialog"></aq-editor-strategy-preview-dialog>
 
     </template>
 
@@ -461,16 +461,17 @@
             },
 
             listeners: {
-                'deleteClicked': 'openDeletionDialog',
-                'compareClicked': 'openCompareDialog',
+                'delete-clicked': 'openDeletionDialog',
+                'stop-clicked':'openStopDialog',
+                'compare-clicked': 'openCompareDialog',
                 'previewClicked': 'openPreview',
                 'analyzeClicked': 'goToAnalyze',
-                'shareClicked': 'goToShare',
                 'cloneClicked': 'goToClone',
                 'editorClicked': 'goToEditor',
                 'check-action-test': 'checkStrategyTest',
                 'check-action-live': 'checkStrategyLive',
                 'delete-action': 'onDeletion',
+                'stoptest-action':'onStopForwardTestAction',
                 'search-action': 'onSearch',
                 'run-forwardtest-action':'runForwardTest',
                 'route-forwardtest-detail-action':'goToForwardTest',
@@ -516,7 +517,7 @@
                 }
 
                 this.liveStrategies = liveStrategies;
-                console.log(this.liveStrategies);
+                //sconsole.log(this.liveStrategies);
                 //Get forward test minor details 
 
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
@@ -529,8 +530,13 @@
             onGetStrategiesError: function (data) {
             },
 
+            openStopDialog: function() {
+                this.$$('#stopForwardTestDialog').open();
+            },
+
             openDeletionDialog: function () {
-                this.$$('#dialog').open();
+                console.log("Opening Delete");
+                this.$$('#deleteDialog').open();
             },
 
             openCompareDialog: function () {
@@ -550,7 +556,6 @@
                 if (!e.detail.id) {
                     e.detail.id = this._currentRow.id;
                 }
-
             },
 
             goToClone: function (e) {
@@ -630,8 +635,12 @@
                 return checkedCount[type] > 0;
             },
 
-            getMessageSuffix: function (checkedCount, type) {
-                return checkedCount[type] > 1 ? "ies" : "y";
+            computeCheckedCount: function (checkedCount, type) {
+                return checkedCount[type];
+            },
+
+            getMessageSuffix: function (checkedCount, type) {    
+                return checkedCount[type] > 1 ? (type=="live" ? "s" : "ies") : (type=="live" ? "" : "y");
             },
 
             onSearch: function (e) {
@@ -659,22 +668,19 @@
                     this.set('searchParam.search', "");
                 }
 
-
-
                 if (this.searchParam.search == "" && searchtext == "" && this.dirtyBit == 0) {
                     return;
                 }
 
                 this.set('searchParam.search', searchtext);
                 this.fetchResults();
-
             },
 
             onDeletion: function () {
                 //Send DELETE request to backend
                 for (key in this.checkedItems["test"]) {
                     for (i in this.testStrategies) {
-                        if (key == this.testStrategies[i]._id && this.checkedItems[key] == true) {
+                        if (key == this.testStrategies[i]._id && this.checkedItems['test'][key] == true) {
                             this.deleteId = this.testStrategies[i]._id;
                             this.$.deleteStrategyQuery.generateRequest();
                         }
@@ -685,8 +691,24 @@
                 this.fire('deletion-successful',{content:'success'});
             },
 
-            onDeleteStrategyError: function () {
+            onStopForwardTestAction: function(e) {
+                console.log("We will write now");
+                //Request to stop all selected tests
+                
+                var forwardtestIds = [];
+                //Send DELETE request to backend
+                for (key in this.checkedItems["live"]) {
+                    var idx = this.liveStrategies.map(item => item._id).indexOf(key);
+                    if (this.checkedItems['live'][key] == true && idx!=-1) {
+                            
+                        forwardtestIds.push(this.liveStrategies[idx].forwardtest._id);
+                    }
+                }
 
+                e.detail.forwardtestIds = forwardtestIds;
+            },
+
+            onDeleteStrategyError: function () {
             },
 
             onDeleteStrategyResponse: function (data) {
@@ -736,6 +758,14 @@
             hasStrategies: function (strategies, searchParam) {
                 return (strategies && strategies.length > 0) || (searchParam && searchParam.search != "");
             },
+
+            onForwardtestStopped: function() {
+                this.dirtyBit = 1;
+            },
+
+            onForwardtestAdded: function() {
+                this.dirtyBit = 1;
+            },  
 
             onStrategyAdded: function () {
                 this.dirtyBit = 1;
@@ -794,8 +824,8 @@
                 return date.formatDateTime(d);
             },
 
-            formatForwardTestStatus: function(error) {
-                return error ? "Error" : "Running";
+            formatForwardTestStatus: function(error, active) {
+                return active ? (error ? "Error" : "Running") : "Stopped";
             },
 
             createNew: function () {

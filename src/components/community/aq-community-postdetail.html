@@ -12,10 +12,9 @@
 <link rel="import" href="./aq-community-postdetail-content.html">
 <link rel="import" href="./aq-community-postdetail-reply.html">
 
-<link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
-<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
+
 <dom-module id="aq-community-postdetail">
 
   <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -93,7 +92,7 @@
       #bar {
           border-top: 1px solid #e1e1e1;
       }
-      
+
   </style>  
 
   <template>
@@ -120,12 +119,10 @@
           debounce-duration="300">
       </iron-ajax>
 
-        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-
-        <template is='dom-if' if='{{!loading}}'>
+        <!--template is='dom-if' if='{{!loading}}'-->
         <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
             
-            <aq-allpage-layout header="Post Detail" current-path="[[currentPath]]">  
+            <aq-allpage-layout loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
             
                 <div class="internal-content" id="post-container">
                     <paper-card id="header" clas="flex">
@@ -158,7 +155,7 @@
                 </div>
             </aq-allpage-layout>    
         </template>
-        </template>
+        <!--/template-->
 
   </template>
 

@@ -1,6 +1,8 @@
 <link rel='import' href='../../../bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tabs.html'>
 
+<link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
+
 <link rel='import' href='../../../bower_components/paper-card/paper-card.html'>
 <link rel='import' href='../../../bower_components/paper-tabs/paper-tab.html'>
 <link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
@@ -15,7 +17,6 @@
 <link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel='import' href='../common/aq-pagination.html'>
-<link rel="import" href="../common/aq-loading-progress.html">
 
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item2.html">
@@ -29,7 +30,6 @@
     </style>
 
     <style>
-
         #header {
             margin-bottom: 30px;
         }
@@ -47,9 +47,6 @@
             font: inherit;
             font-size: 16px;
             color: black;
-        }
-
-        #community-container {
         }
 
         .right-container {
@@ -94,53 +91,15 @@
             color: #000;
         }
 
-        paper-tooltip.iconTooltip {
-            --paper-tooltip: {
-                font-size: 13px;
-                min-width: 40px;
-                text-align: center;
-            } --paper-tooltip-opacity: 1.0;
-            --paper-tooltip-background: teal;
-        }
-
-        aq-community-home-post-item2 {
-            width: 100%;
-            margin: 0 auto;
-        }
-
         aq-announcement-card {
             --aq-announcement-card-width: 300px;
             margin-bottom: 30px;
-        }
-
-        .main-container {
-            --position: relative;
-            --top: 30px;
-        }
-
-        .list-container {
-            --margin-right: 60px;
-            width: 100%;
-            --padding-left: 10px;
-        }
-
-        ul {
-            list-style: none;
         }
 
         .aq-announcement-container {
             --position: relative;
             --top: 18px;
             margin-top: 100px;
-        }
-
-        .flex {
-            --width: 20%;
-        }
-
-        #fearchbar {
-            width: 70%;
-            max-width: 650px;
         }
 
         .search-result {
@@ -162,12 +121,10 @@
         }
 
         paper-button {
-            border: none;
             font-size: 13px;
-            background-color: #cc6666;
+            background-color: teal;
             color: white;
-            padding: 0 20px;
-            border-radius: 2px;
+            --border: 1px solid teal;
             height: 35px;
         }
 
@@ -176,18 +133,15 @@
             --paper-checkbox-label-color: #3c3c3c;
             --paper-checkbox-unchecked-color: #e1e1e1;
             --paper-checkbox-size: 12px;
-            margin-right: 10px;
+            margin-right: 0px;
             --paper-checkbox-label: {
                 font-size: 12px;
             }
-        }
-
-        #pagination {
-            --width: 40%;
-            --min-width: 140px !important;
+            transform: scale(0.8, 0.8);
         }
 
     </style>
+
     <template>
 
         <iron-media-query query="(min-width: 850px)" query-matches="{{wide}}"></iron-media-query>
@@ -222,13 +176,11 @@
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-        <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-
-        <aq-allpage-layout header="Community" 
+        <aq-allpage-layout loading='{{loading}}' header="Community" 
             current-path="[[currentPath]]">
 
             <div class="header-button self-center">
-                <paper-button class="self-center" noink on-tap='createPost'>New Post</paper-button>
+                <paper-button raised class="self-center" noink on-tap='createPost'>New Post</paper-button>
             </div>
 
             <div id="community-container" class="internal-content" class="layout vertical">
@@ -272,7 +224,6 @@
                             </div> 
 
                         </div>
-                        
                     
                         <div class="list-container layout vertical">
                             <template is="dom-repeat" items="{{threads}}">

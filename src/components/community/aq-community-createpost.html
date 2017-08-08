@@ -1,5 +1,4 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
@@ -10,8 +9,6 @@
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
-
-<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 
 <link rel="import" href="../common/aq-tag-element.html">
 <link rel='import' href='../common/aq-dropdown.html'>
@@ -24,7 +21,6 @@
 <link rel="import" href="./aq-community-previewpost.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 
-
 <dom-module id="aq-community-createpost">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
@@ -34,48 +30,6 @@
             font-family: 'Lato', sans-serif;
             font-size: 16px;
             --background-color: transparent;
-        }
-
-        h1, h2, h3, h4, h5 {
-            padding: 0;
-            margin: 0;
-        }
-
-        h1:hover {
-          cursor: pointer;
-        }
-
-        #container {
-            margin: 0 auto;
-            color: #24293d;
-            width: 90%;
-        }
-
-        paper-card {
-            width: 100%;
-        }
-
-        .goBackButton {
-            margin-left: -7px;
-            margin-bottom: 10px;
-        }
-
-        input {
-            padding-left: 10px;
-            height: 35px;
-            border: 0;
-            margin: 0;
-            -webkit-appearance: none;
-            border: 1px solid #e1e1e1;
-            font-size: 16px;
-            background-color: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        p {
-            font-size: 28px;
-            margin-bottom: 10px;
-            margin-top: 0px;
         }
 
         paper-button {
@@ -117,48 +71,14 @@
             height: 32px;
         }
 
-        paper-card {
-            width: 100%;
-        }
-
-        .header-container {
-            background-color: transparent;
-            height: 55px;
-        }
-
-        .header-container h1 {
-            font-size: 0.9em;
-            color: #cc4444;
-            margin-left: 0px;
-            font-weight: 400;
-        }
-
         .secondary-container {
             padding: 20px 20px;
-        }
-
-        .title-text-container {
-            width: 100%;
-            border: 1px solid #e1e1e1;
-            padding-left: 5px;
-            padding-right: 5px;
-            padding-bottom: 5px;
         }
 
         aq-tags-input-container{
             --tags-container-padding-left:0;
             --tags-container-background-color:transparent;
-        }
-
-        .left-container {
-            width: 60%;
-        }
-
-        .right-container {
-            width: 35%;
-            margin-left: 35px;
-            position: relative;
-            top: 5px;
+            border: 1px solid #e1e1e1;
         }
 
         .tags-header {
@@ -167,8 +87,8 @@
         }
 
         aq-tag-element {
-            margin-top: 5px;
-            margin-bottom: 6px;
+            --margin-top: 5px;
+            --margin-bottom: 5px;
             --tag-element-background-color: #D7D7D7;
         }
 
@@ -226,7 +146,6 @@
         paper-toast {
             --paper-toast-background-color: #cc6666;
             font-weight: 700;
-
         }
 
         #backIcon {
@@ -238,19 +157,15 @@
             border-radius: 2px;
             height: 25px;
         }
+
         #previewSubmitBtn{
             background-color: teal;
             color: #fff;
             margin-right: 10px;
         }
+
         #previewEditBtn{
             background-color: #cccccc;
-        }
-
-        aq-sub-toolbar h4{
-            font-weight: 400;
-            margin-left: 20px;
-            font-size: 0.9em;
         }
 
         #create-post-container {
@@ -260,47 +175,22 @@
             margin-bottom: 30px;
         }
 
-        #topicInput {
-            --paper-input-container-input: {
-                font-size: 26px;
-                color: #cc6666;
-            }
-
-            --paper-input-container: {
-                padding-bottom: 15px;
-            }
-            --paper-input-container-focus-color: #cc6666;
-
-            --paper-input-container-label-floating: {
-                color: #3c3c3c;
-            }
-        }
-
-        #tagsInput {
-            --paper-input-container: {
-                --padding-bottom: 15px;
-            }
-        }
-
-        paper-input {
-            --paper-input-container-underline: {
-                height: 0px;
-            };
-
-            --paper-input-container-underline-focus: {
-                height: 0px;
-            }; 
-
-             --paper-input-container: {
-                padding-left: 20px;
-                border: 1px solid #e1e1e1;
-            }
-        }
-
         #limit-tags-text {
             font-size: 12px;
             color: #3c3c3c;
             margin-top: 5px;
+        }
+
+        #topicInput {
+            width: 100%;
+            padding: 10px;
+            --padding-right: 0px;
+            border: 1px solid #e1e1e1;
+            color: #cc6666;
+            font-size: 26px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            outline: none;
         }
 
     </style>
@@ -348,21 +238,24 @@
         <template is='dom-if' if="[[!preview]]">
             <aq-allpage-layout header="Create a Post" current-path="[[currentPath]]">
                 <div class="internal-content" id="create-post-container">
-                    <paper-input type="text" id="topicInput" class="flex" placeholder="Title"></paper-input>
-                    
+                    <div style="width: calc(100% - 23px);">
+                        <input type="text" 
+                            id="topicInput"
+                            class="flex"
+                            placeholder="Title">
+                    </div>
+                
                     <div class="middle-container layout vertical">
                         <aq-tags-input-container>
-                            <paper-input type="text" id="tagsInput" 
+                            <input type="text" id="tagsInput" 
                                 class="flex" placeholder="Add tags here"
-                                no-label-float
                                 on-keydown="onChange" 
                                 on-keyup="scrollToBottom">
-                            </paper-input>
 
                             <div class="tags-container">
                                 <template is="dom-repeat" items="{{tags}}">
-                                    <aq-tag-element label="{{item}}">
-                                        <iron-icon icon="clear" on-tap="removeTag"></iron-icon>
+                                    <aq-tag-element class="self-center" label="{{item}}">
+                                        <iron-icon class="self-center" icon="clear" on-tap="removeTag"></iron-icon>
                                     </aq-tag-element>
                                 </template>
                             </div>
@@ -386,7 +279,7 @@
                         
                     <div class="layout horizontal attachment-container">
                         <div class="flex"></div>
-                        <template is='dom-if' if='[[messageAttached]]'>
+                        <template is='dom-if' if='[[hasAttachment]]'>
                             <paper-button style="color:#444;" id='attachButton' raised
                                           on-tap='onAttachRequest'>
                                 Attach
@@ -399,6 +292,7 @@
                                                on-tap='onRemoveAttached' icon="clear"></paper-icon-button>
                         </div>
                     </div>
+
                     <aq-html-editor id="editor"></aq-html-editor>
 
                     <div id='buttons' class="layout horizontal">
@@ -443,7 +337,7 @@
 
                 attachedMessage: String,
                 
-                messageAttached: {
+                hasAttachment: {
                     type: Boolean,
                     value: false
                 },
@@ -523,19 +417,19 @@
                 if (this.attachedBacktestId && this.attachedBacktestId != "") {
                     this.attachedMessage = "Attached Backtest ID: " + this.attachedBacktestId;
                     this.$$('#attachedMessageDiv').style.display = 'block';
-                    this.messageAttached = false;
+                    this.hasAttachment = false;
                 } else {
                     this.attachedMessage = "";
                     if (this.$$('#attachedMessageDiv')) {
                         this.$$('#attachedMessageDiv').style.display = 'none';
-                        this.messageAttached = true;
+                        this.hasAttachment = true;
                     }
                 }
             },
 
             onRemoveAttached: function () {
                 this.attachedBacktestId = "";
-                this.messageAttached = false;
+                this.hasAttachment = false;
             },
 
             goBack: function () {
@@ -597,8 +491,10 @@
             },
 
             resetView: function () {
+                console.log("Resetting");
                 this.preview = false;
                 this.attachedBacktestId = "";
+                this.hasAttachment = false;
                 this.attachedMessage = "";
                 this.threadData = {};
 
@@ -632,8 +528,9 @@
                 var index = this.tags.indexOf(itemName);
                 this.splice('tags', index, 1);
             },
+
             scrollToBottom: function () {
-                var element = document.getElement(".tags-container");
+                var element = this.$$("#tags-container");
                 if (element) {
                     element.scrollTop = element.scrollHeight;
                 }

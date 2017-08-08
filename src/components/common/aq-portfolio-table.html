@@ -1,0 +1,125 @@
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
+<!--link rel="import" href="../../../../bower_components/paper-datatable/paper-datatable.html"-->
+
+<script src="../../../../resources/scripts/DateTime.js"></script>
+
+<dom-module id='aq-portfolio-table'>
+	<style>
+		vaadin-grid {
+			--vaadin-grid-header-cell: {
+				background-color: #fafafa;
+				font-size: 14px;
+			};
+
+			--vaadin-grid-body-cell: {
+				font-size: 14px;
+			}
+
+			--vaadin-grid-body-row-hover-cell: {
+				background-color: #fafafa;
+			}
+		}
+	
+	</style>
+
+	<style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+	<template>
+		<vaadin-grid items="[[items]]" multi-sort=true>
+			<vaadin-grid-column width="100px">
+		     	<template class="header">
+		      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+	      		</template>
+
+		      <template>[[item.date]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      	<template class="header">
+		      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
+	      		</template>
+		      <template>[[item.symbol]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Price</template>
+		      <template>[[item.price]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Quantity</template>
+		      <template>[[item.quantity]]</template>
+		    </vaadin-grid-column>
+
+	      	<vaadin-grid-column width="100px">
+		      <template class="header">Position Value</template>
+		      <template>[[item.positionValue]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Realized PnL</template>
+		      <template>[[item.pnl]]</template>
+		    </vaadin-grid-column>
+
+	   </vaadin-grid>
+
+	   <!--template is='dom-if' if='[[dataItems]]'>
+	   <paper-datatable data="[[dataItems]]" id="datatable" selectable multi-selection>
+			<paper-datatable-column id="nameColumn" header="Name" property="date" sortable>
+			</paper-datatable-column>
+
+			<paper-datatable-column header="Security" property="symbol" sortable></paper-datatable-column>
+
+			<paper-datatable-column header="Quantity" property="quantity" sortable></paper-datatable-column>
+
+			<paper-datatable-column header="Price" property="price" sortable></paper-datatable-column>
+
+			<paper-datatable-column header="Position Value" property="positionValue" sortable></paper-datatable-column>
+
+			<paper-datatable-column header="UnRealized PnL" property="pnl" sortable></paper-datatable-column>
+		</paper-datatable>
+		</template-->
+		
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-portfolio-table',
+
+			properties: {
+				positions: Array,
+			},
+
+			attached: function() {
+                var grid = this.$$('vaadin-grid');
+
+     			var item= [];
+
+     			if(this.positions) {
+
+     				items = new Array(this.positions.length);
+	     			var i = 0;
+
+	     			this.positions.forEach(position => {
+	     				items[i++] = {date: position.date, 
+	     							symbol: position.securitysymbol.ticker,
+	     							quantity: position.quantity,
+	     							price: position.averageprice,
+	     							positionValue: (position.quantity*position.averageprice).toFixed(2),
+	     							pnl: 0.0};
+	     			});
+     			}
+
+     			grid.items = items;
+                
+			}
+
+		});
+	</script>
+</dom-module>

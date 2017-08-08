@@ -43,8 +43,10 @@
         paper-button {
             height: 30px;
             font-size: 13px;
-            color: #cc6666;
-            border: 1px solid #cc6666;
+            color: white;
+            font-weight: 700;
+            background-color: teal;
+            --border: 1px solid #cc6666;
         }
 
         #buttons {
@@ -62,7 +64,7 @@
         }
 
         #bar {
-            border-bottom: 1px solid #d5d5d5;
+            border-bottom: 1px solid #3c3c3c;
         }
 
     </style>
@@ -73,8 +75,8 @@
             
             <div class="header-button layout horizontal self-center">
                 
-                <paper-button noink on-tap='onEdit'>Edit</paper-button>
-                <paper-button noink on-tap='onSubmit'>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             
             </div>
 
@@ -87,7 +89,10 @@
                     </template>
 
                     <template is='dom-if' if='[[!reply]]'>
-                        <aq-community-postdetail-header preview=1 post-header="[[threadData]]"></aq-community-postdetail-header>
+                        <aq-community-postdetail-header 
+                            preview
+                            post-header="[[threadData]]">
+                        </aq-community-postdetail-header>
                     </template>
                 </div>
 
@@ -97,15 +102,18 @@
 
                 <div class='preview-internal'>  
                     <template is='dom-if' if='[[!reply]]'>
-                        <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
+                        <aq-community-postdetail-content 
+                            preview
+                            post-content="[[threadData]]">
+                        </aq-community-postdetail-content>
                     </template>
                 </div>
             </div>
 
             <div class="footer-button layout horizontal">
                 <div class="flex"></div>
-                <paper-button noink on-tap='onEdit'>Edit</paper-button>
-                <paper-button noink on-tap='onSubmit'>Submit</paper-button>
+                <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
+                <paper-button raised noink on-tap='onSubmit'>Submit</paper-button>
             </div>
 
         </all-page-layout>

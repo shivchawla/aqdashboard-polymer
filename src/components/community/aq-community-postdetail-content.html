@@ -2,7 +2,7 @@
 <link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
 
 <link rel="import" href="../common/backtest/aq-backtest-detail-item.html">
-<link rel="import" href="../common/backtest/aq-forwardtest-detail-item.html">
+
 <link rel="import" href="../aq-profile-img.html">
 <link rel="import" href="../common/aq-profile-pic-element.html">
 <link rel="import" href="../common/aq-label-content-item.html">
@@ -57,6 +57,11 @@
         
         .bar {
             border-bottom: 1px solid #e1e1e1;
+            margin-bottom: 5px
+        }
+
+        #bt-container {
+            border: 1px solid #e1e1e1;
         }
 
         #quill {
@@ -70,12 +75,15 @@
             <polymer-quill-html-render 
                 content="[[postContent.markdownText]]">
             </polymer-quill-html-render>
-
-            <div class="bar"></div>
             
             <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
-                <aq-backtest-detail-item title="Attached Backtest Details" elevation="0" backtest-id="[[getBacktestId(postContent)]]">
-                </aq-backtest-detail-item>
+                <div id='bt-container'>
+                    <aq-backtest-detail-item 
+                        heading="Attached Backtest Details"     
+                        backtest-id="[[getBacktestId(postContent)]]"
+                        can-clone=[[!preview]]>
+                    </aq-backtest-detail-item>
+                </div>
             </template>
 
         </div>
@@ -88,6 +96,10 @@
             is: 'aq-community-postdetail-content',
             properties: {
                 postContent: Object,
+                preview: {
+                    type: Boolean,
+                    value: false,
+                },
             },
 
             hasContent: function (item) {

@@ -29,14 +29,19 @@
         } 
 
         paper-button {
-            width:150px;
-            height:22px;
+            --width:150px;
+            height:25px;
             text-transform: none;
             --paper-button:{
-                color: #cc6666;
+                color: #bd362f;
                 font-size: 14px;
-                border: 1px solid #cc6666;
+                --color: white;
+                border: 1px solid #bd362f;
             };
+        }
+
+        paper-button:hover {
+            --background-color: #a8302a;
         }
 
         paper-button[disabled] {
@@ -80,12 +85,12 @@
             <div class="flex"></div>
             
             <template is='dom-if' if='[[forwardTest]]'>
-                <paper-button  id="stop-all-button" noink class="self-center" on-tap="onStopAll" disabled="[[!isSelected]]"> [[computeButtonLabel(forwardTest)]]
+                <paper-button  raised id="stop-all-button" noink class="self-center" on-tap="onStop" disabled="[[!isSelected]]"> [[computeButtonLabel(forwardTest)]]
                 </paper-button>
             </template>
 
             <template is='dom-if' if='[[!forwardTest]]'>
-                <paper-button noink class="self-center" on-tap="onDeleteAll" disabled="[[!isSelected]]"><iron-icon icon="aq-icons:delete"></iron-icon> [[computeButtonLabel(forwardTest)]]
+                <paper-button raised noink class="self-center" on-tap="onDelete" disabled="[[!isSelected]]"><iron-icon icon="aq-icons:delete"></iron-icon> [[computeButtonLabel(forwardTest)]]
                 </paper-button>
             </template>
 
@@ -147,11 +152,15 @@
             },
 
             onDelete: function () {
-                this.fire('deleteClicked');
+                this.fire('delete-clicked');
+            },
+
+            onStop: function() {
+                this.fire('stop-clicked');
             },
 
             onCompare: function () {
-                this.fire('compareClicked');
+                this.fire('compare-clicked');
             },
 
             onCheckAllStrategies: function () {

@@ -5,8 +5,8 @@
 <link rel='import' href='../../icons/aq-iconset.html'>
 <link rel="import" href="../common/backtest/aq-forwardtest-detail-item.html">
 <link rel="import" href="../common/aq-check-authentication.html">
-<link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
+<link rel="import" href="../common/aq-navigation-item.html">
 
 <dom-module id="aq-analyze-forwardtest-detail">
     
@@ -15,23 +15,49 @@
 
     <style>
         #forwardtest-container {
-            margin-left: 2%;
-            margin-right: 2%;
+            --margin-left: 0%;
+            --margin-right: 0%;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        #navigation-panel {
+            margin-top: 5px;
+            margin-bottom: 20px;
         }
     </style>
 
     <template>
+
         <aq-check-authentication id='authItem'></aq-check-authentication>
     
-            <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
-            
-            <template is='dom-if' if='{{!loading}}'>
-                <aq-allpage-layout header="Forward Test Detail" current-path=[[currentPath]]>
-                    <div class="internal-content" id="forwardtest-container">
-                        <aq-forwardtest-detail-item loading="{{loading}}" forwardtest-id="[[forwardtestId]]"></aq-forwardtest-detail-item>
+        <template is='dom-if' if='{{!loading}}'>
+            <aq-allpage-layout loading='{{loading}}' no-nav>
+                <div class="internal-content" id="forwardtest-container">
+                    
+                    <div id='navigation-panel'>
+                        <aq-navigation-item id="navigation-item" 
+                            header="" 
+                            path="[[currentPath]]">
+                        </aq-navigation-item>
                     </div>
-                </aq-allpage-layout>
-            </template>
+                        
+                    <aq-forwardtest-detail-item 
+                        loading="{{loading}}" 
+                        forwardtest-id="[[forwardtestId]]">
+                    </aq-forwardtest-detail-item>
+                </div>
+            </aq-allpage-layout>
+        </template>
+
+         <aq-action-dialog id="stopForwardTestDialog" 
+            heading="Stop Forward Test" 
+            message="Are you sure to stop this forward test?" 
+            action-type="stoptest" 
+            cancel="Cancel"
+            accept="Stop">
+        </aq-action-dialog>  
+
     </template>
 
     <script>
@@ -50,6 +76,35 @@
                 currentPath: {
                     type: Array,
                     value: ["Home", "Research", "All Strategies","Forward Test Detail"]
+                }
+            },
+
+            listeners: {
+               'stoptest-clicked':'onStopForwardTestDialog', 
+               'stoptest-action':'onStopForwardTestAction',
+            },
+
+            computeUpdateForwardtestUrl: function(forwardtestId) {
+                return /forwardtest/+forwardtestId;
+            },
+
+            onStopForwardTestDialog: function(e) {
+                e.stopPropagation();
+                this.$.stopForwardTestDialog.open();
+            },
+
+            onStopForwardTestAction: function(e) {
+                e.detail.forwardtestIds = [this.forwardtestId];
+            },
+
+            onDeleteTest: function(e) {
+                this.forwardtestId = e.detail.id;
+
+                if(this.forwardtestId && this.forwardtestId!="" && this.$.authItem.checkHasToken()) {
+                    this.testUpdateData = {deleted: true};
+
+                    this.header = this.$.authItem.getHeader();
+                    this.$.updateForwardtestQuery.generateRequest();
                 }
             },
 

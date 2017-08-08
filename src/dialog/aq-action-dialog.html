@@ -1,0 +1,93 @@
+
+<link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='../../bower_components/paper-button/paper-button.html'>
+
+<dom-module id='aq-action-dialog'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
+	<style>
+		paper-dialog {
+    		width: 400px;
+    		height: 175px;
+    		margin-right:0px;
+    		margin-left:0px;
+    		padding-right: 0px;
+    		padding-left:0px;
+  		}
+
+  		#buttons {
+  			margin-bottom:0px;
+  		}
+
+      	paper-button {
+      		height:25px;
+	        --paper-button:{
+				background-color: #bd362f;
+				color: white;
+	        };
+		}
+
+		#okayBtn:hover {
+            background-color: #a8302a;
+        }
+
+      	#cancelBtn {
+			--paper-button:{
+				color: #9a9a9a;
+	        };
+		}
+
+      	.header {
+      		--color: teal;
+      	}
+  		
+	</style>
+	
+	<template>
+	  	<paper-dialog id='modal' with-backdrop always-on-top
+	  		on-iron-overlay-opened="patchOverlay">
+	    	<div class="header layout horizontal">
+          		<h2>[[heading]]</h2>
+        	</div>
+ 			
+ 			<p>[[message]]</p>	 	
+  			<div class="buttons">
+  				<paper-button id='cancelBtn' dialog-dismiss>[[cancel]]
+  				</paper-button>
+    			<paper-button id='okayBtn' dialog-confirm on-tap='onSubmit'>[[accept]]
+    			</paper-button>
+  			</div>
+		</paper-dialog>
+	</template>
+	
+	<script>
+		Polymer ({
+			is: 'aq-action-dialog',
+
+			properties: {
+				heading: String,
+				message: String,
+				cancel: String,
+				accept: String,
+				actionType:String
+			},
+
+			onSubmit: function() {
+				this.fire(this.actionType+'-action');
+			},
+
+			open: function() {
+				this.$.modal.open();
+			},
+
+			// https://github.com/PolymerElements/paper-dialog/issues/7
+			patchOverlay: function (e) {
+			  if (e.target.withBackdrop) {
+			    e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
+			  }
+			}
+
+		});
+		
+	</script>
+</dom-module>

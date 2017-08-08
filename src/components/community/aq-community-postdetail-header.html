@@ -71,18 +71,17 @@
             --right:0;
         }
 
-        #followIcon{
-            font-size: 0.7em;
-            --paper-button-color:#7c7c7c;
-            background: #f5f5f5;
-            padding: 0 20px;
-            border-radius: 0;
-            height: 25px;
-            --top:-2px;
-        }
-
         paper-button {
-            border: 1px solid #cc6666;
+            --paper-button: {
+                font-size: 0.7em;
+                color: teal;
+                padding: 0 20px;
+                border-radius: 0;
+                height: 25px;
+                border: 1px solid teal;
+                font-weight: 700;
+            };
+            
         }
 
         aq-community-postdetail-content{
@@ -134,13 +133,13 @@
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
         <iron-ajax
-                url=""
-                method="POST"
-                id='follows'
-                handle-as="json"
-                on-response="onFollowThreadResponse"
-                headers='{{header}}'
-                debounce-duration="300">
+            url=""
+            method="POST"
+            id='follows'
+            handle-as="json"
+            on-response="onFollowThreadResponse"
+            headers='{{header}}'
+            debounce-duration="300">
         </iron-ajax>
 
         <div id='post-header' class="layout vertical">
@@ -160,7 +159,7 @@
                         <span>Following: [[followers.length]]</span>
                     </template>
                 </div>
-                <paper-button class="self-start"
+                <paper-button raised class="self-start"
                     noink id='followIcon' disabled="[[preview]]"
                     on-tap='onFollow'>[[computeFollowTitle(followers)]]
                 </paper-button>        
@@ -172,7 +171,7 @@
                 <div> 
                     <div id='author-detail'> 
                         <span class="self-center" id="author-name">
-                          <span class="self-center author-name-detail">[[postHeader.user.firstName]] [[postHeader.user.lastName]]</span>
+                            <span class="self-center author-name-detail">[[postHeader.user.firstName]] [[postHeader.user.lastName]]</span>
                         </span>
                     </div>
                     
@@ -280,15 +279,15 @@
                     if (followers.indexOf(userId) > -1) {
                         // Change the icon color too
                         this.$$('#followIcon').style.color = 'white';
-                        this.$$('#followIcon').style.backgroundColor = '#cc6666';
-                        this.$$('#followIcon').style.outlineColor = '#cc6666';
+                        this.$$('#followIcon').style.backgroundColor = 'teal';
+                        //this.$$('#followIcon').style.outlineColor = '';
                         
                         return "UnFollow";
                         //this.$.followIcon
 
                     }
 
-                    this.$$('#followIcon').style.color = '#cc6666';
+                    this.$$('#followIcon').style.color = 'teal';
                     this.$$('#followIcon').style.backgroundColor = 'white';
 
                     return "Follow";

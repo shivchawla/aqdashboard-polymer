@@ -9,8 +9,8 @@
 
 	<style>
 		:host {
-		  display: block;
-		  height: 100%;
+			display: block;
+			height: 100%;
 		}
 
 		#container {
@@ -19,6 +19,10 @@
             width: 90%;
             height: 100%;
             background-color: #f9f9f9;
+        }
+
+        #container.noNav {
+            width: 100%;
         }
 
         paper-card {
@@ -37,6 +41,7 @@
         	margin-top: 30px;
         	margin-bottom: 30px;
         	height: 100%;
+        	--max-height: calc(100% - 48px);
         	color: #3c3c3c;
         }
 
@@ -57,18 +62,22 @@
 	</style>
 
 	<template>
-		<div id='container' class="layout vertical">  
-    		<div id="navigation-panel" class="layout horizontal">
-		        <aq-navigation-item id="navigation-item" 
-    				header="[[header]]" 
-    				path="[[currentPath]]">
-				</aq-navigation-item>
-				
-				<div class="flex"></div>
-				
-				<content id="button-content" select="header-button, .header-button"></content>
-				
-		    </div>
+		<aq-loading-progress loading="{{loading}}"></aq-loading-progress>
+		<div id='container' class$="layout vertical [[computeLayoutClass(noNav)]]">  
+    		
+			
+			<template is='dom-if' if='[[!noNav]]'>
+	    		<div id="navigation-panel" class="layout horizontal">
+			        <aq-navigation-item id="navigation-item" 
+	    				header="[[header]]" 
+	    				path="[[currentPath]]">
+					</aq-navigation-item>
+					
+					<div class="flex"></div>
+					
+					<content id="button-content" select="header-button, .header-button"></content>
+			    </div>
+		    </template>
 
             <paper-card class="self-center">
         		<content id="content-head" select="internal-content-header, .internal-content-header">
@@ -95,9 +104,17 @@
 			properties: {
 				header: String,
 				currentPath: Array,
+				loading: Boolean,
+				noNav:{
+					type: Boolean,
+					value: false,
+				}
 			},
 
+			computeLayoutClass: function(noNav) {
+				return noNav ? "noNav" : "";
+			},
 
-		})
+		});
 	</script>
 </dom-module>

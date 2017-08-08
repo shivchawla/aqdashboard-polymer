@@ -26,14 +26,22 @@
 
       paper-button {
         --paper-button:{
-          color: teal;
+          background-color: teal;
+          color: white;
         };
       }
+
 
       paper-button{
           border-radius: 5px;
           height:30px;
-        }
+      }
+
+      #cancelBtn {
+        --paper-button:{
+          color: #9a9a9a;
+        };
+      }
 
       iron-icon {
           height:35px;
@@ -44,13 +52,13 @@
       }
 
       .header {
-        color: teal;
+        color: #3c3c3c;
       }
 
   		.input-fields {
   			--padding-bottom: 20px;
-  			--paper-input-container-color:#24293d;
-  			--paper-input-container-input-color:#24293d;
+  			--paper-input-container-color:#3c3c3c;
+  			--paper-input-container-input-color:#3c3c3c;
         --paper-input-container-focus-color :teal;
    		}
 
@@ -74,7 +82,7 @@
 	    	<div class="header layout horizontal">
             <h2>[[header]]</h2>
         		<div class="flex"></div>
-        		<iron-icon icon="{{computeIconType(header)}}"></iron-icon>
+        		<!--iron-icon icon="{{computeIconType(header)}}"></iron-icon-->
         	</div>
 
  			<paper-input id='strategyNameInput' class='input-fields'
@@ -104,8 +112,8 @@
 
      	<div id="buttons" class="layout horizontal">
         <div class="flex"></div>
-				<paper-button noink on-tap='onCancel'>Cancel</paper-button>
-  			<paper-button noink on-tap='onSubmit'>OK</paper-button>
+				<paper-button noink on-tap='onCancel' id='cancelBtn'>Cancel</paper-button>
+  			<paper-button noink on-tap='onSubmit'>CREATE</paper-button>
 			</div>
 
 		</paper-dialog>

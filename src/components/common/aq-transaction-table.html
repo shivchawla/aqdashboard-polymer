@@ -1,0 +1,101 @@
+<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
+<script src="../../../../resources/scripts/DateTime.js"></script>
+
+<dom-module id='aq-transaction-table'>
+	<style>
+		vaadin-grid {
+			--vaadin-grid-header-cell: {
+				background-color: #fafafa;
+				font-size: 14px;
+			};
+
+			--vaadin-grid-body-cell: {
+				font-size: 14px;
+			}
+
+			--vaadin-grid-body-row-hover-cell: {
+				background-color: #fafafa;
+			}
+		}
+	</style>
+
+	<style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+	<template>
+		<vaadin-grid items="[[items]]" multi-sort=true>
+			<vaadin-grid-column width="100px">
+		      <!--template class="header">Date</template-->
+	      		<template class="header">
+		      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+	      		</template>
+
+		      <template>[[item.date]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <!--template class="header">Symbol</template-->
+		      	<template class="header">
+		      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
+	      		</template>
+		      <template>[[item.symbol]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Quantity</template>
+		      <template>[[item.quantity]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Price</template>
+		      <template>[[item.price]]</template>
+		    </vaadin-grid-column>
+
+		    <vaadin-grid-column width="100px">
+		      <template class="header">Order Fee</template>
+		      <template>[[item.fee]]</template>
+		    </vaadin-grid-column>
+
+	   </vaadin-grid>
+		
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-transaction-table',
+
+			properties: {
+				transactions: Array,
+			},
+
+			attached: function() {
+                var grid = this.$$('vaadin-grid');
+
+     			var items = [];
+
+     			if(this.transactions) {
+
+     				items = new Array(this.transactions.length);
+	     			var i = 0;
+
+	     			this.transactions.forEach(transaction => {
+	     				items[i++] = {date: date.formatDateForTable(transaction.datetime), 
+	     							symbol: transaction.securitysymbol.ticker,
+	     							quantity: transaction.fillquantity,
+	     							price: transaction.fillprice,
+	     							fee: transaction.orderfee};
+	     			});
+     			}
+
+     			this.items = items;
+                
+			}
+
+		});
+	</script>
+</dom-module>

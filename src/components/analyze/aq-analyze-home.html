@@ -7,11 +7,10 @@
 <link rel='import' href='../../../bower_components/paper-header-panel/paper-header-panel.html'>
 <link rel="import" href="../../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../../../bower_components/iron-lazy-pages/iron-lazy-page.html">
-
 <link rel='import' href='../common/aq-check-authentication.html'>
-<link rel="import" href="../common/aq-loading-progress.html">
 <link rel="import" href="../common/aq-navigation-item.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
+<link rel='import' href='../common/backtest/aq-backtest-table.html'>
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
 <link rel='import' href='./aq-analyze-home-header.html'>
@@ -129,14 +128,12 @@
 		<iron-signals on-iron-signal-select-backtest="selectAllBacktest">
 		</iron-signals>
 		
-		<aq-loading-progress loading='{{isLoading(strategyLoading, backtestLoading)}}'></aq-loading-progress>
-
 		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 		<iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(showComparison)}}" fallback-selection="home">
          
         <template is='iron-lazy-page' page="home">
-        	
-            <aq-allpage-layout header="All Backtests" current-path="[[currentPath]]">
+            <aq-allpage-layout 
+            	loading='{{isLoading(strategyLoading, backtestLoading)}}' header="All Backtests" current-path="[[currentPath]]">
 
             	<div id="acktest-container" class="internal-content">
 			        <aq-analyze-home-menu
@@ -147,6 +144,7 @@
 
 			        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 						
+			        <!--aq-backtest-table backtests="[[backtests]]"></aq-backtest-table-->
 			        	<aq-analyze-home-header 
 			        		check-all="{{checkAll}}"
 			        		num-active-backtests="[[checkedItems.length]]"
@@ -156,7 +154,8 @@
 						<template is='dom-repeat' items="{{backtests}}" initial-count=10>
 							<aq-analyze-home-backtest-item  
 								class="backtest-item" bt-index="{{index}}" backtest="{{item}}" detail-icon share-icon 
-								has-forwardtest="[[hasForwardtest]]">
+								has-forwardtest="[[hasForwardtest]]"
+								can-run detail-available>
 							</aq-analyze-home-backtest-item>
 						</template>
 
@@ -166,7 +165,6 @@
 					</template>
 				</div>
 			</aq-allpage-layout>
-
 		</template>
 
 		<template is='iron-lazy-page' page="comparison">
@@ -283,7 +281,6 @@
 				'compareClicked':'toggleComparison',
 				'backtestChecked':'checkBacktest',
 				'deleteClicked':'openDeleteDialog',
-				'shareClicked':'goToShare',
 				'comparison-off':'toggleComparison',
 				'delete-action':'onDeletion',
 				'detail-action':'onDetail',
@@ -346,10 +343,6 @@
 				this.fire('rt-changed', {route:'/dashboard/editor'});
 			},
 
-			goToShare: function(e) {
-    			this.fire('rt-changed' ,{route:'/dashboard/community/create?backtestId='+e.detail.id});
-			},
-
 			isBacktestCountOdd: function(backtests) {
 				return backtests.length % 2 == 1;
 			},
@@ -370,12 +363,12 @@
 
 			onGetStrategy: function(data) {
 				var strategy = data.detail.response;
-				console.log(strategy);
+				//console.log(strategy);
 				this.strategyName = strategy.name;
 
 				this.hasForwardtest = strategy.numForwardtests == 1;
 
-				console.log(this.hasForwardtest);
+				//console.log(this.hasForwardtest);
 
 				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
 
@@ -465,7 +458,7 @@
 	        	this.dirtyBit = 1;
 	        },
 
-	        onForwardTestAdded: function() {
+	        onForwardtestAdded: function() {
 	        	this.dirtyBit = 1;
 	        },
 
@@ -496,10 +489,10 @@
 			},
 
 			runForwardtest: function(e) {
-				console.log("Ahhaaa");
+				//console.log("Ahhaaa");
                 var backtestId = e.detail.backtestId;
 
-                console.log(backtestId);
+                //console.log(backtestId);
 
                 if (this.$.authItem.checkHasToken()) {
                     //prepare the data for psoting forward strategy
@@ -513,7 +506,7 @@
             onForwardStrategyExecutionResponse: function (e) {
                 console.log("Success");
                 console.log(e);
-                this.dirtyBit = 1;
+                this.fire('iron-signal', {name:'forwardtest-added'});
             },
 
             onForwardStrategyExecutionError: function (e) {

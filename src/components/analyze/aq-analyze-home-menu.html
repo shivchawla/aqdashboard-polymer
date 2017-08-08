@@ -30,8 +30,8 @@
 		}
 
         paper-button {
-        	color: #cc6666;
-        	border: 1px solid #cc6666;
+        	color: #bd362f;
+        	border: 1px solid #bd362f;
         	background-color: white;
         	height: 22px;
         	font-size: 14px;
@@ -44,25 +44,10 @@
             color: #c0c0c0;
             background-color: white;
         }
-
-        .iconButton {
-        	background-color: #cc6666 !important;
-        	color: white !important;
-        }
         
         .checkbox-all {
             --paper-checkbox-checked-color: #cc6666;
             margin-left: 10px;
-        }
-
-        .iconTooltip {
-            --paper-tooltip: {
-                font-size: 12px;
-                min-width: 40px;
-                text-align: center;
-            };
-            --paper-tooltip-opacity: 1.0;
-            --paper-tooltip-background: teal;
         }
         
         paper-icon-button{
@@ -83,47 +68,19 @@
 	
 	<template>
         <div id="menu-container" class="layout horizontal">
-            <!--paper-icon-button noink id="backButton" icon="aq-icons:chevron-left" on-tap="goToEditor">
-            </paper-icon-button-->
-
-            <!--paper-checkbox noink class="checkbox-all" checked="{{checkAll}}"
-                            on-change='onCheckAllBacktest'>
-            </paper-checkbox-->
-
             <p id="header">All Backtests for <i>[[strategyName]]</i></p>
             <div class="flex"></div>
             <div id='menu-icons' class="layout horizontal">
 
-        	 	<paper-button  id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">Compare
+        	 	<paper-button raised id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">Compare
                 </paper-button>
                
-            	<paper-button  id='deleteButton' class="self-center" noink on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]"><iron-icon icon="aq-icons:delete"></iron-icon>Delete Selected
+            	<paper-button raised id='deleteButton' class="self-center" noink on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]"><iron-icon icon="aq-icons:delete"></iron-icon>Delete Selected
                 </paper-button>
-
-                <template is='dom-if' if="[[!expand]]">
-                	<paper-button  id='foldMoreIcon' noink class="iconButton self-center" on-tap="expandAll"><!--icon="aq-icons:unfold-more"-->Show More</paper-button>
-
-                	<!--paper-tooltip for='foldMoreIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show More</paper-tooltip-->
-
-                </template>
-
-                <template is='dom-if' if="[[expand]]">
-                	<paper-button  id='foldLessIcon' noink class="iconButton self-center" on-tap="expandAll"><!--  icon="aq-icons:unfold-less"-->Show Less</paper-button>
-
-                	 <!--paper-tooltip for='foldLessIcon' offset="2" class='self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Show Less</paper-tooltip-->
-       
-                </template>
-
-                
             </div>
 
         </div>
 
-        <!--paper-tooltip for='backButton' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Go Back</paper-tooltip>
-        
-  		<paper-tooltip for='compareIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Compare</paper-tooltip>
-        		
-    	<paper-tooltip for='deleteIcon' offset="2" class=' self-center iconTooltip' position="bottom" animation-delay="0" fit-to-visible-bounds>Delete</paper-tooltip-->
 	</template>
 	
 	<script>

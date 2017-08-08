@@ -1,6 +1,7 @@
 <link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel='import' href='./aq-backtest-metric-item.html'>
+<link rel='import' href='../aq-portwidth-detector.html'>
 
 <dom-module id='aq-backtest-metric-item-list'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -13,16 +14,22 @@
 		}
 
 		#header {
-			margin-top: 20px;
+			--margin-top: 5px;
 			margin-bottom: 5px;
 			font-size: 16px;
 			--font-weight: 700;
 		}
 
+		.small {
+			--aq-backtest-metric-item-text-label-font-size: 10px;
+			--aq-backtest-metric-item-text-content-font-size: 14px;
+			--aq-backtest-metric-item-border: none;
+		}
+
 	</style>
 
 	<template>
-		<iron-media-query query="(min-width: 1250px)" query-matches="{{superWide}}"></iron-media-query>
+		<!--iron-media-query query="(min-width: 1250px)" query-matches="{{superWide}}"></iron-media-query>
 
         <iron-media-query query="(min-width: 1000px)" query-matches="{{wide}}">
         </iron-media-query>
@@ -31,12 +38,15 @@
       	
       	<iron-media-query query="(min-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
       
-        <iron-media-query query="(min-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+        <iron-media-query query="(min-width: 560px)" query-matches="{{narrow}}"></iron-media-query-->
+        <aq-portwidth-detector width="{{width}}"><!--super-wide="{{superWide}}" wide="{{wide}}"
+        	semi-wide="{{semiWide}}" narrow-wide="{{narrowWide}}" narrow="{{narrow}}"-->
+    	</aq-portwidth-detector>
 
         <div id="header">[[heading]]</div>
 		<div id='container' class="layout horizontal around-justified">
 			<template is='dom-repeat' id='repeater' items="{{modifiedItems}}">
-                <aq-backtest-metric-item 
+                <aq-backtest-metric-item class$="[[computeSizeClass(small)]]"
                 	metric-name="{{item.metricName}}"
                  	metric-value="{{item.metricValue}}">
              	</aq-backtest-metric-item>
@@ -59,23 +69,23 @@
 
 				narrow: {
 					type:Boolean,
-					value:false,
+					//value:false,
 				},
 				narrowWide: {
 					type:Boolean,
-					value:false,
+					//value:false,
 				},
 				semiWide: {
 					type:Boolean,
-					value:false,
+					//value:false,
 				},
 				wide:{
 					type:Boolean,
-					value:false,
+					//value:false,
 				},
 				superWide:{
 					type:Boolean,
-					value:false,
+					//value:false,
 				},
 				forcedSemiWide:{
 					type:Boolean,
@@ -83,15 +93,30 @@
 				},
 
 				heading: String,
+
+				small: {
+					type: Boolean,
+					value: false,
+				},
+
+				width: {
+					type: Object,
+					value:{},
+					observer: '_widthChanged',
+				},
 			},
 
-			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide, forcedSemiWide)'],
+			//observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide, forcedSemiWide)'],
 
 			_widthChanged: function() {
 				if(this.metricItems) {
 					this.modifiedItems = this.deepCopy(this.metricItems);
 					this.manageWidth(); 
 				}
+			},
+
+			computeSizeClass: function(small) {
+				return small ? "small" : "";
 			},
 
 			deepCopy: function(array) {
@@ -112,16 +137,19 @@
 					if(nItems > 0) {
 	            		eIdx = 2;
 
-						if (this.superWide) {
-		            		eIdx = nItems >= 8 ? 8 : nItems;
-		            	}  else if (this.wide) {
-		            		eIdx = nItems >= 6 ? 6 : nItems;
-		            	} else if (this.semiWide) {
-		            		eIdx = nItems >= 5 ? 5 : nItems;
-		            	} else if (this.narrowWide) {
-		            		eIdx = nItems >=4 ? 4 : nItems;
-		            	} else if(this.narrow) {
-							eIdx = nItems >=3 ? 3: nItems;
+
+	            		if(this.width) {
+							if (this.width.superWide) {
+			            		eIdx = nItems >= 8 ? 8 : nItems;
+			            	}  else if (this.width.wide) {
+			            		eIdx = nItems >= 6 ? 6 : nItems;
+			            	} else if (this.width.semiWide) {
+			            		eIdx = nItems >= 5 ? 5 : nItems;
+			            	} else if (this.width.narrowWide) {
+			            		eIdx = nItems >=4 ? 4 : nItems;
+			            	} else if(this.width.narrow) {
+								eIdx = nItems >=3 ? 3: nItems;
+			            	}
 		            	}   
 
 		            	// behave as if it's sem-wide

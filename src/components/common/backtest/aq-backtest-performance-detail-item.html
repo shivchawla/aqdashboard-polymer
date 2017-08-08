@@ -50,6 +50,7 @@
             margin-bottom: 10px;
             margin-top: 10px;
             margin-right: 10px;
+            padding: 5px;
         }
 
         #performance-paper-tabs paper-tab {
@@ -57,16 +58,17 @@
                 background-color: white;
                 color: gray;
                 --border-right: 1px solid gray;
-                border: 1px solid #e1e1e1;
+                --border: 1px solid #e1e1e1;
             };    
         }
 
         #performance-paper-tabs paper-tab {
             --paper-tab-content: {
                 --background-color: #cc6666;
-                color: #cc6666;
+                background-color: #cc6666;
+                color: white;
                 padding:0px;
-                border: 1px solid #e1e1e1;
+                --border: 1px solid #e1e1e1;
             };    
         }
 
@@ -76,13 +78,16 @@
 
 	</style>
 	<template>
-	 	<div id="performance-paper-tabs-container" class="layout horizontal">
-            <div class="flex"></div>
-            <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{graphType}}">
-                <paper-tab>Cumulative</paper-tab>
-                <paper-tab>Monthly</paper-tab>
-            </paper-tabs>
-        </div>
+
+        <template is='dom-if' if='[[isPerformanceReady]]'>
+    	 	<div id="performance-paper-tabs-container" class="layout horizontal">
+                <div class="flex"></div>
+                <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{graphType}}">
+                    <paper-tab>Cumulative</paper-tab>
+                    <paper-tab>Monthly</paper-tab>
+                </paper-tabs>
+            </div>
+        </template>
 
         <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
             <div id='cumRetLineChartDiv'>
@@ -122,7 +127,16 @@
                     value: 0,
                 },
 
-                active: Boolean,
+                active: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                isPerformanceReady: {
+                    type: Boolean,
+                    value: false,
+                    notify:true,
+                },
 
 			},
 
@@ -163,7 +177,7 @@
                 this.graphsInitialized = false;
                 this.backtestHeader = [];
                 this.rtData = [];
-
+                this.isPerformanceReady = true;
             },
 
             addRealTimeData: function (data) {
@@ -240,7 +254,6 @@
                 	this.backtestHeader = [];
                 	this.backtestHeader = backtestHeader;
                     
-                    console.log("BacktestId " + this.backtestId);
                     this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
                 }
             },
@@ -357,20 +370,30 @@
             },
 
             createCumRetLineChart: function () {
-
-                this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest);
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.totalreturn ? true : false) : false) : false;
+                
+                if(hasValidData) {
+                    this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest.output.totalreturn);
+                }
             },
 
             createMonthlyReturnBarChart: function () {
-                if (!this.active) {
+                
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.returns ? (this.backtest.output.returns.monthly ? true : false) : false) : false ): false;
+
+                if (!this.active && hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
-                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest);
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly);
                 }
             },
 
             createTrackVarLineChart: function () {
-                
-                this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest);
+
+                var hasValidData = this.backtest ? (this.backtest.output ? (this. backtest.output ? (this.backtest.output.variables ? true : false) : false): false) : false;
+
+                if(hasValidData) { 
+                    this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.variables);
+                }
             },
 
             getYAxisLabel: function (number) {
