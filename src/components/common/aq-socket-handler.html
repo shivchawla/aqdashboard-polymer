@@ -1,0 +1,226 @@
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
+<link rel='import' href='../../../bower_components/iron-ajax/iron-ajax.html'>
+
+<link rel='import' href='./aq-web-socket.html'>
+<link rel="import" href='./aq-check-authentication.html'>
+
+<dom-module id='aq-socket-handler'>
+	<template>
+		<iron-ajax
+	        url=""
+	        method='GET'
+	        id='getBacktestQuery'
+	        handle-as="json"
+	        on-response="onGetBacktestSuccess"
+	        on-error="onGetBacktestError"
+	        headers='{{header}}'
+	        debounce-duration="300">
+        </iron-ajax>
+		
+		<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'>
+        </iron-signals>
+
+		<aq-check-authentication id='authItem'></aq-check-authentication>
+
+		<aq-web-socket 
+          url=""
+          id="webSocketConn"
+          json
+          on-open="_onOpen"
+          on-message="_onMessage"
+          on-error="_onError">
+      	</aq-web-socket>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-socket-handler',
+
+			properties :{
+			 	WSEndPoint:String,
+
+				wsRequests: {
+					type: Array,
+					value: []
+				},
+
+				backtests:{
+		            type:Object,
+		            value:{},
+	          	},
+
+	          	backtestId: String,
+
+			},
+
+			attached: function() {
+				this.manageSubscriptions();
+			},
+
+	        _onOpen: function(e) {
+	            for(var i=0;i<this.wsRequests.length;i++) {
+	                var req = this.wsRequests[i];
+	                this.$.webSocketConn.send(req);
+	            }
+
+	            this.set('wsRequests',[]);
+	        },
+
+	        _onMessage: function(e) { 
+	            var backtestId = e.detail.backtestId;
+	            
+	            if (!this.backtests[backtestId]) {
+	              return;
+	            }
+	              
+	            this.backtests[backtestId].data = e.detail.data;            
+
+	            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);          
+	        },
+
+	        _onError: function(e) {
+	        },
+
+	        _onClose: function(e) {
+	            var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+	            this.$.webSocketConn.url = WSEndPoint;
+
+	            this.$.webSocketConn.open();
+	        },
+
+	        openConnection: function() {
+	          	var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+	          	this.$.webSocketConn.url = WSEndPoint;
+
+	          	this.$.webSocketConn.open();
+	        },
+
+            handleExecution: function(backtestId) {
+
+	            //Send message to web socket for execution
+	            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+	                  action: 'exec-backtest',
+	                  backtestId: backtestId};
+
+	            this.backtestId = backtestId
+
+	            //Set subscription to true
+	            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
+
+	            //Also send data(by default)
+	            this.sendDataSlowly(backtestId);
+
+	            //check if socket connection is open
+	            if (this.$.webSocketConn.isOpen()) {
+	                this.$.webSocketConn.send(msgForWS);  
+	            } else if(this.$.webSocketConn.isClosed()) {    
+	                this.push(wsRequests, msgForWS);
+	                this.$.webSocketConn.open();
+	            } else {
+	                this.push(wsRequests, msgForWS);
+	            }
+	        },
+
+	        handleSubscription: function(backtestId) {
+	          	if(this.backtests[backtestId]) { 
+		            this.backtests[backtestId].subscription = true;
+		            this.backtests[backtestId].bulksent = false;
+		            this.backtests[backtestId].currentIndex = 0;
+		            this.sendDataSlowly(backtestId);
+        	  	}
+	        },
+
+	        hanldeUnsubscription: function(backtestId) {   
+	          	if(this.backtests[backtestId]) {
+              		this.backtests[backtestId].subscription = false;
+	              	this.backtests[backtestId].bulksent = false;
+	              	delete this.backtests[backtestId].currentIndex;
+	              	this.backtests[backtestId].currentIndex = 0;
+	          	}
+	        },
+
+	        // Updates every 1 seconds and updates maximum of 200 points at once.
+	        sendDataSlowly: function(backtestId) {
+	            var timeGap = 1000;
+	            var maxLimit = 200;
+	            
+	            if(this.backtests[backtestId]) {
+	                if(this.backtests[backtestId].subscription) {
+	                  var currentIndex = this.backtests[backtestId].currentIndex;
+	                  var currentLength = this.backtests[backtestId].data.length;
+	                  
+	                  if(currentIndex <  currentLength && currentLength > 0) {  
+	                      var j = 0;
+	                      for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
+	                          var dataPoint = this.backtests[backtestId].data[i];
+	                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
+	                          this.backtests[backtestId].currentIndex = i+1;
+	                          j++;
+	                      }
+	                  }
+	                  
+	                  this.async(function(){this.sendDataSlowly(backtestId, maxLimit);}, timeGap);
+
+	                }
+	            }
+	        },
+
+            onBacktestCompleted: function(e) {
+	            if(e.detail) {
+	                var backtestId = e.detail.id;
+
+	                if(backtestId) {
+	                    //this.sendDataSlowly(backtestId);
+	                    //this.manageSubscriptions();
+	                    delete this.backtests[backtestId];    
+	                }
+	            }
+	        },
+
+	        manageSubscriptions: function(){ 
+	          	if(Object.keys(this.backtests).length > 0) {
+	              	for (var backtestId in this.backtests) {
+
+	                  	//continue with still subscribed
+	                  	if(this.backtests[backtestId].subscription){
+	                    	break;
+	                  	}
+
+	                  	if(this.$.authItem.checkHasToken()) {
+	            	      	this.header = this.$.authItem.getHeader();
+	                      	this.$.getBacktestQuery.url = this.computeGetBacktesturl(backtestId);
+	                      	this.$.getBacktestQuery.generateRequest();
+	                  	} else {
+	                	    this.gotoSignin();
+	            	  	}
+	     		 	} 
+	          	}
+
+	          	this.async(this.manageSubscriptions, 60000);
+	        },
+
+	        onGetBacktestSuccess: function(e){
+	          	var id = e.detail.response._id;
+	    	  	var status = e.detail.response.status;
+	      	    if (this.backtests[id] && (status == "complete" || status=="exception")) {
+
+		            //send any pending data
+		            //this.sendDataSlowly(id);
+
+		            //delete the backtest ID 
+		            //delete this.backtests[id];    
+		            //this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
+	          	} 
+	        },
+
+	        onGetBacktestError: function(e){
+	            if(e.request.response.id) {
+	          		var backtestId = e.request.response.id; 
+	          		delete this.backtests[backtestId];    
+	            }
+	        },
+
+		});
+	</script>
+</dom-module>

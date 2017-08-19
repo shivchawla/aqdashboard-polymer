@@ -9,13 +9,13 @@
 
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel='import' href='../common/aq-loading-progress.html'>
+<link rel='import' href='../common/aq-allpage-layout.html'>
 
 <link rel='import' href='../common/backtest/aq-cumret-linechart.html'>
 <link rel='import' href='../common/backtest/aq-aggregatedreturns-barchart.html'>
 
 <link rel="import" href="../common/aq-code-comparison-element.html">
 <link rel="import" href="../common/backtest/aq-backtest-summary-element.html">
-<!--link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"-->
 
 <dom-module id='aq-analyze-backtest-comparison-item'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -174,79 +174,75 @@
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
-        <!--aq-loading-progress loading="[[!isComparisonReady(isDataReady)]]">
-        </aq-loading-progress-->
+        <aq-allpage-layout loading="{{loading}}" header="Backtest Detail" current-path=[[currentPath]]>
+            <div class="internal-content" id='comparisonContainer'>
+        
+                <div class="goBackButton layout horizontal">
+                    <p class="comparison-text">
+                        <template id='comparisonList' is="dom-repeat" items="{{indexArray}}">
+                            <span class="backtest-item">{{item}}</span>
+                            <template is="dom-if" if="[[showVs(item, indexArray)]]">
+                                <span class="vs-text">vs</span>
+                            </template>
+                        </template>
+                        <span class="vs-text">comparison for <span class="strategy-name">{{strategyName}}</span></span>
+                    </p>
+                </div>
 
-        <div id='comparisonContainer'>
-        <div class="goBackButton layout horizontal">
-            <paper-icon-button noink id='backButton' class="self-center" title="Go Back" icon="chevron-left"
-                               on-tap="goBackAllBacktests">
-            </paper-icon-button>
-            <p id="back-btn-text" class="self-center back-btn-text" on-tap="goBackAllBacktests">Back</p>
-            <p class="comparison-text">
-                <template id='comparisonList' is="dom-repeat" items="{{indexArray}}">
-                    <span class="backtest-item">{{item}}</span>
-                    <template is="dom-if" if="[[showVs(item, indexArray)]]">
-                        <span class="vs-text">vs</span>
-                    </template>
-                </template>
-                <span class="vs-text">comparison for <span class="strategy-name">{{strategyName}}</span></span>
-            </p>
-        </div>
+                <div id='comparison-return' class="layout vertical center">
 
-        <div id='comparison-return' class="layout vertical center">
-
-            <div class="layout horizontal tabs-container">
-                <paper-tabs noink selected="{{comparisonType}}" fallback-selection="0">
-                    <paper-tab>SUMMARY</paper-tab>
-                    <paper-tab>CODE</paper-tab>
-                    <paper-tab>RETURNS</paper-tab>
-                </paper-tabs>
-            </div>
+                    <div class="layout horizontal tabs-container">
+                        <paper-tabs noink selected="{{comparisonType}}" fallback-selection="0">
+                            <paper-tab>SUMMARY</paper-tab>
+                            <paper-tab>CODE</paper-tab>
+                            <paper-tab>RETURNS</paper-tab>
+                        </paper-tabs>
+                    </div>
             
-            <paper-card class="pages-container">
-                <iron-pages 
-                		class="pages_select" 
-        				selected="{{computePageType(comparisonType)}}"	
-        				attr-for-selection="page"
-    					fallback-selection="0">
-        			
-        				<div page="0">
-        					<template is='dom-if' if='[[isDataReady]]'>
-	        			    	<aq-backtest-summary-element 
-	                    			compare-items="[[compareItems]]">
-	                        	</aq-backtest-summary-element>
-                        	</template>
-                        </div>
-                    
-	                    <div id='codeCompare' page="1">
-	                    	<template is='dom-if' if='[[isDataReady]]'>
-		                        <aq-code-comparison-element 
-		                        	compare-items="[[compareItems]]"
-	                        	 	theme="ace/theme/monokai" 
-	                        	 	mode="ace/mode/julia">
-	                    	 	</aq-code-comparison-element>
-                    	 	</template>
-	                    </div>
+                    <paper-card class="pages-container">
+                        <iron-pages 
+                    		class="pages_select" 
+            				selected="{{computePageType(comparisonType)}}"	
+            				attr-for-selection="page"
+        					fallback-selection="0">
+            			
+            				<div page="0">
+            					<template is='dom-if' if='[[isDataReady]]'>
+                			    	<aq-backtest-summary-element 
+                            			compare-items="[[compareItems]]">
+                                	</aq-backtest-summary-element>
+                            	</template>
+                            </div>
+                        
+                            <div id='codeCompare' page="1">
+                            	<template is='dom-if' if='[[isDataReady]]'>
+        	                        <aq-code-comparison-element 
+        	                        	compare-items="[[compareItems]]"
+                                	 	theme="ace/theme/monokai" 
+                                	 	mode="ace/mode/julia">
+                            	 	</aq-code-comparison-element>
+                        	 	</template>
+                            </div>
 
-	                    <div id='graphComparison' page="3">
-	                    	<div class="layout horizontal">
-		                    	<div class="flex"></div>
-		                    	<paper-tabs noink selected={{returnType}}>
-		                    		<paper-tab>Cumulative Return</paper-tab>
-		                    		<paper-tab>Monthly Returns</paper-tab>
-		                    	</paper-tabs>
-	                    	</div>
+                            <div id='graphComparison' page="3">
+                            	<div class="layout horizontal">
+        	                    	<div class="flex"></div>
+        	                    	<paper-tabs noink selected={{returnType}}>
+        	                    		<paper-tab>Cumulative Return</paper-tab>
+        	                    		<paper-tab>Monthly Returns</paper-tab>
+        	                    	</paper-tabs>
+                            	</div>
 
-	                    	<iron-pages selected={{returnType}} on-iron-resize='onResize'>
-	                    		<div id='cumRetLineChartDiv'></div>
-	                    		<div id='barChartDiv'></div>
-	                    	</iron-pages>
-	                    </div>
-                </iron-pages>
-            </paper-card>
-        </div>
-        </div>
+                            	<iron-pages selected={{returnType}} on-iron-resize='onResize'>
+                            		<div id='cumRetLineChartDiv'></div>
+                            		<div id='barChartDiv'></div>
+                            	</iron-pages>
+                            </div>
+                        </iron-pages>
+                    </paper-card>
+                </div>
+            </div>
+        </aq-allpage-layout>
         
         <iron-ajax
                 url="[[computeGetBacktestUrl(backtestId)]]"

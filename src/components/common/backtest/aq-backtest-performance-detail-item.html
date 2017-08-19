@@ -6,12 +6,19 @@
 
 <link rel='import' href='./aq-cumret-linechart.html'>
 <link rel='import' href='./aq-aggregatedreturns-barchart.html'>
+<link rel='import' href='../aq-twoway-toggle.html'>
 
 <dom-module id="aq-backtest-performance-detail-item">
  	<style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
 
 	<style>
+
+        #cumRetLineChartDiv {
+            height: 100%;
+            background-color: white;
+        }
+
         #netValueLineChart {
             --width: 100%;
             --height: 70%;
@@ -43,54 +50,25 @@
             width: 95%;
         }
 
-        #performance-paper-tabs {
-            width: 170px;
-            border: 1px solid #e1e1e1;
-            height: 20px;
-            margin-bottom: 10px;
-            margin-top: 10px;
+        #toggle-container {
             margin-right: 10px;
-            padding: 5px;
-        }
-
-        #performance-paper-tabs paper-tab {
-            --paper-tab-content-unselected: {
-                background-color: white;
-                color: gray;
-                --border-right: 1px solid gray;
-                --border: 1px solid #e1e1e1;
-            };    
-        }
-
-        #performance-paper-tabs paper-tab {
-            --paper-tab-content: {
-                --background-color: #cc6666;
-                background-color: #cc6666;
-                color: white;
-                padding:0px;
-                --border: 1px solid #e1e1e1;
-            };    
-        }
-
-        #performance-paper-tabs paper-tab {
-            padding: 0px;
         }
 
 	</style>
 	<template>
-
-        <template is='dom-if' if='[[isPerformanceReady]]'>
-    	 	<div id="performance-paper-tabs-container" class="layout horizontal">
+        <template is='dom-if' if='[[hasPerformanceData]]'>
+    	 	<div id="toggle-container" class="layout horizontal">
                 <div class="flex"></div>
-                <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{graphType}}">
-                    <paper-tab>Cumulative</paper-tab>
-                    <paper-tab>Monthly</paper-tab>
-                </paper-tabs>
+                <aq-twoway-toggle 
+                    first-option="Cumulative" 
+                    second-option="Monthly"
+                    selected-type="{{graphType}}">
+                </aq-twoway-toggle>
             </div>
         </template>
 
         <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
-            <div id='cumRetLineChartDiv'>
+            <div id='cumRetLineChartDiv' class="flex">
             </div>
 
             <template is='dom-if' if='[[!active]]'>
@@ -104,44 +82,33 @@
 			is: 'aq-backtest-performance-detail-item',
 
 			properties: {
-
-				backtest: Object,
-
-                netValueData: {
+				backtest: {
                     type: Object,
-                    value: {},
                 },
 
-                hasTrackVarData: {
+                /*hasTrackVarData: {
                     type: Boolean,
                     value: false,
-                },
+                },*/
 
                 graphType: {
                     type: Number,
                     value: 0,
                 },
 
-                counter: {
+                /*counter: {
                     type: Number,
                     value: 0,
-                },
+                },*/
 
                 active: {
                     type: Boolean,
                     value: false,
                 },
 
-                isPerformanceReady: {
-                    type: Boolean,
-                    value: false,
-                    notify:true,
-                },
-
 			},
 
             reset: function () {
-
                 var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
                 if (child) {
                     Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
@@ -177,7 +144,21 @@
                 this.graphsInitialized = false;
                 this.backtestHeader = [];
                 this.rtData = [];
-                this.isPerformanceReady = true;
+                this.hasPerformanceData = false;
+            },
+
+            plotGraphs: function() {
+                if (this.backtest.output.variables) {
+                    // this variable is used because array changes are somehow not relaying back the template
+                    this.hasTrackVarData = true;
+                    this.hasPerformanceData = true;
+                }
+
+                this.updateGraphProperties(this.hasTrackVarData);
+                
+                this.async(this.createCumRetLineChart, 200);
+                this.async(this.createTrackVarLineChart, 200);
+                this.async(this.createMonthlyReturnBarChart, 500);
             },
 
             addRealTimeData: function (data) {
@@ -193,6 +174,7 @@
 
                     this.set('realtimeXLabels', allDates.sort());
 
+
                 } else { //Initialize the graphs based
                     //for Strategy/Benchmark/(and Variable data if any)
 
@@ -202,11 +184,10 @@
 
                 	this.rtData.push(data);
                 	this.debounce('hola', this.updateCumRetGraphsWithData, 1000);
-                    this.addMetricData(data);
                 }
             },
 
-            updateCumRetGraphsWithData: function (data) {
+            updateCumRetGraphsWithData: function () {
                 var types = ["totalreturn", "totalreturn_benchmark"];
                 var legends = ["Strategy", "Benchmark"];
                 
@@ -229,7 +210,7 @@
 		                for (var i = 0; i < types.length; i++) {
 		                    if (this.$$('aq-cumret-linechart') && this.active) {
 
-		                         	this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
+	                         	this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
 
 		                    }
 		                }
@@ -238,12 +219,13 @@
 
 	        	//redraw the chart 
 	        	this.$$('aq-cumret-linechart').redrawChart();
-
 	        	//update the percentage completed
 	        	if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
                         this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
 
-                        this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
+                        if(this.sendUpdateSignal) {
+                            this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
+                        }
 
                 }
 
@@ -254,7 +236,9 @@
                 	this.backtestHeader = [];
                 	this.backtestHeader = backtestHeader;
                     
-                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
+                    if(this.sendUpdateSignal) {
+                        this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
+                    }
                 }
             },
 
@@ -286,9 +270,8 @@
 
                 this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
 
-
                 for (i = 0; i < this.trackVarKeysArray.length; i++) {
-                    this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset, false,
+                    this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset,
                             {
                                 lineWidth: 1,
                                 yAxis: 1,
@@ -297,8 +280,7 @@
                                     valueDecimals: 2,
                                 },
                                 pointStart: this.realtimeXLabels[0],
-                            }
-                    );
+                            }, false);
                 }
 
                 this.hasTrackVarData = true;
@@ -317,28 +299,26 @@
                		dataset_ben[i] = [this.realtimeXLabels[i], NaN];
                 }
 
-                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset_str, false,
-                        {
-                            color: colors[0],
-                            lineWidth: 2,
-                            compare: 'percent',
-                            tooltip: {
-                                pointFormatter: function () {
-                                    var series = this.series;
-                                    var color = series.color;
-                                    var y = (this.y - 100).toFixed(2);
-                                    var change = this.change.toFixed(2);
+                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset_str,{
+                                color: colors[0],
+                                lineWidth: 2,
+                                compare: 'percent',
+                                tooltip: {
+                                    pointFormatter: function () {
+                                        var series = this.series;
+                                        var color = series.color;
+                                        var y = (this.y - 100).toFixed(2);
+                                        var change = this.change.toFixed(2);
 
-                                    return '<span style="color:' + color + '">\u25CF ' + series.name + '</span>: <b>' + change + '%</b><br/>';
+                                        return '<span style="color:' + color + '">\u25CF ' + series.name + '</span>: <b>' + change + '%</b><br/>';
+                                    },
+
                                 },
+                                pointStart: this.realtimeXLabels[0],
 
-                            },
-                            pointStart: this.realtimeXLabels[0],
+                            }, false);
 
-                        }
-                );
-
-                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset_ben, false,
+                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset_ben,
                         {
                             color: colors[1],
                             lineWidth: 1,
@@ -357,7 +337,7 @@
                             },
                             pointStart: this.realtimeXLabels[0],
 
-                        }
+                        }, false
                 );
             },
 
@@ -420,11 +400,11 @@
                 }
             },
 
-            plotGraphs: function() {
+            /*plotGraphs: function() {
             	this.async(this.createCumRetLineChart, 200);
                 this.async(this.createTrackVarLineChart, 200);
                 this.async(this.createMonthlyReturnBarChart, 500);
-            }
+            }*/
 
 		});
 	</script>

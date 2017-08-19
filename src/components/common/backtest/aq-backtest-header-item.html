@@ -78,11 +78,15 @@
 
 		aq-qqq {
 			--margin-top: 2px;
+
+		}
+
+		aq-qqq.exception {
+			--aq-qqq-metric-color: #cc6666;
 		}
 
 		#bt-name {
 			font-weight: 700;
-			
 			font-size: 22px;
 		}
 
@@ -130,7 +134,7 @@
 
 		<div class="container layout horizontal justified wrap">
 	        <template is='dom-repeat' items="{{headerItems}}">
-	        	<aq-qqq label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
+	        	<aq-qqq class$="[[isExceptionClass(item)]]" label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
 	        </template>
     	</div>
 	</template>
@@ -162,6 +166,11 @@
 			},
 
 			observers:['_widthChanged(narrow, narrowWide, semiWide, wide)'],
+
+			updateHeaderItems: function(headerItems) {
+				this.headerItems = this.deepCopy(headerItems);
+				this.originalItems = this.deepCopy(headerItems);
+			},
 
 			_widthChanged: function() {
 				
@@ -205,7 +214,12 @@
 
 			onClone: function(){
 				this.fire('clone-clicked');
-			},	
+			},
+
+			isExceptionClass: function(item) {
+				console.log(item);
+				return item.label == "Status" && item.metric == "Exception" ? "exception" : "";
+			}	
 		});
 	</script>
 </dom-module>
@@ -229,6 +243,7 @@
 	        font-weight: 400;
 	        font-size: 14px;
 	        --margin-left: 5px;
+	        color: var(--aq-qqq-metric-color, black);
 	    }
 	</style>
 

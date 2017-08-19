@@ -18,7 +18,7 @@
             --margin-left: 0%;
             --margin-right: 0%;
             margin-top: 0px;
-            margin-bottom: 0px;
+            margin-bottom: 5px;
         }
 
         #navigation-panel {
@@ -28,34 +28,35 @@
     </style>
 
     <template>
+        <iron-signals on-iron-signal-forwardtest-deleted='onForwardtestDeleted'></iron-signals>
+
+        <iron-signals on-iron-signal-forwardtest-stopped='onForwardtestStopped'></iron-signals>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-    
-        <template is='dom-if' if='{{!loading}}'>
-            <aq-allpage-layout loading='{{loading}}' no-nav>
-                <div class="internal-content" id="forwardtest-container">
-                    
-                    <div id='navigation-panel'>
-                        <aq-navigation-item id="navigation-item" 
-                            header="" 
-                            path="[[currentPath]]">
-                        </aq-navigation-item>
-                    </div>
-                        
-                    <aq-forwardtest-detail-item 
-                        loading="{{loading}}" 
-                        forwardtest-id="[[forwardtestId]]">
-                    </aq-forwardtest-detail-item>
+        
+        <aq-allpage-layout loading='{{loading}}' no-nav>
+            <div class="internal-content" id="forwardtest-container">
+                
+                <div id='navigation-panel'>
+                    <aq-navigation-item id="navigation-item" 
+                        header="" 
+                        path="[[currentPath]]">
+                    </aq-navigation-item>
                 </div>
-            </aq-allpage-layout>
-        </template>
-
-         <aq-action-dialog id="stopForwardTestDialog" 
-            heading="Stop Forward Test" 
-            message="Are you sure to stop this forward test?" 
-            action-type="stoptest" 
-            cancel="Cancel"
-            accept="Stop">
+                    
+                <aq-forwardtest-detail-item 
+                    forwardtest-id="[[forwardtestId]]">
+                </aq-forwardtest-detail-item>
+            </div>
+        </aq-allpage-layout>
+        
+        <aq-action-dialog id="actionDialog" 
+            heading="[[actionDialog.heading]]" 
+            message="[[actionDialog.message]]" 
+            action-type="[[actionDialog.actionType]]" 
+            cancel-text="[[actionDialog.cancelText]]"
+            accept-text="[[actionDialog.acceptText]]"
+            affirmative="[[actionDialog.affirmative]]">
         </aq-action-dialog>  
 
     </template>
@@ -66,7 +67,7 @@
             
             properties:{
                 strategyId:String,
-                forwardtestId:String,
+                forwardtestId: String,
 
                 loading:{
                     type:Boolean,
@@ -80,32 +81,67 @@
             },
 
             listeners: {
-               'stoptest-clicked':'onStopForwardTestDialog', 
+               'stoptest-clicked':'onStopForwardTestDialog',
+               'restarttest-clicked':'onRestartForwardTestDialog',
+               'deletetest-clicked':'onDeleteForwardTestDialog',
+
                'stoptest-action':'onStopForwardTestAction',
+               'restarttest-action':'onRestartForwardTestAction',
+               'deletetest-action':'onDeleteForwardTestAction',
             },
 
-            computeUpdateForwardtestUrl: function(forwardtestId) {
-                return /forwardtest/+forwardtestId;
+            computeActionDialogAttributes: function(type) {
+                if(type == "Stop") {
+                    this.actionDialog={heading:"Stop Forward Test",
+                        message:"Are you sure to stop this forward test?",
+                        actionType:"stoptest",
+                        cancelText:"Cancel",
+                        acceptText: "Stop",
+                        affirmative: false};
+                } else if(type == "Restart") {
+                    this.actionDialog={heading:"Restart Forward Test",
+                        message:"Are you sure to restart this forward test?",
+                        actionType:"restarttest",
+                        cancelText:"Cancel",
+                        acceptText: "Restart",
+                        affirmative:true};
+                } else if(type == "Delete") {
+                    this.actionDialog={heading:"Delete Forward Test",
+                        message:"Are you sure to delete this forward test?",
+                        actionType:"deletetest",
+                        cancelText:"Cancel",
+                        acceptText: "Delete",
+                        affirmative:false};
+                }
+
+                this.$.actionDialog.open();
             },
 
             onStopForwardTestDialog: function(e) {
                 e.stopPropagation();
-                this.$.stopForwardTestDialog.open();
+                this.computeActionDialogAttributes("Stop");
+            },
+
+            onRestartForwardTestDialog: function(e) {
+                e.stopPropagation();
+                this.computeActionDialogAttributes("Restart");
+            },
+
+            onDeleteForwardTestDialog: function(e) {
+                e.stopPropagation();
+                this.computeActionDialogAttributes("Delete");
             },
 
             onStopForwardTestAction: function(e) {
+                console.log("Yahan");
                 e.detail.forwardtestIds = [this.forwardtestId];
+                //EVENT IS HANDLED IN aq-dashboard-main
             },
 
-            onDeleteTest: function(e) {
-                this.forwardtestId = e.detail.id;
-
-                if(this.forwardtestId && this.forwardtestId!="" && this.$.authItem.checkHasToken()) {
-                    this.testUpdateData = {deleted: true};
-
-                    this.header = this.$.authItem.getHeader();
-                    this.$.updateForwardtestQuery.generateRequest();
-                }
+            onDeleteForwardTestAction: function(e) {
+                console.log("FCUK");
+                e.detail.forwardtestId = this.forwardtestId;
+                //EVENT IS HANDLED IN aq-dashboard-main
             },
 
             goBackAllBacktests: function() {
@@ -120,10 +156,17 @@
                 } 
             },
 
+            onForwardtestDeleted: function(e) {
+                this.fire('rt-changed', {route:'/dashboard/editor'});
+            },
+
+            onForwardtestStopped: function(e) {
+                this.fire('rt-changed', {route: '/dashboard/editor'});
+            }
+
         });
             
     </script>
-            
 </dom-module>
 
 

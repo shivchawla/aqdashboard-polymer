@@ -20,7 +20,6 @@
 <link rel="import" href="../aq-transaction-table.html">
 <link rel="import" href="../aq-portfolio-table.html">
 
-
 <dom-module id='aq-backtest-detail-item'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
@@ -42,6 +41,8 @@
 
         #container {
             padding: 15px;
+            background-color: white;
+            height: 100%;
         }
 
         paper-card {
@@ -71,6 +72,10 @@
             margin-top: 15px;
             border: 1px solid #e1e1e1;
         }
+
+        #performance-container {
+            padding-top: 15px;
+        }
         
         #code-container {
             min-height: 200px;
@@ -97,11 +102,9 @@
             color: #3c3c3c;
             margin: 20px 20px 20px 20px;
         }
-
     </style>
 
     <template>
-
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
         <template is='dom-if' if='[[!loading]]'>
@@ -131,11 +134,14 @@
                 </template>
 
                 <div class="backtest-detail">
-                    <template is='dom-if' if='[[isPerformanceReady]]'>
+                    
+                    <template is='dom-if' if='[[!active]]'>
                         <div class="layout" id="tab-container">
         	                <paper-tabs noink selected="{{detailType}}" fallback-selection="0">
         	                    <paper-tab>Performance</paper-tab>
+                                
                                 <paper-tab>Code</paper-tab>
+
                                 
                                 <template is='dom-if' if='[[backtestPositions]]'>
                                     <paper-tab>Portfolio</paper-tab>
@@ -155,10 +161,9 @@
                     <iron-pages selected="{{detailType}}">
                         <div id="performance-container">
                             <aq-backtest-performance-detail-item
-                                    is-performance-ready="{{isPerformanceReady}}" 
                                     active="[[active]]"
-                                    backtest="[[backtest]]"
-                                    >
+                                    error="[[internalError]]"
+                                    backtest="[[backtest]]">
                             </aq-backtest-performance-detail-item>
                         </div>
                         
@@ -169,23 +174,18 @@
                         
                         <template is='dom-if' if='[[backtestPositions]]'>
                             <div id="portfolio-container">
-                        
-                                <!--template is='dom-repeat' items="[[backtestTransactions]]" initialCount=10-->
                                 <aq-portfolio-table 
                                     positions="[[backtestPositions]]">
                                 </aq-portfolio-table>
-                    
-                                <!--/template-->
                             </div>
                         </template>
 
                          <template is='dom-if' if='[[backtestTransactions]]'>
                             <div id="transaction-container">
-                                <!--template is='dom-repeat' items="[[backtestTransactions]]" initialCount=10-->
-                                    <aq-transaction-table 
-                                        transactions="[[backtestTransactions]]">
-                                    </aq-transaction-table>
-                                <!--/template-->
+                                <aq-transaction-table 
+                                    transactions="[[backtestTransactions]]"
+                                    no-proposed-orders>
+                                </aq-transaction-table>
                             </div>
                         </template>
 
@@ -200,7 +200,6 @@
                                 </template>
                             </div>    
                         </template>
-
                     </iron-pages>
                 </div>
             </div>
@@ -248,7 +247,7 @@
 
                 backtestId: {
                     type: String,
-                    observer: '_backtestIdChanged',
+                    //observer: '_backtestIdChanged',
                 },
 
                 backtest: Object,
@@ -260,11 +259,6 @@
                 loading: {
                     type:Boolean,
                     notify: true,
-                },
-
-                pctCompleted: {
-                    type: Number,
-                    value: 0,
                 },
 
                 forcedSemiWide: {
@@ -282,8 +276,6 @@
                     value: false,
                 },
 
-                isPerformanceReady: Boolean,
-
                 heading: String,
 
                 backtestLogs: Array,
@@ -291,7 +283,6 @@
                 backtestTransactions: Array,
 
                 backtestPositions: Array,
-
             },
 
             listeners: {
@@ -303,16 +294,9 @@
             },
 
             attached: function() {
-                console.log("attached");
-                console.log(this.backtestId);
+                //console.log(this.internalError = false;
                 this.requestStaticData();
             }, 
-
-            _backtestIdChanged: function (nId, oId) {
-                /*if (nId && nId!= "") {
-                    
-                }*/
-            },
 
             resize: function() {
                 this.$$('aq-backtest-performance-detail-item').onResize();
@@ -320,7 +304,6 @@
 
             _activeChanged: function() {
                 if(!this.active && this.backtestId != "") {
-                    console.log("Unsubscribing");
                     this.fire('unsubscribe-data',{backtestId:this.backtestId});
                     this.reset();
                 }
@@ -332,8 +315,12 @@
             },
 
             reset: function () {
-                this.$$('aq-backtest-performance-detail-item').reset();
                 this.resetMetrics();
+                if(this.$$('aq-backtest-performance-detail-item')) {
+                    this.$$('aq-backtest-performance-detail-item').reset(); 
+                } else {
+                    this.async(function() {this.$$('aq-backtest-performance-detail-item').reset();}, 200); 
+                }
             },
 
             resetMetrics: function () {
@@ -400,9 +387,11 @@
             },
 
             subscribeData: function () {
-                this.async(function () {
+                
+                //this.fire('subscribe-data', {backtestId: this.backtestId});
+                /*this.async(function () {
                     this.fire('subscribe-data', {backtestId: this.backtestId})
-                }, 1000);
+                }, 1000);*/
             },
 
             onBacktestSinglePointData: function (e) {
@@ -416,11 +405,29 @@
 
                 if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
                     
+                    if (data.outputtype == "performance") {
+                        this.addMetricData(data);
+                    }
+
+                    //Send flag whether to send signals after data update
                     this.$$('aq-backtest-performance-detail-item').addRealTimeData(data);
 
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
-                    this.pctCompleted = -1;
-                    this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: this.pctCompleted}});
+                    
+                     //Update backtest header
+                    //*****HARDCODED******
+                   
+                    var btHeader = this.deepCopy(this.backtestHeader);
+                    btHeader[3]["metric"] = "Exception";
+                    this.$$('aq-backtest-header-item').updateHeaderItems(btHeader);
+
+                    this.async(
+                        function() {
+                            this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
+                            
+
+                        }, 1000);
+
                 }
             },
 
@@ -433,12 +440,9 @@
 
             onGetBacktestSuccess: function (e) {
                 
-                this.async(function(){
-                    //first reset everything
+                    //first reset Metrics 
                     this.reset();
-
                     this.set('backtest', e.detail.response);
-
                     this.backtestHeader = 
                     [
                         {   
@@ -480,15 +484,17 @@
                         this.addMetricData(this.backtest.output.analytics.rolling);
                     }
 
-                    if (this.backtest.output.variables) {
+                    /*if (this.backtest.output.variables) {
                         // this variable is used because array changes are somehow not relaying back the template
                         this.hasTrackVarData = true;
                     }
 
-                    this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);
+                    this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);*/
+                    this.async(function() {
+                        //this.resetMetrics();
 
-                    this.$$('aq-backtest-performance-detail-item').plotGraphs(); 
-               }, 500);
+                        this.$$('aq-backtest-performance-detail-item').plotGraphs();
+                    }, 500);
             },
 
             onGetBacktestError: function (e) {
@@ -527,7 +533,7 @@
                         
                     });
 
-                    //console.log(transactionArray);
+                    console.log("jajajaja");
                     this.backtestTransactions = transactionArray;
                 } 
             },
@@ -538,8 +544,6 @@
                 if(accounts) {
                     var positionsArray = []
                     Object.keys(accounts).sort().forEach(key => {
-
-                        console.log();
 
                         if(accounts[key].portfolio.positions) {
                         //array of array
@@ -555,7 +559,6 @@
                         
                     });
 
-                    console.log(positionsArray);
                     this.backtestPositions = positionsArray;
                 } 
             },

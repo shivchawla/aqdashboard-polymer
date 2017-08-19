@@ -65,14 +65,15 @@
 
 			_loadingChanged: function(){
 				
-				if(this.loading == false) {
+				/*if(this.loading == false) {
 					this.async(function(){this.$$('.internal-content').style.display = 'block'; 
-					this.$$('aq-backtest-detail-item').resize();}, 500);
-				}
+					this.$$('aq-backtest-detail-item').resize();
+				}, 500);
+				}*/
 			},
 
 			attached: function() {
-				this.$$('.internal-content').style.display = 'none';
+				//this.$$('.internal-content').style.display = 'none';
 				if(!this.$.authItem.checkHasToken()) {
          	 		this.fire('rt-changed',{route:'/user/signin'});
 	          		return;

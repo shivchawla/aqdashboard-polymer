@@ -4,13 +4,17 @@
 <link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
 
-<!--link rel="import" href="../../../../bower_components/paper-datatable/paper-datatable.html"-->
-
 <script src="../../../../resources/scripts/DateTime.js"></script>
 
 <dom-module id='aq-portfolio-table'>
 	<style>
+		
+		#table-container {
+			height: 100%;
+		}
+
 		vaadin-grid {
+			height: calc(100% - 52px);
 			--vaadin-grid-header-cell: {
 				background-color: #fafafa;
 				font-size: 14px;
@@ -24,6 +28,15 @@
 				background-color: #fafafa;
 			}
 		}
+
+		aq-twoway-toggle {
+			--toggle-width: 240px
+		}
+
+		#toggle-container {
+			margin-bottom: 5px;
+		}
+
 	
 	</style>
 
@@ -31,43 +44,64 @@
     </style>
 
 	<template>
-		<vaadin-grid items="[[items]]" multi-sort=true>
-			<vaadin-grid-column width="100px">
-		     	<template class="header">
-		      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
-	      		</template>
+			
+		<div id='table-container'>
+			<div id="toggle-container" class="layout horizontal">
+	            <div class="flex"></div>
+	            <aq-twoway-toggle 
+	                first-option="Latest Portfolio" 
+	                second-option="Portfolio History"
+	                selected-type="{{typeSelected}}">
+	            </aq-twoway-toggle>
+	            <div class="flex"></div>
+	        </div>
+	        
+			<vaadin-grid items="[[items]]" multi-sort=true>
+				<vaadin-grid-column width="100px">
+			     	<template class="header">
+			      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+		      		</template>
 
-		      <template>[[item.date]]</template>
-		    </vaadin-grid-column>
+			      <template>[[item.date]]</template>
+			    </vaadin-grid-column>
 
-		    <vaadin-grid-column width="100px">
-		      	<template class="header">
-		      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
-	      		</template>
-		      <template>[[item.symbol]]</template>
-		    </vaadin-grid-column>
+			    <vaadin-grid-column width="100px">
+			      	<template class="header">
+			      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
+		      		</template>
+			      <template>[[item.symbol]]</template>
+			    </vaadin-grid-column>
 
-		    <vaadin-grid-column width="100px">
-		      <template class="header">Price</template>
-		      <template>[[item.price]]</template>
-		    </vaadin-grid-column>
+			    <vaadin-grid-column width="100px">
+			    	<template class="header">
+			      		<vaadin-grid-sorter path="price">Average Price</vaadin-grid-sorter>
+		      		</template>		
+			      <template>[[item.price]]</template>
+			    </vaadin-grid-column>
 
-		    <vaadin-grid-column width="100px">
-		      <template class="header">Quantity</template>
-		      <template>[[item.quantity]]</template>
-		    </vaadin-grid-column>
+			    <vaadin-grid-column width="100px">
+			    	<template class="header">
+			      		<vaadin-grid-sorter path="quantity">Quantity</vaadin-grid-sorter>
+		      		</template>			
+			      <template>[[item.quantity]]</template>
+			    </vaadin-grid-column>
 
-	      	<vaadin-grid-column width="100px">
-		      <template class="header">Position Value</template>
-		      <template>[[item.positionValue]]</template>
-		    </vaadin-grid-column>
+		      	<vaadin-grid-column width="100px">
+			    	<template class="header">
+			      		<vaadin-grid-sorter path="positionValue">Market Value</vaadin-grid-sorter>
+		      		</template>			
+			      <template>[[item.positionValue]]</template>
+			    </vaadin-grid-column>
 
-		    <vaadin-grid-column width="100px">
-		      <template class="header">Realized PnL</template>
-		      <template>[[item.pnl]]</template>
-		    </vaadin-grid-column>
-
-	   </vaadin-grid>
+			    <vaadin-grid-column width="100px">
+			    	<template class="header">
+			      		<vaadin-grid-sorter path="pnl">Unrealized PnL
+			      		</vaadin-grid-sorter>
+		      		</template>	
+			      <template>[[item.pnl]]</template>
+			    </vaadin-grid-column>
+		    </vaadin-grid>
+	    </div>
 
 	   <!--template is='dom-if' if='[[dataItems]]'>
 	   <paper-datatable data="[[dataItems]]" id="datatable" selectable multi-selection>
@@ -84,8 +118,7 @@
 
 			<paper-datatable-column header="UnRealized PnL" property="pnl" sortable></paper-datatable-column>
 		</paper-datatable>
-		</template-->
-		
+		</template-->		
 	</template>
 
 	<script>
@@ -94,30 +127,74 @@
 
 			properties: {
 				positions: Array,
+				
+				typeSelected: {
+					type: Number,
+					value:0,
+					observer:'_selectedChanged',
+				},
+			},
+
+			_selectedChanged: function() {
+				if(this.positions) {
+					if(this.typeSelected == 1) {
+						this.showAll();
+					} else {
+						this.showLatest();
+					}
+				}
 			},
 
 			attached: function() {
+				if(this.typeSelected == 1) {
+					this.showAll();
+				} else {
+					this.showLatest();
+				}
+			},	
+
+
+            showAll: function() {
                 var grid = this.$$('vaadin-grid');
+     			var items = this._computeItems(this.positions);
 
-     			var item= [];
+     			grid.clearCache();
+     			grid.items = items;
+			},
 
-     			if(this.positions) {
+			showLatest: function() {
+				var grid = this.$$('vaadin-grid');
+     			var items = [];
 
-     				items = new Array(this.positions.length);
-	     			var i = 0;
+     			if(this.positions.length > 0) {
+     				var topDate = this.positions[0].date;
 
-	     			this.positions.forEach(position => {
+	     			var topDatePositions = this.positions.filter(item => {
+	     				return item.date == topDate;
+	     			});
+
+	     			items = this._computeItems(topDatePositions);
+     			}
+
+     			grid.clearCache();
+     			grid.items = items;
+			},
+
+			_computeItems: function(positions) {
+				var i = 0;
+				var items = [];
+				if(positions) {
+					items = new Array(positions.length);
+	     			positions.forEach(position => {
 	     				items[i++] = {date: position.date, 
 	     							symbol: position.securitysymbol.ticker,
 	     							quantity: position.quantity,
 	     							price: position.averageprice,
-	     							positionValue: (position.quantity*position.averageprice).toFixed(2),
-	     							pnl: 0.0};
+	     							positionValue: (position.quantity*position.lastprice).toFixed(2),
+	     							pnl: (position.quantity*(position.lastprice-position.averageprice)).toFixed(2)};
 	     			});
      			}
-
-     			grid.items = items;
-                
+     			return items;
 			}
 
 		});

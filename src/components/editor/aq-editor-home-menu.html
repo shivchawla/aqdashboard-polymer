@@ -85,12 +85,12 @@
             <div class="flex"></div>
             
             <template is='dom-if' if='[[forwardTest]]'>
-                <paper-button  raised id="stop-all-button" noink class="self-center" on-tap="onStop" disabled="[[!isSelected]]"> [[computeButtonLabel(forwardTest)]]
+                <paper-button  raised id="stop-all-button" noink class="self-center" on-tap="onStop" disabled="[[!isSelected]]">[[computeButtonLabel(forwardTest)]]
                 </paper-button>
             </template>
 
             <template is='dom-if' if='[[!forwardTest]]'>
-                <paper-button raised noink class="self-center" on-tap="onDelete" disabled="[[!isSelected]]"><iron-icon icon="aq-icons:delete"></iron-icon> [[computeButtonLabel(forwardTest)]]
+                <paper-button raised noink class="self-center" on-tap="onDelete" disabled="[[!isSelected]]"><iron-icon icon="aq-icons:delete"></iron-icon>[[computeButtonLabel(forwardTest)]]
                 </paper-button>
             </template>
 

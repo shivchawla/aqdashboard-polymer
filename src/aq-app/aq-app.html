@@ -7,14 +7,12 @@
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/web-socket/web-socket.html'>
-<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
 <link rel='import' href="../../resources/aq-environment.html">
 <link rel="import" href="../layouts/aq-dashboard-main.html">
 <link rel="import" href="../components/user/aq-user-login-panel.html">
-<link rel="import" href="../components/user/aq-authentication-message.html">
 <link rel="import" href='../components/common/aq-check-authentication.html'>
-<link rel='import' href='../components/common/aq-web-socket.html'>
+<link rel='import' href='../components/common/aq-socket-handler.html'>
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
@@ -25,7 +23,7 @@
 <link rel="import" href='../dialog/aq-sendfeedback-dialog.html'>
 <link rel="import" href='../dialog/aq-invitefriend-dialog.html'>
 
-<dom-module id="aq-dashboard">
+<dom-module id="aq-app">
     
     <style include="iron-flex iron-flex-alignment"></style>
 
@@ -33,11 +31,6 @@
       
       :host {
         display: block;
-      }
-
-      #mainpanel {
-        height:100%;
-        --background-color: #fff;
       }
 
       .paper-header {
@@ -48,7 +41,6 @@
           height: 100%;
           background-color: #fafafa;
           will-change: transform;
-          
           --paper-drawer-panel-left-drawer-container :{
               z-index: 1002;
           };
@@ -72,33 +64,36 @@
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
-            <aq-sidebar menu-selected="{{view}}" drawer></aq-sidebar>
-                
-            <paper-header-panel id="mainpanel" main fixed mode="seamed">
+            <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken)]]">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="true"></aq-toolbar>
 
-                <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
-                  <template is="iron-lazy-page" m="0">
-                      <aq-homepage></aq-homepage>
+              <iron-lazy-pages attr-for-selected="page" selected="{{computePageViewForToken(hasToken)}}">
+              
+                  <template is="iron-lazy-page" page="home">
+                      <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
+
+                        <template is="iron-lazy-page" m="0">
+                            <aq-homepage></aq-homepage>
+                        </template>
+
+                        <template is="iron-lazy-page" m="1">
+                            <aq-aboutpage></aq-aboutpage>
+                        </template>
+
+                        <template is="iron-lazy-page" m="2">
+                            <aq-user-login-panel></aq-user-login-panel>
+                        </template>       
+
+                        <template is="iron-lazy-page" m="3">
+                            <aq-user-login-panel></aq-user-login-panel>
+                        </template>                    
+                      </iron-lazy-pages>
                   </template>
 
-                  <template is="iron-lazy-page" m="1">
+                  <template is='iron-lazy-page' page="dashboard">
                       <aq-dashboard-main></aq-dashboard-main>
                   </template>
-
-                  <template is="iron-lazy-page" m="2">
-                      <aq-aboutpage></aq-aboutpage>
-                  </template>
-
-                  <template is="iron-lazy-page" m="3">
-                      <aq-user-login-panel></aq-user-login-panel>
-                  </template>       
-
-                  <template is="iron-lazy-page" m="4">
-                      <aq-user-login-panel></aq-user-login-panel>
-                  </template>                    
-                </iron-lazy-pages>
-                
+              </iron-lazy-pages>
                 
           </paper-header-panel>
         </paper-drawer-panel>
@@ -111,15 +106,8 @@
 
       </div>
 
-      <aq-web-socket 
-          url=""
-          id="webSocketConn"
-          json
-          on-open="_onOpen"
-          on-message="_onMessage"
-          on-error="_onError">
-      </aq-web-socket>
-
+      <aq-socket-handler id='socketHandler'></aq-socket-handler>
+      
        <iron-localstorage
           id='localStorage'  
           name="my-app-storage"
@@ -153,26 +141,12 @@
         debounce-duration="300">
       </iron-ajax>
 
-      <iron-ajax
-        url=""
-        method='GET'
-        id='getBacktestQuery'
-        handle-as="json"
-        on-response="onGetBacktestSuccess"
-        on-error="onGetBacktestError"
-        headers='{{header}}'
-        debounce-duration="300">
-        </iron-ajax>
-
-        <iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'>
-        </iron-signals>
-
   </template>
 
   <script>
     Polymer({
 
-        is: 'aq-dashboard',
+        is: 'aq-app',
 
         properties: {
           narrow: {
@@ -192,13 +166,12 @@
 
           hasToken: {
               type:Boolean,
-              value:false,
+              value:false
           },
 
           currentTab:{
             type:Number,
             value:0,
-            observer:'_currentTabChanged',
           },
 
           aimsquant:{
@@ -211,13 +184,6 @@
             value:"228px",
           },
 
-          backtests:{
-            type:Object,
-            value:{},
-          },
-
-          backtestId: String,
-
           inviteData:Object,
 
           feedBackData:Object,
@@ -226,22 +192,12 @@
 
           APIEndPoint:String,
 
-          WSEndPoint:String,
-
-          wsRequests: {
-            type: Array,
-            value: [],
-          },
-
-
         },
 
         listeners: {
             'open-menu': 'openMenu',
             'close-menu':'closeMenu',
             'toggle-menu':'toggleMenu',
-            'change-view-navigation':'viewChanged',
-            'change-view-action':'viewChangedOnAction',
             'loginClicked':'gotoSignin',
             'signupClicked':'gotoSignup',
             'signout-action':'onSignOut',
@@ -250,9 +206,11 @@
             'enter-invite-action':'openInviteDialog',
             'send-invite-action':'sendInvite',
             'myaccount-action':'onMyAccount',
+            
             'execute-backtest':'requestExecution',
             'subscribe-data':'onSubscription',
             'unsubscribe-data':'onUnsubscription',
+            
             'update-token':'onTokenUpdate',
             'scroll-top':'scrollToTop',
             'rt-changed':'goToRoute',
@@ -265,7 +223,7 @@
             this.isURLResetPassword();
 
             if(this.$.authItem.checkHasToken()) {
-                this.openWebSocketConnection();
+                this.$$('#socketHandler').openConnection();
                 this.hasToken = this.$.authItem.checkHasToken();
             }
 
@@ -299,15 +257,15 @@
                 if(this.view == "editor") {
                     this.showSidebar = false;
                 }
-
-                this.currentTab = lastTab;
-
-            } else {
-                this.changeTabOnURL();
             }
+        },
 
-            this.manageSubscriptions();
+        computeToolbarType: function(hasToken) {
+            return hasToken ? "fixed" : "scroll";
+        },
 
+        computePageViewForToken: function(hasToken) {
+           return hasToken ? "dashboard" : "home";
         },
 
         isURLResetPassword: function() {
@@ -326,18 +284,6 @@
               this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
               this.$.localStorage.save();
             } 
-        },
-
-        computeShowMenu: function(narrow, showSidebar) {
-          return narrow || !showSidebar;
-        },
-
-        computeForceNarrow: function(narrow, showSidebar) {
-          return !showSidebar;
-        },
-
-        computeShowSideBar: function(narrow, showSidebar){
-          return !showSidebar;
         },
 
         viewChanged: function(newMenu) {
@@ -373,90 +319,40 @@
         },
 
         openMenu: function(e) {
-          this.$.drawerpanel.openDrawer();
-          this.showSidebar = true;
-
+            this.$.drawerpanel.openDrawer();
+            this.showSidebar = true;
         },
 
         closeMenu: function() {
-          this.$.drawerpanel.closeDrawer();
+            this.$.drawerpanel.closeDrawer();
 
-          if (this.showSidebar && !this.narrow) {
-            this.showSidebar = false;
-          }
+            if (this.showSidebar && !this.narrow) {
+              this.showSidebar = false;
+            }
         },
 
         toggleMenu: function(e) {
-          this.$.drawerpanel.togglePanel();
-          this.fire('iron-signal',{name:'main-drawer-opened'});
-        },
-
-         _currentTabChanged: function(newTab, oldTab) {        
-          
-          if (!(oldTab + 1)) {
-            return;
-          }
-          
-          this.$.authItem.checkHasToken();
-              
-          this.showSidebar = (newTab == 1);  
-          
-          /*if (this.currentTab == 1) {
-            this.drawerWidth ="200px;"
-          }*/
-
-          this.set('aimsquant.lastTab', newTab);
-          
-          path = ['/main', 
-                  '/dashboard', 
-                  '/about',
-                  '/user/signin',
-                  '/user/signup',
-                  '/user/signout',
-                  '/user/resetpassword',
-                  '/user/authMessage'
-                  ];
-
-          /*if (this.currentTab == 1) {
-            this.drawerWidth ="200px;"
-            //this.view = 'editor';
-          }*/
-
-          if ((this.URLcontains(path[5]) || this.URLcontains(path[6]) || this.URLcontains(path[7])) && newTab==3) {
-              return;
-          }
-
-          //When token is available..SKIP signin
-          if(newTab>=3 && this.hasToken) {
-              this.currentTab = 1;
-              return;
-          }
-
-          if (this.URLcontains(path[newTab])) {
-            return;
-          } else {
-            this.fire('rt-changed',{route:path[newTab]});
-          }
-          
+            this.$.drawerpanel.togglePanel();
+            this.fire('iron-signal',{name:'main-drawer-opened'});
         },
 
         URLcontains: function(path) {
-          return (location.hash.match(path)) ? true : false;
+            return (location.hash.match(path)) ? true : false;
         },
 
         gotoSignin: function() {
-          this.fire('rt-changed',{route:'/user/signin'});
+            this.fire('rt-changed',{route:'/user/signin'});
         },
 
         onSignOut: function() {     
-          this.removeToken();
-          this.hasToken = this.$.authItem.checkHasToken();
-          this.fire('rt-changed',{route:'/user/signout'});
-          this.dirtyBit = 1;
+            this.removeToken();
+            this.hasToken = this.$.authItem.checkHasToken();
+            this.fire('rt-changed',{route:'/user/signout'});
+            this.dirtyBit = 1;
         },
 
         openFeedbackDialog: function() {
-          this.$.feedbackDialog.open();
+            this.$.feedbackDialog.open();
         },
 
         sendFeedBack: function(e){
@@ -479,11 +375,10 @@
         },
 
         openInviteDialog: function() {
-          this.$.inviteDialog.open();
+            this.$.inviteDialog.open();
         },
 
         sendInvite: function(e) {
-            
             this.inviteData = {emailList:e.detail.address};
             
             if(this.$.authItem.checkHasToken()) {
@@ -503,132 +398,30 @@
         },
 
         onMyAccount: function() {
-          this.fire('rt-changed',{route:'/user/myaccount'});
-        },
-
-        _onOpen: function(e) {
-            for(var i=0;i<this.wsRequests.length;i++) {
-                var req = this.wsRequests[i];
-                this.$.webSocketConn.send(req);
-            }
-
-            this.set('wsRequests',[]);
-        },
-
-        _onMessage: function(e) { 
-            var backtestId = e.detail.backtestId;
-            
-            if (!this.backtests[backtestId]) {
-              return;
-            }
-              
-            console.log("Message Received: " + Date());  
-            this.backtests[backtestId].data = e.detail.data;            
-
-            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);
-          
-        },
-
-        _onError: function(e) {
-        },
-
-        _onClose: function(e) {
-          console.log("FCUK!!! Closing connection");
-
-          var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-          this.$.webSocketConn.url = WSEndPoint;
-
-          this.$.webSocketConn.open();
-
-        },
-
-        openWebSocketConnection: function() {
-          var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-          this.$.webSocketConn.url = WSEndPoint;
-
-          this.$.webSocketConn.close();
-          this.$.webSocketConn.open();
+            this.fire('rt-changed',{route:'/user/myaccount'});
         },
 
         requestExecution: function(e) {
-
-          if(this.$.authItem.checkHasToken()) {
-            
-            this.header = this.$.authItem.getHeader();
-            var backtestId = e.detail.backtestId;
-            this.backtestId = backtestId;
-            //Send message to web socket for execution
-            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
-                  action: 'exec-backtest',
-                  backtestId: backtestId};
-
-            this.backtestId = backtestId
-            this.backtests[backtestId] = {data:[], subscription:false,bulksent:false, currentIndex:0};
-
-            //check if socket connection is open
-            //var rs = this.$.webSocketConn._webSocket.readyState;
-            if (this.$.webSocketConn.isOpen()) {
-                this.$.webSocketConn.send(msgForWS);  
-            } else if(this.$.webSocketConn.isClosed()) {    
-                this.push(wsRequests, msgForWS);
-                this.$.webSocketConn.open();
+            if(this.$.authItem.checkHasToken()) {
+                this.$$('#socketHandler').handleExecution(e.detail.backtestId);
             } else {
-                this.push(wsRequests, msgForWS);
+                this.gotoSignin();
             }
-            
-          } else {
-            this.gotoSignin();
-          }
-
         },
 
         onSubscription: function(e) {
-          var backtestId = e.detail.backtestId;
-          if(this.backtests[backtestId]) { 
-            this.backtests[backtestId].subscription = true;
-            this.backtests[backtestId].bulksent = false;
-            this.backtests[backtestId].currentIndex = 0;
-            this.sendDataSlowly(backtestId);
-          }
+            if(this.$.authItem.checkHasToken()) {
+                this.$$('#socketHandler').handleSubscription(e.detail.backtestId);
+            } else {
+                this.gotoSignin();
+            }
         },
 
         onUnsubscription: function(e) {   
-          console.log("UNSUBSCRIBING");
-          var backtestId = e.detail.backtestId; 
-          
-          if(this.backtests[backtestId]) {
-              this.backtests[backtestId].subscription = false;
-              this.backtests[backtestId].bulksent = false;
-              delete this.backtests[backtestId].currentIndex;
-              this.backtests[backtestId].currentIndex = 0;
-          }
-
-        },
-
-        // Updates every 1 seconds and updates maximum of 200 points at once.
-        sendDataSlowly: function(backtestId) {
-            var timeGap = 1000;
-            var maxLimit = 200;
-            if(this.backtests[backtestId]) {
-
-                if(this.backtests[backtestId].subscription) {
-
-                  var currentIndex = this.backtests[backtestId].currentIndex;
-                  var currentLength = this.backtests[backtestId].data.length;
-                  
-                  if(currentIndex <  currentLength && currentLength > 0) {  
-                      var j = 0;
-                      for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
-                          var dataPoint = this.backtests[backtestId].data[i];
-                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
-                          this.backtests[backtestId].currentIndex = i+1;
-                          j++;
-                      }
-                  }
-                  
-                  this.async(function(){this.sendDataSlowly(backtestId, maxLimit);}, timeGap);
-
-                }
+            if(this.$.authItem.checkHasToken()) {
+                this.$$('#socketHandler').handleUnsubscription(e.detail.backtestId);
+            } else {
+                this.gotoSignin();
             }
         },
 
@@ -655,7 +448,7 @@
             
             var lastRequest = JSON.parse(localStorage['my-app-storage']).lastRequest;
 
-            this.openWebSocketConnection();
+            this.$$('#socketHandler').openConnection();
             
             if(lastRequest!='') {
               this.fire('rt-changed',{route:lastRequest});
@@ -665,67 +458,6 @@
         },
 
         scrollToTop: function() {
-        },
-
-        onBacktestCompleted: function(e) {
-            console.log(e.detail);
-            
-            if(e.detail) {
-                var backtestId = e.detail.id;
-
-                if(backtestId) {
-                    //this.sendDataSlowly(backtestId);
-                    //this.manageSubscriptions();
-                    delete this.backtests[backtestId];    
-                }
-            }
-        },
-
-        manageSubscriptions: function(){ 
-          if(Object.keys(this.backtests).length > 0) {
-              for (var backtestId in this.backtests) {
-
-                  //continue with still subscribed
-                  if(this.backtests[backtestId].subscription){
-                    break;
-                  }
-
-                  //this.backtestId = key;
-
-                  if(this.$.authItem.checkHasToken()) {
-                      this.header = this.$.authItem.getHeader();
-                      this.$.getBacktestQuery.url = this.computeGetBacktesturl(backtestId);
-                      this.$.getBacktestQuery.generateRequest();
-                  } else {
-                    this.gotoSignin();
-                  }
-              } 
-          }
-
-          this.async(this.manageSubscriptions, 60000);
-        },
-
-        onGetBacktestSuccess: function(e){
-          //console.log(e.detail);
-          var id = e.detail.response._id;
-          var status = e.detail.response.status;
-          if (this.backtests[id] && (status == "complete" || status=="exception")) {
-
-            //send any pending data
-            //this.sendDataSlowly(id);
-
-            //delete the backtest ID 
-            //delete this.backtests[id];    
-            //this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
-          } 
-        },
-
-        onGetBacktestError: function(e){
-            console.log(e);
-            if(e.request.response.id) {
-              var backtestId = e.request.response.id; 
-              delete this.backtests[backtestId];    
-            }
         },
 
         goToRoute: function(e) {
@@ -742,57 +474,6 @@
             
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
-            this.changeTabOnURL();
-            this.changeViewonURL();
-        },
-
-        _urlChanged: function(e) {
-          this.changeTabOnURL();
-        },
-
-        changeTabOnURL: function() {
-
-          var pathname = window.location.pathname;
-          var ctab=0;
-          var pathArray = ['/main', 
-                  '/dashboard', 
-                  '/about',
-                  '/user/signin',
-                  '/user/signup',
-                  '/user/signout',
-                  '/user/resetpassword',
-                  '/user/authMessage'];
-
-          for(i=0;i<pathArray.length;i++){
-            if(this.URLcontains(pathArray[i])){
-              ctab = i;
-              break;
-            }
-          }
-
-          if(ctab>=5) {
-            ctab = 3;
-          }
-
-          this.currentTab = ctab;
-        },
-
-        changeViewonURL: function() {
-          var path = ['home','editor','community','analyze','help'];
-
-          for (i in path) {
-              var c = this.URLcontains('/dashboard/' + path[i]);
-          
-              if (c && this.view != path[i]) {  
-                
-                  if (path[i] == 'analyze') {
-                      this.view = 'editor';
-                  } else {
-                      this.view = path[i];  
-                  }
-              }
-          }
-
         },
 
         redirect: function(route) {

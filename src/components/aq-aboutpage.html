@@ -3,6 +3,9 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 
+<link rel="import" href="./common/aq-allpage-layout.html">
+<link rel="import" href="./common/aq-portwidth-detector.html">
+
 <dom-module id="aq-aboutpage">
 
     <style include="iron-flex iron-positioning iron-flex-alignment"></style>
@@ -25,6 +28,9 @@
       #container-bg {
         background: #fff;
         height: 100%;
+        --width: 80%;
+        --margin: 0 auto;
+        --margin-top:30px;
       }
 
       paper-tabs {
@@ -40,6 +46,150 @@
         width:10%;
         color: teal;
         font-size: 16px;
+      }
+
+      #inner-container {
+        width: 100%;
+        margin: 0 auto;
+        --margin-top: 50px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+
+      .header {
+          --font-size: 20px;
+          font-size: calc(8px + 1.5vw);
+          font-weight: 700;
+      }
+
+      .tagline {
+         --font-size: 32px;
+         font-size: calc(7px + 2vw);
+         color: teal;
+      }
+
+      img {
+          height:calc(50px + 18vw);
+          width:calc(50px + 18vw);
+          max-width: 100%;
+      }
+
+      .image.narrow {
+          --display: none;     
+      }
+
+      .content {
+        margin-top :30px;
+        @apply(--layout-horizontal);
+        @apply(--layout-around-justified);
+      }
+
+      .content.narrow {
+        margin-top: 10px;
+        @apply(--layout-vertical);
+        font-size: 14px;
+      }
+
+      #first-section-text {
+         width: 50%;
+         margin: auto 0;
+      }
+
+      #first-section-text.narrow {
+         width: 100%;
+      }
+
+      #first-section-text.narrow p{
+         font-size: 12px;
+      }
+
+      p {
+        line-height: calc(10px + 1.2vw);
+        text-align: justify;
+        font-size: calc(7px + 0.8vw);
+      }
+
+      paper-button {
+          --paper-button: {
+              border: 2px solid teal;
+              color: teal;
+              padding: 5px 20px;
+              font-size: 14px;
+              --font-weight: 700;
+          };
+      }
+
+      paper-button.semiWide {
+        font-size: 12px;
+      }
+
+      paper-button.narrow,.narrowWide {
+        font-size: 10px;
+      }
+
+      paper-button:hover {
+          color: white;
+          background-color: teal;
+      }
+
+      .category-container {
+          height: calc(92vh - 120px);
+          padding-top: 60px;
+          padding-bottom: 60px;
+          width: 80%;
+          margin: 0 auto;
+      }
+
+      #first-category-container {
+          height: calc(92vh - 120px) !important;
+      }
+
+      #fourth-category-container {
+        height: 225px;
+      }
+
+      #second-section-text {
+        width: 100%;
+      }
+
+      #career-main-container {
+        width: 100%;
+        --background-color: #dff2fa;
+        background-color:#D7ECEF;
+        height: 300px;
+        margin-bottom: 50px;
+      }
+
+      #career-tagline {
+        --font-weight: 700;
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .career-text p{
+        width: 80%;
+        margin: 0 auto;
+        --font-size: 18px;
+      }
+
+      #footer-section {
+        width: 100%;
+        background-color: black;
+        height: 200px;
+      }
+
+      .ctButton {
+         color: white;
+         background-color: teal;
+         border-radius: 25px;
+         margin-top: 20px;
+         margin-bottom: 20px;
+         font-weight: 700;
+         font-size: 13px;
+      }
+
+      .ctButton:hover {
+          background-color: teal;
       }
 
     </style>
@@ -60,49 +210,110 @@
             active="{{active}}">
         </app-route>
 
-            <div id='container-bg' class="layout vertical fit">
-            
-            <paper-tabs noink selected="{{selected}}">
-              <paper-tab>Home</paper-tab>
-              <paper-tab>People</paper-tab>
-              <paper-tab>Careers</paper-tab>
-              <paper-tab>Contact</paper-tab>
-            </paper-tabs>
+        <aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
 
-            <iron-pages selected="{{selected}}">
-            <aq-section id='section_home' 
-                        class="self-center" header="Invest in your Ideas" 
-                        paragraph="We believe that in ever expanding financial markets it is important to systematically scrutinize investment ideas and separate real investment signals from noise. At AimsQuant, we are building an easy to use web platform to systematically research investment ideas."
-                        paragraph2="AimsQuant aims to bridge the data and technology gap between investment enthusiasts and great investments. We want to build an ecosystem where data scientists, quantitative analysts, programmers and investment enthusiasts come together to create the best investment ideas.">
-            </aq-section>  
-            
-            <aq-section id='section_people' 
-                        class="self-center" header="Who Are We"
-                        paragraph="We are bunch of Quants and Technologists who enjoy financial markets and making efficient technology. We aim to simplify investment science and filter noise from real investment ideas">
-            </aq-section>
+        <div id='container-bg' class="layout vertical fit">   
+           
+            <aq-allpage-layout no-nav class="flex" elevation=0> 
+                <div class="internal-content" id='inner-container'>
+                    <div class="layout vertical category-container" id='first-category-container'>
+                        <div class="header self-start">About Us</div>
+                        
+                        <div class="tagline self-start">Invest in your Ideas with tools of professionals</div>
+                        
+                        <div class$="content [[computeLayoutClass(width)]]">
+                            
+                            <div class$="image self-center [[computeLayoutClass(width)]]">
+                            <img src="../../resources/images/aboutus/link.png"></div>
+                            
+                            <!--div class="flex"></div-->
+                            
+                            <div id="first-section-text" class$="[[computeLayoutClass(width)]]">
+                              <!--h3>Bridging the gap</h3-->
+                              <p class="self-center">AimsQuant aims to bridge the data and technology gap between investment enthusiasts and great investments. We want to create an ecosystem where data scientists, quantitative analysts, programmers and investment enthusiasts come together to create the best investment ideas.</p>
 
-            <aq-section id='section_careers' 
-                        class="self-center" header="Work With Us"
-                        paragraph="We are recruiting highly motivated individuals interested in technology and financial markets. If you like to solve problems and build efficient technology, send us a message at"
-                        link="mailto:careers@aimsquant.com?Subject=Interested%20in%20AimsQuant"
-                        link-text="careers@aimsquant.com"
-                        paragraph2="We are using NodeJS to power our backend, Polymer to create our UI and Julia to create a fast research engine. If you have interest in any of the above technologies, send us a message and we will be glad to talk to you.">
+                              <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toSectionTwo'>Read More</paper-button>
+                            </div>
+                        </div>
+                    </div>
 
-            </aq-section>
+                    <div class="layout vertical category-container" id='second-category-container'>
+                        <div class="header self-start">What are we building </div>
+                        
+                        <div class="tagline self-start">Quantitative Research Platform</div>
+                        
+                        <div class="layout horizontal">
+                            <div id="second-section-text">
+                                <p>In ever expanding financial markets it is important to systematically scrutinize investment ideas and separate real investment signals from noise. At AimsQuant, we are building an easy to use web platform to systematically research investment ideas.</p>
 
+                                <p>With access to superior tools and free data, we want to democratize the investment arena. At AimsQuant, anyone can build and test investment strategies, share it with the community for the feeback or trade it on personal account.</p>
 
-            <aq-section id='section_contact' 
-                        class="self-center" header="Contact Us"
-                        paragraph="We always welcome insightful thoughts, great mentors and helpful suggestions. Please write us at"
-                        link= "mailto:connect@aimsquant.com?Subject=Connect%20With%20AimsQuant"
-                        link-text="connect@aimsquant.com">
-            </aq-section>
-            </iron-pages>
+                                <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toSectionThree'>Read More</paper-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layout vertical category-container" id='third-category-container'>
+                        <div class="header self-start">Who We Are</div>
+                        
+                        <div class="tagline self-start">They call us "Quants"</div>
+                        
+                        <div class="layout horizontal">
+                            <div id="second-section-text">
+                                <p>We are bunch of Quants and Technologists who enjoy financial markets and making efficient technology. We aim to simplify investment science and filter noise from real investment ideas</p>
+
+                                <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toSectionFour'>Read More</paper-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layout vertical category-container" id='fourth-category-container'>
+                        <div class="header self-start">Technology</div>
+                        
+                        <div class="tagline self-start">Latest techstack to keep the systems going</div>
+                        
+                        <div class="layout horizontal">
+                            <div id="second-section-text">
+                                <p>We are building our platform with the best and fastest tech stack out there. With our computation engine in Julia, we want to provide our users the fastest and easiest way to write investment strategies</p>
+
+                                <p>With Polymer to support our agile front-end and NodeJs to support quick IO, we are sure to provide the best user experience as an online research platform.</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id='career-main-container' class="layout vertical">
+                        <div class="flex"></div>
+                        
+                        <div id='career-tagline' class="self-center">Like what we are building?</div>
+                        
+                        <div class="layout horizontal justified">
+                          
+                          <div class="career-text layout vertical center">
+                              <p>We are always looking for highly motivated individuals interested in technology and financial markets. If you like to solve problems and build efficient technology, we would love to be in touch.</p>
+
+                              <paper-button class$="ctButton [[computeLayoutClass(width)]]" noink on-top='toJobs'>Apply for a Job</paper-button> 
+                          </div>
+
+                          <div class="career-text layout vertical center">
+                            <p class="sfl">We always welcome insightful thoughts, great mentors and helpful suggestions. If you are an industry expert or an investor, we are eager to learn your opinion.</p>
+
+                            <paper-button class$="ctButton [[computeLayoutClass(width)]]" noink on-top='toContactUs'>Contact Us</paper-button>                     
+                          </div>
+
+                        </div>
+
+                        <div class="flex"></div>
+                    </div>
+
+                    <!--div id='footer-section' class="layout vertical center"-->
+                    </div>
+                </div>
+            </aq-allpage-layout>
 
             <div class="flex"></div>
             <!--footer><p>© 2017 AimsQuant</p></footer-->
-
-          </div>  
+        </div>  
     
   </template>
 
@@ -114,39 +325,45 @@
       properties: {
           routeData: {
               type: Object,  
-              observer:'_sectionChanged',
-          },
-          active:{
-            type:Boolean,
-            observer:'_activeChanged',
           },
 
-          selected:{
-            type:Number,
-            value:0,
-          },
-      },
-
-      _sectionChanged: function(nSect, oSect) {
-          if(nSect) {
-              var dict =  {"home":0, "people":1, "careers":2, "contact":3};
-              if(dict[nSect.section]) {
-                  this.selected = dict[nSect.section];
-              } else {
-                  this.selected = 0;
-              }
+          width: {
+            type: Object,
           }
       },
 
-      _activeChanged: function(nAct, oAct) {
-        var emptyRoute = true;
-        if(this.routeData) {
-            emptyRoute = emptyRoute && Object.keys(this.routeData).length == 0;
-        }
+      computeLayoutClass: function(width) {
+          if(width) {
+            if (width.narrow) {
+                return"narrow";
+            } else if (width.narrowWide) {
+                return "narrowWide";
+            } else if (width.semiWide) {
+                return "semiWide"
+            } else if(width.wide) {
+                return "wide";            
+            } else {
+                return "superWide";
+            }
 
-        if(nAct && emptyRoute) {
-          this.selected = 0;
-        }
+          }
+      },
+
+      isNarrow: function(width) {
+        console.log("yahan");
+        return width.narrow;
+      },
+
+      toSectionTwo: function() {
+        this.$$('#second-category-container').scrollIntoView(true);  
+      },
+
+      toSectionThree: function() {
+        this.$$('#third-category-container').scrollIntoView(true);  
+      },
+
+      toSectionFour: function() {
+        this.$$('#fourth-category-container').scrollIntoView(true);  
       },
 
     });

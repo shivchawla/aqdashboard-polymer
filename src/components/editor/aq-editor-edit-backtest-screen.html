@@ -7,7 +7,6 @@
 
 <link rel='import' href='../../icons/aq-iconset.html'>
 
-
 <dom-module id='aq-editor-edit-backtest-screen'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	
@@ -15,7 +14,7 @@
 		#container {
 			height:100%;
 			padding:5px;
-			background-attachment: #e5e5e5;
+			--background-color: #e5e5e5;
 		}
 
 		paper-button {
@@ -37,7 +36,6 @@
 		      	</aq-backtest-detail-item>
 			</div>
 		</template>
-
 	</template>
 
 	<script>
@@ -60,7 +58,8 @@
 
 				backtestId:{
 					type:String,
-				}
+				},
+				
 			},
 
 			isActive: function(isRunning, backtestId) {

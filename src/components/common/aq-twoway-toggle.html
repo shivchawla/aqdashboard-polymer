@@ -1,0 +1,67 @@
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tabs.html'>
+<link rel='import' href='../../../../bower_components/paper-tabs/paper-tab.html'>
+
+<dom-module id='aq-twoway-toggle'>
+	<style>
+		#performance-paper-tabs {
+            width: var(--toggle-width, 170px);
+            border: 1px solid #e1e1e1;
+            height: 20px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            --margin-right: 10px;
+            padding: 5px;
+        }
+
+        #performance-paper-tabs paper-tab {
+            --paper-tab-content-unselected: {
+                background-color: white;
+                color: gray;
+                font-size: var(--toggle-font-size, 14px);
+                --border-right: 1px solid gray;
+                --border: 1px solid #e1e1e1;
+            };    
+        }
+
+        #performance-paper-tabs paper-tab {
+            --paper-tab-content: {
+                --background-color: #cc6666;
+                background-color: #cc6666;
+                color: white;
+                padding:0px;
+                --border: 1px solid #e1e1e1;
+            };    
+        }
+
+        #performance-paper-tabs paper-tab {
+            padding: 0px;
+        }
+
+	</style>
+
+	<template>
+        <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{selectedType}}">
+            <paper-tab>[[firstOption]]</paper-tab>
+            <paper-tab>[[secondOption]]</paper-tab>
+        </paper-tabs>
+    
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-twoway-toggle',
+
+			properties: {
+				firstOption: String,
+				secondOption: String,
+				selectedType:{
+					type: Number,
+					value: 0,
+					notify: true,
+				},
+			},
+
+		});
+	</script>
+
+</dom-module>

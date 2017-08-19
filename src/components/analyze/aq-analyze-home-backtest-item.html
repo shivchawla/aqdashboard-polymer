@@ -275,10 +275,6 @@
             },
 
             computeBacktestHeader: function() {
-                //console.log(this.backtest);
-                //console.log("computeBacktestHeader");
-                //console.log(this.width);
-                //console.log(this.processedBacktest);
                 if(this.width && this.processedBacktest) {
                     this.backtestHeader = null;
                     var backtestHeader = [
@@ -322,16 +318,13 @@
             },
 
             _widthChanged: function() {
-                //console.log(this.backtestHeader);
                 this.computeBacktestHeader();
             },
 
             attached: function () {
             	this.$$('paper-checkbox').checked = false;
-            	//this.$$('.side-bar').style.transform = "scale(0,1)";
                 this.backtestId = this.backtest._id;
                 this.processBacktestData();
-               // console.log(this.hasForwardtest);
             },
 
             computeHeading: function(btIndex) {
@@ -425,8 +418,6 @@
             },
                 
             isForwardTestingAvailable: function(backtest, hasForwardtest) {
-                 //console.log(backtest.status);
-                 //console.log(hasForwardtest);
                  return backtest.status == "complete" && !hasForwardtest;
             },
 
@@ -464,15 +455,15 @@
                     index: "Backtest "+this.formatIndex(this.index)
                 });
 
-                this.toggleSidebar();
+                //this.toggleSidebar();
             },
 
-            toggleSidebar: function () {
+            /*toggleSidebar: function () {
                 if (this.$$('paper-checkbox').checked)
                     this.$$('.side-bar').style.transform = "scale(1,1)";
                 else
                     this.$$('.side-bar').style.transform = "scale(0,1)";
-            },
+            },*/
 
             selectBacktest: function (e) {
                 this.$$('paper-checkbox').checked = e.detail.checked;
@@ -480,7 +471,6 @@
             },
 
             runForwardtest: function() {
-                console.log("aqui");
                 this.fire('execute-forwardtest', {backtestId: this.backtestId});
             }
 

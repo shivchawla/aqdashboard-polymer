@@ -8,16 +8,12 @@
 	</style>
 
 	<style>
-		:host {
-			display: block;
-			height: 100%;
-		}
 
 		#container {
             margin: 0 auto;
             color:#3c3c3c;
             width: 90%;
-            height: 100%;
+            --height: 100%;
             background-color: #f9f9f9;
         }
 
@@ -55,17 +51,18 @@
         }
 
         #lower-container {
-        	margin-top: 20px;
-        	margin-bottom: 20px;
+        	--margin-top: 20px;
+        	--margin-bottom: 20px;
         }
 
 	</style>
 
 	<template>
 		<aq-loading-progress loading="{{loading}}"></aq-loading-progress>
+		
+		<template is='dom-if' if='[[!loading]]'>
 		<div id='container' class$="layout vertical [[computeLayoutClass(noNav)]]">  
     		
-			
 			<template is='dom-if' if='[[!noNav]]'>
 	    		<div id="navigation-panel" class="layout horizontal">
 			        <aq-navigation-item id="navigation-item" 
@@ -79,7 +76,7 @@
 			    </div>
 		    </template>
 
-            <paper-card class="self-center">
+            <paper-card class="self-center" elevation="[[elevation]]">
         		<content id="content-head" select="internal-content-header, .internal-content-header">
         		</content>
 
@@ -87,14 +84,13 @@
         		</content>
 
         		<div class="flex"></div>
-    		
         	</paper-card>
 
         	<div id="lower-container">
         		<content id="lower-button-content" select="footer-button, .footer-button"></content>
         	</div>
-
     	</div>
+    	</template>
 	</template>
 
 	<script>
@@ -104,11 +100,20 @@
 			properties: {
 				header: String,
 				currentPath: Array,
-				loading: Boolean,
+				loading: {
+					type:Boolean,
+					value:false	
+				},
 				noNav:{
 					type: Boolean,
 					value: false,
-				}
+				},
+
+				elevation: {
+					type:Number,
+					value: 1
+				},
+
 			},
 
 			computeLayoutClass: function(noNav) {

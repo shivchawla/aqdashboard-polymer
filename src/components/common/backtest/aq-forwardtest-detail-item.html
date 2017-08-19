@@ -9,11 +9,13 @@
 <link rel="import" href="../../../../bower_components/juicy-ace-editor/juicy-ace-editor.html">
 
 <link rel='import' href='../aq-check-authentication.html'>
+<link rel='import' href='../aq-settings-display.html'>
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-backtest-header-item.html'>
 <link rel='import' href='./aq-backtest-metric-item-list.html'>
 <link rel='import' href='./aq-backtest-performance-detail-item.html'>
+<link rel='import' href='./aq-forwardtest-performance-detail-item.html'>
 
 <script src="../../../../resources/scripts/DateTime.js"></script>
 
@@ -37,7 +39,9 @@
         #container.selected {
             background-color: white;
             color: #cc6666;
+            --border: 2px solid #cc6666;
             border-right: none;
+            font-weight: 700;
         }
 
         #container:hover {
@@ -98,8 +102,10 @@
     <style>
 
         #container {
-            height: 80%;
+            --height: 80%;
+            height: 100%;
         }
+
         paper-tabs {
             --paper-tabs-selection-bar-color: #cc6666;
 
@@ -110,28 +116,10 @@
 
         .lower-container {
             margin-top: 10px;
-            --background-color: #f5f5f5;
-            --padding-left: 20px;
         }
 
         .middle-container {
             padding-top: 10px;
-        }
-
-        paper-card {
-        	--paper-card:{
-	        	color: #2f2f2f;
-	            margin: 0 auto;
-	            height: 100%;
-	            --background-color: var(--aq-forwardtest-detail-item-background-color, #fff);
-            }
-        }
-
-        .card-content {
-        	color: #2f2f2f;
-            --padding-left: 0px;
-            --padding-right: 0px;
-            padding-top: 0px;
         }
 
         #tab-container {
@@ -140,36 +128,44 @@
         }
 
         #forwardtest-detail {
-            --margin-top: 5px;
             border: 1px solid #e1e1e1;
+            width: 100%;
+            --margin-bottom: 5px;
+        }
+
+        #iron-page-container {
             width: 100%;
             height: 100%;
         }
 
-        #performance-container {
-            --border: 1px solid #e1e1e1;
-            width: 100%;
+        #code-container {
+            margin-left: 2px;
+            height: 426px;
         }
 
-        #code-container {
-            min-height: 200px;
-            --padding-top: 10px;
-            margin-left: 2px;
+        #log-container {
+            height: 426px;
+            overflow-y: scroll;
+            --margin-top: 20px;
+            background-color: #323232;
+        }
+
+        #transaction-container {
+            height: 426px;
+            color: #3c3c3c;
+            margin: 5px 20px 0px 20px;
+        }
+
+        #portfolio-container {
+            height: 400px;
+            color: #3c3c3c;
+            margin: 5px 20px 0px 20px;
         }        
 
         juicy-ace-editor {
             --border: 1px solid #e1e1e1;
             --border-top: none;
             --border-left: none;
-        }
-
-        #iron-page-container {
-            width: 100%;
-            margin: 0 auto;
-            --margin-top: 5px;
-            --margin-bottom: 10px;
-            --min-height: 300px;
-
         }
 
         paper-button {
@@ -279,25 +275,32 @@
                         
                     </div>
                     <div class="flex"></div>
-                    <div class="layout vertical center">
-                        <paper-button raised on-tap='onStopTest' noink 
-                        class$="[[computeButtonClass(forwardtest.active, forwardtest.error)]]">
-                        [[computeButtonText(forwardtest.active, forwardtest.error)]]
-                        </paper-button>
-
+                    <div class="layout horizontal center">
                         
+                        <template is='dom-if' if='[[hasActionButton(forwardtest.error)]]'>
+                            <paper-button raised on-tap='onActionButton' noink 
+                            class$="[[computeActionButtonClass(forwardtest.active)]]">
+                            [[computeActionButtonText(forwardtest.active)]]
+                            </paper-button>
+                        </template>
+
+                        <template is='dom-if' if='[[hasDeleteButton(forwardtest.active, forwardtest.error)]]'>
+                            <paper-button raised on-tap='onDeleteButton' noink 
+                            class="delete">
+                            Delete Test
+                            </paper-button>
+                        </template>
                     </div>
                 </div>
     		</template>
             
             <div class="middle-container flex">
-            	<!--template is='dom-if' if='{{metrics}}'-->
-            		<aq-backtest-metric-item-list 
-                        heading="Metrics"
-            			forced-semi-wide = "[[forcedSemiWide]]"
-            			metric-items = "{{metrics}}">
-        			</aq-backtest-metric-item-list> 
-            	<!--/template-->
+        		<aq-backtest-metric-item-list 
+                    heading="Metrics"
+        			forced-semi-wide="[[forcedSemiWide]]"
+        			metric-items="{{metrics}}"
+                    justified="justified">
+    			</aq-backtest-metric-item-list> 
             </div>
 
             <div class="layout horizontal" id='forwardtest-detail'>
@@ -322,22 +325,56 @@
                 </div>
                 
                 <div id='iron-page-container'>
-                <iron-pages selected="{{detailType}}">
-                    <div id="performance-container">
-                        <aq-backtest-performance-detail-item 
-                            backtest="[[forwardtest]]">
-                        </aq-backtest-performance-detail-item>
-                    </div>
+                    <iron-pages selected="{{detailType}}">
+                        <div id="performance-container">
+                            <!--template is='dom-if' if='[[forwardtest.serializedData]]'-->
+                                <aq-forwardtest-performance-detail-item 
+                                    forwardtest="[[forwardtest]]">
+                                </aq-forwardtest-performance-detail-item>
+                            <!--/template-->
+                        </div>
 
-                    <div id="code-container">
-                        <!--div class="heading">CODE</div-->
-                        <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4" on-change='onCodeChange'>[[forwardtest.code]]
-                        </juicy-ace-editor>
-                    </div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </iron-pages>
+                        <div id="code-container">
+                            <!--div class="heading">CODE</div-->
+                            <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4" on-change='onCodeChange'>[[forwardtest.code]]
+                            </juicy-ace-editor>
+                        </div>
+
+                        <div id='portfolio-container'>
+                            <template is='dom-if' if='[[forwardtestPositions]]'>
+                                <aq-portfolio-table positions="[[forwardtestPositions]]">
+                                </aq-portfolio-table>
+                            </template>
+                        </div>
+
+                        <div id='transaction-container'>
+                            <template is='dom-if' if='[[hasOrdersAndTransactions(forwardtestTransactions, forwardtestOrders)]]'>
+                                <aq-transaction-table 
+                                    transactions="[[forwardtestTransactions]]"
+                                    orders="[[forwardtestOrders]]">
+                                </aq-transaction-table>
+                            </template>
+                        </div>
+
+                        <div id="log-container">
+                            <template is='dom-if' if='[[forwardtestLogs]]'>
+                                <template is='dom-repeat' items="[[forwardtestLogs]]">
+                                    <aq-log-item 
+                                        datetime="[[item.datetime]]"
+                                        message="[[item.message]]"
+                                        message-type="[[item.messagetype]]">
+                                    </aq-log-item>
+                                </template>
+                            </template>
+                        </div> 
+
+                        <div id='settings-container'>
+                            <template is='dom-if' if='[[forwardtestSettings]]'>
+                                <aq-settings-display settings="[[forwardtestSettings]]"></aq-settings-display>
+                            </template>
+                        </div>
+
+                    </iron-pages>
                 </div>
             </div>
       	</div>
@@ -367,11 +404,8 @@
                     value:0,
                 },
 
-                forwardtestId: {
-                    type: String,
-                    observer: '_forwardtestIdChanged',
-                },
-
+                forwardtestId: String,
+                    
                 forwardtest: Object,
 
                 header: Object,
@@ -390,11 +424,14 @@
                 	value: false,
                 },
 
+                /*forwardtestOrders: Object,
+                forwardtestTransactions: Object,
+                forwardtestPositions: Object,
+                forwardtestLogs: Object,
+                forrwardtestSettings:Array,*/
             },
 
             onCodeChange: function(e) {
-                console.log(e);
-                console.log(e.detail);
                 this.async(function(){this.$$('juicy-ace-editor').editor.gotoLine(1);}, 20);
             },
 
@@ -402,12 +439,10 @@
                 return detailType == val;
             },
 
-            _forwardtestIdChanged: function (nId, oId) {
-                if (nId && nId!= "") {
-                    this.reset();
-                    this.requestStaticData();
-                }
-            },
+            attached: function() {
+                this.reset();
+                this.requestStaticData();
+            }, 
 
             computeGetForwardtestUrl: function (forwardtestId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -415,8 +450,17 @@
             },
 
             reset: function () {
-                this.$$('aq-backtest-performance-detail-item').reset();
+                //this.backtest = null;
                 this.resetMetrics();
+
+                if(this.$$('aq-forwardtest-performance-detail-item')) {
+                    this.$$('aq-forwardtest-performance-detail-item').reset();
+                }
+                /*if(this.$$('aq-forwardtest-performance-detail-item')) {
+                    this.$$('aq-forwardtest-performance-detail-item').reset(); 
+                } else {
+                    this.async(function() {this.$$('aq-forwardtest-performance-detail-item').reset();}, 200); 
+                }*/
             },
 
             resetMetrics: function () {
@@ -491,7 +535,6 @@
 
             onGetForwardtestSuccess: function (e) {
 
-                console.log(e.detail.response);
                 this.set('forwardtest', e.detail.response);
 
                 this.forwardtestHeader = 
@@ -507,14 +550,16 @@
                     this.addMetricData(this.forwardtest.serializedData.state);
                 }
 
-                /*if (this.forwardtest.output.variables) {
-                    // this variable is used because array changes are somehow not relaying back the template
-                    this.hasTrackVarData = true;
-                }*/
+                this.async(this.computePositions);
+                this.async(this.computeTransactions);
+                this.async(this.computeProposedOrders);
+                this.async(this.computeLogs);
+                this.async(this.computeSettings);
 
-                this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);
-
-                this.$$('aq-backtesttest-performance-detail-item').plotGraphs(); 
+                this.async(function() {
+                    if(this.$$('aq-forwardtest-performance-detail-item')) {
+                        this.$$('aq-forwardtest-performance-detail-item').plotGraphs();}
+                    }, 1000);
             },
 
             onGetForwardTestError: function (e) {
@@ -525,12 +570,12 @@
                 this.metrics = [
                     {
                         "metricName": "Portfolio Value",
-                        "metricValue": currentState.account ? this.formatMoneyValue(currentState.account.netvalue.toFixed(0)) : "-", 
+                        "metricValue": currentState.account ? date.formatMoneyValue(currentState.account.netvalue.toFixed(0)) : "-", 
                         "metricDescription": "Net Asset Value",
                     },
                     {
                         "metricName": "Cash",
-                        "metricValue": currentState.account ? this.formatMoneyValue(currentState.account.cash.toFixed(0)) : "-", 
+                        "metricValue": currentState.account ? date.formatMoneyValue(currentState.account.cash.toFixed(0)) : "-", 
                         "metricDescription": "Volatility"
                     },
                     {
@@ -565,54 +610,242 @@
                     },
                     
                 ];
+            },
 
-                console.log(this.metrics);
+            hasOrdersAndTransactions: function(forwardtestTransactions, forwardtestOrders) {
+                return forwardtestTransactions && forwardtestOrders;
+            },
+
+            computePositions: function() {
+                var hasValidData = this.forwardtest ? this.forwardtest.serializedData ? true : false : false;
+
+                if(hasValidData) {
+                    var accounttracker = this.forwardtest.serializedData.accounttracker;
+                    
+                    if(accounttracker) {
+                        var positionsArray = []
+                        Object.keys(accounttracker).sort().forEach(key => {
+                            var account = accounttracker[key];
+
+                            var tempArray = [];
+                            if(account.portfolio.positions) {
+                            //array of array
+                                Object.keys(account.portfolio.positions).forEach(pkey => {
+                                    var position = account.portfolio.positions[pkey];
+                                    
+                                    if(position.quantity > 0) {
+                                        position.date = key;
+                                        tempArray.push(position);    
+                                    }
+                                });
+
+                                tempArray.sort(function(a,b){return a.symbol< b.symbol;});
+                            }
+
+                          positionsArray = positionsArray.concat(tempArray);
+                            
+                        });
+
+                        this.forwardtestPositions = positionsArray.reverse();
+                    }
+                }
+            },
+
+            computeTransactions: function() {
+                var hasValidData = this.forwardtest ? this.forwardtest.serializedData ? true : false : false;
+
+                if(hasValidData) {
+                    var allTransactions = this.forwardtest.serializedData.transactiontracker;
+                    
+                    if(allTransactions) {
+                        var transactionArray = []
+                        Object.keys(allTransactions).sort().forEach(key => {
+                            
+                            //array of array
+                            var transactionsPerDay = allTransactions[key];
+                            transactionArray = transactionArray.concat(transactionsPerDay.sort(function(a,b){return a.securitysymbol.ticker < b.securitysymbol.ticker;}));
+                            
+                        });
+
+                        this.forwardtestTransactions = transactionArray.reverse();
+                    } 
+                }
+            },
+
+            computeProposedOrders: function() {
+                var hasValidData = this.forwardtest ? this.forwardtest.serializedData ? true : false : false;
+
+                if(hasValidData) {
+                    var blotter = this.forwardtest.serializedData.brokerage.blotter;
+                    
+                    if(blotter) {
+                        var ordersArray = []
+                        Object.keys(blotter).sort().forEach(key => {
+                            
+                            //array of array
+                            var ordersPerSecurity = blotter[key];
+
+                            ordersArray = ordersArray.concat(ordersPerSecurity);
+                            
+                        });
+
+                        this.forwardtestOrders = ordersArray.sort(function(a,b){ return a.securitysymbol.ticker < b.securitysymbol.ticker;});
+
+                    } 
+                }
+            },
+
+            computeLogs: function() {
+                var hasValidData = this.forwardtest ? this.forwardtest.serializedData ? this.forwardtest.serializedData.logtracker ? true : false : false : false;
+
+                if(hasValidData) {
+                    var logtracker = this.forwardtest.serializedData.logtracker;
+
+                    var logs = []
+                    Object.keys(logtracker).sort().forEach(date => {
+                        var logsDict = logtracker[date];
+                        if(date != "0001-01-01") {
+                            Object.keys(logsDict).sort().forEach(entryTime => {
+                                var logArray = logsDict[entryTime];
+
+                                for (var i=0;i<logArray.length;i++) {
+                                    logs = logs.concat(JSON.parse(logArray[i]));
+                                }
+
+                            });
+                        }
+                    });
+
+                    this.forwardtestLogs = logs;
+                }
+            },
+
+            computeSettings: function() {
+                var basicSettings = [];
+                var brokerageSettings = [];
+                var otherSettings = [];
+                var settings = [];
+
+                if(this.forwardtest.serializedData) {
+                    var hasValidData = this.forwardtest ? this.forwardtest.serializedData ? this.forwardtest.serializedData.accounttracker ? true : false : false : false;
+
+                    if (hasValidData) {
+                        var accounttracker = this.forwardtest.serializedData.accounttracker;
+                        var dates = Object.keys(accounttracker).sort();
+
+                        if(dates.length > 0){
+                            basicSettings.push({label: "Initial Cash", value:accounttracker[dates[0]].cash, value2: ""});
+                        } 
+                    }
+
+                    hasValidData = this.forwardtest ? this.forwardtest.serializedData ? this.forwardtest.serializedData.brokerage ? true : false : false : false;
+                    
+                    if(hasValidData) {
+                        var brokerage = this.forwardtest.serializedData.brokerage;
+
+                        if(brokerage.slippage) {
+                            ///THE VALUE NEEDS TO BE FIXED (100 is not required everytime)
+                            brokerageSettings.push({label:"Slippage", value:brokerage.slippage.value*100, value2:brokerage.slippage.model});
+                        }
+
+                        if(brokerage.commission) {
+                            ///THE VALUE NEEDS TO BE FIXED
+                            brokerageSettings.push({label:"Commission", value:brokerage.commission.value*100, value2:brokerage.commission.model});
+                        }
+
+                        if(brokerage.cancelpolicy) {
+                            brokerageSettings.push({label:"Cancel Policy", value2:brokerage.cancelpolicy, value:""});
+                        }
+                    }
+
+                    hasValidData = this.forwardtest ? this.forwardtest.serializedData ? this.forwardtest.serializedData.tradeenv ? true : false : false : false;
+                    
+                    if(hasValidData) {
+                        var tradeenv = this.forwardtest.serializedData.tradeenv;
+
+                        otherSettings.push({label: "Rebalance", value2: tradeenv.rebalance.slice(10), value:""});
+
+                        otherSettings.push({label: "Resolution", value2: tradeenv.resolution.slice(11), value:""});
+
+                        otherSettings.push({label: "Investment Plan", value2: tradeenv.investmentplan.slice(3), value:""});
+                    }
+                   
+                    
+                } else {
+                    var allSettings = this.forwardtest.settings;
+                    var advancedSettings = JSON.parse(this.forwardtest.settings.advanced);
+
+                    basicSettings.push({label:"Initial Cash", value:allSettings["initialCash"]});
+
+                    if(advancedSettings.slippage) {
+                        brokerageSettings.push({label:"Slippage", value:advancedSettings.slippage.value, value2:advancedSettings.slippage.model});
+                    }
+
+                    if(advancedSettings.commission) {
+                        brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value, value2:advancedSettings.commission.model});
+                    }
+
+                    if(advancedSettings.cancelpolicy) {
+                        brokerageSettings.push({label:"Cancel Policy", value2:advancedSettings.cancelPolicy, value:""});
+                    }
+
+                    if(advancedSettings.rebalance) {
+                        otherSettings.push({label: "Rebalance", value2: advancedSettings.rebalance, value:""});
+                    }
+
+                    if(advancedSettings.rebalance) {
+                        otherSettings.push({label: "Resolution", value2: advancedSettings.resolution, value:""});
+                    }
+
+                    if(advancedSettings.rebalance) {
+                        otherSettings.push({label: "Investment Plan", value2: advancedSettings.investmentPlan, value:""});
+                    }
+                }
+
+                settings = settings.concat(basicSettings).concat(brokerageSettings).concat(otherSettings);
+                  
+                if(settings.length > 0){
+                    this.forwardtestSettings = settings;
+                }            
             },
 
             deepCopy: function(array) {
 				return JSON.parse(JSON.stringify(array));
 			},
 
-            onStopTest: function() {
-                this.fire('stoptest-clicked', {id: this.forwardtestId});
+            onActionButton: function() {
+                if(this.forwardtest) {
+                    if(this.forwardtest.active) {
+                        this.fire('stoptest-clicked', {id: this.forwardtestId});
+                    } else {
+                        this.fire('restarttest-clicked', {id: this.forwardtestId}); 
+                    }
+                }
             },
 
-            onDeleteTest: function() {
+            onDeleteButton: function() {
                 this.fire('deletetest-clicked', {id: this.forwardtestId});
             },
 
-            computeButtonText: function(active, error) {
-                return active ? (error ? "Delete Test" : "Stop Test") : "ReStart Test";
+            computeActionButtonText: function(active) {
+                return active ? "Stop Test" : "Restart Test";
             },
 
-            computeButtonClass: function(active, error) {
-                return active ? (error ? "delete" : "stop") : "start";
+            computeActionButtonClass: function(active) {
+                return active ? "stop" : "start";
+            },
+
+            hasActionButton: function(error) {
+                return !error;
+            },
+
+            hasDeleteButton: function(active, error) {
+                return error || !active;
             },
 
             computeStatusClass: function(active, error) {
                 return active ? "green" : "red";
             }, 
-
-            formatMoneyValue: function(val) {
-                
-                //var numCommas = Math.floor(Math.log10(val)/3);
-                //1029732
-                //0123456
-                //1234567
-                var valStr = val.toString();
-                valStr = valStr.split("").reverse().join("");
-                var str="";
-                for(var i=0; i<valStr.length; i++) {
-                    if((i+1)%3 == 0 && i<valStr.length-1) {
-                        str = str.concat(valStr[i]+',');
-                    } else {
-                        str = str.concat(valStr[i]);
-                    }
-                }                    
-            
-                return str.split("").reverse().join("");
-
-            },
 
         });
     </script>

@@ -5,11 +5,11 @@
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
 
 <link rel="import" href="../components/analyze/aq-analyze-home.html">
-<link rel="import" href="../components/analyze/aq-analyze-compare.html">
-<link rel="import" href="../components/analyze/aq-analyze-compare-results.html">
 
 <link rel="import" href="../components/analyze/aq-analyze-backtest-detail.html">
 <link rel="import" href="../components/analyze/aq-analyze-forwardtest-detail.html">
+<link rel="import" href="../components/analyze/aq-analyze-detail.html">
+
 
 <dom-module id="aq-analyze-main">
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -22,6 +22,12 @@
     <template>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
+        
+        <app-route
+            route="{{route}}"
+            pattern="/dashboard/analyze/:strategyId"
+            data="{{homeData}}">
+        </app-route>
 
         <app-route
             route="{{route}}"
@@ -31,33 +37,34 @@
             active="{{detailActive}}">
         </app-route>
 
-        <app-route
-            route="{{route}}"
-            pattern="/dashboard/analyze/:strategyId"
-            data="{{homeData}}"
-            active="{{homeActive}}">
-        </app-route>
-
-        <iron-lazy-pages attr-for-selected="page" selected="[[computeAnalyzePage(homeActive, detailActive, queryParams)]]">
+        <!--RESTAMPING HERE SO THAT CHILD IS FRESHLY ADDED EVERYTIME
+        DONE THIS TO PREVENT UNEXPECTED BEHAVIOR DOWNSTREAM WHERE CHILD WAS GETTING ATTACHED TWICE-->
+        <iron-lazy-pages restamp attr-for-selected="page" selected="[[_computeAnalyzePage(detailActive)]]">
             <template is="iron-lazy-page" page="home">
                 <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
             </template>
 
-            <template is="iron-lazy-page" page="detail-backtest">
-                <aq-analyze-backtest-detail 
-                    backtest-id='[[detailData.id]]'
+            <template is="iron-lazy-page" page="detail">
+                <aq-analyze-detail
+                    type-id='[[detailData.id]]'
                     strategy-id='[[detailData.strategyId]]' 
-                    heading="[[queryParams.heading]]">
-                </aq-analyze-backtest-detail>
+                    params="[[queryParams]]">
+                </aq-analyze-detail>
             </template>
 
-            <template is="iron-lazy-page" page="detail-forwardtest">
-                <aq-analyze-forwardtest-detail 
-                    forwardtest-id='[[detailData.id]]'
-                    strategy-id='[[detailData.strategyId]]'>
-                </aq-analyze-forwardtest-detail>
-            </template>
+            <!--template is="iron-lazy-page" page="detail">
+                <iron-lazy-pages attr-for-selected="page" selected="[[_computeDetailPage(queryParams)]]">
+      
+                    
 
+                    <template is="iron-lazy-page" page="detail-forwardtest">
+                        <aq-analyze-forwardtest-detail 
+                            forwardtest-id='[[detailData.id]]'
+                            strategy-id='[[detailData.strategyId]]'>
+                        </aq-analyze-forwardtest-detail>
+                    </template>
+                </iron-lazy-pages>
+            </template-->
         </iron-lazy-pages>
     </template>
 
@@ -66,46 +73,14 @@
             is: 'aq-analyze-main',
 
             properties: {
-                hasViews: {
-                    type: Boolean,
-                    value: true,
-                },
-
-                narrow: {
-                    type: Boolean,
-                },
-
-                showmenu: {
-                    type: Boolean,
-                    value: false,
-                },
-
-                homeActive: Boolean,
                 detailActive: Boolean,
-                queryParams: Object
+                queryParams: Object,
             },
 
-            computeAnalyzePage: function (homeActive, detailActive, queryParams) {
-
-                //console.log(queryParams);
-
-                var x = "";
-                if (detailActive) {
-                    if(queryParams) {
-                        if (queryParams.type=="forward") {
-                            x = "detail-forwardtest";      
-                        } else if(queryParams.type=="backtest") {
-                            x = "detail-backtest";      
-                        }
-                    }
-                } else {
-                    x = "home";
-                }
-
-                return x;
+            _computeAnalyzePage: function(detailActive) {
+               return detailActive ? "detail" : "home";
             },
 
         });
     </script>
-
 </dom-module>

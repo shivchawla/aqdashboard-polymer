@@ -44,7 +44,7 @@
     	</aq-portwidth-detector>
 
         <div id="header">[[heading]]</div>
-		<div id='container' class="layout horizontal around-justified">
+		<div id='container' class$="layout horizontal [[justified]]">
 			<template is='dom-repeat' id='repeater' items="{{modifiedItems}}">
                 <aq-backtest-metric-item class$="[[computeSizeClass(small)]]"
                 	metric-name="{{item.metricName}}"
@@ -66,6 +66,11 @@
 				},
 
 				modifiedItems: Array,
+
+				justified: {
+					type: String,
+					value:"around-justified",
+				},
 
 				narrow: {
 					type:Boolean,
@@ -135,26 +140,26 @@
 					var eIdx;
 
 					if(nItems > 0) {
-	            		eIdx = 2;
+	            		eIdx = 3;
 
 
 	            		if(this.width) {
 							if (this.width.superWide) {
 			            		eIdx = nItems >= 8 ? 8 : nItems;
 			            	}  else if (this.width.wide) {
-			            		eIdx = nItems >= 6 ? 6 : nItems;
+			            		eIdx = nItems >= 7 ? 7 : nItems;
 			            	} else if (this.width.semiWide) {
-			            		eIdx = nItems >= 5 ? 5 : nItems;
+			            		eIdx = nItems >= 6 ? 6 : nItems;
 			            	} else if (this.width.narrowWide) {
-			            		eIdx = nItems >=4 ? 4 : nItems;
+			            		eIdx = nItems >=5 ? 5 : nItems;
 			            	} else if(this.width.narrow) {
-								eIdx = nItems >=3 ? 3: nItems;
+								eIdx = nItems >=4 ? 4: nItems;
 			            	}
 		            	}   
 
 		            	// behave as if it's sem-wide
 		            	if(this.forcedSemiWide && (!this.narrow || !this.narrowWide)) {
-							eIdx = nItems >= 5 ? 5 : nItems;
+							eIdx = nItems >= 6 ? 6 : nItems;
 		            	}
 
 		            	var ct = nItems - eIdx;

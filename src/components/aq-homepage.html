@@ -15,218 +15,110 @@
 
     <style>
 
-    	#section-home {
-    		margin-top:0px;
-        height:92vh;
-        background:linear-gradient(#f2fbf7, #dff5eb, #cbefdf);
-        background-size: cover;
-	    }
-
-      #ideas {
-        width:24px;
-        height:36px;
-        background: url(../../resources/images/Ideas/ideas2.png);
-        background-size: cover;
-        margin-bottom: 2px;
+      :host {
+          font-family: 'Garamond', sans-serif;
       }
 
-    	#headerTagline {
-    		font-size: 300%;
-    		font-weight: bold;
-    		margin-bottom: -10px;
-        color: teal;
-        opacity: 2.0;
-        z-index: 2;
+      .section {
+          height:100vh;
+          @apply(--layout-vertical);
+      }
 
+    	#section-home {
+    		margin-top:0px;
+        --background-color: #5CC6CD;
+        background-color: #70cdd3;
+        height: 92vh;
+	    }
+
+    	#headerTagline {
+    		font-size: 52px;
+        color: white;
+        font-weight: 400;
     	}
 
       #headerPara {
-        color:#cc6666;
-        font-style: italic;
-        opacity: 2.0;
-        z-index: 2;
-        font-weight: bold;
+        color: #ffffff;
         font-size: 20px;
+        width: 35%;
+        text-align: justify;
+        margin-bottom: 40px;
+        font-weight: thin;
       }
 
-    	p,i {
-    		font-size: 15px;
-    		margin-top: 10px;
-    		margin-bottom: 0px;
-    	}
-      
-
-
-    	paper-button.button {
-    		width: 10%;
-    		color: white;
-        background-color: #004d4d;
-    	  margin-top: 20px;
-        margin-bottom: 30px;
-    		min-width: 150px;
-    		border-radius: 20px;
-        border: 1px solid #004d4d;
-        font-weight:bold;
-    	}
-
-      paper-button.button:hover {
-        background-color: teal;
-        color:white;
+      #headerPara span {
+        font-size: 20px;
+        color: black;
+        font-style: italic;
       }
 
-      paper-button.button2 {
-        width: 20%;
-        color: white;
-        min-width: 200px;
-        border-radius: 20px;
-        border: 1px solid #004d4d;
-        background-color: #004d4d;
-      }
-
-      paper-button.button2:hover {
-        background-color: teal;
-        color:white;
-      }
-
-      paper-button.button3 {
-        width: 10%;
-        background-color: #004d4d;
-        --margin-top: 30px;
-        margin-bottom: 30px;
-        min-width: 150px;
-        border-radius: 20px;
-        border: 1px solid #004d4d;
-        color: white
-      }
-
-      paper-button.button3:hover {
-        background-color: teal; 
+      h3 {
         color: white;
       }
 
-
-    	paper-icon-button {
-  			height:60px;
-  			width:60px;
-  			padding: 0px;
-  			opacity: 0.1;
-    	}
-
-    	paper-icon-button:hover {
-    		opacity:1;
-    	}
-
-      #section-describe-code {
-        color:teal;--#001b1b;
-        background-color:#f2fbf7;
-        height:92vh;
-        background: linear-gradient(#ffffff, #f2fbf7);
-        background-size: cover;
+      paper-button {
+          text-transform: none;
+          --paper-button: {
+              border-radius: 20px;  
+              font-size: 16px;
+              --padding: 10px 60px;
+          };
       }
 
-      #codeContainer {
-        width:420px;
-        height:310px;
-        background: url(../../resources/images/code.png);
-        background-size: cover;
-        margin-bottom: 5%;
+      #button-group {
+        --width: 30%;
+        margin: 0 auto;
       }
 
-      #codeDesc {
-        margin-bottom: 5%;
+      .space {
+        width: 50px;
       }
 
-      #btDiv {
-        margin-bottom:5%;
-        margin-top:5%;
+      .dark-button {
+          background-color: #07889B;
+          color: white;
+          width: 200px;
       }
 
-      #section-describe-backtest {
-        color:teal;
-        background-color:#f2fbf7;
-        height:92vh;
-        background: linear-gradient(#ffffff, #f2fbf7);
-        background-size: cover;
-
+      .dark-button:hover {
+          background-color: #055d6a;
       }
 
-      #backtestDiv {
-        margin-bottom:10px;
-        margin-left: 20px;
-        max-height: 200px;
-        margin-top:50px;
+      .light-button {
+          background-color: white;
+          color: #07889B;
+          --border: 1px solid #07889B;
+          width: 200px;
       }
 
-      #analysisDiv {
-        margin-bottom: 20px;
+      .light-button:hover {
+          font-weight: bold;
+          --color: white;
       }
 
-      .specialFlex {
-        min-width:0px;
-      }
-
-      #anGraphDivision {
-        background: url(../../resources/images/analyze.png);
-        background-size: cover;
-        height: 250px;
-        width:438px;
-        margin-bottom:50px;
-      }
-
-      #communityDiv{
-        margin-top:20px;
-      }
-      
-      .smallIcon {
-        height: 30px;
-        width: 30px;
-        color:teal;
-      }
-
-      .mediumIcon {
-        height: 40px;
-        width: 40px;
-        color: teal;
-      }
-
-    	.bigIcon {
-    		height:50px;
-    		width:50px;
-        color:teal;
-    	}
-
-      .tagline {
-        color: #cc6666;
-        font-size: 26px;
-        font-weight: 100 !important;
-        margin: auto 0;
-      }
-
-      .spTagline {
-        color:#cc6666;
-        font-size: 26px;
-        margin-bottom: -30px !important;
+      .page-header {
+          font-size: 42px;
+          margin-top: 50px;
+          margin-bottom:100px;
+          font-weight: 700;
       }
 
     	#section-advantages {
-    		--padding-top:50px;
-    		color: teal;
-    	  height:92vh;
-        background: linear-gradient(#ffffff, #f2fbf7);
-        background-size: cover;
+    	  height:100vh;
+        background-color: #f0f0f0;
+        --background-color:#e8f7f8;
     	}
 
     	#advantages p{
-    		margin-bottom: 35px;
-    		font-size: 28px;
+    		margin-bottom: 100px;
+    		font-size: 32px;
     		font-weight: bold;
-        color: #cc6666;
     	}
 
-      .adv-container i {
-          color:#cc6666;
+      .adv-container p {
+          --color:#cc6666;
+          font-size: 18px;
       }
-
 
     	a {
     		text-decoration: none;
@@ -238,11 +130,28 @@
     		cursor: pointer;
     	}
 
+      #callToAction {
+          background-color:#e8f7f8;
+          height: 60vh;
+      }
+
+      #ctaTagline {
+          font-size: 32px;
+          margin-bottom: 30px;
+          --font-weight: 700;
+      }
+
+      #ctaParagraph {
+         width: 50%;
+         margin: 0 auto;
+      }
+
       .footer {      
-        bottom: 0px;
+        --bottom: 0px;
         background-color:#24293d;
         color: white;
-        padding: 19px 30px 20px;
+        padding: 0px 20px 0px 20px;
+        height: 40vh;
       }
 
       .footer p{
@@ -271,180 +180,177 @@
             active="{{active}}">
         </app-route>
         
-    		<div id="section-home" class="layout vertical">
+    		<div id="section-home" class="section">
             
-            <div class="self-center flex"></div>
+            <div class="flex"></div>
+            <div class="self-center" id="headerTagline">Invest in Your Ideas</div>
 
-              <div class="layout horizontal self-center">
-                <div id="headerTagline">Invest in Your Ideas</div>
-              </div>
-        	    
-              <p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas</p>
+            <div class="self-center" id="headerPara">Systematically research investment strategies, learn from community feedback and simulate with real data.<span>&nbspIt's free!!</span></div>
            
-        	  <paper-button class="button self-center" noink on-tap='onJoin'>Start Now</paper-button>
+            <!--p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas. At AimsQuant, anyone can build and test investment strategies, share it with the community for the feeback or trade it on personal account</p-->
+            
+            <div class="layout horizontal justified" id='button-group'>
+    	         <paper-button class="dark-button" noink on-tap='onJoin'>Register</paper-button>
+
+               <div class="space"></div>
+
+               <paper-button class="light-button" noink on-tap='onPageTwo'>Learn More</paper-button>
+            </div>
             
             <div class="flex"></div>
   	      	
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
     		</div>
 
-        <div id="section-describe-code" class="layout vertical flex">
-           
-            <div class="layout horizontal around-justified wrap flex">
-                 
-              <div class="layout vertical self-center">
-
-                  <div id='codeDesc' class="layout vertical">
-                    <p class="self-center tagline">Testing an investment idea has never been simpler</p>
-                    <p class="self-center"><i>Embedded Code Editor</i></p>
-                    <p class="self-center"><i>Free Data for Indian Equity Markets</i></p>
-                    <p class="self-center"><i>Backtester in Julia to quickly implement your trade ideas
-                    </i></p>
-                  </div>
-
-                  <paper-button class="button2 self-center" noink on-tap='onJoin'>Explore Now</paper-button>
-                  
-                  <!--div class="layout vertical self-center" id='btDiv'>
-                    <p class="self-center"> <i class='tagline'>Free and unlimited backtests</i></p>
-                    <i style="margin-top:0px" class="self-center">Run unlimited backtests as you research and improve your idea</i>
-                  </div-->
-
-              </div>
-
-              <div class="layout vertical self-center">
-                <div class="flex"></div>
-                <div id='codeContainer'></div>
-                <div class="flex"></div>
-              </div> 
-
-            </div>
-
-            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageThree'></paper-icon-button>
-
+        <div id="section-features" class="section">
             
-           
+            <div class="self-center page-header">Features</div>
+
+            <div class="layout horizontal wrap around-justified center">
+                <feature-item 
+                    heading="Research" 
+                    description="No se No se No se"
+                    image-src="../../resources/images/home/research.png"
+                    link='toResearch'>
+                </feature-item>
+                
+                <feature-item 
+                    heading="Analyze" 
+                    description="No se No se No se"
+                    image-src="../../resources/images/home/analyze.png"
+                    link='toAnalyze'>
+                </feature-item>
+                
+                <feature-item 
+                    heading="Community" 
+                    description="No se No se No se"
+                    image-src="../../resources/images/home/community.png"
+                    link='toCommunity'>
+                </feature-item>
+                
+                <feature-item 
+                    heading="Trade" 
+                    description="No se No se No se"
+                    image-src="../../resources/images/home/trade.png"
+                    link='toTrade'>
+                </feature-item>
+            </div>      
         </div>
 
-        <div id="section-describe-backtest" class="layout vertical"> 
-            <!--div id='blank'></div-->
-            <div class="layout horizontal wrap flex around-justified">
+        <feature-detail 
+            image-src="../../resources/images/home/community_big.png" 
+            heading="RESEARCH" 
+            description="no se nose"
+            link='toAnalyze'
+            background>
+        </feature-detail>
+       
+        <feature-detail
+            image-src="../../resources/images/home/community_big.png" 
+            heading="ANALYZE" 
+            description="no se nose"
+            link='toCommunity'
+            alternate-layout>
+        </feature-detail>
 
-              <div class="layout vertical self-center">
-                  <div class="layout vertical self-center" id='analysisDiv'>
-                    
-                    <p class="self-center tagline">Detailed analysis of your backtests</p>
-                    <p class="self-center"><i>Run unlimited backtests</i></p>
-                    <p class="self-center">Analyze with variety of trading and portfolio metrics</i></p>
-                    <div class="flex"></div>
-                  </div>
+        <feature-detail
+            image-src="../../resources/images/home/community_big.png" 
+            heading="COMMUNITY" 
+            description="no se nose"
+            link='toTrade'
+            background>
+        </feature-detail>
 
-                  <paper-button class="button3 self-center" noink on-tap='onJoin'>Join Now</paper-button>
+        <feature-detail
+            image-src="../../resources/images/home/community_big.png" 
+            heading="TRADE" 
+            description="no se nose"
+            link='toAdvantages'
+            alternate-layout>
+        </feature-detail>
 
-                  <!--div class="layout vertical self-center">
-                      <div class="flex"></div>
-                      <p class="self-center"><i class="tagline">Share your ideas with the community</i></p>
-                      <i style="margin-top:0px">Community is one place where ideas take real shape. Harness it!! 
-                      </i>
-                  </div-->   
-              </div> 
-
-              <div class="layout vertical self-center">
-                  <div class="flex"></div>
-                  <div id='anGraphDivision'></div>
-                  <div class="flex"></div>
-              </div> 
-
-            </div>
-
-            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageFour'>
-            </paper-icon-button>
-
-        </div>
-
-
-        	<div id="section-advantages" class="layout vertical flex">
-            <!--div id='blank'></div-->
-        		
+      	<div id="section-advantages" class="layout vertical flex">
+           	
             <div style="margin-top:30px;" id='advantages' class="self-center">
         			<p>Advantages</p>
         		</div>
 
-    			<div class="layout horizontal around-justified wrap">
-    				<div class="layout vertical adv-container">
-    					<iron-icon class="mediumIcon self-center" icon="aq-icons:touch-app"></iron-icon>
-    					<p class="self-center">EASY</p>
-    					<i class="self-center">Run backtest with very little code</i>
-    				</div>
+      			<div class="layout horizontal around-justified wrap">
+      				<div class="layout vertical adv-container">
+      					<iron-icon class="mediumIcon self-center" icon="aq-icons:touch-app"></iron-icon>
+      					<p class="self-center">EASY</p>
+      					<p class="self-center">Run backtest with very little code</i>
+      				</div>
 
-    				<div class="layout vertical adv-container">
-    					<iron-icon class="mediumIcon self-center" icon="vaadin-icons:paperplane"></iron-icon>
-    					<p class="self-center">FAST</p>
-    					<i class="self-center">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
-    				</div>
+      				<div class="layout vertical adv-container">
+      					<iron-icon class="mediumIcon self-center" icon="vaadin-icons:paperplane"></iron-icon>
+      					<p class="self-center">FAST</p>
+      					<p class="self-center">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
+      				</div>
 
-    				<div class="layout vertical adv-container">
-    					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
-    					<p class="self-center">SECURE</p>
-    					<i class="self-center">Your ideas are your property</i>
-    					
-    				</div>
-    			</div>
+      				<div class="layout vertical adv-container">
+      					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
+      					<p class="self-center">SECURE</p>
+      					<p class="self-center">Your ideas are your property</i>
+      					
+      				</div>
+      			</div>
 
-    			<div style="font-size:15px; margin-top:20px; max-height:35px; max-width:35px;margin-bottom:20px;" class="self-center"></div>
+      			<div style="font-size:15px; margin-top:20px; max-height:35px; max-width:35px;margin-bottom:20px;" class="self-center"></div>
 
-    			<div class="layout horizontal around-justified wrap">
-    				<div class="layout vertical adv-container">
-    					<adv-item class="self-center" advantage=" Free Data">
-    					</adv-item>
+      			<div class="layout horizontal around-justified wrap">
+      				<div class="layout vertical adv-container">
+      					<adv-item class="self-center" advantage=" Free Data">
+      					</adv-item>
 
-    					<adv-item class="self-center" advantage="Easy to Program">
-    					</adv-item>
+      					<adv-item class="self-center" advantage="Easy to Program">
+      					</adv-item>
 
-    					<adv-item class="self-center" advantage="Encrypted Strategy">
-    					</adv-item>
-  				  </div>
+      					<adv-item class="self-center" advantage="Encrypted Strategy">
+      					</adv-item>
+    				  </div>
 
-            
-    				<div class="layout vertical adv-container">
-    					<adv-item class="self-center" advantage="Great Community"></adv-item>
-    					
-    					<adv-item class="self-center" advantage="Zero Setup"></adv-item>
+      				<div class="layout vertical adv-container">
+      					<adv-item class="self-center" advantage="Great Community"></adv-item>
+      					
+      					<adv-item class="self-center" advantage="Zero Setup"></adv-item>
 
-    					<adv-item class="self-center" advantage="Unlimited Backtests">
-    					</adv-item>
-  				</div>
-  				
-  				<!--div class="layout vertical adv-container">
-    					<adv-item class="self-center" advantage="Great Community">
-    					</adv-item>
+      					<adv-item class="self-center" advantage="Unlimited Backtests">
+      					</adv-item>
+    				  </div>				
+  			    </div>
 
-    					<adv-item class="self-center" advantage="">
-    					</adv-item>
+  			    <!--paper-button style="margin-top:40px;" class="dark-button self-center" on-tap='onJoin' noink> Start Now
+      			</paper-button-->
 
-    					<adv-item class="self-center" advantage="No Fees">
-    					</adv-item>
-  				</div-->
-    			
-    			</div>
+          	<div class="flex"></div>	
+  	    </div>       
+        
+        <div class="section">
+            <div id="callToAction" class="layout vertical center">
+                  <div class="flex"></div>
+                  <div id="ctaTagline">Join the platform and start researching your investment ideas now</div>
 
-    			<paper-button style="margin-top:40px;" class="button3 self-center" on-tap='onJoin' noink> Start Now
-    			</paper-button>
-        	<div class="flex"></div>	
-  	    </div>
-       
-      
-      <div class="footer layout horizontal wrap">   	
-        <div class="layout vertical">
-        	<p class="footer-link" route="/about/home" on-tap='onAboutUs'>About Us</a></p>
-        	<p class="footer-link" route="/about/people" on-tap='onAboutUs'>People</a></p>
-        	<p class="footer-link" route="/about/careers" on-tap='onAboutUs'>Careers</a></p>
-        	<p class="footer-link" route="/about/contact" on-tap='onAboutUs'>Connect</a></p>
+                  <div id="ctaParagraph"></div>
+
+                  <paper-button class="dark-button" noink on-tap='onJoin'>Join Now</paper-button>
+
+                  <div class="flex"></div>
+
+            </div>
+
+            <div class="footer layout horizontal wrap">   	
+                <div class="layout vertical self-end">
+                  	<p class="footer-link" route="/about/home" on-tap='onAboutUs'>About Us</a></p>
+                  	<p class="footer-link" route="/about/people" on-tap='onAboutUs'>People</a></p>
+                  	<p class="footer-link" route="/about/careers" on-tap='onAboutUs'>Careers</a></p>
+                  	<p class="footer-link" route="/about/contact" on-tap='onAboutUs'>Connect</a></p>
+                </div>
+
+                <div class="flex"></div>
+                <p class="self-end">© 2017 AimsQuant</p>
+      	    </div>
         </div>
-
-        <div class="flex"></div>
-        <p class="self-end">© 2017 AimsQuant</p>
-  	</div>
-
   
   </template>
 
@@ -462,8 +368,8 @@
       },
 
       attached: function() {
-        this.$$('#section-home').style.background = "url('../../resources/images/bg-home.jpeg')";
-         this.$$('#section-home').style.backgroundSize = "cover";
+        //this.$$('#section-home').style.background = "url('../../resources/images/bg-home.jpeg')";
+         //this.$$('#section-home').style.backgroundSize = "cover";
       },
 
       _activeChanged: function() {
@@ -499,20 +405,24 @@
 </dom-module>
 
 <dom-module id='adv-item'>
-	 <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+	 <style include="iron-flex iron-flex-alignment iron-positioning"> 
+   </style>
 
 	 <style>
-	 	#container {
-	 		width:200px;
-	 	}
+  	 	#container {
+  	 		  width:200px;
+  	 	}
+
+      p {
+          font-size: 18px;
+      }
 	 </style>
 
 	<template>
 		<div id = 'container' class="layout horizontal">
 			<iron-icon class="self-center" icon="aq-icons:check"></iron-icon>
 			<p class="flex">&nbsp[[advantage]]</p>
-		</div>
-		
+		</div>		
 	</template>
 	
 	<script>
@@ -525,6 +435,208 @@
 		});
 	</script>
 </dom-module>
+
+<dom-module id='feature-item'>
+   <style include="iron-flex iron-flex-alignment iron-positioning"></style>
+
+   <style>
+      #container {
+      }
+
+      #inner-container {
+          width:200px;
+          height: 200px;
+          background-color: #f0f0f0;
+          margin: auto auto;
+      }
+
+      .heading {
+         font-size: 18px;
+         font-weight: 700;
+         margin-top: 20px;
+      }
+
+      .link {
+          margin-top: 20px;
+          font-size: 16px;
+          color: #07889B;
+      }
+
+      .link:hover {
+         cursor: pointer;
+         font-weight: 700;
+      }
+
+   </style>
+
+  <template>
+    <div id='container' class="layout vertical">
+      <div id='inner-container' class="layout vertical">
+          <div class="flex"></div>
+          <img class="self-center" src="[[imageSrc]]">
+          <div class="heading self-center">[[heading]]</div>
+          <div class="flex"></div>
+      </div>
+      <p class="self-center">[[description]]</p>
+      <div class="link self-center" on-tap="[[link]]">Learn More</div>
+    </div>    
+  </template>
+  
+  <script>
+    Polymer({
+      is:'feature-item',
+      properties:{
+        heading:String,
+        description:String,
+        imageSrc: String,
+        link:String,
+      },
+
+    });
+  </script>
+</dom-module>
+
+<dom-module id='feature-detail'>
+
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+      .section {
+          height:100vh;
+          @apply(--layout-vertical);
+      }
+
+      .section-inner-container {
+          width: 70%;
+          margin: 0 auto;
+      }
+
+      .section-detail {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+          width: 300px;
+      }
+
+      .section-detail-header {
+          font-size: 28px;
+          font-weight: 700;
+          --margin-bottom:100px;
+          margin-top:70px;
+      }
+
+      .section-detail-description {
+          font-size: 16px;
+          --font-weight: 700;
+          margin-bottom:20px;
+      }
+
+      .section-detail-button {
+          font-size: 15px;
+          background-color: #07889B;
+          color: white;
+          padding: 5px 20px;
+          text-transform: none;
+          border-radius: 25px;
+          width: 150px;
+      }
+
+      .img-container {
+        width: 300px;
+      }
+
+
+    </style>
+
+    <template>
+        <div class="section">
+            
+            <!--div class="self-center section-detail-header">[[heading]]
+            </div-->
+                    
+            <div class="flex"></div>
+
+            <div class$="[[computeLayoutClass(vertical)]]  section-inner-container">
+                
+                <template is='dom-if' if='[[!alternateLayout]]'>
+                    <div class="layout vertical img-container">
+                        <img class$="[[computeAlignmentClass(alternateLayout)]]"" src="[[imageSrc]]">
+                    </div>
+                </template>
+
+                <div class="section-detail">
+                    <div class="flex"></div>
+                    
+                    <div class="section-detail-header">[[heading]]
+                    </div>
+                    
+                    <div class="section-detail-description">[[description]]</div>
+                    
+                    <paper-button no-ink class="section-detail-button" on-tap='link'>Learn More
+                    </paper-button>
+
+                    <div class="flex"></div>  
+                </div>
+
+                <template is='dom-if' if='[[alternateLayout]]'>
+                    <div class="layout vertical">
+                        <img class$="[[computeAlignmentClass(alternateLayout)]]" src="[[imageSrc]]">
+                    </div>
+                </template>
+
+            </div>
+
+            <div class="flex"></div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'feature-detail',
+            
+            properties: {
+                imageSrc: String,
+                heading: String,
+                description: String,
+                link: String,
+
+                background: {
+                   type:Boolean,
+                    value:false,
+                },
+
+                alternateLayout: {
+                    type: Boolean,
+                    value: false
+                },
+
+                vertical: {
+                    type: Boolean,
+                    value: false,
+                },
+            },
+
+            attached: function() {
+                if(this.background) {
+                    //this.$$(".section").style.backgroundColor='#f0f0f0';
+                    //this.$$(".section").style.backgroundColor = '#edf0f9';
+                    this.$$(".section").style.backgroundColor = '#e8f7f8';
+                }   
+            },
+
+            computeLayoutClass: function(vertical) {
+                return vertical ? "layout vertical" : "layout horizontal around-justified";
+            },
+
+            computeAlignmentClass: function(alternateLayout) {
+                return alternateLayout ? "self-end" : "self-start";
+            },
+        });
+    </script>
+</dom-module>
+
+
+
 
 
 

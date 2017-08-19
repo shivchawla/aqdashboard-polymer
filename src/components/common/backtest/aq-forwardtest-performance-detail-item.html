@@ -18,7 +18,7 @@
         }
 
         #cumRetLineChart {
-            --height: 250px;
+            height: 300px;
             width: 100%;
             --margin-bottom: 20px;
             margin-left: 5px;
@@ -78,16 +78,6 @@
 
 	</style>
 	<template>
-        <template is='dom-if' if='[[isPerformanceReady]]'>
-    	 	<div id="performance-paper-tabs-container" class="layout horizontal">
-                <div class="flex"></div>
-                <paper-tabs id= "performance-paper-tabs" no-bar noink selected="{{graphType}}">
-                    <paper-tab>Cumulative</paper-tab>
-                    <paper-tab>Monthly</paper-tab>
-                </paper-tabs>
-            </div>
-        </template>
-
         <iron-pages on-iron-resize='onResize' selected="{{graphType}}">
             <div id='cumRetLineChartDiv'>
             </div>
@@ -120,7 +110,6 @@
 			},
 
             reset: function () {
-
                 var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
                 if (child) {
                     Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
@@ -145,8 +134,7 @@
                         },
                         200);
 
-                this.isPerformanceReady = true;
-
+                this.hasPerformanceData = false;
             },
 
             updateGraphProperties: function (trackVarFlag) {
@@ -158,16 +146,34 @@
             },
 
             createCumRetLineChart: function () {
-                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.totalreturn ? true : false) ? false) : false;
+                var hasValidData = this.forwardtest ? (this.forwardtest.serializedData ? true: false) : false;
+
                 if(hasValidData) {
-                    this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest.output.totalreturn);
+
+                    var algorithmPerformance = {};
+                    Object.keys(this.forwardtest.serializedData.accounttracker).forEach(date => {
+                        algorithmPerformance[date] = this.forwardtest.serializedData.accounttracker[date].netvalue;
+                    });
+
+                    var benchmarkPerformance = {};
+                    Object.keys(this.forwardtest.serializedData.benchmarktracker).forEach(date => {
+                        benchmarkPerformance[date] = this.forwardtest.serializedData.benchmarktracker[date].portfoliostats.netvalue;
+                    });
+
+                    var performance = {
+                        "algorithm": algorithmPerformance,
+                        "benchmark": benchmarkPerformance
+                    };
+
+                    this.$$('aq-cumret-linechart').createCumRetLineChart(performance);
                 }
             },
 
             createMonthlyReturnBarChart: function () {
                 
-                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.returns ? (this.backtest.output.returns.monthly ? true : false) : false) : false ): false;
-                if (!this.active && hasValidData) {
+               var hasValidData = this.forwardtest ? (this.forwardtest.serializedData ? true: false) : false;
+
+                if (hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
                     this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly);
                 }
@@ -181,7 +187,6 @@
                     this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.variables);
                 }
             },
-
 
             getYAxisLabel: function (number) {
                 var x = "Net Value"
@@ -208,10 +213,13 @@
             },
 
             plotGraphs: function() {
-            	this.async(this.createCumRetLineChart, 200);
-                this.async(this.createTrackVarLineChart, 200);
-                this.async(this.createMonthlyReturnBarChart, 500);
-            }
+                if (this.forwardtest.serializedData) {
+                    this.hasPerformanceData = true;
+                }
+
+                this.updateGraphProperties(false);
+                this.async(this.createCumRetLineChart, 200);
+            },
 
 		});
 	</script>

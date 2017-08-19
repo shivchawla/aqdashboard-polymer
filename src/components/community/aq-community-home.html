@@ -120,12 +120,13 @@
             background-color: #BDBDBD;
         }
 
-        paper-button {
-            font-size: 13px;
-            background-color: teal;
-            color: white;
-            --border: 1px solid teal;
-            height: 35px;
+       paper-button {
+            --paper-button :{
+                font-size: 12px;
+                font-weight: 700;
+                background-color: teal;
+                color: white;
+            };
         }
 
         paper-checkbox {
@@ -241,7 +242,7 @@
                                     <aq-announcement-card header="[[item.header]]"
                                                      sub-header="[[item.subHeader]]"
                                                      >
-                                     <span>[[item.announcement]]</span>
+                                     <p>[[item.announcement]]</p>
                                     </aq-announcement-card>
                                 </template>
                             </div>
@@ -352,8 +353,6 @@
                         this.currentPage = community.lastPage;
                     }
                 }
-
-                console.log(this.searchCategory);
 
                 this.setupSearchCategoryFilters(this.searchCategory);
 
@@ -585,7 +584,6 @@
                 }
 
                 if(oldSearchCategory != this.searchCategory) {
-                    console.log(this.searchCategory);
                     this.processparams();
                 }
 

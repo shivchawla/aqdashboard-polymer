@@ -241,6 +241,8 @@
 
         <iron-signals on-iron-signal-forwardtest-stopped='onForwardtestStopped'></iron-signals>
 
+        <iron-signals on-iron-signal-forwardtest-deleted='onForwardtestDeleted'></iron-signals>
+
         <app-route
             route="{{route}}"
             pattern="/dashboard/editor"
@@ -271,7 +273,7 @@
             debounce-duration="300">
         </iron-ajax>
             
-        <aq-allpage-layout loading='{{loading}}' class="flex" header="All Strategies" 
+        <aq-allpage-layout loading='[[!isEditorHomeReady(loading, liveStrategies, testStrategies)]]' class="flex" header="All Strategies" 
             current-path="[[currentPath]]">
 
             <div class="header-button self-center">
@@ -312,7 +314,7 @@
                                     strategy-id="[[item._id]]"
                                     forwardtest-id="[[item.forwardtest._id]]"
                                     created-date="[[formatDateTime(item.forwardtest.createdAt)]]"
-                                    status="[[formatForwardTestStatus(item.forwardtest.error, item.forwardtest.active)]]"
+                                    status="[[formatForwardTestStatus(item.forwardtest.active, item.forwardtest.error)]]"
                                     >
                                 </aq-editor-home-forward-strategy-item>
                                 <!--div class="border"></div-->
@@ -358,16 +360,16 @@
             heading="Delete Strategies"
             message="Are you sure to delete [[computeCheckedCount(checkedCount, 'test')]] strateg[[getMessageSuffix(checkedCount, 'test')]]?" 
             action-type="delete"
-            cancel="Cancel"
-            accept="Delete">
+            cancel-text="Cancel"
+            accept-text="Delete">
         </aq-action-dialog>
 
          <aq-action-dialog id="stopForwardTestDialog" 
             heading="Stop Forward Test" 
             message="Are you sure to stop [[computeCheckedCount(checkedCount, 'live')]] forward test[[getMessageSuffix(checkedCount, 'live')]]?" 
             action-type="stoptest" 
-            cancel="Cancel"
-            accept="Stop">
+            cancel-text="Cancel"
+            accept-text="Stop">
         </aq-action-dialog>  
 
         <aq-editor-strategy-compare-dialog id="strategyCompareDialog"></aq-editor-strategy-compare-dialog>
@@ -493,6 +495,10 @@
 
             },
 
+            isEditorHomeReady: function(loading, liveStrategies, testStrategies) {
+                return !loading && liveStrategies && testStrategies;
+            },
+
             computPostDeleteStrategyUrl: function (deleteId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                 return APIEndPoint + '/strategy/' + deleteId;
@@ -517,7 +523,6 @@
                 }
 
                 this.liveStrategies = liveStrategies;
-                //sconsole.log(this.liveStrategies);
                 //Get forward test minor details 
 
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
@@ -535,7 +540,6 @@
             },
 
             openDeletionDialog: function () {
-                console.log("Opening Delete");
                 this.$$('#deleteDialog').open();
             },
 
@@ -651,8 +655,6 @@
 
                 searchtext = e.detail.searchText;
 
-                console.log(searchtext);
-
                 if (searchtext != "") {
                     this.ifsearch == true;
                     this.$$('#ifsearch').style.display = 'block';
@@ -692,7 +694,6 @@
             },
 
             onStopForwardTestAction: function(e) {
-                console.log("We will write now");
                 //Request to stop all selected tests
                 
                 var forwardtestIds = [];
@@ -763,6 +764,10 @@
                 this.dirtyBit = 1;
             },
 
+            onForwardtestDeleted: function() {
+                this.dirtyBit = 1;
+            },
+
             onForwardtestAdded: function() {
                 this.dirtyBit = 1;
             },  
@@ -824,7 +829,7 @@
                 return date.formatDateTime(d);
             },
 
-            formatForwardTestStatus: function(error, active) {
+            formatForwardTestStatus: function(active, error) {
                 return active ? (error ? "Error" : "Running") : "Stopped";
             },
 

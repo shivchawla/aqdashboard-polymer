@@ -175,11 +175,12 @@
 		</iron-lazy-pages>
 		</template>
 		
-	    <aq-delete-dialog id ="deleteDialog" heading="Delete Backtests"
+	    <aq-action-dialog id ="deleteDialog" heading="Delete Backtests"
 			 message="Are you sure to delete [[checkedItems.length]] backtest[[getMessageSuffix(checkedItems)]]?"
-			 cancel="Cancel"
-			 accept="OK">
-    	</aq-delete-dialog>
+			 action-type="deleteBacktest"
+			 cancel-text="Cancel"
+			 accept-text="Delete">
+    	</aq-action-dialog>
 
 	</template>
 
@@ -282,7 +283,7 @@
 				'backtestChecked':'checkBacktest',
 				'deleteClicked':'openDeleteDialog',
 				'comparison-off':'toggleComparison',
-				'delete-action':'onDeletion',
+				'deleteBacktest-action':'onDeletion',
 				'detail-action':'onDetail',
 				'execute-forwardtest':'runForwardtest',
 			},
@@ -363,12 +364,9 @@
 
 			onGetStrategy: function(data) {
 				var strategy = data.detail.response;
-				//console.log(strategy);
 				this.strategyName = strategy.name;
 
 				this.hasForwardtest = strategy.numForwardtests == 1;
-
-				//console.log(this.hasForwardtest);
 
 				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
 
@@ -489,30 +487,28 @@
 			},
 
 			runForwardtest: function(e) {
-				//console.log("Ahhaaa");
                 var backtestId = e.detail.backtestId;
-
-                //console.log(backtestId);
 
                 if (this.$.authItem.checkHasToken()) {
                     //prepare the data for psoting forward strategy
                     this.header = this.$.authItem.getHeader();
                     var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                    this.$.runForwardStrategyQuery.url = APIEndPoint + '/backtest/' + backtestId+'/exec';
+
+                    this.runForwardExecData = {strategyId: this.strategyId, backtestId: backtestId};
+
+                    this.$.runForwardStrategyQuery.url = APIEndPoint + '/forwardtest';
                     this.$.runForwardStrategyQuery.generateRequest();
                 }
             },
 
             onForwardStrategyExecutionResponse: function (e) {
-                console.log("Success");
-                console.log(e);
                 this.fire('iron-signal', {name:'forwardtest-added'});
+                this.fire('rt-changed', {route:'/dashboard/editor'});
             },
 
             onForwardStrategyExecutionError: function (e) {
-                console.log("Error");
-                console.log(e);
                //Launch a error popup saying forward test cannot be run
+
             }, 
 
     	});

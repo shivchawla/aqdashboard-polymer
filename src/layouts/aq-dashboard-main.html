@@ -6,7 +6,6 @@
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
 
-
 <link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
 <link rel="import" href="./aq-analyze-main.html">
@@ -26,24 +25,8 @@
   </style>
 
   <style>
-    :host {
-      transition: transform 0.01s;
-      display:block;
-    }
-
-    #mainpanel {
-      height:100%;
-      background-color: #fafafa;
-    }
-
-    .paper-header {
-      position: relative;
-    }
-
     #content {
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      --height:100%;
+      --overflow: auto;
       background-color:#fafafa;
     }
 
@@ -54,7 +37,8 @@
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route route="{{route}}"
                     pattern="/dashboard/:page"
-                    data="{{routeData}}">
+                    data="{{routeData}}"
+                    tail="{{tail}}">
         </app-route>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
@@ -71,7 +55,19 @@
             loading='{{loading}}'>
         </iron-ajax>
 
-        <div id="content">
+        <iron-ajax
+            url=""
+            method='DELETE'
+            id='deleteForwardtestQuery'
+            handle-as="json"
+            on-response="onDeleteForwardtestSuccess"
+            on-error="onDeleteForwardtestError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
+        </iron-ajax>
+
+        <div id='content'>
           <iron-lazy-pages attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
             <template is="iron-lazy-page" page="editor">
                 <aq-editor-main></aq-editor-main>
@@ -104,19 +100,16 @@
             },
             
           },
-
           
           listeners :{
-            'stoptest-action':'onStopForwardTest'
+            'stoptest-action':'onStopForwardTest',
+            'deletetest-action': 'onDeleteForwardTest',
           },
 
           onStopForwardTest: function(e) {
               var forwardtestIds = e.detail.forwardtestIds;
-
+              
               forwardtestIds.forEach(forwardtestId => {
-                  console.log(forwardtestIds);
-                  console.log(forwardtestId);
-
                   if(this.$.authItem.checkHasToken()) {
                       //this.testUpdateData = {active: false};
                       var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -130,12 +123,32 @@
               
           },
 
+          onDeleteForwardTest: function(e) {
+              var forwardtestId = e.detail.forwardtestId;
+              console.log("Here in Delete");
+              if(this.$.authItem.checkHasToken()) {
+                  //this.testUpdateData = {active: false};
+                  var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                this.$$('#deleteForwardtestQuery').url = APIEndPoint + "/forwardtest/" + forwardtestId;
+
+                  this.header = this.$.authItem.getHeader();
+                  this.$.deleteForwardtestQuery.generateRequest()
+              }
+          },
+
           onUpdateForwardtestSuccess: function(e) {
               this.fire('iron-signal', {name:'forwardtest-stopped'});
           },
 
           onUpdateForwardtestError: function(e) {
-              console.log(e);
+          },
+
+          onDeleteForwardtestSuccess: function(e) {
+              this.fire('iron-signal', {name:'forwardtest-deleted'});
+          },
+
+          onDeleteForwardtestError: function(e) {
+
           },
 
       });

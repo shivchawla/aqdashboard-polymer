@@ -1,0 +1,104 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<dom-module id='aq-settings-display'>
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		.item-label {
+			font-size: 12px;
+			width: 100px;
+		}
+
+		.item-value {
+			--background-color: teal;
+			background-color: #f2f2f2;
+			--color: white;
+			font-size: 14px;
+			padding: 4px;
+			border: 1px solid #e1e1e1;
+			margin-right: 5px;
+		}
+
+		.item-value2 {
+			background-color: #f2f2f2;
+			color: teal;
+			font-size: 14px;
+			padding: 5px;
+			min-width: 30px;
+			border: 1px solid #e1e1e1;
+		}
+
+		.item-container {
+			margin-bottom: 5px;
+		}
+
+		#settings-container {
+			margin-left: 30px;
+			margin-top: 30px;
+			width: 400px;
+			border: 1px solid #e1e1e1;
+			padding: 10px;
+		}
+
+		#heading {
+			font-size: 18px;
+			font-weight: 700;
+			margin-bottom: 5px;
+		}
+
+		#item-value-3 {
+			display: none;
+			margin-right: 0px;
+		}
+
+		#item-value-4 {
+			display: none;
+			margin-right: 0px;
+		}
+
+		#item-value-5 {
+			display: none;
+			margin-right: 0px;
+		}
+
+		#item-value-6 {
+			display: none;
+			margin-right: 0px;
+		}
+	</style>
+
+	<template>
+		<div id='settings-container' class="layout vertical">
+			<div id="heading">Settings</div>
+			<template is='dom-repeat' items=[[settings]]>
+				<div class="layout horizontal item-container center">
+					<div class="item-label">[[item.label]]:&nbsp</div>
+					<div class="item-value" id='item-value-[[index]]'>
+						[[item.value]]
+					</div>
+
+					<template is='dom-if' if=[[item.value2]]>
+						<div class="item-value2">[[item.value2]]
+						</div>
+					</template>
+				</div>
+			</template> 
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-settings-display',
+
+			properties: {
+				settings: Array,
+			},
+
+			attached: function() {
+
+			},
+		});
+	</script>
+
+</dom-module>

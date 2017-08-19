@@ -1,0 +1,42 @@
+<link rel="import" href="./aq-analyze-backtest-detail.html">
+<link rel="import" href="./aq-analyze-forwardtest-detail.html">
+
+<dom-module id='aq-analyze-detail'>
+	<template>
+        <iron-lazy-pages attr-for-selected="page" selected="[[_computeDetailPage(params.type)]]">
+			<template is="iron-lazy-page" page="detail-backtest">
+	            <aq-analyze-backtest-detail 
+	                backtest-id='[[typeId]]'
+	                strategy-id='[[strategyId]]'
+	                heading=[[params.heading]]>
+	            </aq-analyze-backtest-detail>
+	        </template>
+            
+            <template is="iron-lazy-page" page="detail-forwardtest">
+                <aq-analyze-forwardtest-detail 
+                    forwardtest-id='[[typeId]]'
+                    strategy-id='[[strategyId]]'>
+                </aq-analyze-forwardtest-detail>
+            </template>
+
+        </iron-lazy-pages>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-analyze-detail',
+
+			properties: {
+				typeId: String,
+				strategyId: String,
+				params:Object,
+			},
+
+			_computeDetailPage: function(type) {
+				return type == "backtest" ? "detail-backtest" : (type == "forward" ? "detail-forwardtest" : "yamma");
+				
+			},
+			
+		});
+	</script>
+</dom-module>

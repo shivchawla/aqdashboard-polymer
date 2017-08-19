@@ -4,14 +4,16 @@
 	<template>
 		<iron-media-query query="(min-width: 1250px)" query-matches="{{superWide}}"></iron-media-query>
 
-        <iron-media-query query="(min-width: 1000px)" query-matches="{{wide}}">
+        <iron-media-query query="(min-width: 800px) and (max-width: 1249px)" query-matches="{{wide}}">
         </iron-media-query>
 
-        <iron-media-query query="(min-width: 800px)" query-matches="{{semiWide}}"></iron-media-query>
+        <iron-media-query query="(max-width: 800px)" query-matches="{{semiWide}}"></iron-media-query>
       	
-      	<iron-media-query query="(min-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
+      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
       
-        <iron-media-query query="(min-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+        <iron-media-query query="(max-width:560px)" query-matches="{{narrow}}"></iron-media-query>
+
+         <!--iron-media-query query="(min-width: 0px)" query-matches="{{veryNarrow}}"></iron-media-query-->
 	</template>
 	<script>
 		Polymer({

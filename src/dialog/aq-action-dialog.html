@@ -27,6 +27,14 @@
 	        };
 		}
 
+		#okayBtn.affirmative {
+			background-color: green;
+		}
+
+		#okayBtn.affirmative:hover {
+            background-color: green;
+        }
+
 		#okayBtn:hover {
             background-color: #a8302a;
         }
@@ -52,9 +60,9 @@
  			
  			<p>[[message]]</p>	 	
   			<div class="buttons">
-  				<paper-button id='cancelBtn' dialog-dismiss>[[cancel]]
+  				<paper-button id='cancelBtn' dialog-dismiss>[[cancelText]]
   				</paper-button>
-    			<paper-button id='okayBtn' dialog-confirm on-tap='onSubmit'>[[accept]]
+    			<paper-button id='okayBtn' dialog-confirm on-tap='onSubmit' class$="[[isAffirmativeAction(affirmative)]]">[[acceptText]]
     			</paper-button>
   			</div>
 		</paper-dialog>
@@ -67,9 +75,10 @@
 			properties: {
 				heading: String,
 				message: String,
-				cancel: String,
-				accept: String,
-				actionType:String
+				cancelText: String,
+				acceptText: String,
+				actionType:String,
+				affirmative:Boolean,
 			},
 
 			onSubmit: function() {
@@ -85,7 +94,11 @@
 			  if (e.target.withBackdrop) {
 			    e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
 			  }
-			}
+			},
+
+			isAffirmativeAction: function(affirmative) {
+				return affirmative ? "affirmative" : "";
+			},
 
 		});
 		

@@ -149,6 +149,7 @@
 
         p{
         	font-size: 12px;
+            font-weight: 700;
         }	
 
     </style>
@@ -163,13 +164,16 @@
 
         <paper-toolbar>
             <div id='toolbar' class="flex layout horizontal center">
-                <paper-icon-button 
+                
+                <template is='dom-if' if=[[!isRunning]]>
+                    <paper-icon-button 
                 		noink id='back-icon' 
             			class="flex toolbarIcon" 
             			icon="aq-icons:arrow-back"
-            			title="Go Back"
+            			title="Strategy Home"
                         on-tap='goBack'>
-                </paper-icon-button>
+                    </paper-icon-button>
+                </template>
 
                 <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
 
@@ -184,15 +188,15 @@
                 <div class="flex"></div>
 
                 <template is='dom-if' if=[[isRunning]]>
-	                <paper-icon-button 
-	                		noink 
-	                		class="flex toolbarIcon" 
-	                		icon="aq-icons:code" 
-	                		title="Code Editor"
-	                       	on-tap='toEditor'>
-	                </paper-icon-button>
+                    <paper-icon-button 
+                        noink 
+                        class="flex toolbarIcon" 
+                        icon="aq-icons:code" 
+                        title="Code Editor"
+                        on-tap='toEditor'>
+                    </paper-icon-button>
 
-	                <div class="separator"></div>
+                    <div class="separator"></div>
                 </template>
 
                 <paper-icon-button 
@@ -263,13 +267,12 @@
                         icon="vaadin-icons:split-h">
                 </paper-icon-button>
 
-            </div>
-        	
+            </div> 	
     	</paper-toolbar>
 
   	    <template is='dom-if' if='{{isRunning}}'>
             <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
-                <paper-progress value='{{pctCompleted}}'>
+                <paper-progress value='[[pctCompleted]]'>
                 </paper-progress>
             </template>
 
@@ -312,7 +315,7 @@
 
                 pctCompleted: {
                 	type: Number,
-                    observer:'_isPctChanged',
+                    //observer:'_isPctChanged',
                 	//value: 0,
                 },
             },
@@ -373,8 +376,6 @@
             },
 
             updatePct: function(e) {
-                //console.log("Signal Received");
-                //console.log(e.detail.pctCompleted);
             	this.pctCompleted = e.detail.pctCompleted;
             },
 
@@ -396,22 +397,20 @@
             },
 
     	    isBacktestInternalException: function(pctCompleted) {
-    		  return pctCompleted == -2;
+              return pctCompleted == -2;
             },
 
             _isRunningChanged: function() {
-                //console.log("Running Changed");
                 this.pctCompleted = 0;
             }, 
 
             _isPctChanged: function() {
-                //console.log("pCt Changed " + this.pctCompleted);
             },
 
             getStatusMessage: function(isRunning, pctCompleted) {
                 //console.log("Pct Completed " + this.pctCompleted + this.isRunning);
                 if(isRunning) {
-                    if (this.isCompletionPositive(this.pctCompleted)) {
+                    if (this.isCompletionPositive(pctCompleted)) {
                 		return "Progress: " + this.pctCompleted.toString() +"%";
                 	} else if (this.isBacktestWarmingUp(this.pctCompleted)) {
                 		return "Warming Up";

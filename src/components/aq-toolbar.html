@@ -14,26 +14,19 @@
     </style>
 
     <style>
-        paper-toolbar {
-            --paper-toolbar-title: {
-                text-align: left;
-                margin-left: 0px !important;
-            };
+        #toolbar {
+            height: 8vh; 
+            background-color: #fafafa;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid #e1e1e1;
         }
-
-        paper-toolbar {
-            height: 55px; --8vh;
-            color: teal;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        paper-toolbar {
-            --paper-toolbar-background: white;
-            border-bottom: 1px solid grey;
-        }
-
+        
         #profile {
             right: 0;
+        }
+
+        #title-container {
+            margin-left: 20px;
         }
 
         .title {
@@ -64,55 +57,85 @@
             margin: auto 0;
         }
 
-        paper-tabs {
-            color: black !important;
-            --paper-tabs-selection-bar-color: #cc6666;
-            --paper-tabs-container: {
-                height: 70%
-            };
+        #right-container {
+            margin-right: 20px;
+            height: 100%;
+        }
 
+        paper-tabs {
+            margin-right: 10px;
+            font-size: 16px;
+            height: 100%;
+            --paper-tabs-selection-bar-color: #cc6666;
             --paper-tabs-selection-bar: {
-                height: 4px;
+                height: 5px;
             }
+
+            --paper-tabs-container: {
+                height: 70%;
+            }
+        }
+
+        paper-tab.iron-selected {
+            color: #07889B;
+        }
+
+        #signUpTab {
+            background-color: #07889B;
+            color: white;
+        }
+
+        #signUpTab.iron-selected {
+            background-color: #fafafa;
+            color: #07889B;
         }
 
     </style>
 
     <template>
 
-        <paper-toolbar>
+        <div id='toolbar' class="layout horizontal center">
+        
+            <div id='title-container' class="layout horizontal center">
+                <!--template is='dom-if' if="[[computeShowMenu(showMenu, currentTab)]]">
+                    <paper-icon-button class="self-center" noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
+                </template-->
 
-            <template is='dom-if' if="[[computeShowMenu(showMenu, currentTab)]]">
-                <paper-icon-button noink icon="aq-icons:menu" on-tap="toggleMenu"></paper-icon-button>
-            </template>
-
-            <template is='dom-if' if="[[showMenu]]">
-                <div on-tap='goToHome' class="title layout horizontal">
-                    <p id="aims">Aims</p>
-                    <p id='quant'>Quant</p>
-                    <div id='logo'></div>
-                </div>
-            </template>
-
+                <template is='dom-if' if="[[showMenu]]">
+                    <div on-tap='goToHome' class="title layout horizontal center">
+                        <p id="aims">Aims</p>
+                        <p id='quant'>Quant</p>
+                        <div id='logo'></div>
+                    </div>
+                </template>
+            </div>
 
             <div class="flex"></div>
-            <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
-                <paper-tab>HOME</paper-tab>
-                <paper-tab>RESEARCH</paper-tab>
-                <!--paper-tab>INVESTMENTS</paper-tab-->
-                <paper-tab>ABOUT US</paper-tab>
+            
+            <div id='right-container' class="layout horizontal center">
                 <template is='dom-if' if="{{!hasToken}}">
-                    <paper-tab>LOG IN</paper-tab>
-                    <paper-tab>SIGN UP</paper-tab>
+                    <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
+                        <paper-tab>HOME</paper-tab>
+                        <paper-tab>ABOUT US</paper-tab>
+                        <paper-tab>LOG IN</paper-tab>
+                        <paper-tab id='signUpTab'>SIGN UP</paper-tab>
+                    </paper-tabs>
                 </template>
 
-            </paper-tabs>
+                <template is='dom-if' if="{{hasToken}}">
+                    <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
+                        <paper-tab>RESEARCH</paper-tab>
+                        <paper-tab>COMMUNITY</paper-tab>
+                        <paper-tab>HELP</paper-tab>
+                    </paper-tabs>
+                </template>
 
-            <template is='dom-if' if="{{hasToken}}">
-                <aq-user-menu></aq-user-menu>
-            </template>
+                <template is='dom-if' if="{{hasToken}}">
+                    <aq-user-menu></aq-user-menu>
+                </template>
+            </div>
 
-        </paper-toolbar>
+        </div>
 
     </template>
 
@@ -133,11 +156,13 @@
                 currentTab: {
                     type: Number,
                     notify: true,
+                    observer:'_currentTabChanged',
                 },
 
                 hasToken: {
                     type: Boolean,
                     value: true,
+                    observer:'_hasTokenChanged',
                 },
             },
 
@@ -152,6 +177,37 @@
             goToHome: function () {
                 this.fire('rt-changed', {route: '/main'});
             },
+
+            _currentTabChanged: function() {
+                if(this.currentTab + 1) {
+                    var route = "";
+
+                    if(!this.hasToken) {
+                        switch(this.currentTab) {
+                            case 0: route = "/main";break;
+                            case 1: route = "/about";break;
+                            case 2: route = "/user/signin";break;
+                            case 3: route = "/user/signup";break;
+                        }
+                    } else {
+                        switch(this.currentTab) {
+                            case 0: route = "/dashboard/editor";break;
+                            case 1: route = "/dashboard/community";break;
+                            case 2: route = "/dashboard/help";break;
+                        }
+                    }
+
+                    this.fire('rt-changed',{route:route});
+                }
+            },
+
+            _hasTokenChanged: function() {
+                if(this.hasToken) {
+                    this.currentTab = 0;
+                } else {
+                    this.currentTab = 2;
+                }
+            }
 
         });
     </script>
