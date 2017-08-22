@@ -3,7 +3,6 @@
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
-<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
@@ -42,30 +41,7 @@
         <template is='iron-lazy-page' page="edit">
             <aq-editor-edit strategy-id="[[routeData.strategyId]]"></aq-editor-edit>
         </template>
-    </iron-lazy-pages>
-
-     <aq-editor-strategy-input-dialog id="strategyCreateDialog" 
-                                     header="Create Strategy">
-      </aq-editor-strategy-input-dialog>  
-
-      
-      <aq-editor-strategy-input-dialog id="strategyCloneDialog" 
-                                       header="Clone this Strategy"
-                                       strategy-name="[[strategyData.name]]"
-                                       strategy-desc="[[strategyData.desc]]">
-      </aq-editor-strategy-input-dialog>  
-
-      <iron-ajax 
-          url=""
-          body="[[strategyData]]" 
-          method='POST' 
-          id='postStrategyQuery' 
-          headers='{{header}}' 
-          handle-as="json" 
-          on-response="onStrategyCreationResponse" 
-          on-error="onStrategyCreationError" 
-          debounce-duration="300">
-      </iron-ajax>
+    </iron-lazy-pages> 
 
   </template>
 
@@ -99,86 +75,9 @@
 
         routeData: {
           type:Object,
-          observer:'_routeDataChanged',
+          //observer:'_routeDataChanged',
         },
 
-      },
-
-      listeners :{
-        'create-action':'createStrategy',
-        'newClicked':'openNewDialog',
-        'cloneClicked':'openCloneDialog',
-        'analyzeClicked':'goToAnalyze',
-        'close-action':'closeDialog',
-      },
-
-      isEqual: function(view1, view2) {
-        return view1==view2;
-      },
-
-      createStrategy: function(e) {
-        
-        this.strategyData["name"] = e.detail.name;
-        this.strategyData["description"] = e.detail.description;
-
-        if(this.$.authItem.checkHasToken()) {
-          this.header = this.$.authItem.getHeader();
-          var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-          this.$$('#postStrategyQuery').url = APIEndPoint+'/strategy'; 
-          this.$$('#postStrategyQuery').generateRequest();
-        }
-      },
-
-      onStrategyCreationResponse: function(data) {
-          //check for error
-          var strategyId = data.detail.response._id
-          this.fire('rt-changed', {route:'/dashboard/editor/'+ strategyId});
-          this.fire('iron-signal',{name:'strategy-added'});
-      },
-
-      onStrategyCreationError: function(data) {
-          //console.log(data);
-      },
-
-      openNewDialog: function() {   
-        if(!this.$.authItem.checkHasToken()) {
-          this.fire('rt-changed',{route:'/user/signin'});
-          return;
-        } 
-
-        this.strategyData = {
-            "name":"",
-            "description":"",
-            "language":"julia",
-            "type": "",
-            "code": "",};
-
-        //Open dialog for permission
-        this.$.strategyCreateDialog.open();
-      },
-
-      closeDialog: function() {
-        this.$.strategyCreateDialog.close();
-        this.$.strategyCloneDialog.close();
-      },
-
-      openCloneDialog: function(e) {
-
-        if(!this.$.authItem.checkHasToken()) {
-          this.fire('rt-changed',{route:'/user/signin'});
-        }
-        
-        strategy  = e.detail.strategy;
-        var newName = strategy.name + "_C";
-
-        this.strategyData = {"name":newName, 
-                          "desc" : strategy.description,
-                          "code" : strategy.code,
-                          "language":strategy.language,
-                          "type":strategy.type};
-                          
-        this.$.strategyCloneDialog.open();
-        
       },
 
       goToAnalyze: function(e) {
@@ -206,13 +105,6 @@
       isEditorHomeActive: function(active, tail) {
         return active && !this.hasTail(tail);
 
-      },
-
-      _routeDataChanged: function(nRoute, oRoute) {
-          //console.log(nRoute);
-          //console.log(oRoute);
-          var x =  nRoute.strategyId ? "true" : "false";
-          //console.log(x);
       },
 
       hasRouteData: function(routeData) {

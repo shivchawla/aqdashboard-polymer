@@ -5,11 +5,7 @@
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
 
 <link rel="import" href="../components/analyze/aq-analyze-home.html">
-
-<link rel="import" href="../components/analyze/aq-analyze-backtest-detail.html">
-<link rel="import" href="../components/analyze/aq-analyze-forwardtest-detail.html">
 <link rel="import" href="../components/analyze/aq-analyze-detail.html">
-
 
 <dom-module id="aq-analyze-main">
     <style include="iron-flex iron-flex-alignment iron-positioning">
@@ -51,20 +47,6 @@
                     params="[[queryParams]]">
                 </aq-analyze-detail>
             </template>
-
-            <!--template is="iron-lazy-page" page="detail">
-                <iron-lazy-pages attr-for-selected="page" selected="[[_computeDetailPage(queryParams)]]">
-      
-                    
-
-                    <template is="iron-lazy-page" page="detail-forwardtest">
-                        <aq-analyze-forwardtest-detail 
-                            forwardtest-id='[[detailData.id]]'
-                            strategy-id='[[detailData.strategyId]]'>
-                        </aq-analyze-forwardtest-detail>
-                    </template>
-                </iron-lazy-pages>
-            </template-->
         </iron-lazy-pages>
     </template>
 

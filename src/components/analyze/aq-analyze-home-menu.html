@@ -12,6 +12,7 @@
     	#menu-container {
     		margin-bottom: -5px;
     		color: #3c3c3c;
+    		height: 46px;
     	}
 
     	#header {
@@ -67,10 +68,10 @@
 	</style>
 	
 	<template>
-        <div id="menu-container" class="layout horizontal">
+        <div id="menu-container" class="layout horizontal center">
             <p id="header">All Backtests for <i>[[strategyName]]</i></p>
             <div class="flex"></div>
-            <div id='menu-icons' class="layout horizontal">
+            <div id='menu-icons' class="layout horizontal center">
 
         	 	<paper-button raised id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">Compare
                 </paper-button>

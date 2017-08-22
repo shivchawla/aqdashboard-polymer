@@ -1,10 +1,10 @@
-<link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
-<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
 
-<script src="../../../../resources/scripts/DateTime.js"></script>
+<script src="../../../resources/scripts/DateTime.js"></script>
 
 <dom-module id='aq-portfolio-table'>
 	<style>
@@ -101,24 +101,7 @@
 			      <template>[[item.pnl]]</template>
 			    </vaadin-grid-column>
 		    </vaadin-grid>
-	    </div>
-
-	   <!--template is='dom-if' if='[[dataItems]]'>
-	   <paper-datatable data="[[dataItems]]" id="datatable" selectable multi-selection>
-			<paper-datatable-column id="nameColumn" header="Name" property="date" sortable>
-			</paper-datatable-column>
-
-			<paper-datatable-column header="Security" property="symbol" sortable></paper-datatable-column>
-
-			<paper-datatable-column header="Quantity" property="quantity" sortable></paper-datatable-column>
-
-			<paper-datatable-column header="Price" property="price" sortable></paper-datatable-column>
-
-			<paper-datatable-column header="Position Value" property="positionValue" sortable></paper-datatable-column>
-
-			<paper-datatable-column header="UnRealized PnL" property="pnl" sortable></paper-datatable-column>
-		</paper-datatable>
-		</template-->		
+	    </div>		
 	</template>
 
 	<script>

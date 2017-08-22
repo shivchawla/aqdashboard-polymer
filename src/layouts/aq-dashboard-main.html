@@ -5,19 +5,13 @@
 
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-page.html">
+<link rel='import' href='../../bower_components/iron-signals/iron-signals.html'>
 
-<link rel="import" href="./aq-home-main.html">
 <link rel="import" href="./aq-editor-main.html">
 <link rel="import" href="./aq-analyze-main.html">
 <link rel="import" href="./aq-community-main.html">
 <link rel="import" href="./aq-help-main.html">
-
-<link rel="import" href='../components/aq-sidebar.html'>
-<link rel="import" href='../components/aq-toolbar.html'>
-
-<link rel="import" href='../components/aq-homepage.html'>
-<link rel="import" href='../components/aq-aboutpage.html'>
-<link rel="import" href='../components/aq-investmentpage.html'>
+<link rel='import' href='../dialog/aq-editor-strategy-input-dialog.html'>
 
 <dom-module id="aq-dashboard-main">
   
@@ -42,6 +36,29 @@
         </app-route>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
+
+        <iron-ajax 
+            url=""
+            body="[[strategyData]]" 
+            method='POST' 
+            id='postStrategyQuery' 
+            headers='{{header}}' 
+            handle-as="json" 
+            on-response="onStrategyCreationResponse" 
+            on-error="onStrategyCreationError" 
+            debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax 
+            url=""
+            method='GET' 
+            id='getBacktestQuery' 
+            headers='{{header}}' 
+            handle-as="json" 
+            on-response="onGetBacktestSuccess" 
+            on-error="onGetBacktestError" 
+            debounce-duration="300">
+        </iron-ajax>
 
         <iron-ajax
             url=""
@@ -87,6 +104,18 @@
           </iron-lazy-pages>
         </div>
 
+        <aq-editor-strategy-input-dialog 
+            id="strategyCreateDialog" 
+            header="Create Strategy">
+        </aq-editor-strategy-input-dialog>  
+
+        <aq-editor-strategy-input-dialog 
+            id="strategyCloneDialog" 
+            header="Clone this Strategy"
+            strategy-name="[[strategyData.name]]"
+            strategy-desc="[[strategyData.desc]]">
+        </aq-editor-strategy-input-dialog> 
+
   </template>
 
   <script>
@@ -95,15 +124,66 @@
           
           properties:{
 
-            routeData:{
-              type:Object,
-            },
-            
+              routeData:{
+                type:Object,
+              },
+
+              strategyData:{
+                  type: Object,
+              }
           },
           
           listeners :{
-            'stoptest-action':'onStopForwardTest',
-            'deletetest-action': 'onDeleteForwardTest',
+              'stoptest-action':'onStopForwardTest',
+              'deletetest-action': 'onDeleteForwardTest',
+              'clone-backtest-clicked':'onCloneBacktestRequest',
+              'create-strategy-action':'createStrategy',  
+              'create-strategy-clicked':'openCreateStrategyDialog',
+              'clone-strategy-clicked':'openStrategyCloneDialog',
+              'close-action':'closeDialog',
+          },
+
+          openCreateStrategyDialog: function() {   
+            if(!this.$.authItem.checkHasToken()) {
+              this.fire('rt-changed',{route:'/user/signin'});
+              return;
+            } 
+
+            this.strategyData = {
+                "name":"",
+                "description":"",
+                "language":"julia",
+                "type": "",
+                "code": ""
+            };
+
+            //Open dialog for permission
+            this.$.strategyCreateDialog.open();
+          },
+
+          closeDialog: function() {
+            this.$.strategyCreateDialog.close();
+            this.$.strategyCloneDialog.close();
+          },
+
+          openStrategyCloneDialog: function(e) {
+
+              if(!this.$.authItem.checkHasToken()) {
+                  this.fire('rt-changed',{route:'/user/signin'});
+                  return;
+              }
+              
+              var strategy  = e.detail.strategy;
+              var newName = strategy.name + "_C";
+
+              this.strategyData = {"name":newName, 
+                                "desc" : strategy.description,
+                                "code" : strategy.code,
+                                "language":strategy.language,
+                                "type":strategy.type};
+                                
+              this.$.strategyCloneDialog.open();
+            
           },
 
           onStopForwardTest: function(e) {
@@ -119,8 +199,7 @@
                       this.$.updateForwardtestQuery.generateRequest()
                   }
 
-              });
-              
+              });    
           },
 
           onDeleteForwardTest: function(e) {
@@ -148,7 +227,61 @@
           },
 
           onDeleteForwardtestError: function(e) {
+          },
 
+          //Clones the unerlying strategy
+          onCloneBacktestRequest: function(e) {
+              var backtestId = e.detail.backtestId;
+
+              if(this.$.authItem.checkHasToken()) {
+                  this.header = this.$.authItem.getHeader();
+                  
+                  var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                  
+                  this.$$('#getBacktestQuery').url = APIEndPoint+'/backtest/'+backtestId +'?select=code strategy_name'; 
+
+                  this.$$('#getBacktestQuery').generateRequest();
+              }
+          },
+
+
+          //Clone strategy based on backtest code
+          onGetBacktestSuccess: function(data) {
+              var backtest = data.detail.response;
+              this.strategyData = {"name":"Clone of " + (backtest.strategy_name ? backtest.strategy_name : ""),
+                                "desc" : "",
+                                "code" : backtest.code,
+                                "language":"julia",
+                                "type":""};
+
+              this.$.strategyCloneDialog.open();
+          },
+
+          onGetBacktestError: function(e) {
+              console.log(e);
+          },
+
+          createStrategy:  function(e) {
+              this.strategyData["name"] = e.detail.name;
+              this.strategyData["description"] = e.detail.description;
+
+              if(this.$.authItem.checkHasToken()) {
+                this.header = this.$.authItem.getHeader();
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                this.$$('#postStrategyQuery').url = APIEndPoint+'/strategy'; 
+                this.$$('#postStrategyQuery').generateRequest();
+              }
+          },
+
+          onStrategyCreationResponse: function(data) {
+              //check for error
+              var strategyId = data.detail.response._id
+              this.fire('iron-signal',{name:'strategy-added'});
+              this.fire('rt-changed', {route:'/dashboard/editor/'+ strategyId});
+          },
+
+          onStrategyCreationError: function(data) {
+              //console.log(data);
           },
 
       });

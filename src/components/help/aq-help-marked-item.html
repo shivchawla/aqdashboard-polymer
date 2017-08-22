@@ -3,11 +3,16 @@
 <dom-module id="aq-help-marked-item">
 
 	<style>
-		
+		:host {
+			font-family: 'Lato', sans-serif;
+			font-size: 16px;
+		};
+
 		marked-element {
 			--margin-bottom: 10px;
 			--background-color: none;
 			width: 100%;
+
 		}
 
 		.markdown-html pre {
@@ -22,28 +27,31 @@
 		}
 
 		code span {
-			font-size:15px !important;
+			--font-size:15px !important;
 		}
 
 		p {
-			font-size: 15px;
-            color:#555555;
+			--font-size: 18px !important;
+            color:#3c3c3c;
+            line-height: 23px;
 		}
 
 		strong {
-			--font-weight: bold;
-			font-size: 15px;
+			font-weight: bold;
+			--font-size: 18px;
 		}
 
 		em strong {
-			font-size:15px;
+			--font-size:18px;
 			text-decoration: underline;
-			--font-weight: bold;
+			font-weight: bold;
 		}
+		
 		.markdown-html:first-child h2 {
 			color:teal;
-            font-size: 17px;
+            --font-size: 17px;
 		}
+		
 		.markdown-html ul{
 			--list-style: none;
 		    font-size: 15px;
@@ -51,22 +59,22 @@
 
 		.markdown-html h4 {
 			color: teal !important;
-            font-size: 15px;
+            --font-size: 15px;
 		}
 
 		.markdown-html h3 {
 			color: #cc6666 !important;
-            font-size: 15px;
+            --font-size: 15px;
 		}
 
         .markdown-html .aq-help-marked-item{
             color: #24293d;
-            font-size: 15px;
+            --font-size: 15px;
         }
 
         .markdown-html ul h4 {
 			color: #cc6666 !important;
-            font-size: 15px;
+            --font-size: 15px;
 		}
 
         h1, h2 {

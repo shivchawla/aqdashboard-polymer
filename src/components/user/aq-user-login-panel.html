@@ -187,6 +187,7 @@
         }
 
         #signoutMessage {
+            margin-top: 10px;
             margin-bottom: -50px;
             color: teal;
         }
@@ -278,7 +279,7 @@
         <template is='dom-if' if='{{!isAuthMessageMode(displayMode)}}'>
             <div id='containerr' class="layout vertical flex">
 
-                <div id='signoutMessage' class="self-center"><p>[[signoutMessage]]</p></div>
+                <div id='signoutMessage' class="self-center">[[signoutMessage]]</div>
 
                 <paper-card class="self-center"
                             image="../../../resources/images/Logo.png">

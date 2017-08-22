@@ -6,7 +6,6 @@
 
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel='import' href='../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel='import' href='../../bower_components/web-socket/web-socket.html'>
 
 <link rel='import' href="../../resources/aq-environment.html">
 <link rel="import" href="../layouts/aq-dashboard-main.html">
@@ -16,7 +15,7 @@
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
-<link rel="import" href='../components/aq-investmentpage.html'>
+<!--link rel="import" href='../components/aq-investmentpage.html'-->
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
@@ -55,6 +54,10 @@
           z-index: 1000;
       }
 
+      #main {
+         height: 100vh;
+      }
+
     </style>
     
     <template>
@@ -65,32 +68,31 @@
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
             <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken)]]">
-              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" class="paper-header" show-menu="true"></aq-toolbar>
+              <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
+   
+              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]">
 
-              <iron-lazy-pages attr-for-selected="page" selected="{{computePageViewForToken(hasToken)}}">
-              
-                  <template is="iron-lazy-page" page="home">
-                      <iron-lazy-pages attr-for-selected="m" selected="{{currentTab}}">
-
-                        <template is="iron-lazy-page" m="0">
-                            <aq-homepage></aq-homepage>
-                        </template>
-
-                        <template is="iron-lazy-page" m="1">
-                            <aq-aboutpage></aq-aboutpage>
-                        </template>
-
-                        <template is="iron-lazy-page" m="2">
-                            <aq-user-login-panel></aq-user-login-panel>
-                        </template>       
-
-                        <template is="iron-lazy-page" m="3">
-                            <aq-user-login-panel></aq-user-login-panel>
-                        </template>                    
-                      </iron-lazy-pages>
+                  <template is="iron-lazy-page" page="/main">
+                      <aq-homepage></aq-homepage>
                   </template>
 
-                  <template is='iron-lazy-page' page="dashboard">
+                  <template is="iron-lazy-page" page="/about">
+                      <aq-aboutpage></aq-aboutpage>
+                  </template>
+
+                  <template is="iron-lazy-page" page="/user/signin">
+                      <aq-user-login-panel></aq-user-login-panel>
+                  </template>
+
+                  <template is="iron-lazy-page" page="/user/signout">
+                      <aq-user-login-panel></aq-user-login-panel>
+                  </template>       
+
+                  <template is="iron-lazy-page" page="/user/signup">
+                      <aq-user-login-panel></aq-user-login-panel>
+                  </template>  
+
+                  <template is="iron-lazy-page" page="/dashboard">
                       <aq-dashboard-main></aq-dashboard-main>
                   </template>
               </iron-lazy-pages>
@@ -171,7 +173,7 @@
 
           currentTab:{
             type:Number,
-            value:0,
+            //value:0,
           },
 
           aimsquant:{
@@ -191,6 +193,11 @@
           header:Object,
 
           APIEndPoint:String,
+
+          reload: {
+              type: Boolean,
+              value: false,
+          },
 
         },
 
@@ -217,9 +224,10 @@
             'update-localstorage-community':'updateCommunityState',
         },
 
+       
         attached: function() {
 
-            this.listen(window, 'popstate', '_urlChanged');
+            //this.listen(window, 'hashchange', '_urlChanged');
             this.isURLResetPassword();
 
             if(this.$.authItem.checkHasToken()) {
@@ -234,38 +242,17 @@
               lastTab = JSON.parse(x).lastTab;
             }
 
-            if (lastTab == 1) {
-                var path = ['home','editor','community','analyze','help'];
-
-                for (i in path) {
-                    var c = window.location.pathname.match('/dashboard/' + path[i]) ? true : false;
-                
-                    if (c && this.view != path[i]) {  
-                      
-                        if (path[i] == 'analyze') {
-                            this.view = 'editor';
-                        
-                        } else {
-                            this.view = path[i];  
-                        
-                        }
-
-                      break;   
-                    }
-                }
-
-                if(this.view == "editor") {
-                    this.showSidebar = false;
-                }
-            }
+            //var url = window.location.href;
+            //this.fire('rt-changed', {route: url.slice(url.indexOf('#') + 1)});
+            //this.manageTabOnUrlChange()
         },
 
         computeToolbarType: function(hasToken) {
             return hasToken ? "fixed" : "scroll";
         },
 
-        computePageViewForToken: function(hasToken) {
-           return hasToken ? "dashboard" : "home";
+        computePageViewForToken: function(hasToken, currentTab) {
+            if(hasToken) {}
         },
 
         isURLResetPassword: function() {
@@ -284,56 +271,6 @@
               this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
               this.$.localStorage.save();
             } 
-        },
-
-        viewChanged: function(newMenu) {
-          this.view = newMenu.detail.menu; 
-          this.fire('rt-changed',{route:'/dashboard/' + this.view});
-          
-          if(this.view == "editor") {
-            this.showSidebar = false;
-          }
-
-          if(this.narrow){
-              this.$.drawerpanel.closeDrawer();
-          }
-        },
-
-        viewChangedOnAction: function(newAction) {
-          if(newAction.detail.action == "sendfeedback") {
-            this.openFeedbackDialog();
-          } else if(newAction.detail.action == "invitefriend") {
-            this.openInviteDialog();
-          } else {
-            this.view = newAction.detail.menu != '' ? newAction.detail.menu : this.view;
-            this.fire('rt-changed',{route:'/dashboard/' + newAction.detail.action});
-          }
-
-          if(this.view == "editor") {
-            this.showSidebar = false;
-          }
-
-          if(this.narrow){
-            this.$.drawerpanel.closeDrawer();
-          }
-        },
-
-        openMenu: function(e) {
-            this.$.drawerpanel.openDrawer();
-            this.showSidebar = true;
-        },
-
-        closeMenu: function() {
-            this.$.drawerpanel.closeDrawer();
-
-            if (this.showSidebar && !this.narrow) {
-              this.showSidebar = false;
-            }
-        },
-
-        toggleMenu: function(e) {
-            this.$.drawerpanel.togglePanel();
-            this.fire('iron-signal',{name:'main-drawer-opened'});
         },
 
         URLcontains: function(path) {
@@ -461,22 +398,44 @@
         },
 
         goToRoute: function(e) {
-
             var route = this.redirect(e.detail.route);
 
             var idx = route.indexOf('?');
             
-            if(idx >=0) {
+            if(idx == 0) { //this one is when URL is refreshed and has query params
+                route = '/' + route;
+            } else if(idx>0) {
                 route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
             } else {
                 route = '/#' + route;
             }
             
+            //console.log(route);
+            /*if(route == "/#/about") {
+                window.location.reload(true);
+            }*/
+
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
+
+            //find a way to update currentUrl ...should listen to window
+            // haschange event
+            this.currentUrl = route;
+        },
+
+        computePage: function(currentUrl) {
+            if(currentUrl.indexOf('dashboard') != -1) {
+                return "/dashboard";
+            } else {
+                return currentUrl.slice(currentUrl.indexOf('#') + 1);
+            }
         },
 
         redirect: function(route) {
+          if(!this.hasToken && route.indexOf('dashboard') != -1) {
+              return "/main";
+          }
+
           switch(route) {
             case "/dashboard/createstrategy":
               return '/dashboard/editor?create=1';

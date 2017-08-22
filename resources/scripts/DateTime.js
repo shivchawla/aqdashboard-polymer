@@ -2,12 +2,12 @@
 * @Author: Shiv Chawla
 * @Date:   2017-04-07 14:34:31
 * @Last Modified by:   Shiv Chawla
-* @Last Modified time: 2017-08-12 14:16:04
+* @Last Modified time: 2017-08-22 11:20:38
 */
 
 (function(window){
     'use strict';
-    function dateLib(){
+    function dateLib() {
         var _dateLib = {};
         
         _dateLib.formatDate = function (date) {
@@ -67,27 +67,35 @@
         };
 
         _dateLib.formatMoneyValue = function(val) {
-                
-                //var numCommas = Math.floor(Math.log10(val)/3);
-                //1029732
-                //0123456
-                //1234567
-                var valStr = val.toString();
-                valStr = valStr.split("").reverse().join("");
-                var str="";
-                var k = 0;
-                for(var i=0; i<valStr.length; i++) {
-                    var mod = k > 0 ? 3 + k*2 : 3;
-                    if((i+1)%mod == 0 && i<valStr.length-1) {
-                        str = str.concat(valStr[i]+',');
-                        k++;
-                    } else {
-                        str = str.concat(valStr[i]);
-                    }
-                }                    
-            
-                return str.split("").reverse().join("");
+            //var numCommas = Math.floor(Math.log10(val)/3);
+            //1029732
+            //0123456
+            //1234567
+            var valStr = val.toString();
+            valStr = valStr.split("").reverse().join("");
+            var str="";
+            var k = 0;
+            for(var i=0; i<valStr.length; i++) {
+                var mod = k > 0 ? 3 + k*2 : 3;
+                if((i+1)%mod == 0 && i<valStr.length-1) {
+                    str = str.concat(valStr[i]+',');
+                    k++;
+                } else {
+                    str = str.concat(valStr[i]);
+                }
+            }                    
+        
+            return str.split("").reverse().join("");
+        };
+
+        _dateLib.formatDateLocale = function(date) {
+            var options = {
+                weekday: "long", year: "numeric", month: "short",
+                day: "numeric", hour: "2-digit", minute: "2-digit"
             };
+
+            return new Date(date).toLocaleTimeString("en-us", options);
+        };
 
         return _dateLib;
     }

@@ -1,8 +1,6 @@
 <link rel='import' href='../../../bower_components/paper-checkbox/paper-checkbox.html'>
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
-
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
 <script src="../../../resources/scripts/DateTime.js"></script>
 
@@ -125,10 +123,6 @@
     </style>
 
     <template>
-	 	<iron-media-query query="(max-width: 850px)" 
- 						query-matches="{{narrowViewport}}">
-		</iron-media-query>
-       
     	<iron-signals on-iron-signal-select-strategy='onSelectStrategy'></iron-signals>
 
         <div id$="[[strategyId]]" class="row layout horizontal center"" >
@@ -182,7 +176,7 @@
             },
 
             onSelectStrategy: function(e) {
-                if(e.detail.live) {
+                if(e.detail.live && this.status == "Running") {
                     this.$.checkbox.checked = e.detail.checked;
                 	this.onCheck(); 
                 }

@@ -11,6 +11,7 @@
 
 <link rel="import" href="./aq-community-postdetail-content.html">
 <link rel="import" href="./aq-community-postdetail-reply.html">
+<link rel="import" href="./aq-community-create-reply.html">
 
 <link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../../icons/aq-iconset.html'>
@@ -92,6 +93,10 @@
       #bar {
           border-top: 1px solid #e1e1e1;
       }
+      
+      .card-content {
+          padding: 20px;
+      }
 
   </style>  
 
@@ -137,20 +142,24 @@
                           </aq-community-postdetail-content>
                     </paper-card>
                       
-                      <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
+                    <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
                       
-                      <div id="replyContainer">
-                          <template is="dom-repeat"
-                                    items="{{threadDetails.replies}}"
-                                    initial-count=5>
-                              <aq-community-postdetail-content class="postContent" post-content="{{item}}"></aq-community-postdetail-content>
-                          </template>
-                      </div>
+                    <template is='dom-if' if="[[hasReplies(threadDetails.replies)]]">
+                        <paper-card id="replyContainer">
+                            <div class="card-content">
+                              <template is="dom-repeat"
+                                        items="{{threadDetails.replies}}"
+                                        initial-count=5>
+                                  <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
+                              </template>
+                            </div>
+                        </paper-card>
+                    </template>
 
-                      <aq-community-postdetail-reply 
-                          id="replyEditor"
-                          thread-id="[[threadDetails._id]]">
-                      </aq-community-postdetail-reply>
+                    <aq-community-create-reply 
+                        id="replyEditor"
+                        thread-id="[[threadDetails._id]]">
+                    </aq-community-create-reply>
 
                 </div>
             </aq-allpage-layout>    
@@ -193,6 +202,7 @@
       listeners :{
         'goBackClicked':'goBack',
         'reply-added':'addReply',
+        'clone-backtest-clicked':'onCloneRequest'
       },
 
       onGetThreadDetailResponse: function(data) {
@@ -233,20 +243,29 @@
           return false;
       },
 
-      attached: function() {
+      hasReplies: function(replies) {
+          return replies ? replies.length > 0 : false;
+      },
 
-        if(!this.$.authItem.checkHasToken()) {
-            this.fire('rt-changed',{route:'/user/signin'});
-            return;
-        } else {
-            
-            this.user = this.$.authItem.getUser();
-            this.header = this.$.authItem.getHeader();
-            this.$.views.generateRequest();
-            this.$.getThreadQuery.generateRequest();
-        }
+      attached: function() {
+          if(!this.$.authItem.checkHasToken()) {
+              this.fire('rt-changed',{route:'/user/signin'});
+              return;
+          } else {
+              
+              this.user = this.$.authItem.getUser();
+              this.header = this.$.authItem.getHeader();
+              this.$.views.generateRequest();
+              this.$.getThreadQuery.generateRequest();
+          }
 
       },
+
+      onCloneRequest: function(e) {
+          e.detail.backtestId = this.threadDetails.backtestId;
+          //Don't stop the propagation
+          //Will be handled in aq-dashboard-main
+      }
 
     });
 

@@ -17,22 +17,24 @@
 		#header {
 			background-color: #fafafa;
 			border: 1px solid #e1e1e1;
+			height: 46px;
+			width: 100%;
 		}
 
 		.header-item {
-			font-size: 13px;
+			font-size: 15px;
 			width: 160px;
 		}
 
 		#header-item-backtest {
 			margin-left: 10px;
-			width: 120px !important;	
+			width: 120px;
 		}
 
 		#backtest-name {
-                padding-left: 10px;
-                --width: 150px !important;
-            }
+            padding-left: 10px;
+            --width: 150px !important;
+        }
 
 		/*created*/
         #header-item-0 {
@@ -63,7 +65,7 @@
 		}
 
 		#only-backtest-header {
-			width: calc(100% - 150px);
+			width: calc(100% - 148px);
 		}
 
 	</style>
@@ -72,16 +74,16 @@
 		<aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
 
 		<template is='dom-if' if='[[header]]'>
-			<div id="header" class="layout horizontal">
+			<div id="header" class="layout horizontal center">
 			 	
 				<paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
 		            	on-change='onCheckAllBacktest'>
 		        	</paper-checkbox>
 		        <div class="layout horizontal" id="only-backtest-header">	
-		        	<p class="header-item" id="header-item-backtest">Backtest</p>
+		        	<div class="header-item" id="header-item-backtest">Backtest</div>
 		        	
 		        	<template is='dom-repeat' items='[[header]]'>
-		        		<p class="header-item" id="header-item-[[index]]">[[item]]</p>
+		        		<div class="header-item" id="header-item-[[index]]">[[item]]</div>
 		        	</template>
 	    		<!--div id="empty-header"></div-->
 	    	</div>
@@ -113,11 +115,11 @@
                     this.header = null;
                     var header = ["Created Date", "Status"];
                      
-                    if(this.width.semiWide) {
+                    if(this.width.semiWide || this.width.wide || this.width.superWide) {
                         header.push("Date Range");
                     }
 
-                    if (this.width.wide) {
+                    if (this.width.wide || this.width.superWide) {
                        header.push("Total Return");    
                     }
 

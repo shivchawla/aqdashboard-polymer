@@ -31,12 +31,6 @@
         };
       }
 
-
-      paper-button{
-          border-radius: 5px;
-          height:30px;
-      }
-
       #cancelBtn {
         --paper-button:{
           color: #9a9a9a;
@@ -133,7 +127,7 @@
 
 			onSubmit: function() {
 				if(this.$.strategyNameInput.validate() && this.$.strategyDesc.validate()){
-					this.fire('create-action',{name:this.strategyName, description: this.strategyDesc});
+					this.fire('create-strategy-action', {name:this.strategyName, description: this.strategyDesc});
           this.reset();
 					this.$.createStrategyModalDialog.close();
 				}

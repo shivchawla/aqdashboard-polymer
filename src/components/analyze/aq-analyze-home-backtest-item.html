@@ -1,7 +1,6 @@
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
-<!--link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet"-->
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
@@ -9,7 +8,6 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../../bower_components/iron-signals/iron-signals.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../common/backtest/aq-backtest-metric-item-list.html">
@@ -27,12 +25,19 @@
             :host {
                 font-family: 'Lato', sans-serif;
                 font-size: 18px;
-                display: inline-block;
+            }
+
+             .row-container {
                 width: 100%;
                 color: #3c3c3c;
                 border: 1px solid #e1e1e1;
                 border-top: none;
             }
+
+            .row-container:hover {        
+                background-color: #f4fffc;
+            }
+
 
             paper-checkbox {
                 --paper-checkbox-checked-color: #cc6666;
@@ -86,7 +91,7 @@
                 font-size: 13px;
                 text-transform: none;
                 width: 80px;
-                margin-top: 10px;
+                --margin-top: 10px;
             }
 
             paper-button[disabled] {
@@ -147,7 +152,7 @@
             #button-container-second {
                 --width: 70px;
                 margin-right: 10px;
-                margin-bottom: 10px;
+                --margin-bottom: 10px;
             }
 
             #header-item-backtest {
@@ -180,10 +185,6 @@
                 width: 140px ;
             }
 
-            .row-container:hover {        
-                background-color: #f4fffc;
-            }
-
             #empty-header {
                 width: 100px;
             }
@@ -204,26 +205,24 @@
         <aq-portwidth-detector width="{{width}}"> 
         </aq-portwidth-detector>
 
-        <div class="row-container layout horizontal end">
+        <div class="row-container layout horizontal center">
                 
             <paper-checkbox class="self-center" on-change="onChange" noink></paper-checkbox>
 
             <div class$="layout horizontal [[computeDetailAvailableClass(detailAvailable)]]" id='only-backtest-container' on-tap='onBacktestDetail'>
-                <p id="header-item-backtest" class="header-item">[[computeHeading(btIndex)]]</p>
+                <div class="header-item" id="header-item-backtest">[[computeHeading(btIndex)]]</div>
             
                 <template is='dom-if' if='[[backtestHeader]]'>
                     <template is='dom-repeat' items="{{backtestHeader}}">
-    			         <p class="header-item" id="header-item-[[index]]">[[item.metric]]</p>
+    			         <div class="header-item" id="header-item-[[index]]">[[item.metric]]</div>
                      </template>
         		</template>
 
             </div>
 
             <template is='dom-if' if='[[canRun]]'>
-                <div id="button-container-second" class="layout vertical center">
-                    <paper-button id='runForwardButton' noink on-tap='runForwardtest' disabled="[[!isForwardTestingAvailable(backtest, hasForwardtest)]]">Run Forward
-                    </paper-button>
-                </div>
+                <paper-button id='runForwardButton' noink on-tap='runForwardtest' disabled="[[!isForwardTestingAvailable(backtest, hasForwardtest)]]">Run Forward
+                </paper-button>
             </template>
     
         </div>
@@ -233,10 +232,6 @@
         Polymer({
             is: 'aq-analyze-home-backtest-item',
             
-         	observers: [
-            	'_widthChanged(narrow, narrowWide, semiWide, wide)'
-            ],
-
             properties: {
                 backtest: {
                     type: Object,
@@ -287,14 +282,14 @@
                         metric: this.processedBacktest.status
                     },];
 
-                    if(this.width.semiWide) {
+                    if(this.width.semiWide || this.width.wide || this.width.superWide) {
                         backtestHeader.push({
                             label: "Date Range",
                             metric: this.processedBacktest.startDate + " - " + this.processedBacktest.endDate
                         });
                     }
 
-                    if (this.width.wide) {
+                    if (this.width.wide || this.width.superWide) {
                         backtestHeader.push({
                             label: "Total Return",
                             metric: !this.isBacktestActive(this.backtest) ? this.backtest.output.summary.totalreturn.toFixed(2).toString() + '%' : "-",

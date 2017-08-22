@@ -135,7 +135,7 @@
             <aq-allpage-layout 
             	loading='{{isLoading(strategyLoading, backtestLoading)}}' header="All Backtests" current-path="[[currentPath]]">
 
-            	<div id="acktest-container" class="internal-content">
+            	<div id="backtest-container" class="internal-content">
 			        <aq-analyze-home-menu
 			        	check-all="{{checkAll}}"
 			        	num-active-backtests="[[checkedItems.length]]"
@@ -144,7 +144,6 @@
 
 			        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 						
-			        <!--aq-backtest-table backtests="[[backtests]]"></aq-backtest-table-->
 			        	<aq-analyze-home-header 
 			        		check-all="{{checkAll}}"
 			        		num-active-backtests="[[checkedItems.length]]"

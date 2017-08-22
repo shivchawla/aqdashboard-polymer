@@ -14,6 +14,10 @@
     </style>
 
     <style>
+        :host {
+            font-family: 'Roboto', sans-serif;
+        };
+
         #toolbar {
             height: 8vh; 
             background-color: #fafafa;
@@ -31,9 +35,6 @@
 
         .title {
             min-width: 160px;
-        }
-
-        .title p {
             font-size: 24px;
         }
 
@@ -54,7 +55,6 @@
             background-size: cover;
             height: 30px;
             width: 42px;
-            margin: auto 0;
         }
 
         #right-container {
@@ -63,8 +63,9 @@
         }
 
         paper-tabs {
+            font-weight: 300;
             margin-right: 10px;
-            font-size: 16px;
+            font-size: 14px;
             height: 100%;
             --paper-tabs-selection-bar-color: #cc6666;
             --paper-tabs-selection-bar: {
@@ -78,11 +79,13 @@
 
         paper-tab.iron-selected {
             color: #07889B;
+            font-weight: 700;
         }
 
         #signUpTab {
             background-color: #07889B;
             color: white;
+            font-weight: 700;
         }
 
         #signUpTab.iron-selected {
@@ -103,8 +106,8 @@
 
                 <template is='dom-if' if="[[showMenu]]">
                     <div on-tap='goToHome' class="title layout horizontal center">
-                        <p id="aims">Aims</p>
-                        <p id='quant'>Quant</p>
+                        <div id="aims">Aims</div>
+                        <div id='quant'>Quant</div>
                         <div id='logo'></div>
                     </div>
                 </template>
@@ -113,22 +116,16 @@
             <div class="flex"></div>
             
             <div id='right-container' class="layout horizontal center">
-                <template is='dom-if' if="{{!hasToken}}">
-                    <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
-                        <paper-tab>HOME</paper-tab>
-                        <paper-tab>ABOUT US</paper-tab>
-                        <paper-tab>LOG IN</paper-tab>
-                        <paper-tab id='signUpTab'>SIGN UP</paper-tab>
-                    </paper-tabs>
-                </template>
-
-                <template is='dom-if' if="{{hasToken}}">
-                    <paper-tabs id='papertabs' selected="{{currentTab}}" noink>
-                        <paper-tab>RESEARCH</paper-tab>
-                        <paper-tab>COMMUNITY</paper-tab>
-                        <paper-tab>HELP</paper-tab>
-                    </paper-tabs>
-                </template>
+                
+                <paper-tabs id='papertabs' selected="{{currentTab}}" noink no-bar>
+                    <paper-tab class="withoutTokenTa">HOME</paper-tab>
+                    <paper-tab class="withoutTokenTa">ABOUT US</paper-tab>
+                    <paper-tab class="withoutTokenTab">LOG IN</paper-tab>
+                    <paper-tab id='signUpTab' class="withoutTokenTab">SIGN UP</paper-tab>
+                    <paper-tab class="withTokenTab">RESEARCH</paper-tab>
+                    <paper-tab class="withTokenTab">COMMUNITY</paper-tab>
+                    <paper-tab class="withTokenTab">HELP</paper-tab>
+                </paper-tabs>
 
                 <template is='dom-if' if="{{hasToken}}">
                     <aq-user-menu></aq-user-menu>
@@ -164,6 +161,12 @@
                     value: true,
                     observer:'_hasTokenChanged',
                 },
+
+                currentUrl:{
+                    type: String,
+                    value: "",
+                    observer: '_currentURLChanged',
+                },
             },
 
             toggleMenu: function () {
@@ -178,36 +181,90 @@
                 this.fire('rt-changed', {route: '/main'});
             },
 
-            _currentTabChanged: function() {
+            _currentTabChanged: function(oldTab, newTab) {
                 if(this.currentTab + 1) {
-                    var route = "";
+                    var routes = ["/main"];
 
-                    if(!this.hasToken) {
-                        switch(this.currentTab) {
-                            case 0: route = "/main";break;
-                            case 1: route = "/about";break;
-                            case 2: route = "/user/signin";break;
-                            case 3: route = "/user/signup";break;
-                        }
-                    } else {
-                        switch(this.currentTab) {
-                            case 0: route = "/dashboard/editor";break;
-                            case 1: route = "/dashboard/community";break;
-                            case 2: route = "/dashboard/help";break;
+                    switch(this.currentTab) {
+                        case 0: routes = ["/main"];break;
+                        case 1: routes = ["/about"];break;
+                        case 2: routes = ["/user/signin","/user/signout"];break;
+                        case 3: routes = ["/user/signup"];break;
+                        case 4: routes = ["/dashboard/editor", "/dashboard/analyze"];break;
+                        case 5: routes = ["/dashboard/community"];break;
+                        case 6: routes = ["/dashboard/help"];break;
+                    }
+
+                    var found = false;
+                    for (var route of routes) {
+                        if(window.location.href.indexOf(route) != -1) {
+                            var found = true;
+                            break;
                         }
                     }
 
-                    this.fire('rt-changed',{route:route});
+                    var rt = routes[0];
+                    if(!found) {
+                        this.fire('rt-changed', {route:rt});
+                    } else {
+                        rt = window.location.href;
+                        if(rt.indexOf('?') != -1) {
+                            rt = rt.slice(rt.indexOf('?'));    
+                        } else {
+                            rt = rt.slice(rt.indexOf('#') + 1);    
+                        }
+
+                        //find rt in 
+                        this.async(function(){this.fire('rt-changed', {route: rt});}, 1000);
+                    }
+                    
                 }
             },
 
             _hasTokenChanged: function() {
+                
+                var display_1 = 'block';
+                var display_2 = 'block';
+                
                 if(this.hasToken) {
-                    this.currentTab = 0;
+                    //this.currentTab = 0;
+                    display_1 = 'none';
                 } else {
-                    this.currentTab = 2;
+                    this.currentTab = 0;
+                    display_2 = 'none';
                 }
-            }
+
+                this.currentUrl = window.location.href;
+
+                Polymer.dom(this.root).querySelectorAll('.withTokenTab').forEach(tab => {
+                        tab.style.display = display_2;
+                    });
+
+                Polymer.dom(this.root).querySelectorAll('.withoutTokenTab').forEach(tab => {
+                    tab.style.display = display_1;
+                });
+            },
+
+            _currentURLChanged: function() {
+
+                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout"], "3":["/user/signup"], "4":["/dashboard/editor", "/dashboard/analyze"], "5":["/dashboard/community"], "6":["/dashboard/help"]};
+                
+                var i = 0;
+                var keys = Object.keys(routeList);
+                for (var key in routeList) {
+
+                    var routes = routeList[key];
+                    for(route of routes) {
+                        if(this.currentUrl.indexOf(route) != -1) {
+                            this.currentTab = i;
+                            break;
+                        }
+                    }
+                  
+                    i++;
+                }
+
+            },
 
         });
     </script>

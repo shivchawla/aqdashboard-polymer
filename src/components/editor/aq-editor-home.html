@@ -127,10 +127,7 @@
             --paper-button :{
                 font-size: 12px;
                 font-weight: 700;
-                --height: 32px;
                 background-color: teal;
-                --border: 1px solid teal;
-                --background-color: white;
                 color: white;
             };
         }
@@ -181,6 +178,7 @@
             --height: 32px;
             width: 30%;
             max-width: 400px;
+            min-width: 300px;
         }
 
         #test-strategy-item-container {
@@ -226,7 +224,6 @@
     </style>
 
     <template>
-        <!--iron-media-query query="(max-width: 640px)" query-matches="{{narrowViewport}}"></iron-media-query-->
         <aq-check-authentication id='authItem'></aq-check-authentication>
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <iron-signals on-iron-signal-strategy-added='onStrategyAdded'></iron-signals>
@@ -468,7 +465,7 @@
                 'compare-clicked': 'openCompareDialog',
                 'previewClicked': 'openPreview',
                 'analyzeClicked': 'goToAnalyze',
-                'cloneClicked': 'goToClone',
+                'clone-strategy-clicked': 'goToClone',
                 'editorClicked': 'goToEditor',
                 'check-action-test': 'checkStrategyTest',
                 'check-action-live': 'checkStrategyLive',
@@ -495,6 +492,14 @@
 
             },
 
+            resetView: function() {
+                this.checkedItems = {};
+                this.checkedCount = {};
+                this.checkAll = {};
+                this.checkAllLive  = false;
+                this.checkAllTest = false;
+            },
+
             isEditorHomeReady: function(loading, liveStrategies, testStrategies) {
                 return !loading && liveStrategies && testStrategies;
             },
@@ -505,6 +510,7 @@
             },
 
             onGetStrategiesResponse: function (data) {
+                this.resetView();
                 var strategies = data.detail.response;
                
                 this.testStrategies = strategies.length > 0 ? strategies : null;
@@ -622,7 +628,12 @@
                     this.checkedCount[type] = strategies.length;
                 }
 
-                this.checkAll[type] = this.checkedCount[type] == strategies.length;
+                //Compare the count with active stratgies
+                var lengthActive = this.liveStrategies.filter(item => {
+                    return item.forwardtest.active == true;
+                }).length;
+
+                this.checkAll[type] = this.checkedCount[type] == (type=="test" ? strategies.length : lengthActive);
 
                 this.checkAllLive = this.checkAll["live"];
                 this.checkAllTest = this.checkAll["test"];
@@ -730,7 +741,7 @@
 
             _createChanged: function (nCreate, oCreate) {
                 if (nCreate == "1") {
-                    this.fire('newClicked');
+                    this.fire('create-strategy-Clicked');
                     this.create = 0;
                 }
             },
@@ -834,14 +845,14 @@
             },
 
             createNew: function () {
-                this.fire('newClicked');
+                this.fire('create-strategy-clicked');
             },
 
             goToForwardTest: function(e) {
                 var strategyId = e.detail.strategyId;
                 var forwardtestId = e.detail.forwardtestId;
                 this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward'});
-            }
+            },
 
         });
     </script>

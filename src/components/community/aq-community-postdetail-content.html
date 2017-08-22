@@ -20,11 +20,11 @@
         }
 
         #post-content {
-            margin-bottom: 50px;
+            --margin-bottom: 50px;
             --box-shadow: var(--aq-community-postdetail-content-box-shadow, 0 0px 0px rgba(0, 0, 0, 0.2));
             border-radius: 4px;
             background-color: white;
-            margin-bottom:10px;
+            --margin-bottom:10px;
             padding: var(--post-content-padding, 10px);
         }
 
@@ -45,8 +45,8 @@
         }
 
         polymer-quill-html-render {
-            margin-top: 5px;
-            margin-bottom: 15px;
+            --margin-top: 5px;
+            --margin-bottom: 15px;
             min-height: 100px;
             font-size: 16px;
             font-family: 'Lato', sans-serif;
@@ -61,7 +61,7 @@
         }
 
         #bt-container {
-            border: 1px solid #e1e1e1;
+            border-top: 1px solid #e1e1e1;
         }
 
         #quill {
@@ -70,8 +70,7 @@
     </style>
 
     <template>
-        <div id='post-content'>
-            
+        <div id='post-content'>      
             <polymer-quill-html-render 
                 content="[[postContent.markdownText]]">
             </polymer-quill-html-render>

@@ -150,34 +150,34 @@
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
         <iron-ajax
-                url=""
-                method='GET'
-                id='getAllThreadsQuery'
-                params='[[searchParam]]'
-                handle-as="json"
-                on-response="onGetAllThreadsResponse"
-                on-error="onGetAllThreadsError"
-                headers='{{header}}'
-                debounce-duration="300"
-                loading='{{loading}}'>
+            url=""
+            method='GET'
+            id='getAllThreadsQuery'
+            params='[[searchParam]]'
+            handle-as="json"
+            on-response="onGetAllThreadsResponse"
+            on-error="onGetAllThreadsError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading='{{loading}}'>
         </iron-ajax>
 
         <iron-ajax
-                url="../../../resources/community/announcement.json"
-                method='GET'
-                id='getAnnouncementsQuery'
-                handle-as="json"
-                on-response="onGetAnnouncementsResponse"
-                on-error="onGetAnnouncementsError"
-                headers='{{header}}'
-                debounce-duration="300">
+            url="../../../resources/community/announcement.json"
+            method='GET'
+            id='getAnnouncementsQuery'
+            handle-as="json"
+            on-response="onGetAnnouncementsResponse"
+            on-error="onGetAnnouncementsError"
+            headers='{{header}}'
+            debounce-duration="300">
         </iron-ajax>
 
         <iron-signals on-iron-signal-post-added='onPostAdded'></iron-signals>
 
         <iron-signals on-iron-signal-dirtybit='onSetDirtyBit'></iron-signals>
 
-        <aq-allpage-layout loading='{{loading}}' header="Community" 
+        <aq-allpage-layout loading='{{firstLoading}}' header="Community" 
             current-path="[[currentPath]]">
 
             <div class="header-button self-center">
@@ -223,15 +223,18 @@
                                 <paper-checkbox id="checkbox-news"
                                     on-change="onCheck" noink>News</paper-checkbox>
                             </div> 
+                        </div>
 
-                        </div>
-                    
-                        <div class="list-container layout vertical">
-                            <template is="dom-repeat" items="{{threads}}">
-                                <aq-community-home-post-item2 thread="[[item]]">
-                                </aq-community-home-post-item2>
-                            </template>
-                        </div>
+                        <aq-loading-progress loading="{{loading}}"></aq-loading-progress>
+
+                        <template is='dom-if' if='[[!loading]]'>
+                            <div class="list-container layout vertical">
+                                <template is="dom-repeat" items="{{threads}}">
+                                    <aq-community-home-post-item2 thread="[[item]]">
+                                    </aq-community-home-post-item2>
+                                </template>
+                            </div>
+                        </template>
                     </div>
                    
                     <div class="right-container">
@@ -334,6 +337,11 @@
                     value: ["Home", "Research", "Community"],
                 },
 
+                firstLoading: {
+                    type: Boolean,
+                    value: true,
+                },
+
             },
 
             listeners: {
@@ -370,37 +378,44 @@
             },
 
             onActivateTab: function () {
-                if(this.isSearchActive(this.searchText)) {
-                    if (this.categorySelected != this.oldselected) {
-                        this.oldselected = this.categorySelected;
+                //Delay search executio by 500ms on changing tab
+                this.async(function() {
+                    if(this.isSearchActive(this.searchText)) {
+                        if (this.categorySelected != this.oldselected) {
+                            this.oldselected = this.categorySelected;
 
-                        if (this.currentPage == 1) {
-                            if (this.isAttached) {
-                                this.processparams();
+                            if (this.currentPage == 1) {
+                                if (this.isAttached) {
+                                    this.processparams();
+                                }
+                            } else {
+                                this.currentPage = 1;
                             }
-                        } else {
-                            this.currentPage = 1;
+                        }
+                    }else {
+                        if (this.selected != this.oldselected) {
+                            this.oldselected = this.selected;
+
+                            if (this.currentPage == 1) {
+                                if (this.isAttached) {
+                                    this.processparams();
+                                }
+                            } else {
+                                this.currentPage = 1;
+                            }
                         }
                     }
-                }else {
-                    if (this.selected != this.oldselected) {
-                        this.oldselected = this.selected;
-
-                        if (this.currentPage == 1) {
-                            if (this.isAttached) {
-                                this.processparams();
-                            }
-                        } else {
-                            this.currentPage = 1;
-                        }
-                    }
-                }
+                }, 500);
             },
 
             onGetAllThreadsResponse: function (data) {
                 this.set('threads', []);
                 this.threads = data.detail.response.threads;
                 this.totalThreads = data.detail.response.count;
+
+                if(this.firstLoading) {
+                    this.firstLoading = false;    
+                }
             },
 
             onGetAllThreadsError: function (data) {

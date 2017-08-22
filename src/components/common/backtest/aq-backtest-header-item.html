@@ -1,5 +1,6 @@
 <link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
-<link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
+
+<link rel='import' href='../aq-portwidth-detector.html'>
 
 <dom-module id='aq-forwardtest-header-item'>
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -112,12 +113,7 @@
 	</style>
 
 	<template>
-		<iron-media-query query="(max-width: 1050px)" query-matches="{{wide}}"></iron-media-query>
-        <iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
-
-      	<iron-media-query query="(max-width: 640px)" query-matches="{{narrowWide}}"></iron-media-query>
-      
-        <iron-media-query query="(max-width: 560px)" query-matches="{{narrow}}"></iron-media-query>
+		<aq-portwidth-detector width='{{width}}'></aq-portwidth-detector>
 
         <div class="layout horizontal" id='name-button-container'>
         	<div id="bt-name" class="self-center">[[heading]]</div>
@@ -158,15 +154,15 @@
 					type: Boolean,
 				},
 
-				narrow: Boolean,
-				narrowWide: Boolean,
-				semiWide: Boolean,
-				wide:Boolean,
+				width:{
+					type:Object,
+					observer:'_widthChanged',
+				},
+
 				forcedSemiWide:Boolean,
+
 			},
-
-			observers:['_widthChanged(narrow, narrowWide, semiWide, wide)'],
-
+			
 			updateHeaderItems: function(headerItems) {
 				this.headerItems = this.deepCopy(headerItems);
 				this.originalItems = this.deepCopy(headerItems);
@@ -185,13 +181,13 @@
 
 					var eIdx;
 					if(nItems > 0) {
-						if(this.narrow ) {
+						if(this.width.narrow ) {
 							eIdx = nItems >=3 ? 3 : nItems;
-		            	} else if (this.narrowWide) {
+		            	} else if (this.width.narrowWide) {
 		            		eIdx = nItems >=4 ? 4 : nItems;
-		            	} else if (this.semiWide) {
+		            	} else if (this.width.semiWide) {
 		            		eIdx = nItems >= 5 ? 5 : nItems;
-		            	} else if (this.wide) {
+		            	} else if (this.width.wide) {
 		            		eIdx = nItems >= 6 ? 6 : nItems;
 		            	} else {
 		            		eIdx = nItems;
@@ -212,12 +208,11 @@
 				this.fire('share-clicked');
 			},
 
-			onClone: function(){
-				this.fire('clone-clicked');
+			onClone: function() {
+				this.fire('clone-backtest-clicked');
 			},
 
 			isExceptionClass: function(item) {
-				console.log(item);
 				return item.label == "Status" && item.metric == "Exception" ? "exception" : "";
 			}	
 		});
@@ -248,9 +243,8 @@
 	</style>
 
 	<template>
+		<aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
 
-		<iron-media-query query="(max-width: 960px)" query-matches="{{semiWide}}"></iron-media-query>
-       	
 		<template is='dom-if' if='[[!isSemiWide(semiWide, forcedSemiWide)]]'>
 			<div class="text-label">
 				[[label]]:
@@ -258,7 +252,7 @@
 	        </div>
         </template>
 
-        <template is='dom-if' if='[[isSemiWide(semiWide, forcedSemiWide)]]'>
+        <template is='dom-if' if='[[isSemiWide(width, forcedSemiWide)]]'>
 			<div class="layout vertical">
 				<span class="text-content">[[metric]]</span>
 				<span class="text-label">[[label]]</span>
@@ -273,9 +267,10 @@
 			properties: {
 				label: String,
 				metric: String, 
-				semiWide: {
-					type:Boolean,
-					value: false,
+				
+				width:{
+					type: Object,
+					//observer:'_widthChanged',
 				},
 
 				forcedSemiWide: {
@@ -284,8 +279,8 @@
 				},
 			},
 
-			isSemiWide: function(semiWide, forcedSemiWide) {
-				return semiWide || forcedSemiWide;
+			isSemiWide: function(width, forcedSemiWide) {
+				return width.semiWide || forcedSemiWide;
 			},
 
 		});

@@ -73,7 +73,18 @@
         type: String,
         value: null
       },
+      name: {
+        type: String,
+      }
+
     },
+
+    attached: function() {
+       if (!this.letter && this.name) {
+          var names = this.name.split(" ");
+          this.letter = names.length > 1 ? names[0][0]+names[1][0] : (names.length == 1 ? names[0][0] : "");
+       }
+    }
 
   });
 </script>
