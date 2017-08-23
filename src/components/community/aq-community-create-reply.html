@@ -5,7 +5,7 @@
 
 <link rel="import" href="../common/aq-check-authentication.html">
 <link rel="import" href="../aq-html-editor.html">
-<link rel="import" href="./aq-community-previewpost.html">
+<link rel="import" href="./aq-community-previewpost-item.html">
 <link rel="import" href="../../dialog/aq-community-attachbacktest-dialog.html">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 
@@ -18,18 +18,23 @@
             font-family: 'Lato' , sans-serif;
             font-size: 16px;
         }
+       
+        paper-button {
+            --paper-button: {
+                font-size: 0.7em;
+                background-color: teal;
+                color: white;
+                padding: 0 20px;
+                border-radius: 0;
+                height: 25px;
+                font-weight: 700;
+            };
+        }
+
         #attachButton {
-            /*z-index: 2;*/
             background-color: white !important;
             color: teal !important;
             border: none !important;
-        }
-
-        paper-button {
-            border: 1px solid #24293d;
-            height: 30px;
-            font-size: 13px;
-            border: 1px solid;
         }
 
         #buttons {
@@ -63,18 +68,7 @@
             margin-top: 30px;
             margin-bottom: 10px;
         }
-        #previewBtn {
-            --color: teal;
-            font-weight: 700;
-            color: #cc6666;
-            
-        }
 
-        #reply-btn {
-            font-weight: 700;
-            color: #cc6666;
-            --color: white;
-        }
         paper-toast {
             --paper-toast-background-color: #cc4444;
             font-weight: 700;
@@ -85,8 +79,17 @@
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
+        
         <template is='dom-if' if="[[preview]]">
-            <aq-community-previewpost reply=1 thread-data="[[threadData]]"></aq-community-previewpost>
+            <aq-community-previewpost-item reply thread-data="[[threadData]]"></aq-community-previewpost-item>
+
+            <div class="layout horizontal" id='buttons'>
+                <div class="flex"></div>
+
+                <paper-button raised noink on-tap='onEdit' id="editBtn">Edit</paper-button>
+
+                <paper-button raised noink on-tap="postThread" id="reply-btn">Post Reply</paper-button>
+            </div>
         </template>
 
         <template is='dom-if' if="[[!preview]]">
@@ -110,11 +113,12 @@
                 </div>
                 
                 <aq-html-editor id="editor"></aq-html-editor>
+
                 <div class="layout horizontal" id='buttons'>
-                    <paper-button noink on-tap='onPreview' id="previewBtn">Preview</paper-button>
+                    <paper-button raised noink on-tap='onPreview' id="previewBtn">Preview</paper-button>
                     <div class="flex"></div>
 
-                    <paper-button noink on-tap="postThread" id="reply-btn">Post Reply</paper-button>
+                    <paper-button raised noink on-tap="postThread" id="reply-btn">Post Reply</paper-button>
                 </div>
             </div>
             <paper-toast text="[[error]]"></paper-toast>
@@ -170,7 +174,7 @@
 
             listeners: {
                 'backtest-attached': 'onBacktestAttached',
-                'edit-clicked': 'onEdit',
+                //'edit-clicked': 'onEdit',
                 'submit-clicked': 'postThread',
             },
 
@@ -188,6 +192,7 @@
                 if (this.processInput()) {
                     this.header = this.$.authItem.getHeader();
                     this.$.postThreadQuery.generateRequest();
+
                     this.onRemoveAttached();
                     this.preview = false;
                 } else {
@@ -270,7 +275,7 @@
 
             _threadIdChanged: function (nThreadId, oThreadId) {
                 if (!nThreadId || nThreadId == "") {
-                    this.resetView();
+                    //this.resetView();
                 }
             },
 

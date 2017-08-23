@@ -318,7 +318,12 @@
                 if(this.$$('aq-backtest-performance-detail-item')) {
                     this.$$('aq-backtest-performance-detail-item').reset(); 
                 } else {
-                    this.async(function() {this.$$('aq-backtest-performance-detail-item').reset();}, 200); 
+                    this.async(function() 
+                        {
+                            if(this.$$('aq-backtest-performance-detail-item')) {
+                                    this.$$('aq-backtest-performance-detail-item').reset();
+                                }
+                        }, 200); 
                 }
             },
 

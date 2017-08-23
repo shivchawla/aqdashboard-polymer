@@ -12,7 +12,7 @@
 
     <style>
 
-        #searchbox, #tagsInput {
+        input {
             height: 32px;
             -webkit-appearance: none;
             line-height: 46px;
@@ -28,12 +28,21 @@
             display: inline-block;
         }
 
-        #searchbox:focus, #tagsInput:focus {
+        input:focus{
             outline: 0;
             background-color: #f7f7f7;
         }
 
-        #searchbox::-webkit-search-cancel-button, #tagsInput::-webkit-search-cancel-button {
+        #tagsInput {
+            outline: none;
+            width: 100%;
+            box-shadow: none;
+            width: 30%;
+            min-width: 225px;
+            margin-right: 10px;
+        }
+
+        #searchbox::-webkit-search-cancel-button {
             position: relative;
             right: 15px;
         }
@@ -41,15 +50,8 @@
         .search-bar {
             --width: 45%;
             margin: 0 auto;
-            /*display: flex;*/
-            /*align-items: center;*/
             position: relative;
             margin-bottom: 5px;
-        }
-
-        .tag-bar {
-        	width: 85%;
-        	--min-width: 375px;
         }
 
         .add-tag span {
@@ -65,11 +67,6 @@
 
         paper-button {
             border: none;
-        }
-
-        .upper-container {
-            margin-bottom: 20px;
-            width: 100%;
         }
 
         .search-btn {
@@ -93,31 +90,27 @@
             width: 13px;
             height: 13px;
         }
-        #tagsInput{
-            height: 100%;
+
+        #container {
+            width: 85%;
         }
-        aq-tags-input-container{
-            --tags-container-height:34px;
-            --tags-container-padding-left:0;
-        }
+ 
     </style>
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        <div class="upper-container">
+        <div id="container">
             <div class="search-bar layout horizontal">
                 <input id="searchbox" placeholder="Search Term" class="flex"
                        value="{{searchValue::input}}"
-                       on-keydown="checkForKeys" on-blur='blur'>
+                       on-keydown="checkForKeys">
                	
                	<paper-button raised class="btn search-btn" on-tap="search">Search</paper-button>
-        	  	
             </div>
 
             <template is='dom-if' if='[[addTag]]'>
-	             <aq-tags-input-container class="tag-bar layout horizontal center-justified">
-                    <input type="text" id="tagsInput" placeholder="Add tags here and press Enter"
-                           on-keydown="onChange" on-keyup="scrollToBottom">
+	             <div class="tag-bar layout horizontal">
+                    <input type="text" id="tagsInput" placeholder="Add tags here and press Enter" on-keydown="onChange" on-keyup="scrollToBottom">
                     <div id="tagsContainer" class="tags-container">
                         <template is="dom-repeat" items="{{tags}}">
                             <aq-tag-element label="{{item}}">
@@ -125,7 +118,7 @@
                             </aq-tag-element>
                         </template>
                     </div>
-                </aq-tags-input-container>
+                </div>
           	</template>
 
         	<template is='dom-if' if='[[!addTag]]'>
@@ -214,11 +207,15 @@
             },
 
             blur: function() {
-                if (this.$$('#searchbox').value == "") {
+                var lastVal = this.$$('#searchbox').value; 
+                this.$$('#searchbox').value = "";
+                this.selectedCategory = 0;
+                
+                if(lastVal != "") {
                     this.debounce('search', function(){this.search(true);}, 50);
                 }
 
-                this.async(function(){this.$$('#searchbox').focus();}, 50);
+                //this.async(function(){this.$$('#searchbox').focus();}, 50);
             },
 
             toggle: function () {
@@ -242,16 +239,19 @@
             checkForKeys: function (e) {
                 // check if 'esc' was pressed
                 if (e.keyCode === 27) {
-                    this.$$('#searchbox').value = "";
-                    this.selectedCategory = 0;
                     this.blur();
                 } else if (e.keyCode === 13) {
                     this.search();
                 }
             },
+
             onChange: function (e) {
                 if (e.keyCode == 13 && e.target.value.length >= 1) {
-                    this.push('tags', e.target.value);
+                    if(this.tags.length < 5 && 
+                            this.tags.map(item=>{return item.toLowerCase();}).indexOf(e.target.value.toLowerCase()) == -1) {
+                        this.push('tags', e.target.value);
+                    }
+
                     if (this.$$('#tagsInput')) {
                         this.$$('#tagsInput').value = "";
                     }

@@ -126,6 +126,18 @@
         #img {
             margin-right: 10px;
             margin-bottom: 5px;
+        }
+
+        #followIcon.Follow {
+            color: teal;
+            background-color: white;
+            border-color: 1px solid teal;
+        }
+
+        #followIcon.UnFollow {
+            color: white;
+            background-color: teal;
+            --border-color: 1px solid teal;
         }   
 
     </style>
@@ -144,27 +156,28 @@
         </iron-ajax>
 
         <div id='post-header' class="layout vertical">
-            <div class="layout horizontal">
-                
-                <iron-icon class="post-icon self-start" icon="[[computeIcon(postHeader.category)]]"></iron-icon>
-                
-                <div id="header-container" class="self-center">
-                    <div id='heading'>[[postHeader.title]]</div>
-                    <div id='category'><i>[[postHeader.category]]</i></div>
-                </div>
+            <template is='dom-if' if='[[!reply]]'>
+                <div class="layout horizontal">       
+                    <iron-icon class="post-icon self-start" icon="[[computeIcon(postHeader.category)]]"></iron-icon>
+                    
+                    <div id="header-container" class="self-center">
+                        <div id='heading'>[[postHeader.title]]</div>
+                        <div id='category'><i>[[postHeader.category]]</i></div>
+                    </div>
 
-                <div class="flex"></div>
-                
-                <div id='followers' class="self-start"> 
-                    <template is="dom-if" if="[[hasFollowers(followers)]]">
-                        <span>Following: [[followers.length]]</span>
-                    </template>
+                    <div class="flex"></div>
+                    
+                    <div id='followers' class="self-start"> 
+                        <template is="dom-if" if="[[hasFollowers(followers)]]">
+                            <span>Following: [[followers.length]]</span>
+                        </template>
+                    </div>
+                    <paper-button raised class$="self-start [[computeFollowTitle(followers)]]"
+                        noink id='followIcon' disabled="[[preview]]"
+                        on-tap='onFollow'>[[computeFollowTitle(followers)]]
+                    </paper-button>        
                 </div>
-                <paper-button raised class="self-start"
-                    noink id='followIcon' disabled="[[preview]]"
-                    on-tap='onFollow'>[[computeFollowTitle(followers)]]
-                </paper-button>        
-            </div>
+            </template>
 
             <div id='author' class="layout horizontal center">
                 <aq-profile-img class="self-center" id='img' name="[[postHeader.user.firstName]][[postHeader.user.lastName]]" class="self-end"></aq-profile-img>
@@ -223,6 +236,15 @@
                     type: Array,
                     value: [],
                 },
+
+                reply: {
+                    type: Boolean,
+                    value: false,
+                }
+            },
+
+            attached: function() {
+                this.computeFollowTitle(this.followers);
             },
 
             computeIcon: function(category) {
@@ -274,25 +296,11 @@
             computeFollowTitle: function (followers) {
                 if (this.$.authItem.checkHasToken()) {
                     var user = this.$.authItem.getUser();
-
                     var userId = user._id;
-
-                    if (followers.indexOf(userId) > -1) {
-                        // Change the icon color too
-                        this.$$('#followIcon').style.color = 'white';
-                        this.$$('#followIcon').style.backgroundColor = 'teal';
-                        //this.$$('#followIcon').style.outlineColor = '';
-                        
-                        return "UnFollow";
-                        //this.$.followIcon
-
-                    }
-
-                    this.$$('#followIcon').style.color = 'teal';
-                    this.$$('#followIcon').style.backgroundColor = 'white';
-
-                    return "Follow";
+                    return followers.indexOf(userId) > -1 ? "UnFollow" : "Follow";
                 }
+
+                return "Follow";
 
             },
 

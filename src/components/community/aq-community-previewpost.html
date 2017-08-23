@@ -3,9 +3,7 @@
 
 <link rel="import" href="../common/aq-allpage-layout.html">
 
-<link rel="import" href="../aq-html-editor.html">
-<link rel="import" href="./aq-community-postdetail-header.html">
-<link rel="import" href="./aq-community-postdetail-content.html">
+<link rel="import" href="./aq-community-previewpost-item.html">
 
 <dom-module id="aq-community-previewpost">
 
@@ -13,26 +11,6 @@
     </style>
 
     <style>
-
-        #previewContainer {
-            --margin-top: 15px;
-            --margin-bottom: 30px;
-        }
-
-        .preview-internal {
-            --margin-left: 7%;
-            --margin-right: 7%;
-        }
-
-        .previewContainer[reply] {
-            margin-top: 50px;
-            --width: 100% !important;
-            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            --padding: 15px 20px 10px 20px;
-            margin-bottom: 25px;
-            border-radius: 2px;
-            background-color: #fff;
-        }
 
         #postNbacktest {
             width: 100%;
@@ -72,7 +50,6 @@
     <template>
 
         <aq-allpage-layout header="Preview Post" current-path="[[currentPath]]">
-            
             <div class="header-button layout horizontal self-center">
                 
                 <paper-button raised noink on-tap='onEdit'>Edit</paper-button>
@@ -80,34 +57,9 @@
             
             </div>
 
-            <div class="internal-content" 
-                id="previewContainer" reply$=[[reply]]>
-
-                <div class='preview-internal'> 
-                    <template is='dom-if' if='[[reply]]'>
-                        <aq-community-postdetail-content post-content="[[threadData]]"></aq-community-postdetail-content>
-                    </template>
-
-                    <template is='dom-if' if='[[!reply]]'>
-                        <aq-community-postdetail-header 
-                            preview
-                            post-header="[[threadData]]">
-                        </aq-community-postdetail-header>
-                    </template>
-                </div>
-
-                <template is='dom-if' if='[[!reply]]'>
-                    <div id='bar'></div> 
-                </template>
-
-                <div class='preview-internal'>  
-                    <template is='dom-if' if='[[!reply]]'>
-                        <aq-community-postdetail-content 
-                            preview
-                            post-content="[[threadData]]">
-                        </aq-community-postdetail-content>
-                    </template>
-                </div>
+            <div class="internal-content">
+                <aq-community-previewpost-item thread-data="[[threadData]]">
+                </aq-community-previewpost-item>
             </div>
 
             <div class="footer-button layout horizontal" id='lower-button-group'>

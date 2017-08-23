@@ -7,6 +7,8 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+
 <link rel="import" href="./aq-community-postdetail-header.html">
 
 <link rel="import" href="./aq-community-postdetail-content.html">
@@ -98,18 +100,46 @@
           padding: 20px;
       }
 
+      #reply-div  {
+        --margin-top: 40px;
+      }
+
+      aq-allpage-layout {
+          scroll-behavior: inherit;
+      }
+
+      #random {
+        height: 40px;
+      }
+
+      #threshold {
+          height: 100%;
+      }
+
   </style>  
 
   <template>
       <aq-check-authentication id='authItem'></aq-check-authentication>
       
       <iron-ajax      
-          url="[[computeGetThreadUrl(threadId)]]"
+          url=""
           method='GET'
           id='getThreadQuery'
           handle-as="json"
           on-response="onGetThreadDetailResponse"
           on-error="onGetThreadDetailError"
+          headers='{{header}}'
+          debounce-duration="300"
+          loading='{{loading}}'>
+      </iron-ajax>
+
+      <iron-ajax      
+          url=""
+          method='GET'
+          id='getThreadRepliesQuery'
+          handle-as="json"
+          on-response="onGetThreadRepliesResponse"
+          on-error="onGetThreadRepliesError"
           headers='{{header}}'
           debounce-duration="300"
           loading='{{loading}}'>
@@ -125,10 +155,10 @@
       </iron-ajax>
 
         <!--template is='dom-if' if='{{!loading}}'-->
-        <template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'>
-            
-            <aq-allpage-layout loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
-            
+        <!--template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'-->
+          
+            <aq-allpage-layout id='layout' loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
+               
                 <div class="internal-content" id="post-container">
                     <paper-card id="header" clas="flex">
                           <aq-community-postdetail-header
@@ -142,13 +172,13 @@
                           </aq-community-postdetail-content>
                     </paper-card>
                       
-                    <span class="reply-no">Replies&nbsp;({{threadDetails.replies.length}})</span>
-                      
-                    <template is='dom-if' if="[[hasReplies(threadDetails.replies)]]">
+                    <span class="reply-no">Replies&nbsp;({{threadDetails.nreplies}})</span>
+                    
+                    <template is='dom-if' if="[[hasReplies(replies)]]">
                         <paper-card id="replyContainer">
                             <div class="card-content">
                               <template is="dom-repeat"
-                                        items="{{threadDetails.replies}}"
+                                        items="{{replies}}"
                                         initial-count=5>
                                   <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
                               </template>
@@ -156,14 +186,17 @@
                         </paper-card>
                     </template>
 
-                    <aq-community-create-reply 
-                        id="replyEditor"
-                        thread-id="[[threadDetails._id]]">
-                    </aq-community-create-reply>
+                    <div id='reply-div'>
+                      <aq-community-create-reply 
+                          id="replyEditor"
+                          thread-id="[[threadDetails._id]]">
+                      </aq-community-create-reply>
+                    </div>
 
                 </div>
-            </aq-allpage-layout>    
-        </template>
+            </aq-allpage-layout>  
+
+        <!--/template-->
         <!--/template-->
 
   </template>
@@ -190,6 +223,10 @@
           type: Object,
         },
 
+        replies: {
+          type: Array,
+        },
+
         loading:Boolean,
 
         currentPath: {
@@ -202,14 +239,40 @@
       listeners :{
         'goBackClicked':'goBack',
         'reply-added':'addReply',
-        'clone-backtest-clicked':'onCloneRequest'
+        'clone-backtest-clicked':'onCloneRequest',
+        'lower-trigger':'showMeLove',
+      },
+
+      attached: function() {
+
+          window.addEvenlinstenr
+          if(!this.$.authItem.checkHasToken()) {
+              this.fire('rt-changed',{route:'/user/signin'});
+              return;
+          } else {
+              this.user = this.$.authItem.getUser();
+              this.header = this.$.authItem.getHeader();
+              this.$.views.generateRequest();
+
+              this.skip = 0;
+              this.limit = 10;
+              this.$.getThreadQuery.url = this.computeGetThreadUrl(this.threadId);
+              this.$.getThreadQuery.generateRequest();
+          }
+
       },
 
       onGetThreadDetailResponse: function(data) {
           this.set('threadDetails', data.detail.response);
+          
+          this.set('replies', data.detail.response.replies);
       },
 
       onGetThreadDetailError: function(data) {
+      },
+
+      onGetThreadRepliesResponse: function(data) {
+          this.replies = this.replies.concat(data.detail.response.replies);
       },
 
       computeGetThreadUrl: function(threadId){
@@ -247,25 +310,28 @@
           return replies ? replies.length > 0 : false;
       },
 
-      attached: function() {
-          if(!this.$.authItem.checkHasToken()) {
-              this.fire('rt-changed',{route:'/user/signin'});
-              return;
-          } else {
-              
-              this.user = this.$.authItem.getUser();
-              this.header = this.$.authItem.getHeader();
-              this.$.views.generateRequest();
-              this.$.getThreadQuery.generateRequest();
-          }
-
-      },
-
       onCloneRequest: function(e) {
           e.detail.backtestId = this.threadDetails.backtestId;
           //Don't stop the propagation
           //Will be handled in aq-dashboard-main
-      }
+      },
+
+      loadMoreData: function() {
+          console.log("Chuityaap");
+          if(this.threadDetails) {
+              if(this.replies.length < this.threadDetails.nreplies) {
+                  this.skip = (this.skip + 1) * this.limit;
+
+                  this.$.getThreadRepliesQuery.url = this.computeGetThreadUrl(this.threadId).concat('?select=replies&skip=').concat(this.skip).concat('&limit=').concat(this.limit);
+
+                  this.$.getThreadRepliesQuery.generateRequest();
+              }
+          }
+      },
+
+      showMeLove: function() {
+          console.log("HOla Hola");
+      },
 
     });
 

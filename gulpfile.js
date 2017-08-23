@@ -2,30 +2,28 @@ var gulp = require('gulp');
 var vulcanize = require('gulp-vulcanize');
 var crisper = require('gulp-crisper');
 var htmlmin = require('gulp-html-minifier');
-var uglify = require('gulp-uglify');
+//var uglify = require('gulp-uglify-es');
+var uglifyjs = require('uglify-es');
+var composer = require('gulp-uglify/composer');
+var minify = composer(uglifyjs, console);
 var pump = require('pump');
 
 gulp.task('vulcanize', function () {
-    return gulp.src('src/aq-dashboard/aq-dashboard.html')
+    return gulp.src('src/aq-app/aq-app.html')
         .pipe(vulcanize({
             abspath: '',
-            //excludes: ['bower_components/nvd3-elements/','bower_components/juicy-ace-editor/','bower_components/simplemde/','bower_components/webcomponentsjs/','bower_components/polymer/'],
-            excludes: ['bower_components/iron-iconset-svg/','bower_components/iron-icon/','bower_components/iron-meta/', 'bower_components/vaadin-icons/','bower_components/webcomponentsjs/','bower_components/polymer/'],
-            stripExclude: ['bower_components/iron-iconset-svg/','bower_components/iron-icon/','bower_components/iron-meta/','bower_components/vaadin-icons/','bower_components/webcomponentsjs/','bower_components/polymer/'],
-            //inlineScripts:true,
-            //inlineCss:true,
+            excludes:['bower_components/iron-iconset-svg/','bower_components/iron-icon/','bower_components/iron-meta/', 'bower_components/vaadin-icons/','bower_components/webcomponentsjs/','bower_components/polymer/'],
             stripComments:true,
-
         })).pipe(crisper())
-        .pipe(gulp.dest('build/src/aq-dashboard'));
+        .pipe(gulp.dest('build/src/aq-app'));
 });
 
  //'bower_components/iron-scroll'
 gulp.task('compress', ['vulcanize'], function (cb) {
   pump([
-        gulp.src('build/src/aq-dashboard/aq-dashboard.js'),
-        uglify(),
-        gulp.dest('build/src/aq-dashboard')
+        gulp.src('build/src/aq-app/aq-app.js'),
+        minify(),
+        gulp.dest('build/src/aq-app')
     ],
     cb
   );
@@ -42,7 +40,8 @@ gulp.task('copy',['compress'], function() {
       .pipe(gulp.dest('build'));
 
     gulp.src('bower.json')
-      .pipe(gulp.dest('build'));  
+      .pipe(gulp.dest('build')); 
+
 });
 
 gulp.task('default',['copy']);  

@@ -21,19 +21,20 @@
         }
     </style>
     <template>
-        <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="" content="">
+        <polymer-quill id="poly_quill_content" store-as="delta" save-interval="10" toolbar-type="standard" content="">
         </polymer-quill>
     </template>
     <script>
         Polymer({
             is: "aq-html-editor",
-            ready:function () {
-            },
+
             getContent: function () {
                 return this.$.poly_quill_content.getHTML();
             },
+
             clearContent: function () {
-                this.$.poly_quill_content.resetContent();
+                //IT"S WEIRD that the following comands resets...
+                this.$$('#poly_quill_content').resetContent("123232");
             }
         });
     </script>
