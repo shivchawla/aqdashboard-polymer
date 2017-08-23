@@ -1,0 +1,59 @@
+<link rel="import" href="./aq-community-postdetail-header.html">
+<link rel="import" href="./aq-community-postdetail-content.html">
+
+<dom-module id='aq-community-previewpost-item'>
+	
+	<style>
+        #bar {
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        #previewContainer[reply] {
+            margin-top: 50px;
+            margin-bottom: 25px;
+            border-radius: 2px;
+            background-color: #fff;
+            border: 1px solid #e1e1e1;
+        }
+
+	</style>
+	
+	<template>
+
+        <div id="previewContainer" reply$=[[reply]]>
+            <div class='preview-internal'> 
+                <aq-community-postdetail-header 
+                    preview
+                    reply
+                    post-header="[[threadData]]">
+                </aq-community-postdetail-header>
+
+                <div id='bar'></div> 
+  
+                <aq-community-postdetail-content 
+                    preview
+                    post-content="[[threadData]]">
+                </aq-community-postdetail-content>
+            </div>
+        </div>
+	</template>	
+
+	<script>
+		Polymer({
+
+			is: 'aq-community-previewpost-item',
+
+			properties: {
+				
+				threadData: Object,
+				
+				reply:{
+					type: Boolean,
+					value: false,
+				}
+			},
+
+		 	
+		});
+	</script>
+</dom-module>
