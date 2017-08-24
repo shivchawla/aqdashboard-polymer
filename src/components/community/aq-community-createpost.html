@@ -33,13 +33,15 @@
         }
 
         paper-button {
-            border: 1px solid teal;
-            height: 30px;
-            font-size: 13px;
-            color: teal;
-            --white;
-            background-color: transparent;
-            border-radius: 5px;
+            --paper-button: {
+                font-size: 0.7em;
+                background-color: teal;
+                color: white;
+                padding: 0 20px;
+                border-radius: 0;
+                height: 25px;
+                font-weight: 700;
+            };
         }
 
         #attachButton {
@@ -118,27 +120,6 @@
         .attachment-container {
             margin-top: 10px;
             margin-bottom: 10px;
-        }
-
-        paper-button {
-            border: none;
-            color: #444;
-        }
-
-        #previewBtn {
-            color: #cc6666;
-            font-weight: 700;
-            border: 1px solid !important;
-        }
-
-        #submitBtn {
-            font-weight: 700;
-            color: #cc6666;
-            border: 1px solid !important;
-        }
-
-        #cancelBtn {
-            font-weight: 700;
         }
 
         paper-toast {

@@ -65,26 +65,38 @@
         value: false,
         reflectToAttribute: true
       },
+
       src: {
         type: String,
         value: null
       },
+
       letter: {
         type: String,
         value: null
       },
-      name: {
+
+      firstName: {
+        type: String,
+      },
+
+      lastName: {
         type: String,
       }
 
     },
 
     attached: function() {
-       if (!this.letter && this.name) {
-          var names = this.name.split(" ");
-          this.letter = names.length > 1 ? names[0][0]+names[1][0] : (names.length == 1 ? names[0][0] : "");
-       }
-    }
+
+        console.log(this.letter);
+        console.log(this.firstName);
+        console.log(this.lastName);
+
+        if (!this.letter && (this.firstName || this.lastName)) {
+        
+            this.letter = (this.firstName ? (this.firstName.length > 0 ? this.firstName[0] : "") : "").concat(this.lastName ? (this.lastName.length > 0 ? this.lastName[0] : "") : "");
+        }
+    },
 
   });
 </script>
