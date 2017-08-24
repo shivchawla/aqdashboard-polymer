@@ -87,11 +87,6 @@
     },
 
     attached: function() {
-
-        console.log(this.letter);
-        console.log(this.firstName);
-        console.log(this.lastName);
-
         if (!this.letter && (this.firstName || this.lastName)) {
         
             this.letter = (this.firstName ? (this.firstName.length > 0 ? this.firstName[0] : "") : "").concat(this.lastName ? (this.lastName.length > 0 ? this.lastName[0] : "") : "");

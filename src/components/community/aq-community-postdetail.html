@@ -101,7 +101,7 @@
       }
 
       #reply-div  {
-        --margin-top: 40px;
+        margin-top: 40px;
       }
 
       aq-allpage-layout {
@@ -294,7 +294,7 @@
         var reply = e.detail.reply;
         reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
 
-        this.push('threadDetails.replies', reply);
+        this.push('replies', reply);
         this.$$("#replyEditor").clearEditor();
       },
 
