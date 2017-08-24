@@ -75,10 +75,8 @@
             padding: 20px 20px;
         }
 
-        aq-tags-input-container{
-            --tags-container-padding-left:0;
-            --tags-container-background-color:transparent;
-            border: 1px solid #e1e1e1;
+        .tags-container {
+            margin-left: 10px;
         }
 
         .tags-header {
@@ -181,16 +179,29 @@
             margin-top: 5px;
         }
 
-        #topicInput {
+        input {
             width: 100%;
             padding: 10px;
-            --padding-right: 0px;
             border: 1px solid #e1e1e1;
             color: #cc6666;
             font-size: 26px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
             background-color: #fff;
             outline: none;
+        }
+
+        #tagsInput {
+            width: 30%;
+            min-width: 200px;
+            font-size: 16px;
+            box-shadow: none;
+            border: none;
+            color:black;
+        }
+
+        #tags-outer-container {
+            border: 1px solid #e1e1e1;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
     </style>
@@ -246,9 +257,9 @@
                     </div>
                 
                     <div class="middle-container layout vertical">
-                        <aq-tags-input-container>
+                        <div id='tags-outer-container' class="layout horizontal center">
                             <input type="text" id="tagsInput" 
-                                class="flex" placeholder="Add tags here"
+                             placeholder="Add tags here"
                                 on-keydown="onChange" 
                                 on-keyup="scrollToBottom">
 
@@ -259,8 +270,10 @@
                                     </aq-tag-element>
                                 </template>
                             </div>
-                        </aq-tags-input-container>
+                        </div>
+                        
                         <div id="limit-tags-text" class="self-end">Add upto 5 tags</div>
+
                     </div>
                             
                     <div class="layout horizontal">

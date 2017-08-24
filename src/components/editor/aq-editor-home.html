@@ -132,32 +132,6 @@
             };
         }
 
-        #searchbox {
-            height: 32px;
-            -webkit-appearance: none;
-            line-height: 46px;
-            border: 0;
-            margin: 0;
-            padding-left: 10px;
-            border: 1px solid #e5e5e5;
-            @apply(--paper-font-body1);
-            width: 30%;
-            font-size: 14px;
-            /*z-index: 2;*/
-            background-color: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease-in-out;
-        }
-
-        #searchbox:focus {
-            outline: 0;
-            background-color: #f7f7f7;
-        }
-
-        #searchbox::-webkit-search-cancel-button {
-            position: relative;
-            right: 15px;
-        }
         .search-bar {
             width: 50%;
             margin: 0 auto;
@@ -513,7 +487,7 @@
                 this.resetView();
                 var strategies = data.detail.response;
                
-                this.testStrategies = strategies.length > 0 ? strategies : null;
+                this.testStrategies = strategies.length > 0 ? strategies : [];
                 
                 var liveStrategies = null;
                 
@@ -531,8 +505,13 @@
                 this.liveStrategies = liveStrategies ? liveStrategies : [];
                 //Get forward test minor details 
 
+                if(this.$$('aq-icon-expandable-search') && this.searchtext != "") {
+                    this.$$('aq-icon-expandable-search').focus();
+                }
+
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
                     this.dirtyBit = 0;
+
                 } else {
                     this.dirtyBit = 1;
                 }
@@ -803,37 +782,6 @@
                 if (this.dirtyBit == 1) {
                   this.fetchResults(); 
                 }
-            },
-
-            checkForKeys: function (e) {
-                // check if 'esc' was pressed
-                if (e.keyCode === 27) {
-                    this.$$('#searchbox').value = "";
-                    this.$$('#searchbox').blur();
-                } else if (e.keyCode === 13) {
-                    this.debounce('search', this.search, 50);
-                }
-            },
-
-            blur: function () {
-                if (this.$$('#searchbox').value == "") {
-                    //this.$$('#menu-icons').style.display = 'inline';
-                    this.debounce('search', this.search, 50);
-                }
-
-                this.async(function(){this.$$('#searchbox').focus();}, 50);
-                //this.$$('#searchbox').focus = false;
-                //this.searchActive = false;
-            },
-
-            search: function () {
-                this.searchText = this.$$('#searchbox').value;
-                this.fire('search-action', {searchtext: this.searchText});
-            },
-
-            openSearch: function() {
-                this.searchActive = true;
-                this.async(function(){this.$$('#searchbox').focus();}, 50);
             },
 
             formatDateTime: function(d) {
