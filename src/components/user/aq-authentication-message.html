@@ -7,6 +7,10 @@
 
 	<style>
 
+		:host {
+			font-family: 'Garamond', sans-serif;
+		};
+
 		#container {
 			margin-left: 20px;		
 		}
@@ -15,15 +19,17 @@
 			color:teal;
 		}
 
-		#p1 {
-			color:#24293d;
-			
+		p {
+			font-size: 18px;
+		}
+
+		p span {
+			font-weight: 700;
 		}
 
 		#header {
 			font-size: 24px;
 			color: teal;
-			
 			margin-bottom: 5px;
 		}
 
@@ -31,7 +37,7 @@
 			color:#cc6666;
 		}
 
-		paper-button {
+		aper-button {
 			width:15%;
 			background-color: white;
 			border: 1px solid teal;
@@ -39,6 +45,18 @@
 			border-radius: 20px;
 			min-width: 100px;
 		}
+
+		paper-button {
+          text-transform: none;
+          --paper-button: {
+              border-radius: 20px;  
+              font-size: 14px;
+              background: teal;
+              color: white;
+              padding: 5px 20px;
+              height: 25px;
+          };
+      }
 
 	</style>
 
@@ -53,18 +71,18 @@
       	</app-route>  
 
       	<template is='dom-if' if='{{active}}'>
-			<div class="layout vertical fit" style="background-color: #f4f9f7;">
+			<div class="layout vertical fit">
 				
 				<div id = 'container' class="self-start"> 
 					<template is='dom-if' if='[[isModeForgotPassword(mode)]]'>
 						<p id='header'class="self-start">We are here to help you!!</p>
-						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to reset your password.</p>
+						<p id='p1' class="self-start">We've sent an email to <span>[[emailId]]</span>.<br/> Please follow the instructions in the email to reset your password.</p>
 						<paper-button on-tap='goToLogin'>Go Back</paper-button>
 					</template>
 
 					<template is='dom-if' if='[[isModeActivationPending(mode)]]'>
 						<p id='header' class="self-start">You are just one step away to test your great ideas!!</p>
-						<p id='p1' class="self-start">We've sent an email to <i>[[emailId]]</i>.<br/> Please follow the instructions in the email to activate your account.</p>
+						<p id='p1' class="self-start">We've sent an email to <span>[[emailId]]</span>.<br/> Please follow the instructions in the email to activate your account.</p>
 						<paper-button on-tap='goToLogin'>Go Back</paper-button>
 					</template>
 

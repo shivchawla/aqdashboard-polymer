@@ -67,7 +67,7 @@
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
-            <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken)]]">
+            <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken, currentUrl)]]">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
    
               <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]">
@@ -80,13 +80,9 @@
                       <aq-aboutpage></aq-aboutpage>
                   </template>
 
-                  <template is="iron-lazy-page" page="/user/signin">
+                  <template is="iron-lazy-page" page="/user">
                       <aq-user-login-panel></aq-user-login-panel>
                   </template>
-
-                  <template is="iron-lazy-page" page="/user/signout">
-                      <aq-user-login-panel></aq-user-login-panel>
-                  </template>       
 
                   <template is="iron-lazy-page" page="/user/signup">
                       <aq-user-login-panel></aq-user-login-panel>
@@ -247,8 +243,8 @@
             //this.manageTabOnUrlChange()
         },
 
-        computeToolbarType: function(hasToken) {
-            return hasToken ? "fixed" : "scroll";
+        computeToolbarType: function(hasToken, currentUrl) {
+            return hasToken ? (currentUrl ? (currentUrl.indexOf("main") == -1 && currentUrl.indexOf("about") == -1 ? "fixed" : "scroll") : "scroll") : "fixed";
         },
 
         computePageViewForToken: function(hasToken, currentTab) {
@@ -404,7 +400,7 @@
             
             if(idx == 0) { //this one is when URL is refreshed and has query params
                 route = '/' + route;
-            } else if(idx>0) {
+            } else if(idx > 0) {
                 route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
             } else {
                 route = '/#' + route;
@@ -424,8 +420,12 @@
         },
 
         computePage: function(currentUrl) {
-            if(currentUrl.indexOf('dashboard') != -1) {
+            if(currentUrl.indexOf('#/dashboard') != -1) {
                 return "/dashboard";
+            } else if(currentUrl.indexOf('#/user/signup') != -1) {
+                return "/user/signup";
+            } else if(currentUrl.indexOf('#/user') != -1) {
+                return "/user";
             } else {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);
             }

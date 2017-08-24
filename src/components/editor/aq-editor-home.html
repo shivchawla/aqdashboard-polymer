@@ -293,7 +293,7 @@
                     </div>
                 </div>
 
-                <template is='dom-if' if='[[liveStrategies]]'>
+                <template is='dom-if' if='[[hasNonZeroStrategies(liveStrategies)]]'>
                     <div id="live-strategy-container">
                     <div class="card-content">
                         <div class="heading">Live Tests</div>
@@ -321,7 +321,7 @@
                     </div>
                 </template>
 
-                <template is='dom-if' if='[[testStrategies]]'>
+                <template is='dom-if' if='[[hasNonZeroStrategies(testStrategies)]]'>
                     <div id="test-strategy-container">
                         <div class="card-content">
                             <div class="heading">Test Strategies</div>
@@ -528,7 +528,7 @@
                     }
                 }
 
-                this.liveStrategies = liveStrategies;
+                this.liveStrategies = liveStrategies ? liveStrategies : [];
                 //Get forward test minor details 
 
                 if (!this.searchParam || (this.searchParam && this.searchParam.search == "")) {
@@ -852,6 +852,10 @@
                 var strategyId = e.detail.strategyId;
                 var forwardtestId = e.detail.forwardtestId;
                 this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward'});
+            },
+
+            hasNonZeroStrategies: function(str) {
+                return str ? str.length > 0 : false;
             },
 
         });

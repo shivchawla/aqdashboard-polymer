@@ -188,7 +188,7 @@
                     switch(this.currentTab) {
                         case 0: routes = ["/main"];break;
                         case 1: routes = ["/about"];break;
-                        case 2: routes = ["/user/signin","/user/signout"];break;
+                        case 2: routes = ["/user/signin","/user/signout","/user/authMessage"];break;
                         case 3: routes = ["/user/signup"];break;
                         case 4: routes = ["/dashboard/editor", "/dashboard/analyze"];break;
                         case 5: routes = ["/dashboard/community"];break;
@@ -246,8 +246,7 @@
             },
 
             _currentURLChanged: function() {
-
-                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout"], "3":["/user/signup"], "4":["/dashboard/editor", "/dashboard/analyze"], "5":["/dashboard/community"], "6":["/dashboard/help"]};
+                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout","/user/authMessage"], "3":["/user/signup"], "4":["/dashboard/editor", "/dashboard/analyze"], "5":["/dashboard/community"], "6":["/dashboard/help"]};
                 
                 var i = 0;
                 var keys = Object.keys(routeList);
@@ -263,7 +262,6 @@
                   
                     i++;
                 }
-
             },
 
         });
