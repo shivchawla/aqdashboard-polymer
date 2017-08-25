@@ -517,6 +517,8 @@
                 //This backtest object just contains settings and code
                 //BUT has no output
 
+                this.fire('iron-signal',{name:'backtest-started', data:{id:this.activeBacktestId}});
+
                 // Send Execution request via web-sockets
                 this.selectedSidebar = 1;
 

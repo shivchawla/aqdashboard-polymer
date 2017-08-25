@@ -222,13 +222,12 @@
 	        	if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
                         this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
                         
-                    this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
-
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data: {id: this.backtest._id, pctCompleted:this.pctCompleted}});
                 }
 
                 //Update the status
                 if(this.pctCompleted == 100) {
-                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
+                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtest._id}});
                 }
             },
 
@@ -258,8 +257,6 @@
                 }
 
                 this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
-
-                console.log(this.trackVarKeysArray);
 
                 for (var i = 0; i < this.trackVarKeysArray.length; i++) {
                     this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset,
