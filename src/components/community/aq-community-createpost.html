@@ -384,11 +384,6 @@
             onPostThreadResponse: function (data) {
                 this.newThreadId = data.detail.response._id;
 
-                if (this.$.authItem.checkHasToken()) {
-                    this.header = this.$.authItem.getHeader();
-                    this.$.followPostQuery.generateRequest();
-                }
-
                 this.resetView();
                 this.fire('rt-changed', {route:"/dashboard/community/"+this.newThreadId});
 

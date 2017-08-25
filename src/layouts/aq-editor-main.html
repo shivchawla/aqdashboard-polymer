@@ -80,6 +80,10 @@
 
       },
 
+      listeners: {
+          'analyze-clicked':'goToAnalyze',
+      },
+
       goToAnalyze: function(e) {
         var strategyId = e.detail.id;
         this.fire('rt-changed',{route:'/dashboard/analyze/' + strategyId});

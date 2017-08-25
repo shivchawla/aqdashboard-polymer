@@ -128,7 +128,7 @@
     		</template>
     	</div>
 
-		<div class="container layout horizontal justified wrap">
+		<div class="container layout horizontal justified">
 	        <template is='dom-repeat' items="{{headerItems}}">
 	        	<aq-qqq class$="[[isExceptionClass(item)]]" label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
 	        </template>
@@ -156,12 +156,18 @@
 
 				width:{
 					type:Object,
-					observer:'_widthChanged',
+					//observer:'_widthChanged',
 				},
 
-				forcedSemiWide:Boolean,
+				forcedSemiWide: {
+					type:Boolean,
+				}
 
 			},
+
+			observers: [
+				'_widthChanged(width, forcedSemiWide)',
+			],
 			
 			updateHeaderItems: function(headerItems) {
 				this.headerItems = this.deepCopy(headerItems);
@@ -169,7 +175,6 @@
 			},
 
 			_widthChanged: function() {
-				
 				if(this.originalItems) {
 					this.headerItems =  this.deepCopy(this.originalItems);
 				} else {
@@ -195,7 +200,6 @@
 
 		            	var ct = nItems - eIdx;
 		            	this.splice('headerItems', eIdx, ct);
-
 	            	}
 				}
 			},
@@ -224,8 +228,9 @@
 	</style>
 
 	<style>
-		:host {
-			display: block;
+		#container {
+			height: 100%;
+			width:100%;
 		}
 
 	  	.text-label {
@@ -240,22 +245,24 @@
 	        --margin-left: 5px;
 	        color: var(--aq-qqq-metric-color, black);
 	    }
+
+
 	</style>
 
 	<template>
 		<aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
-
-		<template is='dom-if' if='[[!isSemiWide(semiWide, forcedSemiWide)]]'>
-			<div class="text-label">
-				[[label]]:
-				<span class="text-content">[[metric]]</span>
+		
+		<template is='dom-if' if='[[!isSemiWide(width, forcedSemiWide)]]'>
+			<div class="layout horizontal">
+				<div class="text-label self-end">[[label]]:&nbsp</div>
+				<div class="text-content self-center">[[metric]]</div>
 	        </div>
         </template>
 
         <template is='dom-if' if='[[isSemiWide(width, forcedSemiWide)]]'>
 			<div class="layout vertical">
-				<span class="text-content">[[metric]]</span>
-				<span class="text-label">[[label]]</span>
+				<div class="text-content">[[metric]]</div>
+				<div class="text-label">[[label]]</div>
 	        </div>
         </template>
 
@@ -270,7 +277,6 @@
 				
 				width:{
 					type: Object,
-					//observer:'_widthChanged',
 				},
 
 				forcedSemiWide: {
@@ -280,7 +286,7 @@
 			},
 
 			isSemiWide: function(width, forcedSemiWide) {
-				return width.semiWide || forcedSemiWide;
+				return width.semiWide || (forcedSemiWide && (!width.narrow || !width.narrowWide));
 			},
 
 		});

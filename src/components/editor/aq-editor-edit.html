@@ -185,7 +185,7 @@
                           id="drawerpanel"
                           drawer-width="[[computeDrawerWidth(isProgrammer, isRunning)]]"
                           right-drawer
-                          responsive-width='840px'
+                          responsive-width='1000px'
                           narrow="{{narrow}}"
                           force-narrow="{{!showSidebar}}">
 
@@ -518,7 +518,6 @@
                 //BUT has no output
 
                 // Send Execution request via web-sockets
-               
                 this.selectedSidebar = 1;
 
                 this.fire('execute-backtest', {backtestId: this.activeBacktestId});
@@ -528,7 +527,8 @@
             },
 
             onStrategyExecutionError: function (data) {
-                this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
+                this.fire('iron-signal', {name:'backtest-exception', data:{id: this.activeBacktestId, type: 2}});
+                
                 console.log(data.detail);
                 //This get back the created backtest object with just the settings,
                 //HAS no output

@@ -142,7 +142,6 @@
                 this.set('realtimeXLabels', []);
                 this.set('trackVarKeysArray', []);
                 this.graphsInitialized = false;
-                this.backtestHeader = [];
                 this.rtData = [];
                 this.hasPerformanceData = false;
             },
@@ -162,7 +161,6 @@
             },
 
             addRealTimeData: function (data) {
-
                 if (data.outputtype == "labels") {
 
                     var keys = Object.keys(data.labels);
@@ -218,27 +216,19 @@
 	        	}
 
 	        	//redraw the chart 
-	        	this.$$('aq-cumret-linechart').redrawChart();
+	        	this.async(function(){this.$$('aq-cumret-linechart').redrawChart();}, 500);
+
 	        	//update the percentage completed
 	        	if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
                         this.pctCompleted = Math.round(this.counter * 100 / this.realtimeXLabels.length, 0);
-
-                        if(this.sendUpdateSignal) {
-                            this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
-                        }
+                        
+                    this.fire('iron-signal', {name:'partially-completed-backtest', data: {pctCompleted:this.pctCompleted}});
 
                 }
 
                 //Update the status
                 if(this.pctCompleted == 100) {
-                	this.backtestHeader[2].metric = "Complete";
-                	var backtestHeader = this.deepCopy(this.backtestHeader);
-                	this.backtestHeader = [];
-                	this.backtestHeader = backtestHeader;
-                    
-                    if(this.sendUpdateSignal) {
-                        this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
-                    }
+                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtestId}});
                 }
             },
 
@@ -261,7 +251,6 @@
                 var colors = ["#FFAA1D", "#007849", "#6e2667", "#fc4a1a"];
 
                 //Update chart height for accomodatin tracking variables
-
                 var dataset = new Array(this.realtimeXLabels.length);
 
                 for (var i = 0; i < this.realtimeXLabels.length; i++) {
@@ -270,7 +259,9 @@
 
                 this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
 
-                for (i = 0; i < this.trackVarKeysArray.length; i++) {
+                console.log(this.trackVarKeysArray);
+
+                for (var i = 0; i < this.trackVarKeysArray.length; i++) {
                     this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset,
                             {
                                 lineWidth: 1,

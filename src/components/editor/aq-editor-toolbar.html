@@ -159,6 +159,9 @@
     	<iron-signals on-iron-signal-partially-completed-backtest='updatePct'>
     	</iron-signals>
 
+        <iron-signals on-iron-signal-backtest-exception='onBacktestException'>
+        </iron-signals>
+
     	<iron-signals on-iron-signal-main-drawer-opened='closeDrawer'>
     	</iron-signals>
 
@@ -175,7 +178,7 @@
                     </paper-icon-button>
                 </template>
 
-                <input class="flex" id='strategyName' value="[[strategyName]]" type="text">
+                <input class="flex" id='strategyName' value="[[strategyName]]" type="text" disabled="[[isRunning]]">
 
                 <!--div class="flex" style="max-width:5%"></div-->
 			 	
@@ -318,6 +321,8 @@
                     //observer:'_isPctChanged',
                 	//value: 0,
                 },
+
+                backtestId: String,
             },
 
             closeAll: function () {
@@ -350,7 +355,7 @@
             },
 
             onAnalyze: function () {
-                this.fire('analyzeClicked', {id: this.strategyId});
+                this.fire('analyze-clicked', {id: this.strategyId});
             },
 
             onSave: function () {
@@ -437,6 +442,17 @@
 
             toEditor: function() {
             	this.isRunning = false;
+            },
+
+            onBacktestException: function(e) {
+                var type = e.detail.type;
+                this.backtestId = e.detail.id;
+
+                if (type == 1) {
+                    this.pctCompleted = -1;
+                } else if (type == 2) {
+                    this.pctCompleted = -2;
+                }
             }
 
         });

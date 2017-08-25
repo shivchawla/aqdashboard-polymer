@@ -118,18 +118,18 @@
             		</aq-backtest-header-item>
         		
                     <div class="bar"></div>
-
-                    <template is='dom-if' if='{{metrics}}'>
-                        <div class="middle-container flex">
-                    		<aq-backtest-metric-item-list 
-                                heading="Backtest Metrics"
-                    			forced-semi-wide = "[[forcedSemiWide]]"
-                    			metric-items = "{{metrics}}"
-                    			active="{{active}}">
-                			</aq-backtest-metric-item-list> 
-                    	</template>
-                    </div>
                 </template>
+
+                <template is='dom-if' if='{{metrics}}'>
+                    <div class="middle-container flex">
+                		<aq-backtest-metric-item-list 
+                            heading="Backtest Metrics"
+                			forced-semi-wide = "[[forcedSemiWide]]"
+                			metric-items = "{{metrics}}"
+                			active="{{active}}">
+            			</aq-backtest-metric-item-list>
+                    </div> 
+            	</template>
 
                 <div class="backtest-detail">
                     
@@ -204,6 +204,10 @@
         </template>
       
         <iron-signals on-iron-signal-point-data='onBacktestSinglePointData'></iron-signals>
+
+        <iron-signals on-iron-signal-backtest-completed='onBacktestCompletion'></iron-signals>
+
+        <iron-signals on-iron-signal-backtest-completed='onBacktestException'></iron-signals>
 
         <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
@@ -293,7 +297,6 @@
             },
 
             attached: function() {
-                //console.log(this.internalError = false;
                 this.requestStaticData();
             }, 
 
@@ -417,8 +420,8 @@
                     this.$$('aq-backtest-performance-detail-item').addRealTimeData(data);
 
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
-                    
-                     //Update backtest header
+                        
+                    //Update backtest header
                     //*****HARDCODED******
                    
                     var btHeader = this.deepCopy(this.backtestHeader);
@@ -427,12 +430,26 @@
 
                     this.async(
                         function() {
-                            this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -2}});
+                            this.fire('iron-signal', {name:'backtest-exception', data:{type: 2, id: this.backtestId}});
                             
 
                         }, 1000);
 
-                }
+                } 
+            },
+
+            onBacktestException: function(e) {
+                this.backtestHeader[3].metric = "Complete";
+                var backtestHeader = this.deepCopy(this.backtestHeader);
+                this.backtestHeader = [];
+                this.backtestHeader = backtestHeader;              
+            },
+
+            onBacktestCompletion: function(e) {
+                this.backtestHeader[3].metric = "Exception";
+                var backtestHeader = this.deepCopy(this.backtestHeader);
+                this.backtestHeader = [];
+                this.backtestHeader = backtestHeader;
             },
 
             requestStaticData: function () {
@@ -474,7 +491,7 @@
                     this.computePortfolio(this.backtest);
 
                     if (this.backtest.status == "exception") {
-                            this.fire('iron-signal', {name:'partially-completed-backtest', data:{pctCompleted: -1}});
+                            this.fire('iron-signal', {name:'backtest-exception', data:{type: 1, id: this.backtestId}});
                         return ;
                     }        
             

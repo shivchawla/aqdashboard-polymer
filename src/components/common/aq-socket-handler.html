@@ -20,6 +20,9 @@
 		<iron-signals on-iron-signal-backtest-completed='onBacktestCompleted'>
         </iron-signals>
 
+     	<iron-signals on-iron-signal-backtest-exception='onBacktestException'>
+        </iron-signals>
+
 		<aq-check-authentication id='authItem'></aq-check-authentication>
 
 		<aq-web-socket 
@@ -97,28 +100,29 @@
 	        },
 
             handleExecution: function(backtestId) {
+            	if(this.$.authItem.checkHasToken()) {
+		            //Send message to web socket for execution
+		            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+		                  action: 'exec-backtest',
+		                  backtestId: backtestId};
 
-	            //Send message to web socket for execution
-	            var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
-	                  action: 'exec-backtest',
-	                  backtestId: backtestId};
+		            this.backtestId = backtestId
 
-	            this.backtestId = backtestId
+		            //Set subscription to true
+		            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
 
-	            //Set subscription to true
-	            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
+		            //Also send data(by default)
+		            this.sendDataSlowly(backtestId);
 
-	            //Also send data(by default)
-	            this.sendDataSlowly(backtestId);
-
-	            //check if socket connection is open
-	            if (this.$.webSocketConn.isOpen()) {
-	                this.$.webSocketConn.send(msgForWS);  
-	            } else if(this.$.webSocketConn.isClosed()) {    
-	                this.push(wsRequests, msgForWS);
-	                this.$.webSocketConn.open();
-	            } else {
-	                this.push(wsRequests, msgForWS);
+		            //check if socket connection is open
+		            if (this.$.webSocketConn.isOpen()) {
+		                this.$.webSocketConn.send(msgForWS);  
+		            } else if(this.$.webSocketConn.isClosed()) {    
+		                this.push(wsRequests, msgForWS);
+		                this.$.webSocketConn.open();
+		            } else {
+		                this.push(wsRequests, msgForWS);
+		            }
 	            }
 	        },
 
@@ -131,7 +135,7 @@
         	  	}
 	        },
 
-	        hanldeUnsubscription: function(backtestId) {   
+	        handleUnsubscription: function(backtestId) {   
 	          	if(this.backtests[backtestId]) {
               		this.backtests[backtestId].subscription = false;
 	              	this.backtests[backtestId].bulksent = false;
@@ -178,6 +182,18 @@
 	            }
 	        },
 
+	        onBacktestException: function(e) {
+	        	if(e.detail) {
+	                var backtestId = e.detail.id;
+
+	                if(backtestId) {
+	                    //this.sendDataSlowly(backtestId);
+	                    //this.manageSubscriptions();
+	                    delete this.backtests[backtestId];    
+	                }
+	            }
+	        },
+
 	        manageSubscriptions: function(){ 
 	          	if(Object.keys(this.backtests).length > 0) {
 	              	for (var backtestId in this.backtests) {
@@ -203,14 +219,21 @@
 	        onGetBacktestSuccess: function(e){
 	          	var id = e.detail.response._id;
 	    	  	var status = e.detail.response.status;
-	      	    if (this.backtests[id] && (status == "complete" || status=="exception")) {
+	      	    if (this.backtests[id]) {
+
+	      	     	if(status == "complete") {
+	      	    		this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
+      	    		} else if(status=="exception") {
+      	    			return; 
+      	    			//this.fire('iron-signal',{name:'backtest-exception', id: this.backtests[id], type: 1});
+  	    			}
 
 		            //send any pending data
 		            //this.sendDataSlowly(id);
 
 		            //delete the backtest ID 
 		            //delete this.backtests[id];    
-		            //this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
+		            
 	          	} 
 	        },
 

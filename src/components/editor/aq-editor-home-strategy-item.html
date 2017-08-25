@@ -261,12 +261,12 @@
             },
 
             goToEditor: function () {
-                this.fire('editorClicked', {id: this.strategyId});
+                this.fire('editor-clicked', {id: this.strategyId});
             },
 
             goToAnalyze: function () {
                 if (this.numBacktest > 0) {
-                    this.fire('analyzeClicked', {id: this.strategyId});
+                    this.fire('analyze-clicked', {id: this.strategyId});
                 }
             },
 

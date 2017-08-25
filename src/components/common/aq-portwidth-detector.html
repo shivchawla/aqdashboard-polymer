@@ -2,16 +2,17 @@
 
 <dom-module id='aq-portwidth-detector'>
 	<template>
-		<iron-media-query query="(min-width: 1101px)" query-matches="{{superWide}}"></iron-media-query>
+			<iron-media-query query="(min-width: [[computeWidthQuery(1101, offset)]]px)" query-matches="{{superWide}}"></iron-media-query>
 
-        <iron-media-query query="(min-width: 901px) and (max-width: 1100px)" query-matches="{{wide}}">
-        </iron-media-query>
+	        <iron-media-query query="(min-width: 901px) and (max-width: 1100px)" query-matches="{{wide}}">
+	        </iron-media-query>
 
-        <iron-media-query query="(min-width: 701px) and (max-width:900px)" query-matches="{{semiWide}}"></iron-media-query>
-      	
-      	<iron-media-query query="(min-width: 561px) and (max-width: 700px)" query-matches="{{narrowWide}}"></iron-media-query>
-      
-        <iron-media-query query="(min-width:300px) and (max-width:5601)" query-matches="{{narrow}}"></iron-media-query>
+	        <iron-media-query query="(min-width: 701px) and (max-width:900px)" query-matches="{{semiWide}}"></iron-media-query>
+	      	
+	      	<iron-media-query query="(min-width: 561px) and (max-width: 700px)" query-matches="{{narrowWide}}"></iron-media-query>
+	      
+	        <iron-media-query query="(min-width:300px) and (max-width:560px)" query-matches="{{narrow}}"></iron-media-query>
+        </template>
 
          <!--iron-media-query query="(min-width: 0px)" query-matches="{{veryNarrow}}"></iron-media-query-->
 	</template>
@@ -49,6 +50,12 @@
 					type: Object,
 					notify: true,
 				},
+
+				offset: {
+					type:Number,
+					value: 0,
+				},
+				
 			},
 
 			observers:['_widthChanged(narrow, narrowWide, semiWide, wide, superWide)'],
@@ -58,6 +65,10 @@
 							"narrowWide":this.narrowWide, 
 							"semiWide":this.semiWide, 
 							"wide":this.wide, "superWide":this.superWide};
+			},
+
+			computeWidthQuery: function(val, offset) {
+				return val + offset
 			},
 
 			_widthChanged: function(narrow, narrowWide, semiWide, wide, superWide) {

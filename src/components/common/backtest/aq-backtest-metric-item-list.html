@@ -121,13 +121,16 @@
 			},
 
 			manageWidth: function() {
+
+				console.log(this.forcedSemiWide);
+
 				if(this.modifiedItems) {
 
 					var nItems = this.modifiedItems.length;
 					var eIdx;
 
 					if(nItems > 0) {
-	            		eIdx = 3;
+	            		eIdx = 6;
 
 	            		if(this.width) {
 							if (this.width.superWide) {
@@ -145,7 +148,7 @@
 
 		            	// behave as if it's sem-wide
 		            	if(this.forcedSemiWide && (!this.narrow || !this.narrowWide)) {
-							eIdx = nItems >= 6 ? 6 : nItems;
+							eIdx = Math.min(eIdx, nItems >= 6 ? 6 : nItems);
 		            	}
 
 		            	var ct = nItems - eIdx;

@@ -98,9 +98,9 @@
 			                labels: {
 			                    align: 'right',
 			                    x: -3,
-			                    formatter: function () {
+			                    /*formatter: function () {
 			                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-			                    }
+			                    }*/
 			                },
 
 			                plotLines: [{
@@ -110,15 +110,6 @@
 			                }],
 			               
 			                height: '100%',
-			                lineWidth: 2
-			            }, {
-			                labels: {
-			                    align: 'right',
-			                    x: -3
-			                },
-			                top: '0%',
-			                height: '0%',
-			                offset: 0,
 			                lineWidth: 2
 			            }],
 				},
@@ -152,7 +143,7 @@
 						rangeSelector:{
 							enabled: true,
 							inputEnabled: false,
-							selected: 5,
+							//selected: 5,
 						},
 					},
 				},
@@ -256,15 +247,6 @@
 		               
 		                height: '100%',
 		                lineWidth: 2
-		            }, {
-		                labels: {
-		                    align: 'right',
-		                    x: -3
-		                },
-		                top: '0%',
-		                height: '0%',
-		                offset: 0,
-		                lineWidth: 2
 		            }]);
 
 			    /*this.set('legend', {
@@ -297,9 +279,9 @@
 			                labels: {
 			                    align: 'right',
 			                    x: -3,
-			                    formatter: function () {
+			                    /*formatter: function () {
 			                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-			                    }
+			                    }*/
 			                },
 			               
 			                height: '60%',
@@ -362,7 +344,7 @@
 			},
 
 			addSeries: function(name, data, options) {
-				this.$$('#cumRetLineChart').addSeries(name, data, options,false);
+				this.$$('#cumRetLineChart').addSeries(name, data, options, false);
 			},
 
 			createCumRetLineChart: function(totalreturn) {
@@ -467,9 +449,8 @@
 								this.$$('#cumRetLineChart')._chart.series[idx].data[counter].update(dataPoint, false);
 						}
 					}
-				
+					
 		 			if(counter == nLabels - 1) {
-			 			//this.$$('#cumRetLineChart')._chart.redraw();
 			 			this.redrawChart();
 			 		}
 		 		}
