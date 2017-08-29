@@ -4,7 +4,6 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../bower_components/paper-button/paper-button.html'>
 
-
 <link rel='import' href='../../icons/aq-iconset.html'>
 
 <dom-module id='aq-editor-edit-backtest-screen'>
@@ -32,7 +31,7 @@
 		      	<aq-backtest-detail-item 
 		      		backtest-id={{backtestId}} 
 		      		active="[[isActive(isRunning,backtestId)]]" 
-		      		forced-semi-wide="[[isForcedSemWide(narrow, showSidebar)]]">
+		      		forced-semi-wide="[[isForcedSemiWide(narrow, showSidebar)]]">
 		      	</aq-backtest-detail-item>
 			</div>
 		</template>
@@ -61,7 +60,6 @@
 				},
 				
 			},
-
 			isActive: function(isRunning, backtestId) {
 				return isRunning && (backtestId && backtestId !="");
 			},
@@ -75,7 +73,7 @@
 				this.fire('toggle-drawer');
 			},
 
-			isForcedSemWide: function(narrow, showSidebar) {
+			isForcedSemiWide: function(narrow, showSidebar) {
 				return showSidebar;
 			},
 

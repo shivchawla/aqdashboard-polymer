@@ -140,7 +140,6 @@
                                 
                                 <paper-tab>Code</paper-tab>
 
-                                
                                 <template is='dom-if' if='[[backtestPositions]]'>
                                     <paper-tab>Portfolio</paper-tab>
                                 </template>
@@ -250,7 +249,7 @@
 
                 backtestId: {
                     type: String,
-                    //observer: '_backtestIdChanged',
+                    observer: '_backtestIdChanged',
                 },
 
                 backtest: Object,
@@ -296,8 +295,16 @@
                 this.fire('rt-changed' ,{route:'/dashboard/community/create?backtestId='+ this.backtestId});
             },
 
+            //WHICH ONE TO USE atteched ot this observer??/
+            //Observer works
+            _backtestIdChanged: function() {
+                if(this.backtestId) {
+                    this.requestStaticData();
+                }
+            },
+
             attached: function() {
-                this.requestStaticData();
+                //this.requestStaticData();
             }, 
 
             resize: function() {
@@ -317,6 +324,7 @@
             },
 
             reset: function () {
+                this.set('backtestHeader', []);
                 this.resetMetrics();
                 if(this.$$('aq-backtest-performance-detail-item')) {
                     this.$$('aq-backtest-performance-detail-item').reset(); 
@@ -526,14 +534,17 @@
                 var logs = backtest ? (backtest.output ? (backtest.output.logs ? backtest.output.logs : null) : null) : null;
 
                 if(logs) {
-                    var logArray = []
-                    Object.keys(logs).sort().forEach(key => {
-                        var logForKey = logs[key];
-                        
-                        logs[key].forEach(log => {
-                            logArray.push(JSON.parse(log));        
+                    var logArray = [];
+                    
+                    Object.keys(logs).sort().forEach(date => {
+                        var logsForDate = logs[date];
+
+                        Object.keys(logsForDate).sort().forEach(datetime => {
+                            var logs = logsForDate[datetime];
+                            logs.forEach(log => {
+                                logArray.push(JSON.parse(log));
+                            });        
                         });
-                        
                     });
 
                     this.backtestLogs = logArray;
@@ -554,7 +565,6 @@
                         
                     });
 
-                    console.log("jajajaja");
                     this.backtestTransactions = transactionArray;
                 } 
             },

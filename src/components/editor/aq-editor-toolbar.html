@@ -245,7 +245,6 @@
               			class= "flex toolbarIcon" 
               			icon= "vaadin-icons:line-bar-chart"
                         title="Analyze all Backtests" 
-                        disabled="[[isRunning]]"
                         on-tap='onAnalyze'>
                 </paper-icon-button>
 
@@ -450,7 +449,7 @@
             onBacktestException: function(e) {
                 var type = e.detail.type;
                 var e_backtestId = e.detail.id;
-
+                
                 if(this.backtestId == e_backtestId) {
                     if (type == 1 ) {
                         this.pctCompleted = -1;
