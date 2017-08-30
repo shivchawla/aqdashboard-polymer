@@ -162,7 +162,6 @@
 
                     this.set('realtimeXLabels', allDates.sort());
 
-
                 } else { //Initialize the graphs based
                     //for Strategy/Benchmark/(and Variable data if any)
 
@@ -171,7 +170,10 @@
                     }
 
                 	this.rtData.push(data);
-                	this.debounce('hola', this.updateCumRetGraphsWithData, 1000);
+
+                    if(this.counter++ == 0) {
+                        this.updateCumRetGraphsWithData();
+                    }
                 }
             },
 
@@ -179,8 +181,9 @@
                 var types = ["totalreturn", "totalreturn_benchmark"];
                 var legends = ["Strategy", "Benchmark"];
                 
-                for (var k=0;k<this.rtData.length;k++) {
-	                
+                var dddd = [];
+                /*for (var k=0;k<this.rtData.length;k++) {
+
 	                if(k >= this.counter) {
 	                	
 	                	var data = this.rtData[k];
@@ -191,22 +194,54 @@
 		                    var keysArray = this.trackVarKeysArray;
 
 		                    for (var i = 0; i < keysArray.length; i++) {
-		                        this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], data["variables"][keysArray[i]]);
+		                        //this.$$('aq-cumret-linechart').updateRealtime(ct, keysArray[i], {y:data["variables"][keysArray[i]], x: this.realtimeXLabels[k]});
 		                    }
 		                }
 
 		                for (var i = 0; i < types.length; i++) {
 		                    if (this.$$('aq-cumret-linechart') && this.active) {
 
-	                         	this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], data[types[i]] + 100.0);
+	                         	//this.$$('aq-cumret-linechart').updateRealtime(ct, legends[i], {x: this.realtimeXLabels[k], y: data[types[i]] + 100.0});
 
 		                    }
 		                }
 		            }
-	        	}
+	        	}*/
 
-	        	//redraw the chart 
-	        	this.async(function(){this.$$('aq-cumret-linechart').redrawChart();}, 500);
+                if (this.$$('aq-cumret-linechart') && this.active) {
+                    var k = 0;
+                    legends.forEach(legend => {
+                        
+                        var data_arr = new Array(this.realtimeXLabels.length); 
+                        for(var i=0; i<this.realtimeXLabels.length; i++) {
+                            
+                            var val = i < this.rtData.length ? this.rtData[i][types[k]] + 100.0 : NaN;
+
+                            data_arr[i] = [this.realtimeXLabels[i], val]; 
+                        }
+
+                        this.$$('aq-cumret-linechart').setData(legend, data_arr);
+
+                        k++;
+                    });
+
+                    if(this.hasTrackVarData) {
+                        
+                        this.trackVarKeysArray.forEach(variable => {
+                            var data_arr = new Array(this.realtimeXLabels.length); 
+                            for(var i=0; i<this.realtimeXLabels.length;i++) {
+                                
+                                var val = i < this.rtData.length ? this.rtData[i]["variables"][variable] : NaN;
+                                
+                                data_arr[i] = [this.realtimeXLabels[i], val];
+                            }
+
+                            this.$$('aq-cumret-linechart').setData(variable, data_arr);
+                        });
+                    }
+                }
+                
+                this.$$('aq-cumret-linechart').redrawChart();
 
 	        	//update the percentage completed
 	        	if (this.realtimeXLabels && this.realtimeXLabels.length > 0) {
@@ -219,6 +254,11 @@
                 if(this.pctCompleted == 100) {
                     this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtest._id}});
                 }
+
+                if(this.rtData.length < this.realtimeXLabels.length) {
+                    this.async(this.updateCumRetGraphsWithData, 3000);
+                } 
+
             },
 
             initializeCumRetGraphs: function (data) {
@@ -249,7 +289,7 @@
                 this.set('trackVarKeysArray', Object.keys(data["variables"]).sort());
 
                 for (var i = 0; i < this.trackVarKeysArray.length; i++) {
-                    this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], dataset,
+                    this.$$('aq-cumret-linechart').addSeries(this.trackVarKeysArray[i], [],
                             {
                                 lineWidth: 1,
                                 yAxis: 1,
@@ -273,11 +313,11 @@
                 var dataset_ben = new Array(this.realtimeXLabels.length);
 
                 for (var i = 0; i < this.realtimeXLabels.length; i++) {
-               		dataset_str[i] = [this.realtimeXLabels[i], NaN];
-               		dataset_ben[i] = [this.realtimeXLabels[i], NaN];
+               		dataset_str[i] = [this.realtimeXLabels[i], 0];
+               		dataset_ben[i] = [this.realtimeXLabels[i], 0];
                 }
 
-                this.$$('aq-cumret-linechart').addSeries("Strategy", dataset_str,{
+                this.$$('aq-cumret-linechart').addSeries("Strategy", [], {
                                 color: colors[0],
                                 lineWidth: 2,
                                 compare: 'percent',
@@ -296,7 +336,7 @@
 
                             }, false);
 
-                this.$$('aq-cumret-linechart').addSeries("Benchmark", dataset_ben,
+                this.$$('aq-cumret-linechart').addSeries("Benchmark", [],
                         {
                             color: colors[1],
                             lineWidth: 1,
@@ -321,9 +361,9 @@
 
             updateGraphProperties: function (trackVarFlag) {
                 if (trackVarFlag) {
-                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
+                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars(this.realtimeXLabels);
                 } else {
-                    this.$$('aq-cumret-linechart').updateProperties();
+                    this.$$('aq-cumret-linechart').updateProperties(this.realtimeXLabels);
                 }
             },
 
@@ -346,7 +386,6 @@
             },
 
             createTrackVarLineChart: function () {
-
                 var hasValidData = this.backtest ? (this.backtest.output ? (this. backtest.output ? (this.backtest.output.variables ? true : false) : false): false) : false;
 
                 if(hasValidData) { 

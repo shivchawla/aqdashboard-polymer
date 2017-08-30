@@ -114,12 +114,12 @@
 			            }],
 				},
 
-				xAxis:{
+				/*xAxis:{
 					type: Object,
 					value:{
         				type: 'datetime',
 					},
-				},
+				},*/
 
 				tooltip:{
 					type:Object,
@@ -139,6 +139,7 @@
 						navigator:{
 							height:30,
 							margin:10,
+							adaptToUpdatedData: false,
 						},
 						rangeSelector:{
 							enabled: true,
@@ -229,14 +230,14 @@
 				},
 			},
 
-			updateProperties: function() {
+			updateProperties: function(axisData) {
 				this.set('yAxis', [{
 		                labels: {
 		                    align: 'right',
 		                    x: -3,
-		                    formatter: function () {
+		                    /*formatter: function () {
 		                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
-		                    }
+		                    }*/
 		                },
 
 		                plotLines: [{
@@ -248,6 +249,9 @@
 		                height: '100%',
 		                lineWidth: 2
 		            }]);
+
+				//this.set('xAxis',{type:'datetime', min: Math.min.apply(null, axisData), max: Math.max.apply(null, axisData), ordinal: false,});
+			
 
 			    /*this.set('legend', {
 			          		enabled:true,
@@ -274,7 +278,7 @@
 				this.$$('#cumRetLineChart').removeSeries(0);
 			},
 
-			updatePropertiesForTrackVars: function() {
+			updatePropertiesForTrackVars: function(axisData) {
 				this.set('yAxis', [{
 			                labels: {
 			                    align: 'right',
@@ -297,6 +301,18 @@
 			                lineWidth: 2
 			            }]);
 
+				//console.log(Math.min.apply(null, axisData));
+
+				//console.log(Math.max.apply(null, axisData));
+
+				this.set('xAxis',
+					{	type:'datetime',
+						min: Math.min.apply(null, axisData),
+						max: Math.max.apply(null, axisData),
+						ceiling: Math.max.apply(null, axisData)
+					}
+				);
+				
 				/*this.set('legend', {
 			          		enabled:true,
 			          		align:"left",
@@ -341,6 +357,7 @@
   			 	this.axisReady = true;
 			    this.$.cumRetLineChartTemplate.render();
 				this.$$('#cumRetLineChart').removeSeries(0);
+
 			},
 
 			addSeries: function(name, data, options) {
@@ -445,15 +462,24 @@
 
 					if(idx!=-1) {
 						
-						if(this.$$('#cumRetLineChart')._chart.series[idx].data[counter]){	
+						seriesArray[idx].addPoint([dataPoint.x, dataPoint.y], true);
+
+						/*if(this.$$('#cumRetLineChart')._chart.series[idx].data[counter]){	
 								this.$$('#cumRetLineChart')._chart.series[idx].data[counter].update(dataPoint, false);
-						}
+						}*/
 					}
-					
-		 			if(counter == nLabels - 1) {
-			 			this.redrawChart();
-			 		}
+		 			
 		 		}
+			},
+
+			setData: function(name, data) {
+				var seriesArray = this.$$('#cumRetLineChart')._chart.series;
+					
+				var idx = seriesArray.map(function(x){return x.name;}).indexOf(name);
+
+				if(idx!=-1) {
+					seriesArray[idx].setData(data, false);
+				}
 			},
 
 			resizeChart: function() {
