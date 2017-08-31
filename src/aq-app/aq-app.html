@@ -1,4 +1,3 @@
-<!--link rel="import" href="../../bower_components/app-router/app-router.html"-->
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/iron-lazy-pages/iron-lazy-pages.html">
@@ -335,6 +334,7 @@
         },
 
         requestExecution: function(e) {
+            console.log(e);
             if(this.$.authItem.checkHasToken()) {
                 this.$$('#socketHandler').handleExecution(e.detail.backtestId);
             } else {

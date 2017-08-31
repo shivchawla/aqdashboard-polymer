@@ -3,13 +3,17 @@
 <link rel='import' href='../../../../bower_components/iron-signals/iron-signals.html'>
 <link rel='import' href='../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel='import' href='../../../../bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='../../../../bower_components/iron-ajax/iron-ajax.html'>
 <link rel='import' href='../../../../bower_components/iron-selector/iron-selector.html'>
 <link rel='import' href='../../../../bower_components/paper-progress/paper-progress.html'>
-
-<link rel="import" href="../../../../bower_components/juicy-ace-editor/juicy-ace-editor.html">
+<link rel='import' href='../../../../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../../../../bower_components/juicy-ace-editor/juicy-ace-editor.html'>
 
 <link rel='import' href='../aq-check-authentication.html'>
 <link rel='import' href='../aq-settings-display.html'>
+<link rel='import' href='../aq-portfolio-table.html'>
+<link rel='import' href='../aq-transaction-table.html'>
+<link rel='import' href='../aq-log-item-new.html'>
 
 <link rel='import' href='./aq-backtest-metric-item.html'>
 <link rel='import' href='./aq-backtest-header-item.html'>
@@ -359,11 +363,11 @@
                         <div id="log-container">
                             <template is='dom-if' if='[[forwardtestLogs]]'>
                                 <template is='dom-repeat' items="[[forwardtestLogs]]">
-                                    <aq-log-item 
+                                    <aq-log-item-new 
                                         datetime="[[item.datetime]]"
                                         message="[[item.message]]"
                                         message-type="[[item.messagetype]]">
-                                    </aq-log-item>
+                                    </aq-log-item-new>
                                 </template>
                             </template>
                         </div> 
@@ -424,11 +428,12 @@
                 	value: false,
                 },
 
-                /*forwardtestOrders: Object,
+                forwardtestHeader: Object,
+                forwardtestOrders: Object,
                 forwardtestTransactions: Object,
                 forwardtestPositions: Object,
                 forwardtestLogs: Object,
-                forrwardtestSettings:Array,*/
+                forwardtestSettings:Array,
             },
 
             onCodeChange: function(e) {

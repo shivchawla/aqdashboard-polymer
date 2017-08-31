@@ -114,12 +114,13 @@
 			            }],
 				},
 
-				/*xAxis:{
+				//Previously Commented
+				xAxis:{
 					type: Object,
 					value:{
         				type: 'datetime',
 					},
-				},*/
+				},
 
 				tooltip:{
 					type:Object,
@@ -139,7 +140,7 @@
 						navigator:{
 							height:30,
 							margin:10,
-							adaptToUpdatedData: false,
+							//adaptToUpdatedData: false,
 						},
 						rangeSelector:{
 							enabled: true,
@@ -230,7 +231,7 @@
 				},
 			},
 
-			updateProperties: function(axisData) {
+			updateProperties: function() {
 				this.set('yAxis', [{
 		                labels: {
 		                    align: 'right',
@@ -278,7 +279,7 @@
 				this.$$('#cumRetLineChart').removeSeries(0);
 			},
 
-			updatePropertiesForTrackVars: function(axisData) {
+			updatePropertiesForTrackVars: function() {
 				this.set('yAxis', [{
 			                labels: {
 			                    align: 'right',
@@ -301,17 +302,15 @@
 			                lineWidth: 2
 			            }]);
 
-				//console.log(Math.min.apply(null, axisData));
-
-				//console.log(Math.max.apply(null, axisData));
-
-				this.set('xAxis',
-					{	type:'datetime',
-						min: Math.min.apply(null, axisData),
-						max: Math.max.apply(null, axisData),
-						ceiling: Math.max.apply(null, axisData)
-					}
-				);
+				/*if(axisData) {
+					this.set('xAxis',
+						{	type:'datetime',
+							min: Math.min.apply(null, axisData),
+							max: Math.max.apply(null, axisData),
+							ceiling: Math.max.apply(null, axisData)
+						}
+					);
+				}*/
 				
 				/*this.set('legend', {
 			          		enabled:true,
@@ -357,7 +356,6 @@
   			 	this.axisReady = true;
 			    this.$.cumRetLineChartTemplate.render();
 				this.$$('#cumRetLineChart').removeSeries(0);
-
 			},
 
 			addSeries: function(name, data, options) {
@@ -401,9 +399,10 @@
 							},
 						}, false
 					);	
+		  		}
 
-					this.redrawChart();
-		  		}	
+		  		this.redrawChart();
+	
 			},
 
 		 	createTrackVarLineChart: function(variablesData) {
@@ -442,10 +441,9 @@
   								}
 							}, false
 						);
-
-						this.redrawChart();
       				}
-
+      				
+      				this.redrawChart();
 				}
 			 },
 

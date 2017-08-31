@@ -96,6 +96,8 @@
                     value: false,
                 },
 
+                hasPerformanceData: Boolean,
+
 			},
 
             reset: function () {
@@ -361,9 +363,9 @@
 
             updateGraphProperties: function (trackVarFlag) {
                 if (trackVarFlag) {
-                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars(this.realtimeXLabels);
+                    this.$$('aq-cumret-linechart').updatePropertiesForTrackVars();
                 } else {
-                    this.$$('aq-cumret-linechart').updateProperties(this.realtimeXLabels);
+                    this.$$('aq-cumret-linechart').updateProperties();
                 }
             },
 

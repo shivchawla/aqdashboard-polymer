@@ -43,9 +43,13 @@
 		}
 
 		.header {
+			border: 1px solid #e1e1e1;
+		}
+
+		.header p {
 			font-size: 700;
-			color: #cc6666;
-			margin-bottom: 5px;
+			background:#cc6666;
+			color: white;
 		}
 
 	</style>
@@ -65,15 +69,18 @@
 		            </aq-twoway-toggle>
 	            </template>
 
-	            <template is='dom-if' if='[[!proposedOrders]]'>
-	            	<div class="header">Transactions</div>
+	            <!--template is='dom-if' if='[[!proposedOrders]]'>
+	            	<div
+	            	<div class="header"><p>Transactions</p></div>
 	            </template>
 
-	            <div class="flex"></div>
+	            <div class="flex"></div-->
 	        </div>
 
-	        <template is='dom-if' if='[[showProposedOrders(proposedOrders, tyoeSelected)]]'>
-				<vaadin-grid id='ordersTable' multi-sort=true>
+	        <iron-pages attr-for-selected="id" selected="[[showTableType(proposedOrders, typeSelected)]]">
+	        	
+	        	
+	        	<vaadin-grid id='ordersTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 				      <!--template class="header">Date</template-->
 			      		<template class="header">
@@ -106,56 +113,54 @@
 		      			</template>
 				      <template>[[item.quantity]]</template>
 				    </vaadin-grid-column>
-			   </vaadin-grid>
-		   	</template>
-         	
-         	<template is='dom-if' if='[[showTransactionTable(!proposedOrders, typeSelected)]]'>
-	         	<vaadin-grid id='transactionTable' multi-sort=true>
-						<vaadin-grid-column width="100px">
-					      <!--template class="header">Date</template-->
-				      		<template class="header">
-					      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
-				      		</template>
+			    </vaadin-grid>
+		   		
+		   		
+         	 	<vaadin-grid id='transactionTable' multi-sort=true>
+					<vaadin-grid-column width="100px">
+				      <!--template class="header">Date</template-->
+			      		<template class="header">
+				      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+			      		</template>
 
-					      <template>[[item.date]]</template>
-					    </vaadin-grid-column>
+				      <template>[[item.date]]</template>
+				    </vaadin-grid-column>
 
-					    <vaadin-grid-column width="100px">
-					      <!--template class="header">Symbol</template-->
-					      	<template class="header">
-					      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
-				      		</template>
-					      <template>[[item.symbol]]</template>
-					    </vaadin-grid-column>
+				    <vaadin-grid-column width="100px">
+				      <!--template class="header">Symbol</template-->
+				      	<template class="header">
+				      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
+			      		</template>
+				      <template>[[item.symbol]]</template>
+				    </vaadin-grid-column>
 
-		      			<vaadin-grid-column width="100px">
-					      	<template class="header">
-					      		<vaadin-grid-sorter path="direction">Direction
-					      		</vaadin-grid-sorter>
-			      			</template>
-					      <template>[[item.direction]]</template>
-					    </vaadin-grid-column>
+	      			<vaadin-grid-column width="100px">
+				      	<template class="header">
+				      		<vaadin-grid-sorter path="direction">Direction
+				      		</vaadin-grid-sorter>
+		      			</template>
+				      <template>[[item.direction]]</template>
+				    </vaadin-grid-column>
 
-					    <vaadin-grid-column width="100px">
-					      <template class="header">
-					      		<vaadin-grid-sorter path="quantity">Quantity
-					      		</vaadin-grid-sorter>
-			      			</template>
-					      <template>[[item.quantity]]</template>
-					    </vaadin-grid-column>
+				    <vaadin-grid-column width="100px">
+				      <template class="header">
+				      		<vaadin-grid-sorter path="quantity">Quantity
+				      		</vaadin-grid-sorter>
+		      			</template>
+				      <template>[[item.quantity]]</template>
+				    </vaadin-grid-column>
 
-					    <vaadin-grid-column width="100px">
-					      <template class="header">Price</template>
-					      <template>[[item.price]]</template>
-					    </vaadin-grid-column>
+				    <vaadin-grid-column width="100px">
+				      <template class="header">Price</template>
+				      <template>[[item.price]]</template>
+				    </vaadin-grid-column>
 
-					    <vaadin-grid-column width="100px">
-					      <template class="header">Order Fee</template>
-					      <template>[[item.fee]]</template>
-					    </vaadin-grid-column>
+				    <vaadin-grid-column width="100px">
+				      <template class="header">Order Fee</template>
+				      <template>[[item.fee]]</template>
+				    </vaadin-grid-column>
 			   	</vaadin-grid>
-		   	</template>
-		   
+		   	</iron-pages>
 	   </div>
 		
 	</template>
@@ -181,8 +186,6 @@
 
 			attached: function() {
 				this.debounce('asas', function(){
-				//console.log("shivaaa");
-				//console.log(this.transactions);
 				this.manageTransactions();
                 
 				if(this.proposedOrders) {
@@ -209,7 +212,7 @@
 	     			});
      			}
 
-     			grid.clearCache();
+     			//grid.clearCache();
      			grid.items = items;
 			},
 
@@ -232,16 +235,20 @@
 	     			});
      			}
 
-     			grid.clearCache();
+     			//grid.clearCache();
      		 	grid.items = items;
 			},
 
 			showTransactionTable: function(proposedOrders, typeSelected) {
-				return proposedOrders ? typeSelected == 1 : typeSelected == 0;
+				return !proposedOrders ? typeSelected == 1 : typeSelected == 0;
 			},
 
 			showProposedOrders: function(proposedOrders, typeSelected) {
 				return proposedOrders && typeSelected == 0;
+			},
+
+			showTableType: function(proposedOrders, typeSelected) {
+				return proposedOrders ? (typeSelected == 0 ? "ordersTable" : "transactionTable") : "transactionTable";
 			},
 
 			/*manageTransactions: function(page, pageSize) {

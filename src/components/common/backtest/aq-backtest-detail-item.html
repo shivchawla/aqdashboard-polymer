@@ -14,7 +14,7 @@
 <link rel='import' href='./aq-backtest-metric-item-list.html'>
 <link rel='import' href='./aq-backtest-performance-detail-item.html'>
 
-<link rel="import" href="../aq-log-item.html">
+<link rel="import" href="../aq-log-item-new.html">
 <link rel="import" href="../aq-transaction-table.html">
 <link rel="import" href="../aq-portfolio-table.html">
 
@@ -189,11 +189,11 @@
                         <template is='dom-if' if='[[backtestLogs]]'>
                             <div id="log-container">
                                 <template is='dom-repeat' items="[[backtestLogs]]">
-                                    <aq-log-item 
+                                    <aq-log-item-new 
                                         datetime="[[item.datetime]]"
                                         message="[[item.message]]"
                                         message-type="[[item.messagetype]]">
-                                    </aq-log-item>
+                                    </aq-log-item-new>
                                 </template>
                             </div>    
                         </template>
@@ -520,8 +520,6 @@
 
                     this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);*/
                     this.async(function() {
-                        //this.resetMetrics();
-
                         this.$$('aq-backtest-performance-detail-item').plotGraphs();
                     }, 500);
             },

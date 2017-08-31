@@ -1,0 +1,23 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/aq-app/aq-app.html",
+  "fragments": [
+    "src/layouts/aq-dashboard-main.html"
+  ],
+  "sources": [
+   "src/**/*",
+   "resources/**/*",
+   "bower.json"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2-hybrid"]
+  },
+  "builds": [{
+    "preset": "es6-bundled",
+    "addServiceWorker": false
+  }]
+}

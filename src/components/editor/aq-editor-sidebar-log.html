@@ -42,10 +42,10 @@
 		<paper-card id='logcontainer' class="layout vertical self-center">
 			<div class="card-content">
 				<template is='dom-repeat' items="{{logs}}">
-					<aq-log-item datetime = "[[item.datetime]]"
+					<aq-log-item-new datetime = "[[item.datetime]]"
 								message = "[[item.message]]"
 								message-type = "[[item.messagetype]]">
-					</aq-log-item>
+					</aq-log-item-new>
 				</template>
 			</div>
 		</paper-card>
@@ -117,110 +117,6 @@
 				this.set('logs',[]);
 			},
 
-		});
-	</script>
-
-</dom-module>
-
-
-<dom-module id='aq-log-item'>
-	
-	<style  include="iron-flex iron-flex-alignment iron-positioning">
-	</style>
-
-	<style>
-		p {
-			font-family: 'Inconsolata', monospace;
-			font-size:13px;
-			color: white;
-			margin-bottom: 0px;
-		}
-
-		.error {
-			color: red;
-			padding-left: 2px;
-		}
-
-		.warning {
-			color: orange;
-			padding-left: 2px;
-		}
-
-		.info {
-			color: green;
-			padding-left: 2px;
-		}
-
-		#item {
-			min-width: 12px;
-			padding-right: 5px;
-			--border-bottom: 1px solid #e5e5e5;
-		}
-
-	</style>
-
-	<template>
-		<div id='item' class="layout horizontal">
-			
-			<template is='dom-if' if="[[isError(messageType)]]">
-				<p class='error'>[[[toUpperCase(messageType)]]]</p>
-			</template>
-
-			<template is='dom-if' if="[[isWarning(messageType)]]">
-				<p class='warning'>[[[toUpperCase(messageType)]]]</p>
-			</template>
-
-			<template is='dom-if' if="[[isInfo(messageType)]]">
-				<p class='info'>[[[toUpperCase(messageType)]]]</p>
-			</template>
-			<p id='message'>&nbsp&nbsp[[format(datetime)]]&nbsp:&nbsp[[message]]</p>
-		</div>
-		
-	</template>
-
-	<script>
-		Polymer({
-			is:'aq-log-item',
-
-			properties:{
-				message:String,
-				messageType:String,
-				datetime:String,
-			},
-
-			isInfo: function(messageType) {
-				return messageType == "INFO";
-			},
-
-			isWarning: function(messageType) {
-				return messageType == "WARN";
-			},
-
-			isError: function(messageType) {
-				return messageType == "ERROR";
-			},
-
-			toUpperCase: function(messageType) {
-				return messageType.toUpperCase();
-			},
-
-			format: function(datetime) {
-				var today = new Date(datetime);
-				var dd = today.getDate();
-				var mm = today.getMonth()+1; //January is 0!
-				var yyyy = today.getFullYear();
-
-				if(dd<10) {
-				    dd='0'+dd
-				} 
-
-				if(mm<10) {
-				    mm='0'+mm
-				} 
-
-				today = dd+'/'+mm+'/'+yyyy;
-				return today;
-			},
 		});
 	</script>
 </dom-module>
