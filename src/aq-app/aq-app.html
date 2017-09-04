@@ -69,7 +69,7 @@
             <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken, currentUrl)]]">
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
    
-              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]">
+              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]" fallback-selection="/main">
 
                   <template is="iron-lazy-page" page="/main">
                       <aq-homepage></aq-homepage>
@@ -236,10 +236,7 @@
             if (x) {
               lastTab = JSON.parse(x).lastTab;
             }
-
-            //var url = window.location.href;
-            //this.fire('rt-changed', {route: url.slice(url.indexOf('#') + 1)});
-            //this.manageTabOnUrlChange()
+           
         },
 
         computeToolbarType: function(hasToken, currentUrl) {
@@ -334,7 +331,6 @@
         },
 
         requestExecution: function(e) {
-            console.log(e);
             if(this.$.authItem.checkHasToken()) {
                 this.$$('#socketHandler').handleExecution(e.detail.backtestId);
             } else {
@@ -395,7 +391,6 @@
 
         goToRoute: function(e) {
             var route = this.redirect(e.detail.route);
-
             var idx = route.indexOf('?');
             
             if(idx == 0) { //this one is when URL is refreshed and has query params

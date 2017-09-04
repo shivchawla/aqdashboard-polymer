@@ -139,7 +139,7 @@
             },
 
             plotGraphs: function() {
-                if (this.backtest.output.variables) {
+                if (this.backtest.output.performance.detail.variables) {
                     // this variable is used because array changes are somehow not relaying back the template
                     this.hasTrackVarData = true;
                     this.hasPerformanceData = true;
@@ -388,10 +388,10 @@
             },
 
             createTrackVarLineChart: function () {
-                var hasValidData = this.backtest ? (this.backtest.output ? (this. backtest.output ? (this.backtest.output.variables ? true : false) : false): false) : false;
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output ? (this.backtest.output.performance ? ( this.backtest.output.performance.detail ? ( this.backtest.output.performance.detail.variables ? true : false) : false): false) : false) :false ): false;
 
                 if(hasValidData) { 
-                    this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.variables);
+                    this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.performance.detail.variables);
                 }
             },
 

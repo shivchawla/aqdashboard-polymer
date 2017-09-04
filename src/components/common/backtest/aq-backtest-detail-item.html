@@ -245,6 +245,7 @@
                 detailType:{
                     type: Number,
                     value:0,
+                    observer:'_detailTypeChanged',
                 },
 
                 backtestId: {
@@ -326,6 +327,10 @@
             reset: function () {
                 this.set('backtestHeader', []);
                 this.resetMetrics();
+                //this.set('backtestTransactions',[]);
+                //this.set('backtestPositions', []);
+                //this.set('backtestLogs',[]);
+
                 if(this.$$('aq-backtest-performance-detail-item')) {
                     this.$$('aq-backtest-performance-detail-item').reset(); 
                 } else {
@@ -494,9 +499,10 @@
                         }
                     ];
 
-                    this.computeLogs(this.backtest);
-                    this.computeTransactions(this.backtest);
+                    //Compute and populate the transactions, portfolio and logs after a delay of 5 seconds each OR when tab pressed
                     this.computePortfolio(this.backtest);
+                    this.computeTransactions(this.backtest);
+                    this.computeLogs(this.backtest);
 
                     if (this.backtest.status == "exception") {
                             this.fire('iron-signal', {name:'backtest-exception', data:{type: 1, id: this.backtestId}});
@@ -509,8 +515,10 @@
                         return;
                     }
 
-                    if (this.backtest.output && this.backtest.output.analytics && this.backtest.output.analytics.rolling) {
-                        this.addMetricData(this.backtest.output.analytics.rolling);
+                    var metrics = this.backtest.output ? this.backtest.output.performance ?  this.backtest.output.performance.detail ? this.backtest.output.performance.detail.analytics ? this.backtest.output.performance.detail.analytics.rolling : null : null : null: null;
+                    
+                    if (metrics) {
+                        this.addMetricData(metrics);
                     }
 
                     /*if (this.backtest.output.variables) {
@@ -529,67 +537,100 @@
             },
 
             computeLogs:function(backtest) {
-                var logs = backtest ? (backtest.output ? (backtest.output.logs ? backtest.output.logs : null) : null) : null;
+                
+                if(!this.backtestLogs || this.backtestLogs.length == 0) {
+                    //NEW data format
+                    var logs = backtest ? (backtest.output ? (backtest.output.logs ? (backtest.output.logs.values ? backtest.output.logs.values : null)  : null) : null) : null;
 
-                if(logs) {
-                    var logArray = [];
-                    
-                    Object.keys(logs).sort().forEach(date => {
-                        var logsForDate = logs[date];
+                    if(logs) {
+                        //var logs = logs.values;
+                        var logArray = [];
+                        
+                        Object.keys(logs).sort().forEach(date => {
+                            var logsForDate = logs[date];
 
-                        Object.keys(logsForDate).sort().forEach(datetime => {
-                            var logs = logsForDate[datetime];
-                            logs.forEach(log => {
-                                logArray.push(JSON.parse(log));
-                            });        
+                            Object.keys(logsForDate).sort().forEach(datetime => {
+                                var logs = logsForDate[datetime];
+                                logs.forEach(log => {
+                                    logArray.push(JSON.parse(log));
+                                });        
+                            });
                         });
-                    });
 
-                    this.backtestLogs = logArray;
-                } 
+                        this.backtestLogs = logArray;
+                    } 
+                }
             },
 
             computeTransactions:function(backtest) {
-                var transactions = backtest ? (backtest.output ? (backtest.output.transactions ? backtest.output.transactions : null) : null) : null;
+                
+                if(!this.backtestTransactions || this.backtestTransactions.length == 0) {
+                    var transactionHistory = backtest ? (backtest.output ? (backtest.output.transactionHistory ? backtest.output.transactionHistory : null) : null) : null;
 
-                if(transactions) {
-                    var transactionArray = []
-                    Object.keys(transactions).sort().forEach(key => {
-                        
-                        //array of array
-                        transactions[key].forEach(transaction => {
-                            transactionArray.push(transaction);    
-                        })
-                        
-                    });
+                    if(transactionHistory) {
 
-                    this.backtestTransactions = transactionArray;
-                } 
+                        var trueTransactionHistory = [];
+
+                        transactionHistory.forEach(obj => {
+                            trueTransactionHistory = trueTransactionHistory.concat(obj.values);
+
+                        });
+
+                        var transactionArray = []
+                        trueTransactionHistory.forEach(obj => {
+                            
+                            var transactionsEachDay = obj.transactions;
+                            //array of array
+                            transactionsEachDay.forEach(transaction => {
+                                transactionArray.push(transaction);    
+                            })
+                            
+                        });
+
+                        this.backtestTransactions = transactionArray;
+
+                    } 
+                }
             },
 
             computePortfolio:function(backtest) {
-                var accounts = backtest ? (backtest.output ? (backtest.output.account ? backtest.output.account : null) : null) : null;
+                if(!this.backtestPositions || this.backtestPositions.length == 0) {
+                    var portfolioHistory = backtest ? (backtest.output ? (backtest.output.portfolioHistory ? backtest.output.portfolioHistory: null) : null) : null;
 
-                if(accounts) {
-                    var positionsArray = []
-                    Object.keys(accounts).sort().forEach(key => {
+                    //Portfolio History is multiple objects with 100 size array each
 
-                        if(accounts[key].portfolio.positions) {
-                        //array of array
-                            Object.keys(accounts[key].portfolio.positions).forEach(pkey => {
-                                var position = accounts[key].portfolio.positions[pkey];
-                                
-                                if(position.quantity > 0) {
-                                    position.date = key;
-                                    positionsArray.push(position);    
-                                }
-                            });
-                        }
+
+                    if(portfolioHistory) {
+
+                        var truePortfolioHistory = [];
+
+                        portfolioHistory.forEach(obj => {
+                            truePortfolioHistory = truePortfolioHistory.concat(obj.values);
+                        });
                         
-                    });
+                        var positionsArray = []
+                        truePortfolioHistory.forEach(obj => {
+                            var date = obj.date;
+                            //WEIRD but that's how the data is stored
+                            var portfolioEachDay = obj.portfolio.portfolio;
 
-                    this.backtestPositions = positionsArray;
-                } 
+                            if(portfolioEachDay.positions) {
+                            //array of array
+                                Object.keys(portfolioEachDay.positions).forEach(pkey => {
+                                    var position = portfolioEachDay.positions[pkey];
+                                    
+                                    if(position.quantity > 0) {
+                                        position.date = date;
+                                        positionsArray.push(position);    
+                                    }
+                                });
+                            }
+                            
+                        });
+
+                        this.backtestPositions = positionsArray;
+                    } 
+                }
             },
 
             addMetricData: function (data) {
@@ -644,6 +685,22 @@
             deepCopy: function(array) {
 				return JSON.parse(JSON.stringify(array));
 			},
+
+            _detailTypeChanged: function() {
+                return;
+                if(this.detailType == 2) {
+                    this.computePortfolio();
+                }
+
+                if(this.detailType == 3 ) {
+                    this.computeTransactions();
+                }
+
+                if(this.detailType == 4) {
+                    this.computeTransactions();
+                }
+
+            }
         });
     </script>
     
