@@ -151,8 +151,10 @@
 				var grid = this.$$('vaadin-grid');
      			var items = [];
 
+     			//this.positions.sort((a , b) => { return a.date > b.date});
+     			
      			if(this.positions.length > 0) {
-     				var topDate = this.positions[0].date;
+     				var topDate = this.positions[this.positions.length - 1].date;
 
 	     			var topDatePositions = this.positions.filter(item => {
 	     				return item.date == topDate;
@@ -171,7 +173,7 @@
 				if(positions) {
 					items = new Array(positions.length);
 	     			positions.forEach(position => {
-	     				items[i++] = {date: position.date, 
+	     				items[i++] = {date: date.formatDateForTable(position.date), 
 	     							symbol: position.securitysymbol.ticker,
 	     							quantity: position.quantity,
 	     							price: position.averageprice,

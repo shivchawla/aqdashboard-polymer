@@ -4,6 +4,8 @@
 
 <link rel='import' href='../../../bower_components/iron-selector/iron-selector.html'>
 
+<link rel='import' href='../../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html'>
+
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
@@ -52,6 +54,16 @@
 			color: white;
 		}
 
+		paper-button {
+			margin-top: 10px;
+			--paper-button:{
+				font-size: 12px;
+				background-color: teal;
+				color: white;
+				height: 25px;
+			};
+		}
+
 	</style>
 
 	<style include="iron-flex iron-flex-alignment iron-positioning">
@@ -77,12 +89,11 @@
 	            <div class="flex"></div-->
 	        </div>
 
-	        <iron-pages attr-for-selected="id" selected="[[showTableType(proposedOrders, typeSelected)]]">
+	        <!--iron-pages attr-for-selected="id" selected="[[showTableType(proposedOrders, typeSelected)]]"-->
 	        	
-	        	
+	        	<template is='dom-if' if='[[showProposedOrders(proposedOrders, typeSelected)]]'>
 	        	<vaadin-grid id='ordersTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
-				      <!--template class="header">Date</template-->
 			      		<template class="header">
 				      		<vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
 			      		</template>
@@ -91,7 +102,6 @@
 				    </vaadin-grid-column>
 
 				    <vaadin-grid-column width="100px">
-				      <!--template class="header">Symbol</template-->
 				      	<template class="header">
 				      		<vaadin-grid-sorter path="symbol">Symbol</vaadin-grid-sorter>
 			      		</template>
@@ -113,9 +123,9 @@
 		      			</template>
 				      <template>[[item.quantity]]</template>
 				    </vaadin-grid-column>
-			    </vaadin-grid>
+			    </vaadin-grid></template>
 		   		
-		   		
+		   		<template is='dom-if' if='[[showTransactionTable(proposedOrders, typeSelected)]]'>
          	 	<vaadin-grid id='transactionTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 				      <!--template class="header">Date</template-->
@@ -151,18 +161,30 @@
 				    </vaadin-grid-column>
 
 				    <vaadin-grid-column width="100px">
-				      <template class="header">Price</template>
+				      <template class="header">
+				      	<vaadin-grid-sorter path="price">Price
+			      		</vaadin-grid-sorter>
+				      </template>
 				      <template>[[item.price]]</template>
 				    </vaadin-grid-column>
 
 				    <vaadin-grid-column width="100px">
-				      <template class="header">Order Fee</template>
+				      <template class="header">
+				      	<vaadin-grid-sorter path="fee">Order Fee
+			      		</vaadin-grid-sorter>
+				      </template>
 				      <template>[[item.fee]]</template>
 				    </vaadin-grid-column>
-			   	</vaadin-grid>
-		   	</iron-pages>
-	   </div>
+			   	</vaadin-grid></template>
+		   	
+
+	   		<!--div class="layout vertical">
+	   			<template is='dom-if' if=[[showPaperButton(loading)]]>
+	   			<paper-button raised class="self-end" on-tap='loadMoreData'>Load More</paper-button></template>
+	   		</div-->
 		
+	   </div>
+	   
 	</template>
 
 	<script>
@@ -182,16 +204,17 @@
 					type: Boolean,
 					value: false,
 				},
+
+				loading: Boolean,
 			},
 
-			attached: function() {
-				this.debounce('asas', function(){
+			loadMoreData: function() {
+				this.loading = true;
 				this.manageTransactions();
-                
-				if(this.proposedOrders) {
-                	this.manageOrders();
-            	}}, 500);
+			},
 
+			showPaperButton: function(loading) {
+				return !loading;
 			},
 
 			manageOrders: function() {
@@ -217,12 +240,17 @@
 			},
 
 			manageTransactions: function() {
-			 	
-			 	var grid = this.$$('#transactionTable');
+				var grid = this.$$('#transactionTable');
+
+			 	var gridItemslength = grid.items ? grid.items.length : 0;
      			var items = [];
 
-     			if(this.transactions) {
-     				items = new Array(this.transactions.length);
+     			if(this.transactions && gridItemslength < this.transactions.length) {
+
+     				var nLength = this.transactions.length;
+     				//var nLength = gridItemslength  + 100 > this.transactions.length ? this.Transactions.lenght : gridItemslength  + 100;
+
+     				items = new Array(nLength);
 	     			var i = 0;
 
 	     			this.transactions.forEach(transaction => {
@@ -233,18 +261,28 @@
 	     							fee: transaction.orderfee,
 	     							direction: transaction.fillquantity < 0 ? "SELL":"BUY",};
 	     			});
-     			}
 
-     			//grid.clearCache();
-     		 	grid.items = items;
+	     			grid.clearCache();
+					grid.items = items;
+     			}
 			},
 
 			showTransactionTable: function(proposedOrders, typeSelected) {
-				return !proposedOrders ? typeSelected == 1 : typeSelected == 0;
+				var show = !proposedOrders ? typeSelected == 0 : typeSelected == 1;
+				if(show) {
+					this.async(this.manageTransactions, 1000);
+				}
+				return show;
 			},
 
 			showProposedOrders: function(proposedOrders, typeSelected) {
-				return proposedOrders && typeSelected == 0;
+				var show = proposedOrders && typeSelected == 0;
+
+				if(show) {
+					this.async(this.manageOrders, 1000);
+				}
+
+				return show;
 			},
 
 			showTableType: function(proposedOrders, typeSelected) {

@@ -140,15 +140,15 @@
                                 
                                 <paper-tab>Code</paper-tab>
 
-                                <template is='dom-if' if='[[backtestPositions]]'>
+                                <template is='dom-if' if='[[hasBacktestPositions(backtest)]]'>
                                     <paper-tab>Portfolio</paper-tab>
                                 </template>
                                 
-                                <template is='dom-if' if='[[backtestTransactions]]'>
+                                <template is='dom-if' if='[[hasBacktestTransactions(backtest)]]'>
                                     <paper-tab>Transactions</paper-tab>
                                 </template>
 
-                                <template is='dom-if' if='[[backtestLogs]]'>
+                                <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
                                     <paper-tab>Log</paper-tab>
                                 </template>
                             </paper-tabs>
@@ -169,22 +169,23 @@
                             </juicy-ace-editor>
                         </div>
                         
+                        <div id="portfolio-container">
                         <template is='dom-if' if='[[backtestPositions]]'>
-                            <div id="portfolio-container">
                                 <aq-portfolio-table 
                                     positions="[[backtestPositions]]">
                                 </aq-portfolio-table>
-                            </div>
                         </template>
+                        </div>
 
+                        <div id="transaction-container">
                          <template is='dom-if' if='[[backtestTransactions]]'>
-                            <div id="transaction-container">
+                            
                                 <aq-transaction-table 
                                     transactions="[[backtestTransactions]]"
                                     no-proposed-orders>
                                 </aq-transaction-table>
-                            </div>
                         </template>
+                        </div>
 
                         <template is='dom-if' if='[[backtestLogs]]'>
                             <div id="log-container">
@@ -500,9 +501,10 @@
                     ];
 
                     //Compute and populate the transactions, portfolio and logs after a delay of 5 seconds each OR when tab pressed
-                    this.computePortfolio(this.backtest);
-                    this.computeTransactions(this.backtest);
-                    this.computeLogs(this.backtest);
+                    //this.async(function(){this.computePortfolio(this.backtest);}, 5000);
+                    //this.async(function(){this.computeTransactions(this.backtest);}, 10000);
+                    
+                    //this.async(function(){this.computeLogs(this.backtest);}, 15000);
 
                     if (this.backtest.status == "exception") {
                             this.fire('iron-signal', {name:'backtest-exception', data:{type: 1, id: this.backtestId}});
@@ -569,26 +571,23 @@
 
                     if(transactionHistory) {
 
-                        var trueTransactionHistory = [];
+                        var transactionArray = [];
+                        transactionHistory.forEach(fragment => {
+                            transactionHistoryFragment = fragment.values;
 
-                        transactionHistory.forEach(obj => {
-                            trueTransactionHistory = trueTransactionHistory.concat(obj.values);
+                            transactionHistoryFragment.forEach(obj => {
+                                
+                                var transactionsEachDay = obj.transactions;
+                                //array of array
+                                transactionsEachDay.forEach(transaction => {
+                                    transactionArray.push(transaction);    
+                                });
+                                
+                            });
 
-                        });
-
-                        var transactionArray = []
-                        trueTransactionHistory.forEach(obj => {
-                            
-                            var transactionsEachDay = obj.transactions;
-                            //array of array
-                            transactionsEachDay.forEach(transaction => {
-                                transactionArray.push(transaction);    
-                            })
-                            
                         });
 
                         this.backtestTransactions = transactionArray;
-
                     } 
                 }
             },
@@ -598,34 +597,33 @@
                     var portfolioHistory = backtest ? (backtest.output ? (backtest.output.portfolioHistory ? backtest.output.portfolioHistory: null) : null) : null;
 
                     //Portfolio History is multiple objects with 100 size array each
-
-
                     if(portfolioHistory) {
 
-                        var truePortfolioHistory = [];
-
-                        portfolioHistory.forEach(obj => {
-                            truePortfolioHistory = truePortfolioHistory.concat(obj.values);
-                        });
-                        
+                        //var truePortfolioHistory = [];
                         var positionsArray = []
-                        truePortfolioHistory.forEach(obj => {
-                            var date = obj.date;
-                            //WEIRD but that's how the data is stored
-                            var portfolioEachDay = obj.portfolio.portfolio;
 
-                            if(portfolioEachDay.positions) {
-                            //array of array
-                                Object.keys(portfolioEachDay.positions).forEach(pkey => {
-                                    var position = portfolioEachDay.positions[pkey];
-                                    
-                                    if(position.quantity > 0) {
-                                        position.date = date;
-                                        positionsArray.push(position);    
-                                    }
-                                });
-                            }
-                            
+                        portfolioHistory.forEach(fragment => {
+                            var framgmentValues = fragment.values; 
+                        
+                            framgmentValues.forEach(obj => {
+                                var date = obj.date;
+                                
+                                //WEIRD but that's how the data is stored
+                                var portfolioEachDay = obj.portfolio.portfolio;
+
+                                if(portfolioEachDay.positions) {
+                                //array of array
+                                    Object.keys(portfolioEachDay.positions).forEach(pkey => {
+                                        var position = portfolioEachDay.positions[pkey];
+                                        
+                                        if(position.quantity > 0) {
+                                            position.date = date;
+                                            positionsArray.push(position);    
+                                        }
+                                    });
+                                }
+                                
+                            });
                         });
 
                         this.backtestPositions = positionsArray;
@@ -687,20 +685,33 @@
 			},
 
             _detailTypeChanged: function() {
-                return;
+                //return;
                 if(this.detailType == 2) {
-                    this.computePortfolio();
+                    this.computePortfolio(this.backtest);
                 }
 
                 if(this.detailType == 3 ) {
-                    this.computeTransactions();
+                    this.computeTransactions(this.backtest);
                 }
 
                 if(this.detailType == 4) {
-                    this.computeTransactions();
+                    this.computeTransactions(this.backtest);
                 }
+            },
 
-            }
+            hasBacktestPositions: function(backtest){
+                return backtest ? (backtest.output ? (backtest.output.portfolioHistory ? true: false) : false) : false;
+
+            },
+
+            hasBacktestTransactions: function(backtest){
+                return backtest ? (backtest.output ? (backtest.output.transactionHistory ? true : false) : false) : false;
+            },
+
+            hasBacktestLogs: function(backtest){
+                return backtest ? (backtest.output ? (backtest.output.logs ? (backtest.output.logs.values ? true : false)  : false) : false) : false;
+
+            },
         });
     </script>
     

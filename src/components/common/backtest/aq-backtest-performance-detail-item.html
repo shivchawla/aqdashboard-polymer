@@ -379,11 +379,11 @@
 
             createMonthlyReturnBarChart: function () {
                 
-                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.returns ? (this.backtest.output.returns.monthly ? true : false) : false) : false ): false;
+                var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.performance ? (this.backtest.output.performance.detail ? (this.backtest.output.performance.detail.returns ? (this.backtest.output.performance.detail.returns.monthly ? true : false) : false) : false ): false):false) : false;
 
                 if (!this.active && hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
-                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly);
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.performance.detail.returns.monthly);
                 }
             },
 
