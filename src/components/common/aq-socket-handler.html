@@ -58,7 +58,7 @@
 			},
 
 			attached: function() {
-				this.manageSubscriptions();
+				//this.manageSubscriptions();
 			},
 
 	        _onOpen: function(e) {
@@ -74,10 +74,10 @@
 	            var backtestId = e.detail.backtestId;
 	            
 	            if (!this.backtests[backtestId]) {
-	              return;
+	              	return;
 	            }
-	              
-	            this.backtests[backtestId].data = e.detail.data;            
+	             
+	            this.fetchRealtimeData(backtestId);          
 
 	            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);          
 	        },
@@ -112,7 +112,7 @@
 		            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
 
 		            //Also send data(by default)
-		            this.sendDataSlowly(backtestId);
+		            //this.sendDataSlowly(backtestId);
 
 		            //check if socket connection is open
 		            if (this.$.webSocketConn.isOpen()) {
@@ -144,13 +144,27 @@
 	          	}
 	        },
 
+	        fetchRealtimeData: function(backtestId) {
+	        	
+	        	if(this.$.authItem.checkHasToken()) {
+        	      	this.header = this.$.authItem.getHeader();
+                  	
+                  	var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+          			
+                  	this.$.getBacktestQuery.url = APIEndPoint+'/backtest/'+backtestId+'?fields=status realtimeOutput';
+                  	this.$.getBacktestQuery.generateRequest();
+              	}
+	        },
+
 	        // Updates every 1 seconds and updates maximum of 200 points at once.
+	        //NOT IN USE
 	        sendDataSlowly: function(backtestId) {
 	            var timeGap = 1000;
 	            var maxLimit = 200;
 	            
 	            if(this.backtests[backtestId]) {
 	                if(this.backtests[backtestId].subscription) {
+	                  
 	                  var currentIndex = this.backtests[backtestId].currentIndex;
 	                  var currentLength = this.backtests[backtestId].data.length;
 	                  
@@ -164,7 +178,34 @@
 	                      }
 	                  }
 	                  
-	                  this.async(function(){this.sendDataSlowly(backtestId, maxLimit);}, timeGap);
+	                  this.async(function(){this.sendDataSlowly(backtestId);}, timeGap);
+
+	                }
+	            }
+	        },
+
+	        //In USE
+         	sendData: function(backtestId) {
+             	var maxLimit = 200;
+	           
+	            if(this.backtests[backtestId]) {
+	                if(this.backtests[backtestId].subscription) {
+	                  
+	                  var currentIndex = this.backtests[backtestId].currentIndex;
+	                  var currentLength = this.backtests[backtestId].data.length;
+	                  
+	                  if(currentIndex <  currentLength && currentLength > 0) {  
+	                      var j = 0;
+	                      for(var i=currentIndex; i<currentLength; i++) { 
+	                          var dataPoint = this.backtests[backtestId].data[i];
+
+	                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
+	                          this.backtests[backtestId].currentIndex = i+1;
+	                          j++;
+	                      }
+	                  }
+	                  
+	                  //this.async(function(){this.sendDataSlowly(backtestId);}, timeGap);
 
 	                }
 	            }
@@ -217,22 +258,25 @@
 	        },
 
 	        onGetBacktestSuccess: function(e){
-	          	var id = e.detail.response._id;
-	    	  	var status = e.detail.response.status;
-	      	    if (this.backtests[id]) {
+	          		
+	    	  	var response = e.detail.response;	
 
+	    	  	var backtestId = response._id;
+	      	    if (this.backtests[backtestId]) {
+	      	    	if(response.realtimeOutput) {
+	      	    		this.backtests[backtestId].data = [];
+	      	    		this.backtests[backtestId].data = response.realtimeOutput;
+
+	            		this.sendData(backtestId);
+            		}           
+
+	      	    	var status = response.status;
 	      	     	if(status == "complete") {
-	      	    		this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[id]});
+	      	    		//this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[backtestId]});
       	    		} else if(status=="exception") {
       	    			return; 
       	    			//this.fire('iron-signal',{name:'backtest-exception', id: this.backtests[id], type: 1});
   	    			}
-
-		            //send any pending data
-		            //this.sendDataSlowly(id);
-
-		            //delete the backtest ID 
-		            //delete this.backtests[id];    
 		            
 	          	} 
 	        },

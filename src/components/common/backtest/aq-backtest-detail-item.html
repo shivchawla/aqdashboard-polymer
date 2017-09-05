@@ -207,7 +207,7 @@
 
         <iron-signals on-iron-signal-backtest-completed='onBacktestCompletion'></iron-signals>
 
-        <iron-signals on-iron-signal-backtest-completed='onBacktestException'></iron-signals>
+        <iron-signals on-iron-signal-backtest-exception='onBacktestException'></iron-signals>
 
         <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
@@ -218,6 +218,18 @@
             handle-as="json"
             on-response="onGetBacktestSuccess"
             on-error="onGetBacktestError"
+            headers='{{header}}'
+            debounce-duration="300"
+            loading="{{loading}}">
+        </iron-ajax>
+
+        <iron-ajax
+            url="[[computeGetBacktestRealtimeUrl(backtestId)]]"
+            method='GET'
+            id='getBacktestRealtimeQuery'
+            handle-as="json"
+            on-response="onGetBacktestReatimeSuccess"
+            on-error="onGetBacktestRealtimeError"
             headers='{{header}}'
             debounce-duration="300"
             loading="{{loading}}">
@@ -325,13 +337,15 @@
                 return APIEndPoint + '/backtest/' + backtestId;
             },
 
+            computeGetBacktestRealtimeUrl: function (backtestId) {
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                return APIEndPoint + '/backtest/' + backtestId+'?fields=realtimeOutput';
+            },
+
             reset: function () {
                 this.set('backtestHeader', []);
                 this.resetMetrics();
-                //this.set('backtestTransactions',[]);
-                //this.set('backtestPositions', []);
-                //this.set('backtestLogs',[]);
-
+                
                 if(this.$$('aq-backtest-performance-detail-item')) {
                     this.$$('aq-backtest-performance-detail-item').reset(); 
                 } else {
@@ -407,14 +421,6 @@
                 },];
             },
 
-            subscribeData: function () {
-                
-                //this.fire('subscribe-data', {backtestId: this.backtestId});
-                /*this.async(function () {
-                    this.fire('subscribe-data', {backtestId: this.backtestId})
-                }, 1000);*/
-            },
-
             onBacktestSinglePointData: function (e) {
                 
                 //process data only when element is active
@@ -423,7 +429,7 @@
                 }
 
                 data = e.detail;
-
+               
                 if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
                     
                     if (data.outputtype == "performance") {
@@ -453,14 +459,14 @@
             },
 
             onBacktestException: function(e) {
-                this.backtestHeader[3].metric = "Complete";
+                this.backtestHeader[3].metric = "Exception";
                 var backtestHeader = this.deepCopy(this.backtestHeader);
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;              
             },
 
             onBacktestCompletion: function(e) {
-                this.backtestHeader[3].metric = "Exception";
+                this.backtestHeader[3].metric = "Complete";
                 var backtestHeader = this.deepCopy(this.backtestHeader);
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;
@@ -513,7 +519,6 @@
             
                     if (this.backtest.status == "active") {
                         this.active = true;
-                        this.subscribeData();
                         return;
                     }
 
@@ -695,7 +700,7 @@
                 }
 
                 if(this.detailType == 4) {
-                    this.computeTransactions(this.backtest);
+                    this.computeLogs(this.backtest);
                 }
             },
 

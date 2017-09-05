@@ -442,11 +442,12 @@
 							}, false
 						);
       				}
-      				
+
       				this.redrawChart();
 				}
 			 },
 
+			//NOT USED 
 			updateRealtime: function(counter, name, dataPoint) {
 				var el = this.$$('#cumRetLineChart'); 
 				var valid = el && el._chart && el._chart.series.length > 0;
@@ -460,7 +461,7 @@
 
 					if(idx!=-1) {
 						
-						seriesArray[idx].addPoint([dataPoint.x, dataPoint.y], true);
+						seriesArray[idx].addPoint([dataPoint.x, dataPoint.y],false);
 
 						/*if(this.$$('#cumRetLineChart')._chart.series[idx].data[counter]){	
 								this.$$('#cumRetLineChart')._chart.series[idx].data[counter].update(dataPoint, false);
