@@ -72,14 +72,31 @@
 
 	        _onMessage: function(e) { 
 	            var backtestId = e.detail.backtestId;
-	            
 	            if (!this.backtests[backtestId]) {
 	              	return;
 	            }
-	             
-	            this.fetchRealtimeData(backtestId);          
+	            
+	            var response = e.detail;
+	            this.backtests[backtestId].data[response.index] = response.data; 
 
-	            this.debounce('updatebtstatus', function(){this.fire('iron-signal',{name:'backtest-updated'})}, 1000);          
+	            this.debounce('sasas', function() {this.sendDataNew(backtestId);}, 3000);
+
+	            /*this.debounce('sendData', 
+	            	function() {
+	            			//stitch the data
+	                  	var chunkedData = JSON.parse(JSON.stringify(this.backtests[backtestId].data));
+	                  	var stitchedData = [];
+	                  	Object.keys(chunkedData).sort().forEach(index => {
+                  			chunkedData[index].forEach(item => {
+                  				//console.log(item);
+                  				stitchedData.push(item);
+                  			});
+	                  	});
+
+	            		this.sendDataNew(backtestId, stitchedData);
+	            	}, 2000
+            	);*/
+
 	        },
 
 	        _onError: function(e) {
@@ -111,8 +128,10 @@
 		            //Set subscription to true
 		            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
 
+		            //console.log(this.backtests);
+
 		            //Also send data(by default)
-		            //this.sendDataSlowly(backtestId);
+		            this.sendDataNew(backtestId);
 
 		            //check if socket connection is open
 		            if (this.$.webSocketConn.isOpen()) {
@@ -131,7 +150,8 @@
 		            this.backtests[backtestId].subscription = true;
 		            this.backtests[backtestId].bulksent = false;
 		            this.backtests[backtestId].currentIndex = 0;
-		            this.sendDataSlowly(backtestId);
+		            this.backtests[backtestId].data = {};
+		            this.sendDataNew(backtestId);
         	  	}
 	        },
 
@@ -141,6 +161,7 @@
 	              	this.backtests[backtestId].bulksent = false;
 	              	delete this.backtests[backtestId].currentIndex;
 	              	this.backtests[backtestId].currentIndex = 0;
+	              	this.backtests[backtestId].data = {};
 	          	}
 	        },
 
@@ -156,6 +177,47 @@
               	}
 	        },
 
+	        sendDataNew: function(backtestId) {
+	        	var timeGap = 3000;
+	            var maxLimit = 200;
+	            	
+	            if(this.backtests[backtestId]) {
+	                if(this.backtests[backtestId].subscription) {
+	                  
+                  		var currentIndex = this.backtests[backtestId].currentIndex;
+
+	            		var stitchedData = this._stitchData(backtestId);
+
+	                  	var currentLength = stitchedData.length;
+                	  	if(currentIndex <  currentLength && currentLength > 0) {  
+                      		var j = 0;
+                		  	for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
+	                          	var dataPoint = stitchedData[i];
+                        	  	this.fire('iron-signal',{name:'point-data', data:dataPoint});
+	                          	this.backtests[backtestId].currentIndex = i+1;
+	                          	j++;
+	                      	}
+	                  	}
+
+		                this.async(function(){this.sendDataNew(backtestId);}, timeGap);
+	                }
+	            }
+	        },
+
+	        _stitchData: function(backtestId) {
+	        	//stitch the data
+              	var chunkedData = JSON.parse(JSON.stringify(this.
+              		backtests[backtestId].data));
+              	var stitchedData = [];
+              	var count = 0;
+              	
+              	for(var i=0;i<chunkedData.length;i++){
+          			stitchedData = stitchedData.concat(chunkedData[String(i)]);
+              	}
+
+              	return stitchedData;
+          	},
+
 	        // Updates every 1 seconds and updates maximum of 200 points at once.
 	        //NOT IN USE
 	        sendDataSlowly: function(backtestId) {
@@ -165,18 +227,18 @@
 	            if(this.backtests[backtestId]) {
 	                if(this.backtests[backtestId].subscription) {
 	                  
-	                  var currentIndex = this.backtests[backtestId].currentIndex;
-	                  var currentLength = this.backtests[backtestId].data.length;
+	                  	var currentIndex = this.backtests[backtestId].currentIndex;
+	                  	var currentLength = this.backtests[backtestId].data.length;
 	                  
-	                  if(currentIndex <  currentLength && currentLength > 0) {  
-	                      var j = 0;
-	                      for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
-	                          var dataPoint = this.backtests[backtestId].data[i];
-	                          this.fire('iron-signal',{name:'point-data', data:dataPoint});
-	                          this.backtests[backtestId].currentIndex = i+1;
-	                          j++;
-	                      }
-	                  }
+	                  	if(currentIndex <  currentLength && currentLength > 0) {  
+                    	  	var j = 0;
+	                      	for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
+                          		var dataPoint = this.backtests[backtestId].data[i];
+                          		this.fire('iron-signal',{name:'point-data', data:dataPoint});
+                          		this.backtests[backtestId].currentIndex = i+1;
+                          		j++;
+	                      	}
+	                  	}
 	                  
 	                  this.async(function(){this.sendDataSlowly(backtestId);}, timeGap);
 
@@ -184,7 +246,7 @@
 	            }
 	        },
 
-	        //In USE
+	        //LONG POLLING NOT WORKING OUT too(too slow and too many db interactions)
          	sendData: function(backtestId) {
              	var maxLimit = 200;
 	           
