@@ -79,7 +79,7 @@
 	            var response = e.detail;
 	            this.backtests[backtestId].data[response.index] = response.data; 
 
-	            this.debounce('sasas', function() {this.sendDataNew(backtestId);}, 3000);
+	            //this.debounce('sasas', function() {this.sendDataNew(backtestId);}, 3000);
 
 	            /*this.debounce('sendData', 
 	            	function() {
@@ -179,7 +179,7 @@
 
 	        sendDataNew: function(backtestId) {
 	        	var timeGap = 3000;
-	            var maxLimit = 200;
+	            var maxLimit = 100;
 	            	
 	            if(this.backtests[backtestId]) {
 	                if(this.backtests[backtestId].subscription) {
