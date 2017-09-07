@@ -140,16 +140,18 @@
                                 
                                 <paper-tab>Code</paper-tab>
 
-                                <template is='dom-if' if='[[hasBacktestPositions(backtest)]]'>
-                                    <paper-tab>Portfolio</paper-tab>
-                                </template>
-                                
-                                <template is='dom-if' if='[[hasBacktestTransactions(backtest)]]'>
-                                    <paper-tab>Transactions</paper-tab>
-                                </template>
+                                <template is='dom-if' if=[[!community]]>
+                                    <template is='dom-if' if='[[hasBacktestPositions(backtest)]]'>
+                                        <paper-tab>Portfolio</paper-tab>
+                                    </template>
+                                    
+                                    <template is='dom-if' if='[[hasBacktestTransactions(backtest)]]'>
+                                        <paper-tab>Transactions</paper-tab>
+                                    </template>
 
-                                <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
-                                    <paper-tab>Log</paper-tab>
+                                    <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
+                                        <paper-tab>Log</paper-tab>
+                                    </template>
                                 </template>
                             </paper-tabs>
                         </div>
@@ -170,21 +172,20 @@
                         </div>
                         
                         <div id="portfolio-container">
-                        <template is='dom-if' if='[[backtestPositions]]'>
+                            <template is='dom-if' if='[[backtestPositions]]'>
                                 <aq-portfolio-table 
                                     positions="[[backtestPositions]]">
                                 </aq-portfolio-table>
-                        </template>
+                            </template>
                         </div>
 
                         <div id="transaction-container">
-                         <template is='dom-if' if='[[backtestTransactions]]'>
-                            
+                             <template is='dom-if' if='[[backtestTransactions]]'>
                                 <aq-transaction-table 
                                     transactions="[[backtestTransactions]]"
                                     no-proposed-orders>
                                 </aq-transaction-table>
-                        </template>
+                            </template>
                         </div>
 
                         <template is='dom-if' if='[[backtestLogs]]'>
@@ -212,7 +213,7 @@
         <iron-signals on-iron-signal-bulk-data='onBacktestBulkData'></iron-signals>
 
         <iron-ajax
-            url="[[computeGetBacktestUrl(backtestId)]]"
+            url=""
             method='GET'
             id='getBacktestQuery'
             handle-as="json"
@@ -224,15 +225,14 @@
         </iron-ajax>
 
         <iron-ajax
-            url="[[computeGetBacktestRealtimeUrl(backtestId)]]"
+            url=""
             method='GET'
-            id='getBacktestRealtimeQuery'
+            id='getBacktestSpecialQuery'
             handle-as="json"
-            on-response="onGetBacktestReatimeSuccess"
-            on-error="onGetBacktestRealtimeError"
+            on-response="onGetBacktestSpecialSuccess"
+            on-error="onGetBacktestError"
             headers='{{header}}'
-            debounce-duration="300"
-            loading="{{loading}}">
+            debounce-duration="300">
         </iron-ajax>
 
     </template>
@@ -292,6 +292,11 @@
                     value: false,
                 },
 
+                community: {
+                    type: Boolean,
+                    value: false,
+                },
+
                 heading: String,
 
                 backtestLogs: Array,
@@ -332,14 +337,11 @@
                 }
             },
 
-            computeGetBacktestUrl: function (backtestId) {
+            computeGetBacktestUrl: function (backtestId, select) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/backtest/' + backtestId;
-            },
-
-            computeGetBacktestRealtimeUrl: function (backtestId) {
-                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/backtest/' + backtestId+'?fields=realtimeOutput';
+                
+                var baseUrl = APIEndPoint + '/backtest/' + backtestId;    
+                return select!='' ? baseUrl+'?select='+select : baseUrl;
             },
 
             reset: function () {
@@ -475,164 +477,208 @@
             requestStaticData: function () {
                 if (this.backtestId && this.$.authItem.checkHasToken()) {
                     this.header = this.$.authItem.getHeader();
+
+                    this.$.getBacktestQuery.url = this.computeGetBacktestUrl(this.backtestId, '');
                     this.$.getBacktestQuery.generateRequest();
                 }
             },
 
-            onGetBacktestSuccess: function (e) {
+            onGetBacktestSuccess: function (e) {                
+                var response = e.detail.response;
                 
-                    //first reset Metrics 
-                    this.reset();
-                    this.set('backtest', e.detail.response);
-                    this.backtestHeader = 
-                    [
-                        {   
-                            label: "Strategy Name",
-                            metric: this.backtest.strategy_name, 
-                        }, 
-                        {   
-                            label: "Created At",
-                            metric: date.formatDateTime(this.backtest.createdAt), 
-                        }, 
+                //var refresh = !this.backtest ? true : ((response._id != this.backtest._id) ? true : false);
+                 
+                this.set('backtest', e.detail.response); 
 
-                        {
-                            label: "Date Range",
-                            metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
-                        },
+                /*this.populateTab();
 
-                        {
-                            label: "Status",
-                            metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
-                        }
-                    ];
+                if(!refresh) {
+                    return;
+                }*/
 
-                    //Compute and populate the transactions, portfolio and logs after a delay of 5 seconds each OR when tab pressed
-                    //this.async(function(){this.computePortfolio(this.backtest);}, 5000);
-                    //this.async(function(){this.computeTransactions(this.backtest);}, 10000);
-                    
-                    //this.async(function(){this.computeLogs(this.backtest);}, 15000);
+                //first reset Metrics 
+                this.reset();
+                this.backtestHeader = 
+                [
+                    {   
+                        label: "Strategy Name",
+                        metric: this.backtest.strategy_name, 
+                    }, 
+                    {   
+                        label: "Created At",
+                        metric: date.formatDateTime(this.backtest.createdAt), 
+                    }, 
 
-                    if (this.backtest.status == "exception") {
-                            this.fire('iron-signal', {name:'backtest-exception', data:{type: 1, id: this.backtestId}});
-                        return ;
-                    }        
-            
-                    if (this.backtest.status == "active") {
-                        this.active = true;
-                        return;
+                    {
+                        label: "Date Range",
+                        metric: date.formatDate(this.backtest.settings.startDate) + " - " + date.formatDate(this.backtest.settings.endDate),
+                    },
+
+                    {
+                        label: "Status",
+                        metric: this.backtest.status.charAt(0).toUpperCase() + this.backtest.status.slice(1),
                     }
+                ]
+                if (this.backtest.status == "exception") {
+                        this.fire('iron-signal', {name:'backtest-exception', data:{type: 1, id: this.backtestId}});
+                    return ;
+                }        
+        
+                if (this.backtest.status == "active") {
+                    this.active = true;
+                    return;
+                }
 
-                    var metrics = this.backtest.output ? this.backtest.output.performance ?  this.backtest.output.performance.detail ? this.backtest.output.performance.detail.analytics ? this.backtest.output.performance.detail.analytics.rolling : null : null : null: null;
-                    
-                    if (metrics) {
-                        this.addMetricData(metrics);
-                    }
+                var metrics = this.backtest.output ? this.backtest.output.performance ?  this.backtest.output.performance.detail ? this.backtest.output.performance.detail.analytics ? this.backtest.output.performance.detail.analytics.rolling : null : null : null: null;
+                
+                if (metrics) {
+                    this.addMetricData(metrics);
+                }
 
-                    /*if (this.backtest.output.variables) {
-                        // this variable is used because array changes are somehow not relaying back the template
-                        this.hasTrackVarData = true;
-                    }
+                /*if (this.backtest.output.variables) {
+                    // this variable is used because array changes are somehow not relaying back the template
+                    this.hasTrackVarData = true;
+                }
 
-                    this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);*/
-                    this.async(function() {
-                        this.$$('aq-backtest-performance-detail-item').plotGraphs();
-                    }, 500);
+                this.$$('aq-backtest-performance-detail-item'). updateGraphProperties(this.hasTrackVarData);*/
+                this.async(function() {
+                    this.$$('aq-backtest-performance-detail-item').plotGraphs();
+                }, 500);
             },
 
             onGetBacktestError: function (e) {
                 console.log(e);
             },
 
-            computeLogs:function(backtest) {
-                
-                if(!this.backtestLogs || this.backtestLogs.length == 0) {
-                    //NEW data format
-                    var logs = backtest ? (backtest.output ? (backtest.output.logs ? (backtest.output.logs.values ? backtest.output.logs.values : null)  : null) : null) : null;
+            requestSpecializedData: function(select) {
+                if (this.backtestId && this.$.authItem.checkHasToken()) {
+                    this.header = this.$.authItem.getHeader();
 
-                    if(logs) {
-                        //var logs = logs.values;
-                        var logArray = [];
-                        
-                        Object.keys(logs).sort().forEach(date => {
-                            var logsForDate = logs[date];
-
-                            Object.keys(logsForDate).sort().forEach(datetime => {
-                                var logs = logsForDate[datetime];
-                                logs.forEach(log => {
-                                    logArray.push(JSON.parse(log));
-                                });        
-                            });
-                        });
-
-                        this.backtestLogs = logArray;
-                    } 
+                    this.$.getBacktestSpecialQuery.url = this.computeGetBacktestUrl(this.backtestId, select);
+                    this.$.getBacktestSpecialQuery.generateRequest();
                 }
             },
 
-            computeTransactions:function(backtest) {
-                
-                if(!this.backtestTransactions || this.backtestTransactions.length == 0) {
-                    var transactionHistory = backtest ? (backtest.output ? (backtest.output.transactionHistory ? backtest.output.transactionHistory : null) : null) : null;
+            onGetBacktestSpecialSuccess: function(e) {
+                var specialBacktestData =  e.detail.response;
 
-                    if(transactionHistory) {
+                if(this.backtest) {
+                    if(this.backtest._id == specialBacktestData._id) {
+                        Object.keys(specialBacktestData).forEach(key => {
+                            this.backtest[key] = specialBacktestData[key];
+                        });
+                        
+                        this.populateTab();
+                    }
+                } 
+            },
 
-                        var transactionArray = [];
-                        transactionHistory.forEach(fragment => {
-                            transactionHistoryFragment = fragment.values;
+            computeLogs:function() {
+                var backtest = this.backtest;
 
-                            transactionHistoryFragment.forEach(obj => {
-                                
-                                var transactionsEachDay = obj.transactions;
-                                //array of array
-                                transactionsEachDay.forEach(transaction => {
-                                    transactionArray.push(transaction);    
+                if(this.hasBacktestLogValues(backtest)) {
+                    if(!this.backtestLogs || this.backtestLogs.length == 0) {
+                        //NEW data format
+                        var logs = backtest ? (backtest.output ? (backtest.output.logs ? (backtest.output.logs.values ? backtest.output.logs.values : null)  : null) : null) : null;
+
+                        if(logs) {
+                            //var logs = logs.values;
+                            var logArray = [];
+                            
+                            Object.keys(logs).sort().forEach(date => {
+                                var logsForDate = logs[date];
+
+                                Object.keys(logsForDate).sort().forEach(datetime => {
+                                    var logs = logsForDate[datetime];
+                                    logs.forEach(log => {
+                                        logArray.push(JSON.parse(log));
+                                    });        
                                 });
-                                
                             });
 
-                        });
-
-                        this.backtestTransactions = transactionArray;
+                            this.backtestLogs = logArray;
+                        } 
                     } 
+                } else {
+                    this.requestSpecializedData('logs');
                 }
             },
 
-            computePortfolio:function(backtest) {
-                if(!this.backtestPositions || this.backtestPositions.length == 0) {
-                    var portfolioHistory = backtest ? (backtest.output ? (backtest.output.portfolioHistory ? backtest.output.portfolioHistory: null) : null) : null;
+            computeTransactions:function() {
+                var backtest = this.backtest;
 
-                    //Portfolio History is multiple objects with 100 size array each
-                    if(portfolioHistory) {
+                if(this.hasBacktestTransactionValues(backtest)){ 
+                    if(!this.backtestTransactions || this.backtestTransactions.length == 0) {
+                        var transactionHistory = backtest ? (backtest.output ? (backtest.output.transactionHistory ? backtest.output.transactionHistory : null) : null) : null;
 
-                        //var truePortfolioHistory = [];
-                        var positionsArray = []
+                        if(transactionHistory) {
 
-                        portfolioHistory.forEach(fragment => {
-                            var framgmentValues = fragment.values; 
-                        
-                            framgmentValues.forEach(obj => {
-                                var date = obj.date;
-                                
-                                //WEIRD but that's how the data is stored
-                                var portfolioEachDay = obj.portfolio.portfolio;
+                            var transactionArray = [];
+                            transactionHistory.forEach(fragment => {
+                                transactionHistoryFragment = fragment.values;
 
-                                if(portfolioEachDay.positions) {
-                                //array of array
-                                    Object.keys(portfolioEachDay.positions).forEach(pkey => {
-                                        var position = portfolioEachDay.positions[pkey];
-                                        
-                                        if(position.quantity > 0) {
-                                            position.date = date;
-                                            positionsArray.push(position);    
-                                        }
+                                transactionHistoryFragment.forEach(obj => {
+                                    
+                                    var transactionsEachDay = obj.transactions;
+                                    //array of array
+                                    transactionsEachDay.forEach(transaction => {
+                                        transactionArray.push(transaction);    
                                     });
-                                }
-                                
-                            });
-                        });
+                                    
+                                });
 
-                        this.backtestPositions = positionsArray;
-                    } 
+                            });
+
+                            this.backtestTransactions = transactionArray;
+                        } 
+                    }
+                } else {
+                    this.requestSpecializedData('transactionHistory');
+                }
+            },
+
+            computePortfolio:function() {
+                var backtest = this.backtest;
+                if(this.hasBacktestPositionValues(backtest)) {   
+
+                    if(!this.backtestPositions || this.backtestPositions.length == 0) {
+                        var portfolioHistory = backtest ? (backtest.output ? (backtest.output.portfolioHistory ? backtest.output.portfolioHistory: null) : null) : null;
+
+                        //Portfolio History is multiple objects with 100 size array each
+                        if(portfolioHistory) {
+
+                            //var truePortfolioHistory = [];
+                            var positionsArray = []
+
+                            portfolioHistory.forEach(fragment => {
+                                var framgmentValues = fragment.values; 
+                            
+                                framgmentValues.forEach(obj => {
+                                    var date = obj.date;
+                                    
+                                    //WEIRD but that's how the data is stored
+                                    var portfolioEachDay = obj.portfolio.portfolio;
+
+                                    if(portfolioEachDay.positions) {
+                                    //array of array
+                                        Object.keys(portfolioEachDay.positions).forEach(pkey => {
+                                            var position = portfolioEachDay.positions[pkey];
+                                            
+                                            if(position.quantity > 0) {
+                                                position.date = date;
+                                                positionsArray.push(position);    
+                                            }
+                                        });
+                                    }
+                                    
+                                });
+                            });
+
+                            this.backtestPositions = positionsArray;
+                        } 
+                    }
+                } else {
+                    this.requestSpecializedData('portfolioHistory');
                 }
             },
 
@@ -705,17 +751,54 @@
             },
 
             hasBacktestPositions: function(backtest){
-                return backtest ? (backtest.output ? (backtest.output.portfolioHistory ? true: false) : false) : false;
-
+                return backtest ? (backtest.output ? (backtest.output.portfolioHistory ? (backtest.output.portfolioHistory.length > 0 ? true: false) : false) : false) : false;
             },
 
             hasBacktestTransactions: function(backtest){
-                return backtest ? (backtest.output ? (backtest.output.transactionHistory ? true : false) : false) : false;
+                return backtest ? (backtest.output ? (backtest.output.transactionHistory ? (backtest.output.transactionHistory.length > 0 ? true : false) : false) : false) :false;
             },
 
             hasBacktestLogs: function(backtest){
-                return backtest ? (backtest.output ? (backtest.output.logs ? (backtest.output.logs.values ? true : false)  : false) : false) : false;
+                return backtest ? (backtest.output ? (backtest.output.logs ? true : false)  : false) : false;
+            },
 
+            hasBacktestPositionValues: function(backtest) {
+                var portfolioHistory =  this.hasBacktestPositions(backtest) ? backtest.output.portfolioHistory : null;
+
+                if (portfolioHistory) {
+                    if(portfolioHistory.length > 0) {
+                        return portfolioHistory[0].values ? true : false;
+                    }
+                }
+
+                return false;
+            },
+
+            hasBacktestTransactionValues: function(backtest) {
+                var transactionHistory = this.hasBacktestTransactions(backtest) ? backtest.output.transactionHistory : null;
+
+                if (transactionHistory) {
+                    if(transactionHistory.length > 0) {
+                        return transactionHistory[0].values ? true : false;
+                    }
+                }
+                return false;
+            },
+
+            hasBacktestLogValues: function(backtest) {
+                return this.hasBacktestLogs(backtest) ? (backtest.output.logs.values ? true : false): false;
+            },
+
+            populateTab: function() {
+                if(this.backtest) {
+                    if(this.detailType == 2) {
+                        this.computePortfolio();
+                    } else if(this.detailType == 3) {
+                        this.computeTransactions();
+                    } else if(this.detailType == 4) {
+                        this.computeLogs();
+                    }
+                }
             },
         });
     </script>
