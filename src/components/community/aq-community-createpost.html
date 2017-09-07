@@ -372,8 +372,7 @@
 
             postThread: function () {
                 var x = this.processInput();
-
-                if (x & this.$.authItem.checkHasToken()) {
+                if (x && this.$.authItem.checkHasToken()) {
                     this.header = this.$.authItem.getHeader();
                     var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                     this.$.postThreadQuery.url = APIEndPoint + '/thread';
@@ -385,6 +384,7 @@
                 this.newThreadId = data.detail.response._id;
 
                 this.resetView();
+
                 this.fire('rt-changed', {route:"/dashboard/community/"+this.newThreadId});
 
                 this.fire('iron-signal', {name: 'post-added'});

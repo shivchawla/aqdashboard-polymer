@@ -487,7 +487,6 @@
                 var response = e.detail.response;
                 
                 //var refresh = !this.backtest ? true : ((response._id != this.backtest._id) ? true : false);
-                 
                 this.set('backtest', e.detail.response); 
 
                 /*this.populateTab();
@@ -561,13 +560,15 @@
 
             onGetBacktestSpecialSuccess: function(e) {
                 var specialBacktestData =  e.detail.response;
-
                 if(this.backtest) {
                     if(this.backtest._id == specialBacktestData._id) {
-                        Object.keys(specialBacktestData).forEach(key => {
-                            this.backtest[key] = specialBacktestData[key];
-                        });
-                        
+                        var specialOutput = specialBacktestData.output;
+                        if(specialOutput) {
+                            Object.keys(specialOutput).forEach(key => {
+                                this.backtest["output"][key] = specialOutput[key];
+                            });
+                        }
+
                         this.populateTab();
                     }
                 } 
@@ -639,6 +640,7 @@
 
             computePortfolio:function() {
                 var backtest = this.backtest;
+
                 if(this.hasBacktestPositionValues(backtest)) {   
 
                     if(!this.backtestPositions || this.backtestPositions.length == 0) {
