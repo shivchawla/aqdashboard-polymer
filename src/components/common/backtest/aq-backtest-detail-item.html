@@ -150,7 +150,7 @@
                                     </template>
 
                                     <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
-                                        <paper-tab>Log</paper-tab>
+                                        <paper-tab>Logs</paper-tab>
                                     </template>
                                 </template>
                             </paper-tabs>
@@ -738,15 +738,15 @@
             _detailTypeChanged: function() {
                 //return;
                 if(this.detailType == 2) {
-                    this.computePortfolio(this.backtest);
+                    this.computePortfolio();
                 }
 
                 if(this.detailType == 3 ) {
-                    this.computeTransactions(this.backtest);
+                    this.computeTransactions();
                 }
 
                 if(this.detailType == 4) {
-                    this.computeLogs(this.backtest);
+                    this.computeLogs();
                 }
             },
 
