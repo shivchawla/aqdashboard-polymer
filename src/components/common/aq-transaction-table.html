@@ -73,7 +73,7 @@
 		<div id='table-container'>
 			<div id="toggle-container" class="layout horizontal">
 	            <div class="flex"></div>
-	            <template is='dom-if' if='[[proposedOrders]]'>
+	            <template is='dom-if' if='[[orders]]'>
 		            <aq-twoway-toggle 
 		                first-option="Proposed Orders" 
 		                second-option="Transactions"
@@ -81,17 +81,9 @@
 		            </aq-twoway-toggle>
 	            </template>
 
-	            <!--template is='dom-if' if='[[!proposedOrders]]'>
-	            	<div
-	            	<div class="header"><p>Transactions</p></div>
-	            </template>
-
-	            <div class="flex"></div-->
 	        </div>
 
-	        <!--iron-pages attr-for-selected="id" selected="[[showTableType(proposedOrders, typeSelected)]]"-->
-	        	
-	        	<template is='dom-if' if='[[showProposedOrders(proposedOrders, typeSelected)]]'>
+	        	<template is='dom-if' if='[[showProposedOrders(typeSelected)]]'>
 	        	<vaadin-grid id='ordersTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 			      		<template class="header">
@@ -125,7 +117,7 @@
 				    </vaadin-grid-column>
 			    </vaadin-grid></template>
 		   		
-		   		<template is='dom-if' if='[[showTransactionTable(proposedOrders, typeSelected)]]'>
+		   		<template is='dom-if' if='[[showTransactionTable(typeSelected)]]'>
          	 	<vaadin-grid id='transactionTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 				      <!--template class="header">Date</template-->
@@ -176,13 +168,7 @@
 				      <template>[[item.fee]]</template>
 				    </vaadin-grid-column>
 			   	</vaadin-grid></template>
-		   	
-
-	   		<!--div class="layout vertical">
-	   			<template is='dom-if' if=[[showPaperButton(loading)]]>
-	   			<paper-button raised class="self-end" on-tap='loadMoreData'>Load More</paper-button></template>
-	   		</div-->
-		
+	   		
 	   </div>
 	   
 	</template>
@@ -199,12 +185,7 @@
 					type: Number,
 					value: 0,
 				},
-
-				proposedOrders: {
-					type: Boolean,
-					value: false,
-				},
-
+				
 				loading: Boolean,
 			},
 
@@ -267,16 +248,16 @@
      			}
 			},
 
-			showTransactionTable: function(proposedOrders, typeSelected) {
-				var show = !proposedOrders ? typeSelected == 0 : typeSelected == 1;
+			showTransactionTable: function(typeSelected) {
+				var show = !this.orders ? typeSelected == 0 : typeSelected == 1;
 				if(show) {
 					this.async(this.manageTransactions, 1000);
 				}
 				return show;
 			},
 
-			showProposedOrders: function(proposedOrders, typeSelected) {
-				var show = proposedOrders && typeSelected == 0;
+			showProposedOrders: function(typeSelected) {
+				var show = this.orders && typeSelected == 0;
 
 				if(show) {
 					this.async(this.manageOrders, 1000);
@@ -285,8 +266,8 @@
 				return show;
 			},
 
-			showTableType: function(proposedOrders, typeSelected) {
-				return proposedOrders ? (typeSelected == 0 ? "ordersTable" : "transactionTable") : "transactionTable";
+			showTableType: function(orders, typeSelected) {
+				return orders ? (typeSelected == 0 ? "ordersTable" : "transactionTable") : "transactionTable";
 			},
 
 			/*manageTransactions: function(page, pageSize) {

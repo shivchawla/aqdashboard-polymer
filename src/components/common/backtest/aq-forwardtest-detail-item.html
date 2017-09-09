@@ -320,9 +320,9 @@
                         <v-tab selected=[[isSelected(detailType,2)]] icon="vaadin-icons:suitcase">Portfolio
                         </v-tab>
                         
-                        <v-tab selected=[[isSelected(detailType,3)]] icon="aq-icons:view-list">Transactions</v-tab>
+                        <v-tab selected=[[isSelected(detailType,3)]] icon="aq-icons:queue">Transactions</v-tab>
                         
-                        <v-tab selected=[[isSelected(detailType,4)]] icon="add">Logs</v-tab>
+                        <v-tab selected=[[isSelected(detailType,4)]] icon="aq-icons:view-list">Logs</v-tab>
 
                         <v-tab selected=[[isSelected(detailType,5)]] icon="settings">Settings</v-tab>
                     </iron-selector>
@@ -618,7 +618,7 @@
             },
 
             hasOrdersAndTransactions: function(forwardtestTransactions, forwardtestOrders) {
-                return forwardtestTransactions && forwardtestOrders;
+                return forwardtestTransactions || forwardtestOrders;
             },
 
             computePositions: function() {
@@ -695,7 +695,6 @@
                         });
 
                         this.forwardtestOrders = ordersArray.sort(function(a,b){ return a.securitysymbol.ticker < b.securitysymbol.ticker;});
-
                     } 
                 }
             },

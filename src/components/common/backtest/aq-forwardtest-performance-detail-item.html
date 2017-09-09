@@ -107,13 +107,13 @@
 			},
 
             reset: function () {
-                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
+                var child = Polymer.dom(this.$$('#cumRetLineChartDiv')).querySelector('aq-cumret-linechart');
                 if (child) {
-                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
+                    Polymer.dom(this.$$('#cumRetLineChartDiv')).removeChild(child);
                 }
 
                 var el = document.createElement('aq-cumret-linechart');
-                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+                Polymer.dom(this.$$('#cumRetLineChartDiv')).appendChild(el);
 
                 Polymer.dom.flush();
 
