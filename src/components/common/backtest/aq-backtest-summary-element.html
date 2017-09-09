@@ -1,5 +1,9 @@
 <link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 <link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
 <link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../../../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../../../../bower_components/paper-radio-group/paper-radio-group.html">
@@ -58,10 +62,33 @@
                 margin-bottom: 20px;
                 margin-left: 20px;
             }
-            vaadin-grid {
-                --primary-color: transparent;
 
+            #tableContainer {
+                margin-left: 20px;
+                margin-right: 20px;
             }
+
+             vaadin-grid {
+                height: 100%;
+                --vaadin-grid-header-cell: {
+                    background-color: #fafafa;
+                    font-size: 14px;
+                    height: 78px;
+                };
+
+                --vaadin-grid-body-cell: {
+                    font-size: 14px;
+                }
+
+                --vaadin-grid-body-row-hover-cell: {
+                    background-color: #fafafa;
+                }
+            }
+
+            #tableHeading {
+                margin-bottom: 5px;
+            }
+
             .header-item{
                 color:#000;
                 font-weight: 700;
@@ -108,26 +135,67 @@
                 </template>
             </div>
 
-            <span style="margin-left: 20px;">Showing Data for&nbsp<span class="heavy-span">[[durationText]]</span></span>
+            <div id='tableContainer'>
+                <div id="tableHeading">Showing Data for&nbsp<span class="heavy-span">[[durationText]]</span></div>
 
-            <vaadin-grid>
-                <table>
-                    <colgroup>
-                        <col>
-                        <template is="dom-repeat" items="{{headers}}">
-                            <col>
+                <vaadin-grid multi-sort=true>
+                    <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="0">Backtest</vaadin-grid-sorter>
                         </template>
-                    </colgroup>
-                    <thead class="thead">
-                    <tr>
-                        <th class="header"><span style="color:transparent">Some</span></th>
-                        <template is="dom-repeat" items="{{headers}}">
-                            <th class="header"><span class="header-item">{{item}}</span></th>
+
+                        <template>[[item.0]]</template>
+                    </vaadin-grid-column>
+
+                     <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="1">Total Return </vaadin-grid-sorter>
                         </template>
-                    </tr>
-                    </thead>
-                </table>
-            </vaadin-grid>
+
+                        <template>[[item.1]]</template>
+                    </vaadin-grid-column>
+
+                     <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="2">Annual Return</vaadin-grid-sorter>
+                        </template>
+
+                        <template>[[item.2]]</template>
+                    </vaadin-grid-column>
+
+                     <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="3">Volatility</vaadin-grid-sorter>
+                        </template>
+
+                        <template>[[item.3]]</template>
+                    </vaadin-grid-column>
+
+                     <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="4">Sharpe Ratio</vaadin-grid-sorter>
+                        </template>
+
+                        <template>[[item.4]]</template>
+                    </vaadin-grid-column>
+
+                     <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="6">Max Drawdown</vaadin-grid-sorter>
+                        </template>
+
+                        <template>[[item.6]]</template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column>
+                        <template class="header">
+                             <vaadin-grid-sorter path="8">Beta</vaadin-grid-sorter>
+                        </template>
+
+                        <template>[[item.8]]</template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
         </div>
     </template>
     
@@ -146,7 +214,7 @@
                 headers: {
                     type: Array,
                     value: [
-                        'Total Return', 'Annual Return', 'Volatility', 'Sharpe Ratio', 'Information ratio',
+                        'Backtest', 'Total Return', 'Annual Return', 'Volatility', 'Sharpe Ratio', 'Information Ratio',
                         'Max Drawdown', 'Calmar Ratio', 'Beta', 'Stability', 'Alpha'
                     ]
                 },
@@ -172,19 +240,23 @@
             },
 
             _compareItemsChanged: function() {
-                this.selectedButton = "0";
-                
-                if(this.$.container) {
-                    this.$.container.style.display = 'none';
-                }
 
                 if(this.compareItems.length > 0) {
-                    var indexArray = this.compareItems.map(function(x) {return x.index;})
-                    var backtests = this.compareItems.map(function(x) {return x.backtest;});
+                    this.selectedButton = "0";
+                    
+                    if(this.$.container) {
+                        this.$.container.style.display = 'none';
+                    }
 
-                    this.resetYearsMonths(backtests);
+                    if(this.compareItems.length > 0) {
+                        var indexArray = this.compareItems.map(function(x) {return x.index;})
+                        var backtests = this.compareItems.map(function(x) {return x.backtest;});
 
-                    this.compare();
+                        this.resetYearsMonths(backtests);
+
+                        this.compare();
+                    }
+
                 }
             },
 
@@ -197,73 +269,73 @@
                         
                         var summary = backtests[i].output.summary;
 
-                        result.push([
-                            indexArray[i],
-                            summary.totalreturn+'%',
-                            summary.annualreturn+'%',
-                            summary.annualstandarddeviation+'%',
-                            summary.sharperatio,
-                            summary.informationratio,
-                            summary.maxdrawdown+'%',
-                            summary.calmarratio,
-                            summary.beta,
-                            summary.stability,
-                            summary.alpha
-                        ]);
+                        result.push({
+                            0:indexArray[i],
+                            1:summary.totalreturn+'%',
+                            2:summary.annualreturn+'%',
+                            3:summary.annualstandarddeviation+'%',
+                            4:summary.sharperatio,
+                            5:summary.informationratio,
+                            6:summary.maxdrawdown+'%',
+                            7:summary.calmarratio,
+                            8:summary.beta,
+                            9:summary.stability,
+                            10:summary.alpha
+                        });
                     } else if(this.selectedButton == '1') {
                         
-                        var rolling = backtests[i].output.analytics.rolling;
+                        var rolling = backtests[i].output.performance.detail.analytics.rolling;
                         
-                        result.push([
-                            indexArray[i],
-                            rolling.totalreturn+'%',
-                            rolling.annualreturn+'%',
-                            rolling.annualstandarddeviation+'%',
-                            rolling.sharperatio,
-                            rolling.informationratio,
-                            rolling.maxdrawdown+'%',
-                            rolling.calmarratio,
-                            rolling.beta,
-                            rolling.stability,
-                            rolling.alpha
-                        ]);
+                        result.push({
+                            0:indexArray[i],
+                            1:rolling.totalreturn+'%',
+                            2:rolling.annualreturn+'%',
+                            3:rolling.annualstandarddeviation+'%',
+                            4:rolling.sharperatio,
+                            5:rolling.informationratio,
+                            6:rolling.maxdrawdown+'%',
+                            7:rolling.calmarratio,
+                            8:rolling.beta,
+                            9:rolling.stability,
+                            10:rolling.alpha
+                        });
                     } else if(this.selectedButton == '2') {
                         
                         var year = this.year.toString();
                         var month = this.month;
 
                         if(month == 'All') {
-                            var yearField = backtests[i].output.analytics.fixed.yearly[year];
+                            var yearField = backtests[i].output.performance.detail.analytics.fixed.yearly[year];
 
                             if(yearField) {
 
-                                result.push([
-                                    indexArray[i],
-                                    yearField.totalreturn+'%',
-                                    yearField.annualreturn+'%',
-                                    yearField.annualstandarddeviation+'%',
-                                    yearField.sharperatio,
-                                    yearField.informationratio,
-                                    yearField.maxdrawdown+'%',
-                                    yearField.calmarratio,
-                                    yearField.beta,
-                                    yearField.stability,
-                                    yearField.alpha
-                                ]); 
+                                result.push({
+                                    0: indexArray[i],
+                                    1:yearField.totalreturn+'%',
+                                    2:yearField.annualreturn+'%',
+                                    3:yearField.annualstandarddeviation+'%',
+                                    4:yearField.sharperatio,
+                                    5:yearField.informationratio,
+                                    6:yearField.maxdrawdown+'%',
+                                    7:yearField.calmarratio,
+                                    8:yearField.beta,
+                                    9: yearField.stability,
+                                    10:yearField.alpha
+                                }); 
                             } else {
-                                result.push([
-                                    indexArray[i],
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                ]);
+                                result.push({
+                                    0:indexArray[i],
+                                    1:'-',
+                                    2:'-',
+                                    3:'-',
+                                    4:'-',
+                                    5:'-',
+                                    6:'-',
+                                    7:'-',
+                                    8:'-',
+                                    9:'-',
+                                    10:'-',
+                                });
                             }
                         } else {
                             var numericMonth = this.months.indexOf(month);
@@ -274,37 +346,37 @@
                             }
 
                             var key = year.toString() + numericMonth;
-                            var monthField = backtests[i].output.analytics.fixed.monthly[key];
+                            var monthField = backtests[i].output.performance.detail.analytics.fixed.monthly[key];
 
                             if(monthField) {
 
-                                result.push([
-                                    indexArray[i],
-                                    monthField.totalreturn+'%',
-                                    monthField.annualreturn+'%',
-                                    monthField.annualstandarddeviation+'%',
-                                    monthField.sharperatio,
-                                    monthField.informationratio,
-                                    monthField.maxdrawdown+'%',
-                                    monthField.calmarratio,
-                                    monthField.beta,
-                                    monthField.stability,
-                                    monthField.alpha
-                                ]); 
+                                result.push({
+                                    0:indexArray[i],
+                                    1:monthField.totalreturn+'%',
+                                    2:monthField.annualreturn+'%',
+                                    3:monthField.annualstandarddeviation+'%',
+                                    4:monthField.sharperatio,
+                                    5:monthField.informationratio,
+                                    6:monthField.maxdrawdown+'%',
+                                    7:monthField.calmarratio,
+                                    8:monthField.beta,
+                                    9:monthField.stability,
+                                    10:monthField.alpha
+                                }); 
                             } else {
-                                result.push([
-                                    indexArray[i],
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',
-                                ]);
+                                result.push({
+                                    0:indexArray[i],
+                                    1:'-',
+                                    2:'-',
+                                    3:'-',
+                                    4:'-',
+                                    5:'-',
+                                    6:'-',
+                                    7:'-',
+                                    8:'-',
+                                    9:'-',
+                                    10:'-',
+                                });
                             }
 
                         }
@@ -326,18 +398,9 @@
 
                 this.computeYearMonth();
 
-                this.data = this.getBacktestData(indexArray, backtests);
+                grid.items = this.getBacktestData(indexArray, backtests);
                 
-                grid.items = [];
-
-                grid.items = function (params, callback) {
-                    callback(element.data.slice(params.index, params.index + params.count));
-                };
-
-                grid.size = this.data.length;
-
                 this.$.container.style.display = 'block';
-
             },
 
             resetYearsMonths: function(backtests) {
@@ -346,8 +409,10 @@
                 var ydict = {};
                 for(var i=0; i<backtests.length; i++) {
                     
-                    if(backtests[i].output.analytics.fixed.yearly) {
-                        var years = Object.keys(backtests[i].output.analytics.fixed.yearly);
+                    var noYearlyData = !backtests[i]&&!backtests[i].output&&!backtests[i].output.performance&&!backtests[i].output.performance.detail&&!backtests[i].output.performance.detail.analytics&&!backtests[i].output.performance.detail.analytics.fixed&&!backtests[i].output.performance.detail.analytics.fixed.yearly;
+
+                    if(!noYearlyData) {
+                        var years = Object.keys(backtests[i].output.performance.detail.analytics.fixed.yearly);
 
                         for(var j=0; j<years.length; j++) {
                             ydict[years[j]] = 1;
@@ -359,9 +424,7 @@
                 this.years = Object.keys(ydict).sort();
                 this.year = this.years[0];
                 this.month = this.months[0];
-
             },
-
 
             isCustomBar: function(selectedButton) {
                 return selectedButton == "2";
@@ -369,22 +432,27 @@
 
             _selectedButtonChanged: function() {
                 if(this.compareItems) {
-                    this.compare();
+                    if(this.compareItems.length > 0) {
+                        this.compare();
+                    }
                 }
             },
 
             onMonthChange: function(e) {
                 this.month = e.detail.item.month;
-                this.compare();
+                if(this.compareItems.length > 0) {
+                    this.compare();
+                }
             },
 
             onYearChange: function(e) {
                 this.year = e.detail.item.year;
-                this.compare();
+                if(this.compareItems.length > 0) {
+                    this.compare();
+                }
             },
 
             computeYearMonth: function() {
-                
                 var selectedButton = this.selectedButton;
                 var year = this.year;
                 var month = this.month;
@@ -404,6 +472,12 @@
                 }
 
                 this.durationText = txt;
+            },
+
+            getData: function(obj, columnName) {
+                if(obj) {
+                    return this.headers.indexOf(columnName) in obj ? obj[this.headers.indexOf(columnName)] : '';
+                }
             },
 
         });

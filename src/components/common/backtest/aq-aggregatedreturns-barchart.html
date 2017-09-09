@@ -168,7 +168,12 @@
 		  				}, false
 	  				);	
 				}
+			},
 
+			redrawChart: function() {
+				//WHY the followig command doesn't work
+				//this.$$('#cumRetLineChart').redraw();
+				this.$$('#barChart')._chart.redraw();
 			},
 
 			resizeChart: function() {

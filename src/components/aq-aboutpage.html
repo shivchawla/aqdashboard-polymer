@@ -5,6 +5,7 @@
 
 <link rel="import" href="./common/aq-allpage-layout.html">
 <link rel="import" href="./common/aq-portwidth-detector.html">
+<link rel='import' href='./aq-footer.html'>
 
 <dom-module id="aq-aboutpage">
 
@@ -13,7 +14,7 @@
     <style>
 
       :host {
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Avenir', sans-serif;
       }
 
       footer {
@@ -104,9 +105,9 @@
       }
 
       p {
-        line-height: calc(10px + 1.2vw);
+        line-height: calc(12px + 1.2vw);
         text-align: justify;
-        font-size: calc(7px + 0.8vw);
+        font-size: calc(10px + 0.8vw);
       }
 
       paper-button {
@@ -144,32 +145,18 @@
           height: calc(92vh - 120px) !important;
       }
 
-      #fourth-category-container {
-        height: 225px;
+      #whoweare-category-container {
+        height: 125px;
       }
 
       #second-section-text {
         width: 100%;
       }
 
-      #career-main-container {
-        width: 100%;
-        --background-color: #dff2fa;
-        background-color:#D7ECEF;
-        height: 300px;
-        margin-bottom: 50px;
-      }
-
       #career-tagline {
         --font-weight: 700;
         font-size: 28px;
         margin-bottom: 20px;
-      }
-
-      .career-text p{
-        width: 80%;
-        margin: 0 auto;
-        --font-size: 18px;
       }
 
       #footer-section {
@@ -192,6 +179,10 @@
           background-color: teal;
       }
 
+      a {
+        text-decoration: none;
+      }
+
     </style>
 
     <template>
@@ -212,8 +203,7 @@
 
         <aq-portwidth-detector width="{{width}}"></aq-portwidth-detector>
 
-        <div id='container-bg' class="layout vertical fit">   
-           
+        <div id='container-bg' class="layout vertical fit">       
             <aq-allpage-layout no-nav class="flex" elevation=0> 
                 <div class="internal-content" id='inner-container'>
                     <div class="layout vertical category-container" id='first-category-container'>
@@ -242,77 +232,61 @@
                         
                         <div class="tagline self-start">Quantitative Research Platform</div>
                         
-                        <div class="layout horizontal">
-                            <div id="second-section-text">
-                                <p>In ever expanding financial markets it is important to systematically scrutinize investment ideas and separate real investment signals from noise. At AimsQuant, we are building an easy to use web platform to systematically research investment ideas.</p>
+                        <div id="second-section-text">
+                            <p>In ever expanding financial markets it is important to systematically scrutinize investment ideas and separate real investment signals from noise. At AimsQuant, we are building an easy to use web platform to systematically research investment ideas.</p>
 
-                                <p>With access to superior tools and free data, we want to democratize the investment arena. At AimsQuant, anyone can build and test investment strategies, share it with the community for the feeback or trade it on personal account.</p>
+                            <p>With access to superior tools and free data, we want to democratize the investment arena. At AimsQuant, anyone can build and test investment strategies, share it with the community for the feeback or trade it on personal account.</p>
 
-                                <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toSectionThree'>Read More</paper-button>
-                            </div>
+                            <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toWhoWeAre'>Read More</paper-button>
                         </div>
                     </div>
 
-                    <div class="layout vertical category-container" id='third-category-container'>
+                    <div class="layout vertical category-container" id='whoweare-container'>
                         <div class="header self-start">Who We Are</div>
                         
                         <div class="tagline self-start">They call us "Quants"</div>
                         
-                        <div class="layout horizontal">
-                            <div id="second-section-text">
-                                <p>We are bunch of Quants and Technologists who enjoy financial markets and making efficient technology. We aim to simplify investment science and filter noise from real investment ideas</p>
+                        <div id="second-section-text">
+                            <p>We are bunch of Quants and Technologists who enjoy financial markets and making efficient technology. We aim to simplify investment science and filter noise from real investment ideas</p>
 
-                                <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toSectionFour'>Read More</paper-button>
-                            </div>
+                            <paper-button class$="[[computeLayoutClass(width)]]" noink on-tap='toCareers'>Read More</paper-button>
                         </div>
                     </div>
 
-                    <div class="layout vertical category-container" id='fourth-category-container'>
-                        <div class="header self-start">Technology</div>
+                    <div id='career-container' class="layout vertical category-container">
+                        <div class="header self-start">Careers</div>
                         
-                        <div class="tagline self-start">Latest techstack to keep the systems going</div>
+                        <div class="tagline self-start">Those who see inefficiencies</div>
                         
-                        <div class="layout horizontal">
-                            <div id="second-section-text">
-                                <p>We are building our platform with the best and fastest tech stack out there. With our computation engine in Julia, we want to provide our users the fastest and easiest way to write investment strategies</p>
+                        <div>
+                            <p>We are always looking for highly motivated individuals interested in technology and financial markets. If you like to solve problems and build efficient technology, we would love to be in touch.</p>
 
-                                <p>With Polymer to support our agile front-end and NodeJs to support quick IO, we are sure to provide the best user experience as an online research platform.</p>
-                                
-                            </div>
+                            <a href="mailto:careers@aimsquant.com">
+                            <paper-button class$="[[computeLayoutClass(width)]]" noink >Apply for a Job</paper-button></a>
                         </div>
                     </div>
 
-                    <div id='career-main-container' class="layout vertical">
-                        <div class="flex"></div>
-                        
-                        <div id='career-tagline' class="self-center">Like what we are building?</div>
-                        
-                        <div class="layout horizontal justified">
-                          
-                          <div class="career-text layout vertical center">
-                              <p>We are always looking for highly motivated individuals interested in technology and financial markets. If you like to solve problems and build efficient technology, we would love to be in touch.</p>
+                    <div id='connect-container' class="layout vertical category-container">
+                      
+                      <div class="header self-start">Connect With Us</div>
+                      
+                      <div class="tagline self-start">Like what we are building?</div>
 
-                              <paper-button class$="ctButton [[computeLayoutClass(width)]]" noink on-top='toJobs'>Apply for a Job</paper-button> 
-                          </div>
+                      <div>
+                        <p>We always welcome insightful thoughts, great mentors and helpful suggestions. If you are an industry expert or an investor, we are eager to learn your opinion.</p>
 
-                          <div class="career-text layout vertical center">
-                            <p class="sfl">We always welcome insightful thoughts, great mentors and helpful suggestions. If you are an industry expert or an investor, we are eager to learn your opinion.</p>
+                        <a href='mailto:connect@aimsquant.com'>
+                        <paper-button class$="[[computeLayoutClass(width)]]" noink>Contact Us</paper-button></a>                    
+                      </div>
 
-                            <paper-button class$="ctButton [[computeLayoutClass(width)]]" noink on-top='toContactUs'>Contact Us</paper-button>                     
-                          </div>
-
-                        </div>
-
-                        <div class="flex"></div>
                     </div>
 
-                    <!--div id='footer-section' class="layout vertical center"-->
-                    </div>
+                    <aq-footer></aq-footer>
+
                 </div>
             </aq-allpage-layout>
 
             <div class="flex"></div>
-            <!--footer><p>© 2017 AimsQuant</p></footer-->
         </div>  
     
   </template>
@@ -325,6 +299,7 @@
       properties: {
           routeData: {
               type: Object,  
+              observer:'_routeDataChanged',
           },
 
           width: {
@@ -349,8 +324,23 @@
           }
       },
 
+      _routeDataChanged: function() {
+          
+          var element = '';
+          if(this.routeData.section == "contact")  {
+              element = this.$$('#connect-container');
+          } else if (this.routeData.section == "careers") {
+              element = this.$$('#career-container');
+          } else if (this.routeData.section == "people") {
+              element = this.$$('#whoweare-container');
+          } else {
+              element = this.$$('#first-category-container');
+          } 
+
+          this.debounce('scroll', function(){element.scrollIntoView(true);}, 200);
+      },
+
       isNarrow: function(width) {
-        console.log("yahan");
         return width.narrow;
       },
 
@@ -358,8 +348,12 @@
         this.$$('#second-category-container').scrollIntoView(true);  
       },
 
-      toSectionThree: function() {
-        this.$$('#third-category-container').scrollIntoView(true);  
+      toWhoWeAre: function() {
+          this.$$('#whoweare-container').scrollIntoView(true);  
+      },  
+
+      toCareers: function() {
+          this.$$('#career-container').scrollIntoView(true);  
       },
 
       toSectionFour: function() {
@@ -371,98 +365,3 @@
   </script>
 
 </dom-module>
-
-
-<dom-module id='aq-section'>
-  
-  <style include="iron-flex iron-positioning iron-flex-alignment">
-  </style>
-
-  <style>
-    #container {
-      color:#001b1b;
-      --height: 100%;
-      --min-height: 640px;
-      margin-left: 20%;
-      margin-right:10%;
-      background-color: none;--#f6fcfa;
-    }
-
-    p {
-      width:100%;
-      margin-bottom: 0px;
-      margin-top: 15px;
-      font-size: 16px;
-      line-height: 1.45;
-      --font-style: italic;
-    }
-
-    .tagline {
-      color:#cc6666;
-      font-style: italic;
-    }
-
-    .header {
-      font-size:40px;
-      font-weight: bold;
-      color: teal;
-      font-style: inherit !important;
-    }
-
-    a {
-      --text-decoration: none;
-      color: #001b1b;
-      text-decoration: underline;
-    }
-
-  </style>
- 
-  <template>
-      <div id='container' class="layout horizontal">
-          <div class="self-center">
-              <div class="layout vertical">
-                <div class="flex"></div>
-                </hr>
-                <p class="header self-center flex">[[header]]</p>
-                
-                <p class="self-center flex">[[paragraph]]&nbsp<a href$="[[link]]"><i>[[linkText]]</i></a></p>
-
-                <template is='dom-if' if="[[hasParagraph2(paragraph2)]]">
-                    <p class="self-center flex">[[paragraph2]]&nbsp</p>
-                </template>
-                <div class="flex"></div>
-              </div>
-          </div>
-      </div>
-
-  </template>
-
-  <script>
-      Polymer({
-          is:'aq-section',
-
-          properties:{
-            header:String,
-            
-            paragraph:String,
-            
-            paragraph2:{
-              type:String,
-              value:"",
-            },
-
-            tagline:String,
-
-            link:String,
-            
-            linkText:String,
-          },
-
-          hasParagraph2: function(para) {
-            return para.length > 0;
-          },
-      });
-  </script>
-</dom-module>
-
-

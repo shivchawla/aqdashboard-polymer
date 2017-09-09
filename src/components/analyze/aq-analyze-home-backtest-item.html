@@ -265,7 +265,7 @@
                 detailAvailable: {
                     type: Boolean,
                     value: false,
-                }
+                },
 
             },
 
@@ -441,24 +441,16 @@
                 this.ironCollapse.toggle();
 
                 this.expand = this.ironCollapse.opened;
-                            },
+            },
 
             onChange: function () {
                 this.fire('backtestChecked', {
                     id: this.backtest._id,
                     checked: this.$$('paper-checkbox').checked,
-                    index: "Backtest "+this.formatIndex(this.index)
+                    index: "Backtest "+this.formatIndex(this.btIndex)
                 });
 
-                //this.toggleSidebar();
             },
-
-            /*toggleSidebar: function () {
-                if (this.$$('paper-checkbox').checked)
-                    this.$$('.side-bar').style.transform = "scale(1,1)";
-                else
-                    this.$$('.side-bar').style.transform = "scale(0,1)";
-            },*/
 
             selectBacktest: function (e) {
                 this.$$('paper-checkbox').checked = e.detail.checked;
@@ -467,7 +459,7 @@
 
             runForwardtest: function() {
                 this.fire('execute-forwardtest', {backtestId: this.backtestId});
-            }
+            },
 
         });
 

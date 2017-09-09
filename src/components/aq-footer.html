@@ -1,0 +1,49 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id='aq-footer'>
+	<style>
+		.footer {      
+	        --bottom: 0px;
+	        background-color:#24293d;
+	        color: white;
+	        padding: 20px 20px 10px 20px;
+	        height: 30vh;
+      	}
+
+      	.footer p{
+	      	color: white;
+	        font-size: 13px;
+	        margin-top: 5px;
+	        margin-bottom: 5px;
+      	}
+
+      	.footer-link:hover {
+        	cursor:pointer;
+      	}
+
+	</style>
+
+	<template>
+		<div class="footer layout horizontal wrap">   	
+            <div class="layout vertical self-start">
+              	<p class="footer-link" route="/about/home" on-tap='onAboutUs'>About Us</a></p>
+              	<p class="footer-link" route="/about/people" on-tap='onAboutUs'>People</a></p>
+              	<p class="footer-link" route="/about/careers" on-tap='onAboutUs'>Careers</a></p>
+              	<p class="footer-link" route="/about/contact" on-tap='onAboutUs'>Connect</a></p>
+            </div>
+
+            <div class="flex"></div>
+            <p class="self-end">© 2017 AimsQuant</p>
+  	    </div>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-footer',
+
+	      	onAboutUs: function(e) {
+	        	this.fire('rt-changed', {route:e.target.getAttribute('route')});
+	      	} 
+		});
+	</script>
+</dom-module>

@@ -119,20 +119,12 @@
 			},
 
 			onDelete: function() {
-				this.fire('deleteClicked');
+				this.fire('delete-clicked');
 			},
 
 			onCompare: function() {
-				this.fire('compareClicked');
+				this.fire('compare-clicked');
 			},
-
-			/*onShare: function() {
-				this.fire('shareClicked');
-			},*/
-
-            goToEditor: function() {
-            	this.fire('backClicked');
-            },
 
             expandAll:function () {
         	    this.expand = !this.expand;

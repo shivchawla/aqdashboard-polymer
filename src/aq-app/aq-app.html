@@ -14,7 +14,6 @@
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
-<!--link rel="import" href='../components/aq-investmentpage.html'-->
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
@@ -67,9 +66,10 @@
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
             <paper-header-panel id="mainpanel" main mode="[[computeToolbarType(hasToken, currentUrl)]]">
+              
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
    
-              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]" fallback-selection="/main">
+              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]"> <!-- fallback-selection="/main"-->
 
                   <template is="iron-lazy-page" page="/main">
                       <aq-homepage></aq-homepage>
@@ -91,7 +91,7 @@
                       <aq-dashboard-main></aq-dashboard-main>
                   </template>
               </iron-lazy-pages>
-                
+
           </paper-header-panel>
         </paper-drawer-panel>
 
@@ -233,7 +233,8 @@
             if (x) {
               lastTab = JSON.parse(x).lastTab;
             }
-           
+
+            this.currentUrl = window.location.href;
         },
 
         computeToolbarType: function(hasToken, currentUrl) {
@@ -418,8 +419,12 @@
                 return "/user/signup";
             } else if(currentUrl.indexOf('#/user') != -1) {
                 return "/user";
-            } else {
+            } else if(currentUrl.indexOf('#/about') != -1) {
+                return "/about";
+            } else if(currentUrl.indexOf('#') !=-1) {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);
+            } else {
+                return  "/main";
             }
         },
 

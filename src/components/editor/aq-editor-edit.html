@@ -307,7 +307,7 @@
                 'selected-items-changed': 'rowSelected',
                 'toggle-design': 'designChanged',
                 'backClicked': 'goToHome',
-                //'analyze-clicked':'goToAnalyze',
+                'analyze-clicked':'goToAnalyze',
                 'open-drawer': 'openDrawer',
                 'close-drawer': 'closeDrawer',
                 'save-action': 'saveStrategy',
@@ -434,7 +434,8 @@
             },
 
             goToAnalyze: function () {
-                this.fire('rt-changed', {route: '/dashboard/analyze?strategyName=Sample Strategy'});
+                this.isRunning = false;
+                //Let the event propagate
             },
 
             goToHome: function () {

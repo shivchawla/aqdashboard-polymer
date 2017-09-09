@@ -10,13 +10,12 @@
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel="import" href="../common/aq-navigation-item.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
-<link rel='import' href='../common/backtest/aq-backtest-table.html'>
 
 <link rel='import' href='./aq-analyze-home-menu.html'>
 <link rel='import' href='./aq-analyze-home-header.html'>
 <link rel='import' href='./aq-analyze-home-backtest-item.html'>
 
-<link rel='import' href='./aq-analyze-backtest-comparison-item.html'>
+<link rel='import' href='./aq-analyze-backtest-comparison-dialog.html'>
 
 <link rel='import' href='../../dialog/aq-delete-dialog.html'>
 <dom-module id="aq-analyze-home">
@@ -129,15 +128,15 @@
 		</iron-signals>
 		
 		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
-		<iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(showComparison)}}" fallback-selection="home">
-         
-        <template is='iron-lazy-page' page="home">
-            <aq-allpage-layout 
-            	loading='{{isLoading(strategyLoading, backtestLoading)}}' header="All Backtests" current-path="[[currentPath]]">
+		 
+	        <aq-allpage-layout 
+	        	loading='{{isLoading(strategyLoading, backtestLoading)}}' 
+	        	header="All Backtests"
+	    	 	current-path="[[currentPath]]">
 
-            	<div id="backtest-container" class="internal-content">
+	        	<div id="backtest-container" class="internal-content">
 			        <aq-analyze-home-menu
-			        	check-all="{{checkAll}}"
+			        	check-all="[[checkAll]]"
 			        	num-active-backtests="[[checkedItems.length]]"
 		              	strategy-name="{{strategyName}}">
 		          	</aq-analyze-home-menu>
@@ -164,22 +163,21 @@
 					</template>
 				</div>
 			</aq-allpage-layout>
-		</template>
-
-		<template is='iron-lazy-page' page="comparison">
-			<aq-analyze-backtest-comparison-item strategy-name="{{strategyName}}" compare-items="[[checkedItems]]" active="[[showComparison]]">
-			</aq-analyze-backtest-comparison-item>
-		</template>
-
-		</iron-lazy-pages>
-		</template>
-		
-	    <aq-action-dialog id ="deleteDialog" heading="Delete Backtests"
-			 message="Are you sure to delete [[checkedItems.length]] backtest[[getMessageSuffix(checkedItems)]]?"
-			 action-type="deleteBacktest"
-			 cancel-text="Cancel"
-			 accept-text="Delete">
-    	</aq-action-dialog>
+			
+			<aq-analyze-backtest-comparison-dialog 
+				id="comparisonDialog"
+				strategy-name="[[strategyName]]" 
+				compare-items="[[checkedItems]]" 
+				active="[[showComparison]]">
+			</aq-analyze-backtest-comparison-dialog>
+			
+		    <aq-action-dialog id ="deleteDialog" heading="Delete Backtests"
+			 	message="Are you sure to delete [[checkedItems.length]] backtest[[getMessageSuffix(checkedItems)]]?"
+			 	action-type="deleteBacktest"
+			 	cancel-text="Cancel"
+			 	accept-text="Delete">
+	    	</aq-action-dialog>
+    	</template>
 
 	</template>
 
@@ -210,12 +208,6 @@
     			checkedItems: {
 					type:Array,
 					value:[],
-				},
-
-				showComparison :{
-					type:Boolean,
-					value:false,
-					observer:'_showComparisonChanged',
 				},
 
 				routeData: {
@@ -251,7 +243,8 @@
 
                 checkAll:{
 				    type:Boolean,
-                    value:false
+                    value:false,
+                    observer:'_checkAllChanged',
                 },
 
 				indexArray:{
@@ -277,28 +270,16 @@
     		},
 
     		listeners: {
-				'backClicked':'goToEditor',
-				'compareClicked':'toggleComparison',
+				'compare-clicked':'openComparisonDialog',
 				'backtestChecked':'checkBacktest',
-				'deleteClicked':'openDeleteDialog',
-				'comparison-off':'toggleComparison',
+				'delete-clicked':'openDeleteDialog',
+				'comparison-off':'closeComparisonDialog',
 				'deleteBacktest-action':'onDeletion',
 				'detail-action':'onDetail',
 				'execute-forwardtest':'runForwardtest',
 			},
 
-            attached: function () {
-            	this.resetView();
-            },
-
-            resetView: function() {
-	        	//this.showComparison = false;
-	        	this.checkedItems = [];
-                this.checkAll = false;
-	        },
-
 			_strategyIdChanged: function(nId, oId) {
-
 				if(nId && nId!= "") {
 					this.fetchBacktests();
 	        	}
@@ -381,17 +362,19 @@
 
 	        	var checkedId  = e.detail.id;
 	        	var checkedIndex = e.detail.index;
+	        	var checkedItems = this.checkedItems;
+
 	        	if (checked == true) {
-	        		
-                    if(this.checkedItems.map(function(x) {return x.id;}).indexOf(checkedId) == -1) {
-                        this.push('checkedItems', {id: checkedId, index: checkedIndex});
+                    if(checkedItems.map(function(x) {return x.id;}).indexOf(checkedId) == -1) {
+                        checkedItems.push({id: checkedId, index: checkedIndex});
                     }
 	        	} else {
-                    this.splice('checkedItems',this.checkedItems.map(function(x){return x.id;}).indexOf(checkedId),1);
+                    checkedItems.splice(checkedItems.map(item => {return item.id;}).indexOf(checkedId),1);
 	        	}
-	        	
-	        	this.checkAll = this.checkedItems.length == this.backtests.length;
 
+        		this.checkedItems = [];
+        		this.checkedItems = checkedItems;
+	        	this.checkAll = this.checkedItems.length == this.backtests.length;
 	        },
 
 	        numCheckedBacktests: function(checkedItems) {
@@ -471,10 +454,6 @@
 	        	return strategyLoading || backtestLoading;
 	        },
 
-			selectAllBacktest:function (e) {
-
-			},
-
 			computeSelectedPage: function(showComparison) {
 		 		return showComparison ? "comparison" : "home";
 			},
@@ -505,10 +484,22 @@
                 this.fire('rt-changed', {route:'/dashboard/editor'});
             },
 
-            onForwardStrategyExecutionError: function (e) {
-               //Launch a error popup saying forward test cannot be run
+            openComparisonDialog: function() {
+            	this.$$('#comparisonDialog').open();
+            },
 
-            }, 
+            closeComparisonDialog: function() {	
+            	this.checkAllBacktests();
+            	//this.$$('#comparisonDialog').close();
+            },
+
+            _checkAllChanged: function() {
+            	this.checkAllBacktests();
+            },
+
+            checkAllBacktests: function() {
+                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.checkAll}});
+            },
 
     	});
     </script>

@@ -17,7 +17,7 @@
 <link rel="import" href="../common/aq-code-comparison-element.html">
 <link rel="import" href="../common/backtest/aq-backtest-summary-element.html">
 
-<dom-module id='aq-analyze-backtest-comparison-item'>
+<dom-module id='aq-analyze-backtest-comparison-dialog'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
 
@@ -40,28 +40,12 @@
             --color: #188364;
         }
 
-        #backButton {
-            margin: auto 0;
-            outline: none !important;
-        }
-
         span {
             /*text-align: center;*/
             margin-top: 15px;
         }
 
-        .paper_align {
-            position: absolute;
-            top: 20px;
-            right: 7px;
-        }
-
-        .pages_select {
-            /*text-align: -webkit-center;*/
-            margin: 0px 10px 0px 10px;
-        }
-
-        vaadin-grid {
+        aadin-grid {
             --vaadin-grid-header-row-height: 78px;
             --vaadin-grid-row-cell: blue;
         }
@@ -80,22 +64,25 @@
             margin-top: -40px;
         }
 
-        #comparison-return {
-            background-color: transparent;
-            margin-top: 0px;
+        #comparison-container {
             margin: 0 auto;
-            --width: 95%;
-            /*padding: 10px;*/
+            width: 100%;
+            height: 100%;
+            padding: 0px;
         }
 
         paper-tab:hover {
             font-weight: bold;
-            font-size: 110%;
+            --font-size: 110%;
         }
 
         paper-tabs {
+            width: 100%;
         	color:#8c8c8c;
             --paper-tabs-selection-bar-color: teal;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e1e1e1;
+            background-color: #fafafa;
         }
 
         #cumRetLineChart {
@@ -116,38 +103,28 @@
             padding: 10px;
         }
 
-        .goBackButton {
-            padding-left: 20px;
-        }
-        .back-btn-text{
-            font-size: 14px;
-            color:#cc4444;
-            position: relative;
-            /*left:-10px;*/
-        }
-        .goBackButton > paper-icon-button{
-            color:#cc4444;
-            transform:scale(1.6,1.6);
-        }
         .pages-container{
-            width: 95%;
+            width: 98%;
             border-radius: 2px;
+            overflow-y: scroll;
         }
-        .tabs-container{
-            margin-bottom: 20px;
-        }
+
         .comparison-text{
-            margin-left: 20px;
+            padding: 0px 0px 15px 25px;
             color:#000;
-            font-size:13px;
+            font-size:15px;
+            border-bottom: 1px solid #e1e1e1;
         }
+
         .backtest-item{
             font-size: 14px;
             font-weight: 700;
+            margin-right: 5px;
         }
         .vs-text{
             font-weight: 400;
             color:#8c8c8c;
+            margin-right: 5px;
         }
         .strategy-name{
             color:#cc4444;
@@ -159,47 +136,61 @@
             position: relative;
             /*max-height: 700px;*/
         }
-        .pages-container{
-            margin-bottom: 20px;
+        
+        paper-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            margin: 0;
+            height: 100%
+            width:100%;
         }
-        paper-card{
-            overflow: hidden;
-            overflow-y: scroll;
+
+        paper-icon-button {
+            height: 35px;
+            width: 35px;
         }
-        #back-btn-text{
-            cursor: pointer;
+
+        #graphComparison {
+            border: 1px solid #e1e1e1;
+            padding: 5px;      
         }
+
     </style>
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
-
-        <aq-allpage-layout loading="{{loading}}" header="Backtest Detail" current-path=[[currentPath]]>
-            <div class="internal-content" id='comparisonContainer'>
         
-                <div class="goBackButton layout horizontal">
-                    <p class="comparison-text">
-                        <template id='comparisonList' is="dom-repeat" items="{{indexArray}}">
-                            <span class="backtest-item">{{item}}</span>
-                            <template is="dom-if" if="[[showVs(item, indexArray)]]">
-                                <span class="vs-text">vs</span>
-                            </template>
-                        </template>
-                        <span class="vs-text">comparison for <span class="strategy-name">{{strategyName}}</span></span>
-                    </p>
-                </div>
+        <paper-dialog id='dialog'>
+            <div class="comparison-text layout horizontal">
+                <template id='comparisonList' is="dom-repeat" items="{{indexArray}}">
+                    <span class="backtest-item">{{item}}</span>
+                    <template is="dom-if" if="[[showVs(item, indexArray)]]">
+                        <span class="vs-text">vs</span>
+                    </template>
+                </template>
+                <span class="vs-text">comparison for <span class="strategy-name">{{strategyName}}</span></span>
 
-                <div id='comparison-return' class="layout vertical center">
+                <div class="flex"></div>
+                <paper-icon-button icon="close" on-tap='close'></paper-icon-button>
+            </div>
 
-                    <div class="layout horizontal tabs-container">
-                        <paper-tabs noink selected="{{comparisonType}}" fallback-selection="0">
-                            <paper-tab>SUMMARY</paper-tab>
-                            <paper-tab>CODE</paper-tab>
-                            <paper-tab>RETURNS</paper-tab>
-                        </paper-tabs>
-                    </div>
+            <template is='dom-if' if='[[isDataReady]]'
+                id='comparisonIfTemplate'
+                restamp=true>
+
+                <paper-card id='comparison-container' class="layout vertical center">
+
+                    <paper-tabs noink selected="{{comparisonType}}" fallback-selection="0">
+                        <paper-tab>SUMMARY</paper-tab>
+                        <paper-tab>CODE</paper-tab>
+                        <paper-tab>RETURNS</paper-tab>
+                    </paper-tabs>
             
-                    <paper-card class="pages-container">
+                    <div class="pages-container">
                         <iron-pages 
                     		class="pages_select" 
             				selected="{{computePageType(comparisonType)}}"	
@@ -207,68 +198,60 @@
         					fallback-selection="0">
             			
             				<div page="0">
-            					<template is='dom-if' if='[[isDataReady]]'>
-                			    	<aq-backtest-summary-element 
-                            			compare-items="[[compareItems]]">
-                                	</aq-backtest-summary-element>
-                            	</template>
+            			    	<aq-backtest-summary-element 
+                        			compare-items="[[compareItems]]">
+                            	</aq-backtest-summary-element>
                             </div>
                         
                             <div id='codeCompare' page="1">
-                            	<template is='dom-if' if='[[isDataReady]]'>
-        	                        <aq-code-comparison-element 
-        	                        	compare-items="[[compareItems]]"
-                                	 	theme="ace/theme/monokai" 
-                                	 	mode="ace/mode/julia">
-                            	 	</aq-code-comparison-element>
-                        	 	</template>
+    	                        <aq-code-comparison-element 
+    	                        	compare-items="[[compareItems]]"
+                            	 	theme="ace/theme/monokai" 
+                            	 	mode="ace/mode/julia">
+                        	 	</aq-code-comparison-element>
                             </div>
 
                             <div id='graphComparison' page="3">
                             	<div class="layout horizontal">
         	                    	<div class="flex"></div>
-        	                    	<paper-tabs noink selected={{returnType}}>
-        	                    		<paper-tab>Cumulative Return</paper-tab>
-        	                    		<paper-tab>Monthly Returns</paper-tab>
-        	                    	</paper-tabs>
+        	                    	<aq-twoway-toggle 
+                                        first-option="Cumulative" 
+                                        second-option="Monthly"
+                                        selected-type="{{returnType}}">
+                                    </aq-twoway-toggle>
                             	</div>
 
-                            	<iron-pages selected={{returnType}} on-iron-resize='onResize'>
+                            	<iron-pages selected={{returnType}}  default-selected="0">
                             		<div id='cumRetLineChartDiv'></div>
                             		<div id='barChartDiv'></div>
                             	</iron-pages>
                             </div>
                         </iron-pages>
-                    </paper-card>
-                </div>
-            </div>
-        </aq-allpage-layout>
-        
+                    </div>
+                </paper-card>
+            </template>
+        </paper-dialog>
+             
         <iron-ajax
-                url="[[computeGetBacktestUrl(backtestId)]]"
-                method='GET'
-                id='getBacktestsQuery'
-                handle-as="json"
-                on-response="onGetBacktestSuccess"
-                on-error="onGetBacktestError"
-                headers='{{header}}'
-                debounce-duration="300">
+            url="[[computeGetBacktestUrl(backtestId)]]"
+            method='GET'
+            id='getBacktestsQuery'
+            handle-as="json"
+            on-response="onGetBacktestSuccess"
+            on-error="onGetBacktestError"
+            headers='{{header}}'
+            debounce-duration="300">
         </iron-ajax>
 
     </template>
 
     <script>
         Polymer({
-            is: 'aq-analyze-backtest-comparison-item',
+            is: 'aq-analyze-backtest-comparison-dialog',
 
             properties: {
                 compareItems: {
                     type: Object,
-                },
-
-                backtests: {
-                    type: Object,
-                    value: {},
                 },
 
                 strategyName: String,
@@ -304,16 +287,19 @@
                 	value: false,
             	},
 
+                currentPath: {
+                    type: Array,
+                    value: ["Home", "Research", "All Strategies", "All Backtests", "Compare Backtests"]
+                },
+
+                showComaprison :{
+                    type: Boolean,
+                    value: true
+                }
+
             },
 
-            attached: function () {
-                this.indexArray = [];
-                this.indexArray = this.compareItems.map(function(x){return x.index;});
-                this.resetComparison();
-                this.doComparison();
-            },
-
-            computeGetBacktestUrl: function (backtestId) {
+            computeGetBacktestUrl: function (backtestId, fields) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                 return APIEndPoint + '/backtest/' + backtestId;
             },
@@ -350,17 +336,24 @@
 
             onComparisonReady: function() {
             	var compareItems = this.compareItems;
-            	this.set('compareItems', []);
-            	this.set('compareItems', compareItems);
 
         		this.isDataReady = true;
+                this.$$('#comparisonIfTemplate').render();
 
-        		for(var i=0;i<this.compareItems.length; i++) {
-        			this.addBacktestToComparison(this.compareItems[i].backtest, this.compareItems[i].index);
-        		}
+                this.createGraphElement();
+
+        		this.async(function(){
+                    for(var i=0;i<this.compareItems.length; i++) {
+            			this.addBacktestToComparison(this.compareItems[i].backtest, this.compareItems[i].index);
+            		}
+
+                    this.redrawChart();
+                }, 1500);
+
             },
 
             addBacktestToComparison: function (backtest, label) {
+                
                 this.processLineChartData(backtest, label);
                 this.processBarChartData(backtest, label);
                 this.counter++;
@@ -372,9 +365,15 @@
                  }*/
             },
 
+            redrawChart: function() {
+                this.$$('aq-aggregatedreturns-barchart').redrawChart();
+                this.$$('aq-cumret-linechart').redrawChart();
+            },
+
             processLineChartData: function (data, label) {
 
                 var colors = ["#fc4a1a", "#0375b4", "#FFAA1D", "#007849", "#6e2667"];
+
                 var equityData = data.output.totalreturn.algorithm;
                 var keys = Object.keys(equityData);
 
@@ -385,7 +384,7 @@
                             dataset[i] = [Date.parse(v), equityData[v] + 100.0];
                         });
 
-                this.$$('aq-cumret-linechart').addSeries(label, dataset, false,
+                this.$$('aq-cumret-linechart').addSeries(label, dataset,
                         {
                             lineWidth: 1,
                             color: colors[this.counter],
@@ -402,14 +401,13 @@
                                 },
 
                             },
-                        }
+                        }, false
                 );
-
             },
 
             processBarChartData: function (data, label) {
                 var colors = ["#fc4a1a", "#0375b4", "#FFAA1D", "#007849", "#6e2667"];
-                var aggregatedReturns = data.output.returns.monthly.algorithm;
+                var aggregatedReturns = data.output.performance.detail.returns.monthly.algorithm;
                 var keys = Object.keys(aggregatedReturns);
                 var dataset = new Array(keys.length);
 
@@ -418,54 +416,32 @@
                             dataset[i] = [Date.parse(v.substring(0, 4) + "-" + v.substring(4, 6)), aggregatedReturns[v]];
                         });
 
-                this.$$('aq-aggregatedreturns-barchart').addSeries(label, dataset, false,
+                this.$$('aq-aggregatedreturns-barchart').addSeries(label, dataset,
                         {
                             color: colors[this.counter],
                             tooltip: {
                                 pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y} %</b><br/>',
                             },
-                        }
+                        }, false
                 );
+
             },
 
-            processMetricsData: function (data) {
+            createGraphElement: function () {
 
-                var metrics = data.output.analytics.rolling;
-                var id = data._id;
-                var strategyId = data.strategy;
-                this.tableData.push({
-                    'Strategy Name': strategyId,
-                    'Backtest Name': id,
-                    'Total Return': metrics.totalreturn,
-                    'Annual Return': metrics.annualreturn,
-                    'Volatility': metrics.annualstandarddeviation,
-                    'Sharpe Ratio': metrics.sharperatio,
-                    //'Information Ratio': metrics.informationratio,
-                    //'Sortino Ratio': analytics.so,
-                    //'Avg Drawdown': e.detail.response.result[i].Avg_Drawdown,
-                    'Max Drawdown': metrics.maxdrawdown,
-                    //'Calmar Ratio': e.detail.response.result[i].Calmar_Ratio,
-                    //'Beta': e.detail.response.result[i].Beta,
-                    //'Stability': e.detail.response.result[i].Stability,
-                    //'Avg Concentration': e.detail.response.result[i].Avg_Concentration
-
-                });
-            },
-
-            resetComparison: function () {
             	var graphComparisonDiv = this.$$('#graphComparison');
 
             	if(graphComparisonDiv) {
 
 	                this.counter = 0;
 	                var child = Polymer.dom(this.$.cumRetLineChartDiv).querySelector('aq-cumret-linechart');
-	                if (child) {
 
+	                if (child) {
 	                    Polymer.dom(this.$.cumRetLineChartDiv).removeChild(child);
 	                }
 
 	                var el = document.createElement('aq-cumret-linechart');
-	                Polymer.dom(this.$.cumRetLineChartDiv).appendChild(el);
+                    Polymer.dom(this.$$('#cumRetLineChartDiv')).appendChild(el);
 
 	                Polymer.dom.flush();
 
@@ -480,16 +456,12 @@
 
 	                Polymer.dom.flush();
 
-	                this.$$('aq-cumret-linechart').updateProperties();
-	                this.$$('aq-aggregatedreturns-barchart').updateProperties();
+                    this.async(
+                        function() {
+                            this.$$('aq-cumret-linechart').updateProperties();
+                            this.$$('aq-aggregatedreturns-barchart').updateProperties();
+                        }, 500);
 	            }
-
-	            this.isDataReady = false;
-            },
-
-            goBackAllBacktests: function () {
-                this.resetComparison();
-                this.fire('comparison-off');
             },
 
             onResize: function () {
@@ -524,6 +496,24 @@
             _indexArrayChanged: function() {
                 this.$.comparisonList.render();
             },
+
+            open: function() {
+                this.$$('#dialog').open();
+                this.indexArray = this.compareItems.map(function(x){return x.index;});
+                this.doComparison();
+            },
+
+            close: function() {
+                this.resetComparison();
+                this.fire('comparison-off');
+                this.$$('#dialog').close();
+            },
+
+            resetComparison: function() {
+                this.isDataReady = false;
+                this.indexArray = [];
+                this.comparisonType = 0;      
+            }
 
         });
     </script>

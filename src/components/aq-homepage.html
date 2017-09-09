@@ -7,6 +7,8 @@
 <link rel='import' href='../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../bower_components/app-route/app-location.html'>
 
+<link rel='import' href='./aq-footer.html'>
+
 <link rel='import' href='../icons/aq-iconset.html'>
 
 <dom-module id="aq-homepage">
@@ -16,7 +18,8 @@
     <style>
 
       :host {
-          font-family: 'Garamond', sans-serif;
+          --font-family: 'Garamond', sans-serif;
+          font-family: 'Avenir', sans-serif;
       }
 
       .section {
@@ -27,23 +30,24 @@
     	#section-home {
     		margin-top:0px;
         --background-color: #5CC6CD;
-        background-color: #70cdd3;
+        --background-color: #70cdd3;
         height: 92vh;
 	    }
 
     	#headerTagline {
-    		font-size: 52px;
-        color: white;
+        margin-top: 150px;
+    		font-size: 72px;
+        color: teal;
         font-weight: 400;
     	}
 
       #headerPara {
-        color: #ffffff;
-        font-size: 20px;
-        width: 35%;
+        --color: #ffffff;
+        font-size: 23px;
+        --width: 35%;
         text-align: justify;
         margin-bottom: 40px;
-        font-weight: thin;
+        font-weight: 400;
       }
 
       #headerPara span {
@@ -59,7 +63,7 @@
       paper-button {
           text-transform: none;
           --paper-button: {
-              border-radius: 20px;  
+              border-radius: 5px;  
               font-size: 16px;
               --padding: 10px 60px;
           };
@@ -87,7 +91,7 @@
       .light-button {
           background-color: white;
           color: #07889B;
-          --border: 1px solid #07889B;
+          border: 1px solid #07889B;
           width: 200px;
       }
 
@@ -101,6 +105,15 @@
           margin-top: 50px;
           margin-bottom:100px;
           font-weight: 700;
+      }
+
+      #section-features {
+          margin-left: 10%;
+          margin-right: 10%;
+      }
+
+      #section-features-top {
+        margin-top: 70px;         
       }
 
     	#section-advantages {
@@ -132,7 +145,7 @@
 
       #callToAction {
           background-color:#e8f7f8;
-          height: 60vh;
+          height: 70vh;
       }
 
       #ctaTagline {
@@ -144,23 +157,6 @@
       #ctaParagraph {
          width: 50%;
          margin: 0 auto;
-      }
-
-      .footer {      
-        --bottom: 0px;
-        background-color:#24293d;
-        color: white;
-        padding: 0px 20px 0px 20px;
-        height: 40vh;
-      }
-
-      .footer p{
-      	color: white;
-        font-size: 13px;
-      }
-
-      .footer-link:hover {
-        cursor:pointer;
       }
 
       #blank {
@@ -181,151 +177,60 @@
         </app-route>
         
     		<div id="section-home" class="section">
-            
-            <div class="flex"></div>
+          
             <div class="self-center" id="headerTagline">Invest in Your Ideas</div>
 
-            <div class="self-center" id="headerPara">Systematically research investment strategies, learn from community feedback and simulate with real data.<span>&nbspIt's free!!</span></div>
-           
-            <!--p class="self-center" id="headerPara">Robust platform to systematically research your investment ideas. At AimsQuant, anyone can build and test investment strategies, share it with the community for the feeback or trade it on personal account</p-->
+            <div class="self-center" id="headerPara">Systematically research investment strategies in seconds</div>
             
             <div class="layout horizontal justified" id='button-group'>
     	         <paper-button class="dark-button" noink on-tap='onJoin'>Register</paper-button>
 
                <div class="space"></div>
 
-               <paper-button class="light-button" noink on-tap='onPageTwo'>Learn More</paper-button>
+               <paper-button class="light-button" noink on-tap='onFeatures'>Learn More</paper-button>
             </div>
             
             <div class="flex"></div>
   	      	
-            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onPageTwo'></paper-icon-button>
+            <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onFeatures'></paper-icon-button>
     		</div>
 
-        <div id="section-features" class="section">
+        <div class="section layout vertical" id="section-features">
             
-            <div class="self-center page-header">Features</div>
+            <div id="section-features-top" class="layout horizontal wrap justified">
+                <feature-detail 
+                    image-src="../../resources/images/home/research-big.png" 
+                    heading="RESEARCH" 
+                    description="Build, test and research investment stategies with in-built code editor and data from Indian Equity markets since 2007">
+                </feature-detail>
+               
+                <feature-detail
+                    image-src="../../resources/images/home/analyze-big.png" 
+                    heading="ANALYZE" 
+                    description="Run unlimited backtests and visualize performance of investment strategies with variety of metrics">
+                </feature-detail>
+            </div>
 
-            <div class="layout horizontal wrap around-justified center">
-                <feature-item 
-                    heading="Research" 
-                    description="No se No se No se"
-                    image-src="../../resources/images/home/research.png"
-                    link='toResearch'>
-                </feature-item>
-                
-                <feature-item 
-                    heading="Analyze" 
-                    description="No se No se No se"
-                    image-src="../../resources/images/home/analyze.png"
-                    link='toAnalyze'>
-                </feature-item>
-                
-                <feature-item 
-                    heading="Community" 
-                    description="No se No se No se"
-                    image-src="../../resources/images/home/community.png"
-                    link='toCommunity'>
-                </feature-item>
-                
-                <feature-item 
-                    heading="Trade" 
-                    description="No se No se No se"
-                    image-src="../../resources/images/home/trade.png"
-                    link='toTrade'>
-                </feature-item>
-            </div>      
+            <div class="flex"></div>
+
+            <div class="layout horizontal wrap justified">
+                <feature-detail
+                  image-src="../../resources/images/home/community-big.png" 
+                  heading="COMMUNITY" 
+                  description="Share your investment insights with the community, learn from the feedback and continuously improve your investment strategies">
+                </feature-detail>
+
+                <feature-detail
+                    image-src="../../resources/images/home/trade.png" 
+                    heading="TRADE" 
+                    description="Forward simulate your investment ideas, track the peformance and portfolio and use the output to trade in real markets">
+                </feature-detail>
+
+            </div>
+
+            <div class="flex"></div>
         </div>
-
-        <feature-detail 
-            image-src="../../resources/images/home/community_big.png" 
-            heading="RESEARCH" 
-            description="no se nose"
-            link='toAnalyze'
-            background>
-        </feature-detail>
-       
-        <feature-detail
-            image-src="../../resources/images/home/community_big.png" 
-            heading="ANALYZE" 
-            description="no se nose"
-            link='toCommunity'
-            alternate-layout>
-        </feature-detail>
-
-        <feature-detail
-            image-src="../../resources/images/home/community_big.png" 
-            heading="COMMUNITY" 
-            description="no se nose"
-            link='toTrade'
-            background>
-        </feature-detail>
-
-        <feature-detail
-            image-src="../../resources/images/home/community_big.png" 
-            heading="TRADE" 
-            description="no se nose"
-            link='toAdvantages'
-            alternate-layout>
-        </feature-detail>
-
-      	<div id="section-advantages" class="layout vertical flex">
-           	
-            <div style="margin-top:30px;" id='advantages' class="self-center">
-        			<p>Advantages</p>
-        		</div>
-
-      			<div class="layout horizontal around-justified wrap">
-      				<div class="layout vertical adv-container">
-      					<iron-icon class="mediumIcon self-center" icon="aq-icons:touch-app"></iron-icon>
-      					<p class="self-center">EASY</p>
-      					<p class="self-center">Run backtest with very little code</i>
-      				</div>
-
-      				<div class="layout vertical adv-container">
-      					<iron-icon class="mediumIcon self-center" icon="vaadin-icons:paperplane"></iron-icon>
-      					<p class="self-center">FAST</p>
-      					<p class="self-center">Do more and fast with <a href="http://julialang.org/benchmarks/">Julia</a></i>
-      				</div>
-
-      				<div class="layout vertical adv-container">
-      					<iron-icon class="mediumIcon self-center" icon="aq-icons:security"></iron-icon>
-      					<p class="self-center">SECURE</p>
-      					<p class="self-center">Your ideas are your property</i>
-      					
-      				</div>
-      			</div>
-
-      			<div style="font-size:15px; margin-top:20px; max-height:35px; max-width:35px;margin-bottom:20px;" class="self-center"></div>
-
-      			<div class="layout horizontal around-justified wrap">
-      				<div class="layout vertical adv-container">
-      					<adv-item class="self-center" advantage=" Free Data">
-      					</adv-item>
-
-      					<adv-item class="self-center" advantage="Easy to Program">
-      					</adv-item>
-
-      					<adv-item class="self-center" advantage="Encrypted Strategy">
-      					</adv-item>
-    				  </div>
-
-      				<div class="layout vertical adv-container">
-      					<adv-item class="self-center" advantage="Great Community"></adv-item>
-      					
-      					<adv-item class="self-center" advantage="Zero Setup"></adv-item>
-
-      					<adv-item class="self-center" advantage="Unlimited Backtests">
-      					</adv-item>
-    				  </div>				
-  			    </div>
-
-  			    <!--paper-button style="margin-top:40px;" class="dark-button self-center" on-tap='onJoin' noink> Start Now
-      			</paper-button-->
-
-          	<div class="flex"></div>	
-  	    </div>       
-        
+              
         <div class="section">
             <div id="callToAction" class="layout vertical center">
                   <div class="flex"></div>
@@ -339,17 +244,7 @@
 
             </div>
 
-            <div class="footer layout horizontal wrap">   	
-                <div class="layout vertical self-end">
-                  	<p class="footer-link" route="/about/home" on-tap='onAboutUs'>About Us</a></p>
-                  	<p class="footer-link" route="/about/people" on-tap='onAboutUs'>People</a></p>
-                  	<p class="footer-link" route="/about/careers" on-tap='onAboutUs'>Careers</a></p>
-                  	<p class="footer-link" route="/about/contact" on-tap='onAboutUs'>Connect</a></p>
-                </div>
-
-                <div class="flex"></div>
-                <p class="self-end">© 2017 AimsQuant</p>
-      	    </div>
+            <aq-footer></aq-footer>
         </div>
   
   </template>
@@ -382,58 +277,14 @@
   			this.fire('rt-changed',{route:'/user/signin'});;
   		},
 
-  		onPageTwo: function() {
-  			this.$$('#section-describe-code').scrollIntoView(true);
+  		onFeatures: function() {
+  			this.$$('#section-features').scrollIntoView(true);
   		},
-
-  		onPageThree: function() {
-  			this.$$('#section-describe-backtest').scrollIntoView(true);
-  		},
-
-      onPageFour: function() {
-        this.$$('#section-advantages').scrollIntoView(true);
-      },
-
-      onAboutUs: function(e) {
-        this.fire('rt-changed', {route:e.target.getAttribute('route')});
-      } 
 
     });
 
   </script>
 
-</dom-module>
-
-<dom-module id='adv-item'>
-	 <style include="iron-flex iron-flex-alignment iron-positioning"> 
-   </style>
-
-	 <style>
-  	 	#container {
-  	 		  width:200px;
-  	 	}
-
-      p {
-          font-size: 18px;
-      }
-	 </style>
-
-	<template>
-		<div id = 'container' class="layout horizontal">
-			<iron-icon class="self-center" icon="aq-icons:check"></iron-icon>
-			<p class="flex">&nbsp[[advantage]]</p>
-		</div>		
-	</template>
-	
-	<script>
-		Polymer({
-			is:'adv-item',
-			properties:{
-				advantage:String,
-			},
-
-		});
-	</script>
 </dom-module>
 
 <dom-module id='feature-item'>
@@ -508,21 +359,22 @@
       }
 
       .section-inner-container {
-          width: 70%;
+          --width: 70%;
           margin: 0 auto;
+          margin-bottom: 20px;
       }
 
       .section-detail {
           @apply(--layout-vertical);
-          @apply(--layout-center);
+          margin-left: 30px;
           width: 300px;
       }
 
       .section-detail-header {
-          font-size: 28px;
-          font-weight: 700;
+          font-size: 22px;
+          --font-weight: 700;
           --margin-bottom:100px;
-          margin-top:70px;
+          --margin-top:70px;
       }
 
       .section-detail-description {
@@ -541,21 +393,20 @@
           width: 150px;
       }
 
-      .img-container {
-        width: 300px;
+      img {
+        width: 100px;
+        height: 100px;
       }
 
 
     </style>
 
     <template>
-        <div class="section">
+        <!--div class="section"-->
             
             <!--div class="self-center section-detail-header">[[heading]]
             </div-->
                     
-            <div class="flex"></div>
-
             <div class$="[[computeLayoutClass(vertical)]]  section-inner-container">
                 
                 <template is='dom-if' if='[[!alternateLayout]]'>
@@ -565,17 +416,15 @@
                 </template>
 
                 <div class="section-detail">
-                    <div class="flex"></div>
                     
                     <div class="section-detail-header">[[heading]]
                     </div>
                     
                     <div class="section-detail-description">[[description]]</div>
                     
-                    <paper-button no-ink class="section-detail-button" on-tap='link'>Learn More
-                    </paper-button>
+                    <!--paper-button no-ink class="section-detail-button" on-tap='link'>Learn More
+                    </paper-button-->
 
-                    <div class="flex"></div>  
                 </div>
 
                 <template is='dom-if' if='[[alternateLayout]]'>
@@ -585,9 +434,6 @@
                 </template>
 
             </div>
-
-            <div class="flex"></div>
-        </div>
     </template>
 
     <script>

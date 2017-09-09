@@ -76,7 +76,7 @@
 		<template is='dom-if' if='[[header]]'>
 			<div id="header" class="layout horizontal center">
 			 	
-				<paper-checkbox noink class="checkbox-all self-center" checked="{{checkAll}}"
+				<paper-checkbox noink class="checkbox-all self-center" checked="[[checkAll]]"
 		            	on-change='onCheckAllBacktest'>
 		        	</paper-checkbox>
 		        <div class="layout horizontal" id="only-backtest-header">	
@@ -97,7 +97,8 @@
 			properties: {
 				checkAll:{
                     type:Boolean,
-                    value:false
+                    value:false,
+                    notify:true,
                 },
 
                 width: {
@@ -136,7 +137,7 @@
 			},
 
 			onCheckAllBacktest: function () {
-                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.$$('paper-checkbox').checked}});
+				this.checkAll = this.$$('paper-checkbox').checked;
             }
 
 		});
