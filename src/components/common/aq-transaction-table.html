@@ -73,7 +73,7 @@
 		<div id='table-container'>
 			<div id="toggle-container" class="layout horizontal">
 	            <div class="flex"></div>
-	            <template is='dom-if' if='[[orders]]'>
+	            <template is='dom-if' if='[[!noOrders]]'>
 		            <aq-twoway-toggle 
 		                first-option="Proposed Orders" 
 		                second-option="Transactions"
@@ -83,7 +83,7 @@
 
 	        </div>
 
-	        	<template is='dom-if' if='[[showProposedOrders(typeSelected)]]'>
+	        	<template is='dom-if' if='[[showProposedOrders(noOrders, typeSelected)]]'>
 	        	<vaadin-grid id='ordersTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 			      		<template class="header">
@@ -117,7 +117,7 @@
 				    </vaadin-grid-column>
 			    </vaadin-grid></template>
 		   		
-		   		<template is='dom-if' if='[[showTransactionTable(typeSelected)]]'>
+		   		<template is='dom-if' if='[[showTransactionTable(noOrders, typeSelected)]]'>
          	 	<vaadin-grid id='transactionTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 				      <!--template class="header">Date</template-->
@@ -185,6 +185,11 @@
 					type: Number,
 					value: 0,
 				},
+
+				noOrders:{
+					type: Boolean,
+					value: false,
+				},
 				
 				loading: Boolean,
 			},
@@ -248,26 +253,22 @@
      			}
 			},
 
-			showTransactionTable: function(typeSelected) {
-				var show = !this.orders ? typeSelected == 0 : typeSelected == 1;
+			showTransactionTable: function(noOrders, typeSelected) {
+				var show = noOrders ? typeSelected == 0 : typeSelected == 1;
 				if(show) {
 					this.async(this.manageTransactions, 1000);
 				}
 				return show;
 			},
 
-			showProposedOrders: function(typeSelected) {
-				var show = this.orders && typeSelected == 0;
+			showProposedOrders: function(noOrders, typeSelected) {
+				var show = !noOrders && typeSelected == 0;
 
 				if(show) {
 					this.async(this.manageOrders, 1000);
 				}
 
 				return show;
-			},
-
-			showTableType: function(orders, typeSelected) {
-				return orders ? (typeSelected == 0 ? "ordersTable" : "transactionTable") : "transactionTable";
 			},
 
 			/*manageTransactions: function(page, pageSize) {
