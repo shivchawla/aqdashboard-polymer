@@ -56,11 +56,7 @@
 	          	backtestId: String,
 
 			},
-
-			attached: function() {
-				//this.manageSubscriptions();
-			},
-
+			
 	        _onOpen: function(e) {
 	            for(var i=0;i<this.wsRequests.length;i++) {
 	                var req = this.wsRequests[i];
@@ -100,13 +96,59 @@
 	        },
 
 	        _onError: function(e) {
+
 	        },
 
 	        _onClose: function(e) {
-	            var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-	            this.$.webSocketConn.url = WSEndPoint;
+	        	//Connect again
+	        	if(e.code == 1006) {
+	            	//In case of unknown close, subscribe again
+	            	console.log("Websocket closed for unknown reason!!");
+	            	this.subscribeAllRequest();	
+            	} 
+	        },
 
-	            this.$.webSocketConn.open();
+	        subscribeAllRequest: function() {
+         		if(this.backtests) {
+         			Object.keys(this.backtests).forEach(backtestId => {
+         				if(this.backtests[backtestId].subscription) {
+
+         					this.sendDataNew(backtestId);
+         					
+         					var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+		                  		action: 'subscribe-backtest',
+		                  		backtestId: backtestId};
+
+		                  	if(this.$.webSocketConn.isOpen()) {
+		                  		this.$.webSocketConn.send(msgForWS);
+		                  	} else {
+		                  		this.wsRequests.push(msgForWS);
+		                  	}	
+         				}
+         			});
+         		}
+
+         		//If the web-socket was closed,
+         		// connect and send all requests
+         		if(this.$.webSocketConn.isClosed()) {
+         			this.$.webSocketConn.open();
+     			}
+	        },
+
+	        subscribeOneRequest: function(backtestId) {
+	        	if(this.backtests[backtestId].subscription) {
+ 					var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+                  		action: 'subscribe-backtest',
+                  		backtestId: backtestId};
+
+                  	if(this.$.webSocketConn.isOpen()) {
+                  		this.$.webSocketConn.send(msgForWS);
+                  	} else {
+                  		this.wsRequests.push(msgForWS);
+                  		this.$.webSocketConn.open();
+                  	}	
+ 				}
+ 				
 	        },
 
 	        openConnection: function() {
@@ -151,6 +193,8 @@
 		            this.backtests[backtestId].bulksent = false;
 		            this.backtests[backtestId].currentIndex = 0;
 		            this.backtests[backtestId].data = {};
+		            
+		            this.subscribeOneRequest(backtestId);
 		            this.sendDataNew(backtestId);
         	  	}
 	        },
