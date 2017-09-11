@@ -46,6 +46,8 @@
 	<template>
 			
 		<div id='table-container'>
+			
+			<template id='portfolioTableTemplate' is='dom-if' if='[[hasPositions(positions)]]' on-dom-change='drawTable'>
 			<div id="toggle-container" class="layout horizontal">
 	            <div class="flex"></div>
 	            <aq-twoway-toggle 
@@ -55,7 +57,7 @@
 	            </aq-twoway-toggle>
 	            <div class="flex"></div>
 	        </div>
-	        
+
 			<vaadin-grid items="[[items]]" multi-sort=true>
 				<vaadin-grid-column width="100px">
 			     	<template class="header">
@@ -101,6 +103,7 @@
 			      <template>[[item.pnl]]</template>
 			    </vaadin-grid-column>
 		    </vaadin-grid>
+		    </template>
 	    </div>		
 	</template>
 
@@ -120,8 +123,16 @@
 				items:Array,
 			},
 
+			hasPositions: function(positions) {
+				return positions ? positions.length > 0 : false;
+			},
+
 			_selectedChanged: function() {
-				if(this.positions) {
+				this.drawTable();
+			},
+
+			drawTable: function() {
+				if(this.positions && this.$$('vaadin-grid')) {
 					if(this.typeSelected == 1) {
 						this.showAll();
 					} else {
@@ -129,15 +140,6 @@
 					}
 				}
 			},
-
-			attached: function() {
-				if(this.typeSelected == 1) {
-					this.showAll();
-				} else {
-					this.showLatest();
-				}
-			},	
-
 
             showAll: function() {
                 var grid = this.$$('vaadin-grid');
@@ -176,6 +178,7 @@
 			_computeItems: function(positions) {
 				var i = 0;
 				var items = [];
+				
 				if(positions) {
 					items = new Array(positions.length);
 	     			positions.forEach(position => {
@@ -187,7 +190,11 @@
 	     							pnl: (position.quantity*(position.lastprice-position.averageprice)).toFixed(2)};
 	     			});
      			}
-     			return items;
+     			
+     			return items.sort(
+     				function(a,b) {
+     					return a.date < b.date ? 1 : -1;
+     				});	
 			}
 
 		});

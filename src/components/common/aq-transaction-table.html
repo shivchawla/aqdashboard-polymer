@@ -83,7 +83,7 @@
 
 	        </div>
 
-	        	<template is='dom-if' if='[[showProposedOrders(noOrders, typeSelected)]]'>
+	        	<template id='ordersTableTemplate' is='dom-if' if='[[showProposedOrders(orders, noOrders, typeSelected)]]' on-dom-change='manageOrders'>
 	        	<vaadin-grid id='ordersTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 			      		<template class="header">
@@ -117,7 +117,7 @@
 				    </vaadin-grid-column>
 			    </vaadin-grid></template>
 		   		
-		   		<template is='dom-if' if='[[showTransactionTable(noOrders, typeSelected)]]'>
+		   		<template id='transactionTableTemplate' is='dom-if' if='[[showTransactionTable(transactions, noOrders, typeSelected)]]' on-dom-change='manageTransactions'>
          	 	<vaadin-grid id='transactionTable' multi-sort=true>
 					<vaadin-grid-column width="100px">
 				      <!--template class="header">Date</template-->
@@ -194,20 +194,27 @@
 				loading: Boolean,
 			},
 
-			loadMoreData: function() {
+			/*loadMoreData: function() {
 				this.loading = true;
 				this.manageTransactions();
-			},
+			},*/
 
 			showPaperButton: function(loading) {
 				return !loading;
 			},
 
 			manageOrders: function() {
+				
+				if(!this.showProposedOrders(this.orders, this.noOrders, this.typeSelected)) {
+					return;
+				}
+
 				var grid = this.$$('#ordersTable');
      			var items = [];
 
-     			if(this.orders) {
+     			var gridItemslength = grid.items ? grid.items.length : 0;
+
+     			if(this.orders && gridItemslength < this.orders.length) {
 
      				items = new Array(this.orders.length);
 	     			var i = 0;
@@ -219,13 +226,17 @@
 	     							direction: order.remainingquantity < 0 ?"SELL":"BUY",
 	     							};
 	     			});
-     			}
 
-     			//grid.clearCache();
-     			grid.items = items;
+	     			grid.clearCache();
+ 					grid.items = items;
+     			}
 			},
 
 			manageTransactions: function() {
+				if(!this.showTransactionTable(this.transactions, this.noOrders, this.typeSelected)) {
+					return;
+				}
+
 				var grid = this.$$('#transactionTable');
 
 			 	var gridItemslength = grid.items ? grid.items.length : 0;
@@ -253,20 +264,15 @@
      			}
 			},
 
-			showTransactionTable: function(noOrders, typeSelected) {
-				var show = noOrders ? typeSelected == 0 : typeSelected == 1;
-				if(show) {
-					this.async(this.manageTransactions, 1000);
-				}
+			showTransactionTable: function(transactions, noOrders, typeSelected) {
+				
+				var show = transactions.length > 0 ? (noOrders ? typeSelected == 0 : typeSelected == 1) : false;
+
 				return show;
 			},
 
-			showProposedOrders: function(noOrders, typeSelected) {
-				var show = !noOrders && typeSelected == 0;
-
-				if(show) {
-					this.async(this.manageOrders, 1000);
-				}
+			showProposedOrders: function(orders, noOrders, typeSelected) {
+				var show = orders.length > 0 ? (!noOrders && typeSelected == 0) : false;
 
 				return show;
 			},

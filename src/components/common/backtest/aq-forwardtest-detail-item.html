@@ -260,6 +260,8 @@
     </style>
 
     <template>
+        <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
+
         <aq-check-authentication id='authItem'></aq-check-authentication>
     	<div id='container' class="layout vertical">
             <template is='dom-if' if='[[forwardtestHeader]]'>
@@ -618,7 +620,7 @@
             },
 
             hasOrdersAndTransactions: function(forwardtestTransactions, forwardtestOrders) {
-                return forwardtestTransactions || forwardtestOrders;
+                return forwardtestTransactions && forwardtestOrders;
             },
 
             computePositions: function() {
@@ -627,8 +629,9 @@
                 if(hasValidData) {
                     var accounttracker = this.forwardtest.serializedData.accounttracker;
                     
+                    var positionsArray = [];
+                    
                     if(accounttracker) {
-                        var positionsArray = []
                         Object.keys(accounttracker).sort().forEach(key => {
                             var account = accounttracker[key];
 
@@ -644,15 +647,18 @@
                                     }
                                 });
 
-                                tempArray.sort(function(a,b){return a.symbol< b.symbol;});
+                                tempArray.sort(
+                                    function(a,b){
+                                        return a.symbol < b.symbol ? 1 : -1;
+                                    });
                             }
 
                           positionsArray = positionsArray.concat(tempArray);
                             
                         });
-
-                        this.forwardtestPositions = positionsArray.reverse();
                     }
+
+                    this.forwardtestPositions = positionsArray.reverse();
                 }
             },
 
@@ -661,19 +667,23 @@
 
                 if(hasValidData) {
                     var allTransactions = this.forwardtest.serializedData.transactiontracker;
+
+                    var transactionArray = [];
                     
                     if(allTransactions) {
-                        var transactionArray = []
+                        
                         Object.keys(allTransactions).sort().forEach(key => {
-                            
                             //array of array
-                            var transactionsPerDay = allTransactions[key];
-                            transactionArray = transactionArray.concat(transactionsPerDay.sort(function(a,b){return a.securitysymbol.ticker < b.securitysymbol.ticker;}));
+                            var transactionsPerDay = allTransactions[key].sort(function(a,b){
+                                    return a.securitysymbol.ticker < b.securitysymbol.ticker ? 1 : -1;
+                                });
+
+                            transactionArray = transactionArray.concat(transactionsPerDay);
                             
                         });
+                    }
 
-                        this.forwardtestTransactions = transactionArray.reverse();
-                    } 
+                    this.forwardtestTransactions = transactionArray.reverse();
                 }
             },
 
@@ -683,19 +693,21 @@
                 if(hasValidData) {
                     var blotter = this.forwardtest.serializedData.brokerage.blotter;
                     
+                    var ordersArray = [];
                     if(blotter) {
-                        var ordersArray = []
                         Object.keys(blotter).sort().forEach(key => {
                             
                             //array of array
                             var ordersPerSecurity = blotter[key];
-
                             ordersArray = ordersArray.concat(ordersPerSecurity);
-                            
                         });
-
-                        this.forwardtestOrders = ordersArray.sort(function(a,b){ return a.securitysymbol.ticker < b.securitysymbol.ticker;});
+                        
                     } 
+
+                    this.forwardtestOrders = ordersArray.sort(
+                            function(a,b) {
+                                return a.securitysymbol.ticker < b.securitysymbol.ticker ? 1 : -1;
+                            });
                 }
             },
 
@@ -705,21 +717,23 @@
                 if(hasValidData) {
                     var logtracker = this.forwardtest.serializedData.logtracker;
 
-                    var logs = []
-                    Object.keys(logtracker).sort().forEach(date => {
-                        var logsDict = logtracker[date];
-                        if(date != "0001-01-01") {
-                            Object.keys(logsDict).sort().forEach(entryTime => {
-                                var logArray = logsDict[entryTime];
+                    var logs = [];
+                    
+                    if(logtracker) {
+                        Object.keys(logtracker).sort().forEach(date => {
+                            var logsDict = logtracker[date];
+                            if(date != "0001-01-01") {
+                                Object.keys(logsDict).sort().forEach(entryTime => {
+                                    var logArray = logsDict[entryTime];
 
-                                for (var i=0;i<logArray.length;i++) {
-                                    logs = logs.concat(JSON.parse(logArray[i]));
-                                }
-
-                            });
-                        }
-                    });
-
+                                    for (var i=0;i<logArray.length;i++) {
+                                        logs = logs.concat(JSON.parse(logArray[i]));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    
                     this.forwardtestLogs = logs;
                 }
             },
@@ -849,7 +863,16 @@
 
             computeStatusClass: function(active, error) {
                 return active ? "green" : "red";
-            }, 
+            },
+
+            onForwardtestUpdated: function(e) {
+                var response = e.detail;
+                if(response.active) {
+                    this.reset();
+                    this.forwardtestId = response.id;
+                    this.requestStaticData();
+                }
+            } 
 
         });
     </script>

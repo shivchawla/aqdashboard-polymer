@@ -135,6 +135,7 @@
           
           listeners :{
               'stoptest-action':'onStopForwardTest',
+              'restarttest-action':'onRestartForwardTestAction',
               'deletetest-action': 'onDeleteForwardTest',
               'clone-backtest-clicked':'onCloneBacktestRequest',
               'create-strategy-action':'createStrategy',  
@@ -202,9 +203,24 @@
               });    
           },
 
+          onRestartForwardTestAction: function(e) {
+
+              var forwardtestIds = e.detail.forwardtestIds;
+              
+              forwardtestIds.forEach(forwardtestId => {
+                  if(this.$.authItem.checkHasToken()) {
+                      //this.testUpdateData = {active: false};
+                      var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                    this.$$('#updateForwardtestQuery').url = APIEndPoint + "/forwardtest/" + forwardtestId +'?active=true';
+
+                      this.header = this.$.authItem.getHeader();
+                      this.$.updateForwardtestQuery.generateRequest()
+                  }
+              });
+          },
+
           onDeleteForwardTest: function(e) {
               var forwardtestId = e.detail.forwardtestId;
-              console.log("Here in Delete");
               if(this.$.authItem.checkHasToken()) {
                   //this.testUpdateData = {active: false};
                   var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
@@ -216,7 +232,10 @@
           },
 
           onUpdateForwardtestSuccess: function(e) {
-              this.fire('iron-signal', {name:'forwardtest-stopped'});
+              var response = e.detail.response;
+              if(response) {
+                  this.fire('iron-signal', {name:'forwardtest-updated', data:{active:response.active, id: response.forwardtestId}});
+              }
           },
 
           onUpdateForwardtestError: function(e) {

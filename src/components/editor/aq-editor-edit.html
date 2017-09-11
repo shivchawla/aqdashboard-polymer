@@ -532,7 +532,7 @@
             onStrategyExecutionError: function (data) {
                 this.fire('iron-signal', {name:'backtest-exception', data:{id: this.activeBacktestId, type: 2}});
                 
-                console.log(data.detail);
+                //console.log(data.detail);
                 //This get back the created backtest object with just the settings,
                 //HAS no output
             },

@@ -341,7 +341,6 @@
                     if (this.strategies[newVal]) {
                         this.strategyId = this.strategies[newVal]._id;
                         this.strategyName = this.strategies[newVal].name;
-                        console.log(this.strategyName);
                         this.$.getBacktestsQuery.generateRequest();
                     }
                 }
@@ -349,7 +348,6 @@
 
             computeStrategyName: function(currentStrategyIndex) {
                 
-                console.log(this.strategies);
                 if (this.strategies 
                         && this.strategies.length > 0 
                         && this.strategies.length > currentStrategyIndex + 1

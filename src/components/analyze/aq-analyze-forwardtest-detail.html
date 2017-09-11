@@ -30,7 +30,7 @@
     <template>
         <iron-signals on-iron-signal-forwardtest-deleted='onForwardtestDeleted'></iron-signals>
 
-        <iron-signals on-iron-signal-forwardtest-stopped='onForwardtestStopped'></iron-signals>
+        <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
         
@@ -133,13 +133,16 @@
             },
 
             onStopForwardTestAction: function(e) {
-                console.log("Yahan");
+                e.detail.forwardtestIds = [this.forwardtestId];
+                //EVENT IS HANDLED IN aq-dashboard-main
+            },
+
+            onRestartForwardTestAction: function(e) {
                 e.detail.forwardtestIds = [this.forwardtestId];
                 //EVENT IS HANDLED IN aq-dashboard-main
             },
 
             onDeleteForwardTestAction: function(e) {
-                console.log("FCUK");
                 e.detail.forwardtestId = this.forwardtestId;
                 //EVENT IS HANDLED IN aq-dashboard-main
             },
@@ -160,8 +163,12 @@
                 this.fire('rt-changed', {route:'/dashboard/editor'});
             },
 
-            onForwardtestStopped: function(e) {
-                this.fire('rt-changed', {route: '/dashboard/editor'});
+            //Handle Stop
+            onForwardtestUpdated: function(e) {
+                var response = e.detail;
+                if(!response.active) {
+                    this.fire('rt-changed', {route: '/dashboard/editor'});
+                }
             }
 
         });
