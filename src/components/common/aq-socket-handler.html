@@ -58,12 +58,25 @@
 			},
 			
 	        _onOpen: function(e) {
-	            for(var i=0;i<this.wsRequests.length;i++) {
-	                var req = this.wsRequests[i];
-	                this.$.webSocketConn.send(req);
-	            }
+	        	var delay = 0;
+	        	if (this.$.webSocketConn.isOpen()) {
+	        		delay = 0;
+	        	} else if(this.$.webSocketConn.isConnecting()) {
+	        		delay = 100;
+	        	}
 
-	            this.set('wsRequests',[]);
+	        	this.async(this.sendRequests, delay);
+	        },
+
+	        sendRequests: function() {
+	        	if(this.$.webSocketConn.isOpen()) {
+		        	for(var i=0;i<this.wsRequests.length;i++) {
+		                var req = this.wsRequests[i];
+		                this.$.webSocketConn.send(req);
+		            }
+
+		            this.set('wsRequests',[]);
+	            }
 	        },
 
 	        _onMessage: function(e) { 
@@ -74,25 +87,6 @@
 	            
 	            var response = e.detail;
 	            this.backtests[backtestId].data[response.index] = response.data; 
-
-	            //this.debounce('sasas', function() {this.sendDataNew(backtestId);}, 3000);
-
-	            /*this.debounce('sendData', 
-	            	function() {
-	            			//stitch the data
-	                  	var chunkedData = JSON.parse(JSON.stringify(this.backtests[backtestId].data));
-	                  	var stitchedData = [];
-	                  	Object.keys(chunkedData).sort().forEach(index => {
-                  			chunkedData[index].forEach(item => {
-                  				//console.log(item);
-                  				stitchedData.push(item);
-                  			});
-	                  	});
-
-	            		this.sendDataNew(backtestId, stitchedData);
-	            	}, 2000
-            	);*/
-
 	        },
 
 	        _onError: function(e) {
@@ -100,12 +94,8 @@
 	        },
 
 	        _onClose: function(e) {
-	        	//Connect again
-	        	if(e.code == 1006) {
-	            	//In case of unknown close, subscribe again
-	            	console.log("Websocket closed for unknown reason!!");
-	            	this.subscribeAllRequest();	
-            	} 
+        		//On close, resend the subscription requests
+            	this.subscribeAllRequest();	
 	        },
 
 	        subscribeAllRequest: function() {
@@ -114,7 +104,7 @@
          				if(this.backtests[backtestId].subscription) {
 
          					this.sendDataNew(backtestId);
-         					
+
          					var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
 		                  		action: 'subscribe-backtest',
 		                  		backtestId: backtestId};
@@ -148,7 +138,19 @@
                   		this.$.webSocketConn.open();
                   	}	
  				}
- 				
+	        },
+
+	        unsubscribeOneRequest: function(backtestId) {
+	        	var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
+                  		action: 'unsubscribe-backtest',
+                  		backtestId: backtestId};
+
+              	if(this.$.webSocketConn.isOpen()) {
+              		this.$.webSocketConn.send(msgForWS);
+              	} else {
+              		this.wsRequests.push(msgForWS);
+              		this.$.webSocketConn.open();
+              	}	
 	        },
 
 	        openConnection: function() {
@@ -169,8 +171,6 @@
 
 		            //Set subscription to true
 		            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
-
-		            //console.log(this.backtests);
 
 		            //Also send data(by default)
 		            this.sendDataNew(backtestId);
@@ -206,6 +206,7 @@
 	              	delete this.backtests[backtestId].currentIndex;
 	              	this.backtests[backtestId].currentIndex = 0;
 	              	this.backtests[backtestId].data = {};
+	              	this.unsubscribeOneRequest(backtestId);
 	          	}
 	        },
 
