@@ -641,7 +641,7 @@
                                 Object.keys(account.portfolio.positions).forEach(pkey => {
                                     var position = account.portfolio.positions[pkey];
                                     
-                                    if(position.quantity > 0) {
+                                    if(Math.abs(position.quantity) > 0) {
                                         position.date = key;
                                         tempArray.push(position);    
                                     }

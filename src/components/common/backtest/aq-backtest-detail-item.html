@@ -666,7 +666,7 @@
                                         Object.keys(portfolioEachDay.positions).forEach(pkey => {
                                             var position = portfolioEachDay.positions[pkey];
                                             
-                                            if(position.quantity > 0) {
+                                            if(Math.abs(position.quantity) > 0) {
                                                 position.date = date;
                                                 positionsArray.push(position);    
                                             }
