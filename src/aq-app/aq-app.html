@@ -231,10 +231,16 @@
             var x = localStorage.getItem('my-app-storage');
             
             if (x) {
-              lastTab = JSON.parse(x).lastTab;
+                lastTab = JSON.parse(x).lastTab;
             }
 
+            //10 min
+            setInterval(this.setreload.bind(this), 600000);
             this.currentUrl = window.location.href;
+        },
+
+        setreload: function() {
+            this.reload = true;
         },
 
         computeToolbarType: function(hasToken, currentUrl) {
@@ -399,11 +405,11 @@
                 route = '/#' + route;
             }
             
-            //console.log(route);
-            /*if(route == "/#/about") {
+            if(this.reload) {
                 window.location.reload(true);
-            }*/
-
+                this.reload = false;
+            }
+            
             window.history.pushState({}, null, route);
             window.dispatchEvent(new CustomEvent('location-changed'));
 
