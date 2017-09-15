@@ -72,7 +72,7 @@
             <div class="flex"></div>
             <div id='menu-icons' class="layout horizontal center">
 
-        	 	<paper-button raised id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests)]]">Compare
+        	 	<paper-button raised id='compareButton' class="self-center" noink on-tap="onCompare" disabled="[[!isCompareActive(numActiveBacktests, canCompare)]]">Compare
                 </paper-button>
                
             	<paper-button raised id='deleteButton' class="self-center" noink on-tap="onDelete" disabled="[[!isDeleteActive(numActiveBacktests)]]"><iron-icon icon="aq-icons:delete"></iron-icon>Delete Selected
@@ -96,18 +96,25 @@
 					type:Number,
 					value:0,
 				},
+
                 expand:{
 				    type:Boolean,
                     value: false
                 },
+
                 checkAll:{
                     type:Boolean,
                     value:false
+                },
+
+                canCompare:{
+                	type: Boolean,
+                	value: false,	
                 }
 			},
 
-			isCompareActive: function(numActiveBacktests) {
-				return numActiveBacktests > 1 && numActiveBacktests <=5;
+			isCompareActive: function(numActiveBacktests, canCompare) {
+				return canCompare ? (numActiveBacktests > 1 && numActiveBacktests <=5) : false;
 			},
 
 			isDeleteActive: function(numActiveBacktests) {

@@ -76,8 +76,8 @@
 		<template is='dom-if' if='[[header]]'>
 			<div id="header" class="layout horizontal center">
 			 	
-				<paper-checkbox noink class="checkbox-all self-center" checked="[[checkAll]]"
-		            	on-change='onCheckAllBacktest'>
+				<paper-checkbox checked=[[checkAll]] noink class="checkbox-all self-center"
+		            	on-change='onCheckAll' on-checked-change='onCheckAll'>
 		        	</paper-checkbox>
 		        <div class="layout horizontal" id="only-backtest-header">	
 		        	<div class="header-item" id="header-item-backtest">Backtest</div>
@@ -98,7 +98,6 @@
 				checkAll:{
                     type:Boolean,
                     value:false,
-                    notify:true,
                 },
 
                 width: {
@@ -136,9 +135,10 @@
 				this.computeHeader();
 			},
 
-			onCheckAllBacktest: function () {
-				this.checkAll = this.$$('paper-checkbox').checked;
-            }
+			onCheckAll: function () {
+				//this.checkAll = this.$$('paper-checkbox').checked;
+				this.fire('checkall', {checked: this.$$('paper-checkbox').checked});
+            },
 
 		});
 	</script>

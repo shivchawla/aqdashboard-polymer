@@ -345,7 +345,7 @@
             },
 
             reset: function () {
-                this.set('backtestHeader', []);
+                this.resetHeader();
                 this.resetMetrics();
                 
                 if(this.$$('aq-backtest-performance-detail-item')) {
@@ -358,6 +358,31 @@
                                 }
                         }, 200); 
                 }
+            },
+
+            resetHeader: function() {
+                this.backtestHeader = [];
+                this.backtestHeader = 
+                [
+                    {   
+                        label: "Strategy Name",
+                        metric: ""
+                    }, 
+                    {   
+                        label: "Created At",
+                        metric: ""
+                    }, 
+
+                    {
+                        label: "Date Range",
+                        metric: ""
+                    },
+
+                    {
+                        label: "Status",
+                        metric: "",
+                    }
+                ]
             },
 
             resetMetrics: function () {

@@ -199,9 +199,6 @@
 
         </style>
 
-        <iron-signals on-iron-signal-expand-backtest="toggle"></iron-signals>
-        <iron-signals on-iron-signal-select-backtest="selectBacktest"></iron-signals>
-
         <aq-portwidth-detector width="{{width}}"> 
         </aq-portwidth-detector>
 
@@ -267,6 +264,12 @@
                     value: false,
                 },
 
+                checkAll: {
+                    type: Boolean,
+                    value: false,
+                    //notify:true,
+                    observer:'_checkAllChanged',
+                },
             },
 
             computeBacktestHeader: function() {
@@ -444,22 +447,33 @@
             },
 
             onChange: function () {
-                this.fire('backtestChecked', {
+                /*this.fire('backtestChecked', {
                     id: this.backtest._id,
                     checked: this.$$('paper-checkbox').checked,
                     index: "Backtest "+this.formatIndex(this.btIndex)
-                });
+                });*/
 
-            },
-
-            selectBacktest: function (e) {
-                this.$$('paper-checkbox').checked = e.detail.checked;
-                this.onChange();
+                if(this.backtest) {
+                    this.fire('check', {
+                        id: this.backtest._id,
+                        checked: this.$$('paper-checkbox').checked,
+                        index: "Backtest "+this.formatIndex(this.btIndex),
+                        valid: this.isBacktestDetailValid(this.backtest)
+                    });
+                }
             },
 
             runForwardtest: function() {
                 this.fire('execute-forwardtest', {backtestId: this.backtestId});
             },
+
+            _checkAllChanged: function() {
+                if(this.$$('paper-checkbox')) {
+                    this.$$('paper-checkbox').checked = this.checkAll;
+                    this.onChange();
+                }
+            },
+    
 
         });
 

@@ -124,9 +124,6 @@
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'>
 	 	</iron-signals>
 		
-		<iron-signals on-iron-signal-select-backtest="selectAllBacktest">
-		</iron-signals>
-		
 		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 		 
 	        <aq-allpage-layout 
@@ -138,13 +135,15 @@
 			        <aq-analyze-home-menu
 			        	check-all="[[checkAll]]"
 			        	num-active-backtests="[[checkedItems.length]]"
-		              	strategy-name="{{strategyName}}">
+		              	strategy-name="{{strategyName}}"
+		              	can-compare=[[_allCheckedItemsValid(checkedItems)]]>
 		          	</aq-analyze-home-menu>
 
 			        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
 						
 			        	<aq-analyze-home-header 
-			        		check-all="{{checkAll}}"
+			        		check-all="[[checkAll]]"
+			        		on-checkall="onCheckAll"
 			        		num-active-backtests="[[checkedItems.length]]"
 			        		share-icon>
 		        		</aq-analyze-home-header>
@@ -153,7 +152,9 @@
 							<aq-analyze-home-backtest-item  
 								class="backtest-item" bt-index="{{index}}" backtest="{{item}}" detail-icon share-icon 
 								has-forwardtest="[[hasForwardtest]]"
-								can-run detail-available>
+								can-run detail-available
+								on-check="onCheck"
+								check-all=[[checkAllItems]]>
 							</aq-analyze-home-backtest-item>
 						</template>
 
@@ -244,7 +245,6 @@
                 checkAll:{
 				    type:Boolean,
                     value:false,
-                    observer:'_checkAllChanged',
                 },
 
 				indexArray:{
@@ -273,10 +273,14 @@
 				'compare-clicked':'openComparisonDialog',
 				'backtestChecked':'checkBacktest',
 				'delete-clicked':'openDeleteDialog',
-				'comparison-off':'closeComparisonDialog',
+				'comparison-off':'onComparisonOff',
 				'deleteBacktest-action':'onDeletion',
 				'detail-action':'onDetail',
 				'execute-forwardtest':'runForwardtest',
+			},
+
+			_allCheckedItemsValid: function(checkedItems) {
+				return checkedItems.filter(item => {return item.valid;}).length == checkedItems.length;
 			},
 
 			_strategyIdChanged: function(nId, oId) {
@@ -356,17 +360,15 @@
 			onGetStrategyError: function(data) {
 			},
 
-			checkBacktest: function(e) {
+			onCheck: function(e) {
 				var checked = e.detail.checked;
-	        	//this.checkedItems[e.detail.id] = {checked: e.detail.checked, index: e.detail.index};
-
 	        	var checkedId  = e.detail.id;
 	        	var checkedIndex = e.detail.index;
 	        	var checkedItems = this.checkedItems;
 
 	        	if (checked == true) {
                     if(checkedItems.map(function(x) {return x.id;}).indexOf(checkedId) == -1) {
-                        checkedItems.push({id: checkedId, index: checkedIndex});
+                        checkedItems.push({id: checkedId, index: checkedIndex, valid: e.detail.valid});
                     }
 	        	} else {
                     checkedItems.splice(checkedItems.map(item => {return item.id;}).indexOf(checkedId),1);
@@ -374,7 +376,9 @@
 
         		this.checkedItems = [];
         		this.checkedItems = checkedItems;
+	        	
 	        	this.checkAll = this.checkedItems.length == this.backtests.length;
+
 	        },
 
 	        numCheckedBacktests: function(checkedItems) {
@@ -488,17 +492,17 @@
             	this.$$('#comparisonDialog').open();
             },
 
-            closeComparisonDialog: function() {	
-            	this.checkAllBacktests();
-            	//this.$$('#comparisonDialog').close();
+            onComparisonOff: function() {	
+            	this.checkAllItems = false;
             },
 
-            _checkAllChanged: function() {
-            	this.checkAllBacktests();
-            },
+            onCheckAll: function(e) {
+            	if(this.checkAllItems && e.detail.checked) {
+            		this.checkAllItems = null;
+            	}
 
-            checkAllBacktests: function() {
-                this.fire('iron-signal',{name:'select-backtest',data:{checked:this.checkAll}});
+            	this.checkAllItems = e.detail.checked;
+            	//this.checkAllBacktests();
             },
 
     	});
