@@ -65,6 +65,10 @@
 		}
 
 		#only-backtest-header {
+			width: calc(100% - 40px);
+		}
+
+		#only-backtest-header.canRun {
 			width: calc(100% - 148px);
 		}
 
@@ -79,7 +83,7 @@
 				<paper-checkbox checked=[[checkAll]] noink class="checkbox-all self-center"
 		            	on-change='onCheckAll' on-checked-change='onCheckAll'>
 		        	</paper-checkbox>
-		        <div class="layout horizontal" id="only-backtest-header">	
+		        <div class$="layout horizontal [[computeLayoutClass(canRun)]]" id="only-backtest-header">	
 		        	<div class="header-item" id="header-item-backtest">Backtest</div>
 		        	
 		        	<template is='dom-repeat' items='[[header]]'>
@@ -103,6 +107,11 @@
                 width: {
                 	type: Object,
                 	observer: '_widthChanged',
+            	},
+
+            	canRun: {
+            		type: Boolean,
+            		value: false,
             	}
 			},
 
@@ -139,6 +148,10 @@
 				//this.checkAll = this.$$('paper-checkbox').checked;
 				this.fire('checkall', {checked: this.$$('paper-checkbox').checked});
             },
+
+            computeLayoutClass: function(canRun) {
+            	return canRun ? "canRun" : "";
+            }
 
 		});
 	</script>

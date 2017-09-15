@@ -190,6 +190,10 @@
             }
 
             #only-backtest-container {
+                width: calc(100% - 20px);
+            }
+
+            #only-backtest-container.canRun {
                 width: calc(100% - 150px);
             }
 
@@ -206,7 +210,7 @@
                 
             <paper-checkbox class="self-center" on-change="onChange" noink></paper-checkbox>
 
-            <div class$="layout horizontal [[computeDetailAvailableClass(detailAvailable)]]" id='only-backtest-container' on-tap='onBacktestDetail'>
+            <div class$="layout horizontal [[computeDetailAvailableClass(detailAvailable, canRun)]]" id='only-backtest-container' on-tap='onBacktestDetail'>
                 <div class="header-item" id="header-item-backtest">[[computeHeading(btIndex)]]</div>
             
                 <template is='dom-if' if='[[backtestHeader]]'>
@@ -311,8 +315,8 @@
                 }
             },
 
-            computeDetailAvailableClass: function(detailAvailable) {
-                return detailAvailable  ? "detail" : "";
+            computeDetailAvailableClass: function(detailAvailable, canRun) {
+                return detailAvailable  ? (canRun ? "detail canRun" : "detail"): "";
             },
 
             _widthChanged: function() {

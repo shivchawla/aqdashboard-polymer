@@ -40,15 +40,16 @@
         }
 
         #container-bt {
-            width: 70%;
+            width: 72%;
             margin-left: 3%;
             margin-right: 3%;
             --margin: 0 auto;
             --margin-top: 15px;
+            height: 100%;
         }
 
         #container-strategy {
-            
+            width: 20%;
             margin-left: 3%;
             --margin-right: 3%;
         }
@@ -95,6 +96,7 @@
             margin: 0;
             padding: 0;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            overflow-y: scroll;
         }
 
         .inner paper-drawer-panel{
@@ -102,7 +104,7 @@
         }
 
         #container {
-            width: 90%;
+            width: 95%;
             border: 1px solid #e1e1e1;
             margin-top: 100px;
             align-content: center;
@@ -191,21 +193,24 @@
                         </iron-selector>
                     </div>
 
-                    <div id='container-bt' class="flex">
+                    <div id='container-bt'>
                         <div class="heading">Backtests for [[strategyName]]</div>
-                        <template is='dom-if' if="[[backtests]]">
-                            <aq-analyze-home-header 
-                                check-all="{{checkAll}}"
-                                num-active-backtests="[[checkedItems.length]]">
-                            </aq-analyze-home-header>
-                            <template is='dom-repeat' items="[[backtests]]">
-                                <aq-analyze-home-backtest-item 
-                                    class="self-center" 
-                                    index="[[index]]"
-                                    backtest="[[item]]">
-                                </aq-analyze-home-backtest-item>
+                        <div style="overflow-y: scroll; height: 100%">
+                            <template is='dom-if' if="[[backtests]]" restamp>
+                                <aq-analyze-home-header 
+                                    check-all="{{checkAll}}"
+                                    num-active-backtests="[[checkedItems.length]]">
+                                </aq-analyze-home-header>
+                                <template is='dom-repeat' items="{{backtests}}">
+                                    <aq-analyze-home-backtest-item 
+                                        class="self-center" 
+                                        bt-index="[[index]]"
+                                        backtest="[[item]]"
+                                        on-check='onCheckedBacktest'>
+                                    </aq-analyze-home-backtest-item>
+                                </template>
                             </template>
-                        </template>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -280,7 +285,7 @@
 
             computeGetBacktestsUrl: function (strategyId) {
                 var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/strategy/' + strategyId + '/backtests';
+                return APIEndPoint + '/strategy/' + strategyId + '/backtests?limit=0';
             },
 
             onGetStrategiesResponse: function (data) {
@@ -298,7 +303,6 @@
             },
 
             onGetAllBacktestsForStrategy: function (data) {
-                this.backtests = [];
                 this.backtests = data.detail.response;
             },
 
@@ -341,6 +345,8 @@
                     if (this.strategies[newVal]) {
                         this.strategyId = this.strategies[newVal]._id;
                         this.strategyName = this.strategies[newVal].name;
+                        this.backtests = null;
+                        this.checkedCount = 0;
                         this.$.getBacktestsQuery.generateRequest();
                     }
                 }
