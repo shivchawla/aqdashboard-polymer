@@ -193,8 +193,7 @@
 		            this.backtests[backtestId].subscription = true;
 		            this.backtests[backtestId].bulksent = false;
 		            this.backtests[backtestId].currentIndex = 0;
-		            this.backtests[backtestId].data = {};
-		            
+		            	
 		            this.subscribeOneRequest(backtestId);
 		            this.sendDataNew(backtestId);
         	  	}
@@ -226,7 +225,7 @@
 	        sendDataNew: function(backtestId) {
 	        	var timeGap = 3000;
 	            var maxLimit = 100;
-	            	
+
 	            if(this.backtests[backtestId]) {
 	                if(this.backtests[backtestId].subscription) {
 	                  
@@ -254,10 +253,13 @@
 	        	//stitch the data
               	var chunkedData = JSON.parse(JSON.stringify(this.
               		backtests[backtestId].data));
+
               	var stitchedData = [];
               	var count = 0;
               	
-              	for(var i=0;i<chunkedData.length;i++){
+              	var nchunks = Object.keys(chunkedData).length;
+
+              	for(var i=0;i<nchunks;i++){
           			stitchedData = stitchedData.concat(chunkedData[String(i)]);
               	}
 
@@ -272,7 +274,7 @@
 	            
 	            if(this.backtests[backtestId]) {
 	                if(this.backtests[backtestId].subscription) {
-	                  
+	                
 	                  	var currentIndex = this.backtests[backtestId].currentIndex;
 	                  	var currentLength = this.backtests[backtestId].data.length;
 	                  
@@ -336,8 +338,6 @@
 	                var backtestId = e.detail.id;
 
 	                if(backtestId) {
-	                    //this.sendDataSlowly(backtestId);
-	                    //this.manageSubscriptions();
 	                    delete this.backtests[backtestId];    
 	                }
 	            }

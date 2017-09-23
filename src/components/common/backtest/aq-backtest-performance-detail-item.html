@@ -251,14 +251,11 @@
                         
                     this.fire('iron-signal', {name:'partially-completed-backtest', data: {id: this.backtest._id, pctCompleted:this.pctCompleted}});
                 }
-
-                //Update the status
-                if(this.pctCompleted == 100) {
-                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtest._id}});
-                }
-
+              
                 if(this.rtData.length < this.realtimeXLabels.length) {
                     this.async(this.updateCumRetGraphsWithData, 3000);
+                } else {
+                    this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtest._id}});
                 } 
 
             },

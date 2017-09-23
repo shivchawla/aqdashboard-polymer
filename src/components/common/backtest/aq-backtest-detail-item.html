@@ -100,21 +100,44 @@
             color: #3c3c3c;
             margin: 20px 20px 20px 20px;
         }
+
+        paper-progress {
+            --paper-progress-height: 2px;
+            --paper-progress-active-color: #0375b4;
+            opacity: 0.6;
+            width: 100%;
+            --paper-progress-indeterminate-cycle-duration: 5s;
+        }
     </style>
 
     <template>
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
+        <iron-signals on-iron-signal-partially-completed-backtest='updatePct'>
+        </iron-signals>
+
         <template is='dom-if' if='[[!loading]]'>
             
+            <template is='dom-if' if='{{displayProgressBar(active, showProgress)}}'>
+                <template is='dom-if' if='[[isCompletionPositive(pctCompleted)]]'>
+                    <paper-progress value='[[pctCompleted]]'>
+                    </paper-progress>
+                </template>
+
+                <template is='dom-if' if='[[isBacktestWarmingUp(pctCompleted)]]'>
+                    <paper-progress indeterminate class="self-center">
+                    </paper-progress>
+                </template>
+            </template>
+
             <div id='container' class="layout vertical flex">
             	<template is='dom-if' if='[[backtestHeader]]'>
             		<aq-backtest-header-item
                         heading="[[heading]]"
             			forced-semi-wide = "[[forcedSemiWide]]"
             			header-items="{{backtestHeader}}" 
-                        can-share="[[canShare]]"
-                        can-clone="[[canClone]]">
+                        can-share="[[isSharingAllowed(canShare, active)]]"
+                        can-clone="[[isCloningAllowed(canClone, active)]]">
             		</aq-backtest-header-item>
         		
                     <div class="bar"></div>
@@ -141,16 +164,16 @@
                                 <paper-tab>Code</paper-tab>
 
                                 <template is='dom-if' if=[[!community]]>
+                                    <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
+                                        <paper-tab>Logs</paper-tab>
+                                    </template>
+
                                     <template is='dom-if' if='[[hasBacktestPositions(backtest)]]'>
                                         <paper-tab>Portfolio</paper-tab>
                                     </template>
                                     
                                     <template is='dom-if' if='[[hasBacktestTransactions(backtest)]]'>
                                         <paper-tab>Transactions</paper-tab>
-                                    </template>
-
-                                    <template is='dom-if' if='[[hasBacktestLogs(backtest)]]'>
-                                        <paper-tab>Logs</paper-tab>
                                     </template>
                                 </template>
                             </paper-tabs>
@@ -170,6 +193,18 @@
                             <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4">[[backtest.code]]
                             </juicy-ace-editor>
                         </div>
+
+                        <template is='dom-if' if='[[backtestLogs]]'>
+                            <div id="log-container">
+                                <template is='dom-repeat' items="[[backtestLogs]]">
+                                    <aq-log-item-new 
+                                        datetime="[[item.datetime]]"
+                                        message="[[item.message]]"
+                                        message-type="[[item.messagetype]]">
+                                    </aq-log-item-new>
+                                </template>
+                            </div>    
+                        </template>
                         
                         <div id="portfolio-container">
                             <template is='dom-if' if='[[backtestPositions]]'>
@@ -188,17 +223,7 @@
                             </template>
                         </div>
 
-                        <template is='dom-if' if='[[backtestLogs]]'>
-                            <div id="log-container">
-                                <template is='dom-repeat' items="[[backtestLogs]]">
-                                    <aq-log-item-new 
-                                        datetime="[[item.datetime]]"
-                                        message="[[item.message]]"
-                                        message-type="[[item.messagetype]]">
-                                    </aq-log-item-new>
-                                </template>
-                            </div>    
-                        </template>
+                       
                     </iron-pages>
                 </div>
             </div>
@@ -304,11 +329,33 @@
                 backtestTransactions: Array,
 
                 backtestPositions: Array,
+
+                pctCompleted: {
+                    type: Number,
+                    value: 0,
+                },
+
+                showProgress:{
+                    type: Boolean,
+                    value: false
+                }
             },
 
             listeners: {
                 'share-clicked':'goToShare',
             },
+
+            displayProgressBar: function(active, showProgress) {
+                return active && showProgress;
+            },
+
+            isSharingAllowed: function(canShare, active) {
+                return !active && canShare;
+            },
+
+            isCloningAllowed: function(canClone, active) {
+                return !active && canClone;
+            },            
 
             goToShare: function(e) {
                 this.fire('rt-changed' ,{route:'/dashboard/community/create?backtestId='+ this.backtestId});
@@ -321,11 +368,7 @@
                     this.requestStaticData();
                 }
             },
-
-            attached: function() {
-                //this.requestStaticData();
-            }, 
-
+            
             resize: function() {
                 this.$$('aq-backtest-performance-detail-item').onResize();
             },
@@ -333,7 +376,8 @@
             _activeChanged: function() {
                 if(!this.active && this.backtestId != "") {
                     this.fire('unsubscribe-data',{backtestId:this.backtestId});
-                    this.reset();
+                } else {
+                    this.async(function(){this.fire('subscribe-data', {backtestId:this.backtestId});}, 100);
                 }
             },
 
@@ -345,7 +389,7 @@
             },
 
             reset: function () {
-                this.resetHeader();
+                this.backtestHeader = [];
                 this.resetMetrics();
                 
                 if(this.$$('aq-backtest-performance-detail-item')) {
@@ -366,21 +410,21 @@
                 [
                     {   
                         label: "Strategy Name",
-                        metric: ""
+                        metric: "-"
                     }, 
                     {   
                         label: "Created At",
-                        metric: ""
+                        metric: "-"
                     }, 
 
                     {
                         label: "Date Range",
-                        metric: ""
+                        metric: "-"
                     },
 
                     {
                         label: "Status",
-                        metric: "",
+                        metric: "-"
                     }
                 ]
             },
@@ -456,7 +500,7 @@
                 }
 
                 data = e.detail;
-               
+
                 if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
                     
                     if (data.outputtype == "performance") {
@@ -493,10 +537,13 @@
             },
 
             onBacktestCompletion: function(e) {
-                this.backtestHeader[3].metric = "Complete";
-                var backtestHeader = this.deepCopy(this.backtestHeader);
+                var backtestHeader = this.backtestHeader;
+                backtestHeader[3].metric = "Complete";
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;
+                this.active = false;
+                this.reset();
+                this.requestStaticData();
             },
 
             requestStaticData: function () {
@@ -764,15 +811,15 @@
 
             _detailTypeChanged: function() {
                 //return;
-                if(this.detailType == 2) {
+                if(this.detailType == 3) {
                     this.computePortfolio();
                 }
 
-                if(this.detailType == 3 ) {
+                if(this.detailType == 4 ) {
                     this.computeTransactions();
                 }
 
-                if(this.detailType == 4) {
+                if(this.detailType == 2) {
                     this.computeLogs();
                 }
             },
@@ -819,12 +866,40 @@
             populateTab: function() {
                 if(this.backtest) {
                     if(this.detailType == 2) {
-                        this.computePortfolio();
-                    } else if(this.detailType == 3) {
-                        this.computeTransactions();
-                    } else if(this.detailType == 4) {
                         this.computeLogs();
-                    }
+                    } else if(this.detailType == 3) {
+                        this.computePortfolio();
+                    } else if(this.detailType == 4) {
+                        this.computeTransactions();
+                    } 
+                }
+            },
+
+            isCompletionPositive: function (pctCompleted) {
+                return pctCompleted > 0 && pctCompleted != 100;
+            },
+
+            isBacktestComplete: function (pctCompleted) {
+                return pctCompleted == 100;
+            },
+
+            isBacktestWarmingUp: function (pctCompleted) {
+                return pctCompleted == 0;
+            },
+
+            isBacktestRunException: function (pctCompleted) {
+                return pctCompleted == -1;
+            },
+
+            isBacktestInternalException: function(pctCompleted) {
+              return pctCompleted == -2;
+            },
+
+            updatePct: function(e) {
+                var e_backtestId = e.detail.id;
+
+                if(this.backtestId == e_backtestId) {
+                   this.pctCompleted = e.detail.pctCompleted;
                 }
             },
         });

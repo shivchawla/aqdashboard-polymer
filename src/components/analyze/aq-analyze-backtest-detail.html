@@ -28,7 +28,9 @@
 		      	<aq-backtest-detail-item
 		      		loading="{{loading}}" 
 		      		backtest-id="[[backtestId]]" 
-		      		heading="[[heading]]" can-share>
+		      		heading="[[heading]]" 
+		      		can-share
+		      		show-progress>
 	      		</aq-backtest-detail-item>
 			</div>
 		</aq-allpage-layout>
@@ -64,7 +66,6 @@
 			},
 
 			_loadingChanged: function(){
-				
 				/*if(this.loading == false) {
 					this.async(function(){this.$$('.internal-content').style.display = 'block'; 
 					this.$$('aq-backtest-detail-item').resize();
