@@ -173,41 +173,43 @@
                 <div id='advancedSettings' class="layout vertical">
 	                    
 	                <aq-paper-button-group 
-	                		label="Rebalance"
-	                		event-name="rebalance-selected" 
-	                		button-values="{{rebalanceOptions}}">
+                		label="Rebalance"
+            	       	event-name="rebalance-selected" 
+                		button-values="{{rebalanceOptions}}">
 	        		</aq-paper-button-group>
 
 	        		<aq-paper-button-group 
-	                		label="Cancel Policy"
-	                		event-name="cancel-policy-selected" 
-	                		button-values="{{cancelOptions}}">
+                		label="Cancel Policy"
+                		event-name="cancel-policy-selected" 
+                		button-values="{{cancelOptions}}">
 	        		</aq-paper-button-group>
 
 					<aq-paper-button-group 
-	                		label="Resolution"
-	                		event-name="resolution-selected" 
-	                		button-values="{{resolutionOptions}}">
+                		label="Resolution"
+                		event-name="resolution-selected" 
+                		button-values="{{resolutionOptions}}">
 	        		</aq-paper-button-group>
 
 	        		<aq-paper-button-group 
-	                		label="Commission"
-	                		event-name="resolution-selected" 
-	                		has-input
-	                		button-values="{{commissionOptions}}">
+                		label="Commission"
+                		event-name="commission-selected" 
+                		has-input
+                        input-value={{commissionValue}}
+                		button-values="{{commissionOptions}}">
 	        		</aq-paper-button-group>
 	            	
 	            	<aq-paper-button-group 
-	                		label="Slippage"
-	                		event-name="slippage-selected" 
-	                		has-input
-	                		button-values="{{slippageOptions}}">
+                		label="Slippage"
+                		event-name="slippage-selected" 
+                		has-input
+                        input-value={{slippageValue}}
+                		button-values="{{slippageOptions}}">
 	        		</aq-paper-button-group>
 	            	
 	            	<aq-paper-button-group 
-	                		label="Investment Plan"
-	                		event-name="investment-plan-selected-selected" 
-	                		button-values="{{investmentPlanOptions}}">
+                		label="Investment Plan"
+                		event-name="investment-plan-selected" 
+                		button-values="{{investmentPlanOptions}}">
 	        		</aq-paper-button-group>
 
                 </div>
@@ -314,6 +316,15 @@
                 investmentPlanOptions: Array,
             },
 
+            listeners:{
+                'resolution-selected':'onSelectResolution',
+                'cancel-policy-selected':'onSelectCancelPolicy',
+                'slippage-selected':'onSelectSlippage',
+                'commission-selected':'onSelectCommission',
+                'rebalance-selected':'onSelectRebalance',
+                'investment-plan-selected':'onSelectInvestmentPlan',
+            },
+
             ready: function () {
                 this.slippageOptions = slippageOptions;
                 this.cancelOptions = cancelOptions;
@@ -325,10 +336,29 @@
                 this.endDate = this.getTodayDate(7);
             },
 
-            attached: function () {
+            onSelectResolution: function(e) {
+                this.resolution = e.detail.attrSelected;
+            },
 
-                //this.$$('#endDateField').setAttribute("max", this.endDate);
+            onSelectCancelPolicy: function(e) {
+                this.cancelPolicy = e.detail.attrSelected;
+            },
 
+            onSelectSlippage: function(e) {
+                this.slippageModel = e.detail.attrSelected;
+            },
+
+            onSelectCommission: function(e) {
+                this.commissionModel = e.detail.attrSelected;
+                console.log(this.commissionValue);
+            },
+
+            onSelectRebalance: function(e) {
+                this.rebalance = e.detail.attrSelected;
+            },
+
+            onSelectInvestmentPlan: function(e) {
+                this.investmentPlan = e.detail.attrSelected;
             },
 
             toggle: function () {
@@ -442,10 +472,10 @@
 
 			<template is='dom-if' if="[[hasInput]]">
 				<input class="box" 
-						type="number"
-                    	step="0.01" 
-                        min=0
-                        value="{{inputValue}}">
+					   type="number"
+                	   step="0.01" 
+                       min=0
+                       value="{{inputValue::change}}">
             </template>
 
 			<div class="button-select-container layout horizontal">
