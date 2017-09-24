@@ -272,7 +272,7 @@
 			},
 
 			showProposedOrders: function(orders, noOrders, typeSelected) {
-				var show = orders.length > 0 ? (!noOrders && typeSelected == 0) : false;
+				var show = orders ? (orders.length > 0 ? (!noOrders && typeSelected == 0) : false) : false;
 
 				return show;
 			},

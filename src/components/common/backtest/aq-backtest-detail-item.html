@@ -338,6 +338,11 @@
                 showProgress:{
                     type: Boolean,
                     value: false
+                },
+
+                showFull: {
+                    type:Boolean,
+                    value: false,
                 }
             },
 
@@ -542,8 +547,11 @@
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;
                 this.active = false;
-                this.reset();
-                this.requestStaticData();
+                
+                if(this.showFull) {
+                    this.reset();
+                    this.requestStaticData();
+                }
             },
 
             requestStaticData: function () {
