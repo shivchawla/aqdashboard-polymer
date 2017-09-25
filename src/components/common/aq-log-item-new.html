@@ -37,7 +37,6 @@
 		}
 
 		#message {
-			
 			padding: 0px;
 		}
 	</style>
@@ -46,17 +45,25 @@
 		<div id='item' class="layout horizontal">
 			
 			<template is='dom-if' if="[[isError(messageType)]]">
-				<p class='error'>[[toUpperCase(messageType)]]</p>
+				<p class='error'>[[[toUpperCase(messageType)]]]</p>
 			</template>
 
 			<template is='dom-if' if="[[isWarning(messageType)]]">
-				<p class='warning'>[[toUpperCase(messageType)]]</p>
+				<p class='warning'>[[[toUpperCase(messageType)]]]</p>
 			</template>
 
 			<template is='dom-if' if="[[isInfo(messageType)]]">
-				<p class='info'>[[toUpperCase(messageType)]]</p>
+				<p class='info'>[[[toUpperCase(messageType)]]]</p>
 			</template>
-			<p id='message'>&nbsp&nbsp[[format(datetime)]]&nbsp:&nbsp[[message]]</p>
+			<p id='message'>
+				<template is='dom-if' if='[[datetime]]'>
+					<span>&nbsp[[format(datetime)]]:&nbsp[[message]]</span>
+				</template>
+
+				<template is='dom-if' if='[[!datetime]]'>
+					<span>&nbsp[[message]]</span>
+				</template>
+			</p>
 		</div>		
 	</template>
 
@@ -103,6 +110,8 @@
 				today = dd+'/'+mm+'/'+yyyy;
 				return today;
 			},
+
+			
 		});
 	</script>
 </dom-module>

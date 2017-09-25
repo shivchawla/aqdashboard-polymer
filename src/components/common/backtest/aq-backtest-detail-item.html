@@ -194,8 +194,8 @@
                             </juicy-ace-editor>
                         </div>
 
-                        <template is='dom-if' if='[[backtestLogs]]'>
-                            <div id="log-container">
+                        <div id="log-container">
+                            <template is='dom-if' if='[[backtestLogs]]'>
                                 <template is='dom-repeat' items="[[backtestLogs]]">
                                     <aq-log-item-new 
                                         datetime="[[item.datetime]]"
@@ -203,8 +203,8 @@
                                         message-type="[[item.messagetype]]">
                                     </aq-log-item-new>
                                 </template>
-                            </div>    
-                        </template>
+                            </template>
+                        </div>    
                         
                         <div id="portfolio-container">
                             <template is='dom-if' if='[[backtestPositions]]'>
@@ -222,7 +222,6 @@
                                 </aq-transaction-table>
                             </template>
                         </div>
-
                        
                     </iron-pages>
                 </div>
@@ -546,9 +545,9 @@
                 backtestHeader[3].metric = "Complete";
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;
-                this.active = false;
-                
+
                 if(this.showFull) {
+                    this.active = false;
                     this.reset();
                     this.requestStaticData();
                 }

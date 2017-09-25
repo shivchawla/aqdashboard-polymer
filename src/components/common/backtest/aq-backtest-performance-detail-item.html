@@ -232,8 +232,8 @@
                         this.trackVarKeysArray.forEach(variable => {
                             var data_arr = new Array(this.realtimeXLabels.length); 
                             for(var i=0; i<this.realtimeXLabels.length;i++) {
-                                
-                                var val = i < this.rtData.length ? this.rtData[i]["variables"][variable] : NaN;
+
+                                var val = i < this.rtData.length ? ("variables" in this.rtData[i] ?  this.rtData[i]["variables"][variable] : NaN) : NaN;
                                 
                                 data_arr[i] = [this.realtimeXLabels[i], val];
                             }
