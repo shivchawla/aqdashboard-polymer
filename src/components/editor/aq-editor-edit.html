@@ -471,8 +471,6 @@
         			this.runSwitch =0;
         			this.isRunning = false;
         		}
-
-                console.log(data);
             },
 
             runStrategyFromPanel: function () {
@@ -487,8 +485,6 @@
                     "type": this.strategy.type,
                     "code": this.$$('#codeEditorPanel').getCodeContent(),
                 };
-
-                console.log(this.putStrategyData);
 
                 if (this.$.authItem.checkHasToken() && this.strategyId != "") {
                     this.header = this.$.authItem.getHeader();
