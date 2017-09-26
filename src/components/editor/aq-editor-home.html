@@ -484,8 +484,15 @@
             onGetStrategiesResponse: function (data) {
                 this.resetView();
                 var strategies = data.detail.response;
-               
-                this.testStrategies = strategies.length > 0 ? strategies : [];
+
+                var testStrategies = [];
+                strategies.forEach(str => {
+                    if(!str.deleted) {
+                        testStrategies.push(str);
+                    }
+                });
+
+                this.testStrategies = testStrategies;
                 
                 var liveStrategies = null;
                 
@@ -801,8 +808,18 @@
                 this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward'});
             },
 
-            hasNonZeroStrategies: function(str) {
-                return str ? str.length > 0 : false;
+            hasNonZeroStrategies: function(strategies) {
+                return strategies ? strategies.length > 0 : false;
+
+                /*var nDeletedStrategies = 0;
+                strategies.forEach(str => {
+                    if(str.deleted){
+                        nDeletedStrategies++;
+                    }
+                });
+
+                return hasStrategies && nDeletedStrategies != strategies.length;
+                */
             },
 
         });
