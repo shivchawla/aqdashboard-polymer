@@ -221,7 +221,7 @@
                                     </aq-twoway-toggle>
                             	</div>
 
-                            	<iron-pages selected={{returnType}}  default-selected="0">
+                            	<iron-pages on-iron-resize='onResize' selected={{returnType}}  default-selected="0">
                             		<div id='cumRetLineChartDiv'></div>
                             		<div id='barChartDiv'></div>
                             	</iron-pages>
@@ -386,7 +386,7 @@
 
                 this.$$('aq-cumret-linechart').addSeries(label, dataset,
                         {
-                            lineWidth: 1,
+                            lineWidth: 2,
                             color: colors[this.counter],
                             compare: 'percent',
                             tooltip: {
