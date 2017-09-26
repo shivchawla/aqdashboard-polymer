@@ -142,7 +142,7 @@
             headers='{{header}}'
             handle-as="json"
             on-response="onStrategySavedResponse"
-            on-error="onStrategySavedResponseError"
+            on-error="onStrategySavedError"
             last-response="{{ajaxResponse}}"
             debounce-duration="300">
         </iron-ajax>
@@ -461,18 +461,18 @@
                         this.header = this.$.authItem.getHeader();
                         this.$.runStrategyQuery.generateRequest();
                     } else {
-			this.isRunning = false;
-		    }
-
+            			this.isRunning = false;
+        		    }
                 }
-
             },
 
             onStrategySavedError: function (data) {
-		if(this.runSwitch == 1) {
-			this.runSwitch =0;
-			this.isRunning = false;
-		}
+        		if(this.runSwitch == 1) {
+        			this.runSwitch =0;
+        			this.isRunning = false;
+        		}
+
+                console.log(data);
             },
 
             runStrategyFromPanel: function () {
@@ -481,12 +481,14 @@
 
             saveStrategy: function (e) {
                 this.putStrategyData = {
-                    "name": e.detail.name,
+                    "name": (this.strategy.fullName != e.detail.name) ? e.detail.name : this.strategy.name,
                     "description": this.strategy.description,
                     "language": this.strategy.language,
                     "type": this.strategy.type,
                     "code": this.$$('#codeEditorPanel').getCodeContent(),
                 };
+
+                console.log(this.putStrategyData);
 
                 if (this.$.authItem.checkHasToken() && this.strategyId != "") {
                     this.header = this.$.authItem.getHeader();
