@@ -193,7 +193,19 @@
             margin-bottom: 10px;
         }
 
+        p {
+            font-size: 18px;
+        }
 
+        p span {
+            font-weight: bold;
+            color: teal;
+            text-decoration: underline;            
+        }
+
+        p span:hover {
+            cursor: pointer;
+        }
 
     </style>
 
@@ -211,6 +223,8 @@
         <iron-signals on-iron-signal-forwardtest-added='onForwardtestAdded'></iron-signals>
 
        <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
+
+       <iron-signals on-iron-signal-forwardtest-deleted='onForwardtestDeleted'></iron-signals>
 
         <app-route
             route="{{route}}"
@@ -279,7 +293,7 @@
                         <div id="live-strategy-item-container">
                             <template is="dom-repeat" items="{{liveStrategies}}" id='strategyList'>
                                 <aq-editor-home-forward-strategy-item
-                                    strategy-name="[[item.name]]"
+                                    strategy-name="[[item.fullName]]"
                                     strategy-id="[[item._id]]"
                                     forwardtest-id="[[item.forwardtest._id]]"
                                     created-date="[[formatDateTime(item.forwardtest.createdAt)]]"
@@ -305,7 +319,7 @@
                             <div id="test-strategy-item-container">
                                 <template is="dom-repeat" items="{{testStrategies}}" id='strategyList'>
                                     <aq-editor-home-strategy-item
-                                        strategy-name="[[item.name]]"
+                                        strategy-name="[[item.fullName]]"
                                         num-backtest="[[item.numBacktests]]"
                                         strategy-desc="[[item.description]]"
                                         strategy-id="[[item._id]]"
@@ -316,6 +330,16 @@
                             </div>
                         </div>
                     </div>
+                </template>
+
+                <template is='dom-if' if='[[!hasAnyStrategies(liveStrategies, testStrategies)]]'>
+                    <div class="flex"></div>
+                    <!--div class="layout horizontal"-->
+                        <p class="self-center"> No Strategies yet!! <span on-tap='createNew'> Create New</p>
+                        <!--paper-button class="self-center" raised noink id="createButton" on-tap="createNew">Create New
+                        </paper-button-->
+                    <!--/div-->
+                    <div class="flex"></div>
                 </template>
 
             </div>
@@ -821,6 +845,10 @@
                 return hasStrategies && nDeletedStrategies != strategies.length;
                 */
             },
+
+            hasAnyStrategies: function(liveStrategies, testStrategies){
+                return (liveStrategies ? liveStrategies.length > 0 : false) || (testStrategies ? testStrategies.length > 0 : false);
+            }
 
         });
     </script>
