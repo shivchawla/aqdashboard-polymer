@@ -534,14 +534,15 @@
             },
 
             onBacktestException: function(e) {
-                this.backtestHeader[3].metric = "Exception";
                 var backtestHeader = this.deepCopy(this.backtestHeader);
+                backtestHeader[3].metric = "Exception";
+                //var backtestHeader = this.backethis.deepCopy(this.backtestHeader);
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;              
             },
 
             onBacktestCompletion: function(e) {
-                var backtestHeader = this.backtestHeader;
+                var backtestHeader = this.deepCopy(this.backtestHeader);
                 backtestHeader[3].metric = "Complete";
                 this.backtestHeader = [];
                 this.backtestHeader = backtestHeader;

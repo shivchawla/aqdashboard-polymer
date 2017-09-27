@@ -129,7 +129,7 @@
     	</div>
 
 		<div class="container layout horizontal justified">
-	        <template is='dom-repeat' items="{{headerItems}}">
+	        <template is='dom-repeat' items="{{modifiedItems}}">
 	        	<aq-qqq class$="[[isExceptionClass(item)]]" label="[[item.label]]" metric="[[item.metric]]" forced-semi-wide=[[forcedSemiWide]]></aq-qqq>
 	        </template>
     	</div>
@@ -145,6 +145,8 @@
 					type:Array,
 					value:[],
 				},
+
+				modifiedItems: Array,
 
 				canShare: {
 					type: Boolean,
@@ -166,23 +168,21 @@
 			},
 
 			observers: [
-				'_widthChanged(width, forcedSemiWide)',
+				'_widthChanged(width, forcedSemiWide, headerItems)',
 			],
-			
-			updateHeaderItems: function(headerItems) {
-				this.headerItems = this.deepCopy(headerItems);
-				this.originalItems = this.deepCopy(headerItems);
-			},
+		
 
 			_widthChanged: function() {
-				if(this.originalItems) {
+				/*if(this.modifiedItems) {
 					this.headerItems =  this.deepCopy(this.originalItems);
 				} else {
 					this.originalItems = this.deepCopy(this.headerItems);
-				}
+				}*/
 
-				if(this.headerItems) {
-					var nItems = this.headerItems.length;
+				this.modifiedItems = this.deepCopy(this.headerItems);
+
+				if(this.modifiedItems) {
+					var nItems = this.modifiedItems.length;
 
 					var eIdx;
 					if(nItems > 0) {
@@ -199,7 +199,7 @@
 		            	}
 
 		            	var ct = nItems - eIdx;
-		            	this.splice('headerItems', eIdx, ct);
+		            	this.splice('modifiedItems', eIdx, ct);
 	            	}
 				}
 			},
