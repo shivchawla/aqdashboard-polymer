@@ -14,6 +14,7 @@
 
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
+<link rel="import" href='../components/aq-policy.html'>
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
@@ -77,6 +78,10 @@
 
                   <template is="iron-lazy-page" page="/about">
                       <aq-aboutpage></aq-aboutpage>
+                  </template>
+
+                  <template is="iron-lazy-page" page="/policy">
+                      <aq-policy></aq-policy>
                   </template>
 
                   <template is="iron-lazy-page" page="/user">
@@ -427,6 +432,8 @@
                 return "/user";
             } else if(currentUrl.indexOf('#/about') != -1) {
                 return "/about";
+            } else if(currentUrl.indexOf('#/policy') != -1) {
+                return "/policy";
             } else if(currentUrl.indexOf('#') !=-1) {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);
             } else {

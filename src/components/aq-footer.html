@@ -21,15 +21,30 @@
         	cursor:pointer;
       	}
 
+      	.footer-list {
+      		margin-right: 30px;
+      	}
+
+      	h4 {
+      		margin-bottom: 5px;
+      	}
+
 	</style>
 
 	<template>
 		<div class="footer layout horizontal wrap">   	
-            <div class="layout vertical self-start">
-              	<p class="footer-link" route="/about/home" on-tap='onAboutUs'>About Us</a></p>
-              	<p class="footer-link" route="/about/people" on-tap='onAboutUs'>People</a></p>
-              	<p class="footer-link" route="/about/careers" on-tap='onAboutUs'>Careers</a></p>
-              	<p class="footer-link" route="/about/contact" on-tap='onAboutUs'>Connect</a></p>
+            <div class="layout vertical self-start footer-list">
+            	<h4>Company</h4>
+              	<p class="footer-link" route="/about/home" on-tap='onClickFooterLink'>About Us</a></p>
+              	<p class="footer-link" route="/about/people" on-tap='onClickFooterLink'>People</a></p>
+              	<p class="footer-link" route="/about/careers" on-tap='onClickFooterLink'>Careers</a></p>
+              	<p class="footer-link" route="/about/contact" on-tap='onClickFooterLink'>Connect</a></p>
+            </div>
+
+            <div class="layout vertical self-start footer-list">
+            	<h4>Policies</h4>
+              	<p class="footer-link" route="/policy/tnc" on-tap='onClickFooterLink'>Terms And Conditions</a></p>
+              	<p class="footer-link" route="/policy/privacy" on-tap='onClickFooterLink'>Privacy Policy</a></p>
             </div>
 
             <div class="flex"></div>
@@ -41,7 +56,7 @@
 		Polymer({
 			is: 'aq-footer',
 
-	      	onAboutUs: function(e) {
+	      	onClickFooterLink: function(e) {
 	        	this.fire('rt-changed', {route:e.target.getAttribute('route')});
 	      	} 
 		});

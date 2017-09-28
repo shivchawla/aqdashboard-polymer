@@ -111,19 +111,6 @@
             margin-top: 5px
         }
 
-        paper-checkbox {
-            margin-top: 1.5em;
-        }
-
-        paper-checkbox.blue::shadow #ink[checked] {
-            color: #4285f4;
-        }
-
-        paper-checkbox.blue::shadow #checkbox.checked {
-            border-color: #4285f4;
-        }
-
-
         .actionFailed {
             color: #cc6666;
             padding: 0.75em 0 0;
@@ -204,6 +191,31 @@
             color: teal;
             margin-top: -20px;
         }
+
+        #tnc {
+            text-decoration: underline;
+        }
+
+        #tnc:hover {
+            cursor: pointer;
+        }
+
+        paper-checkbox {
+            --margin: 0 auto ;
+        }
+
+        paper-checkbox {
+            --paper-checkbox-checked-color: teal;
+            --paper-checkbox-unchecked-color: #959595;
+            margin-left: 10px;
+            margin-right: 5px;
+        }
+
+        #check-container {
+            font-size: 12px;
+            color: #959595;
+        }
+
     </style>
 
     <template>
@@ -376,6 +388,13 @@
                                     on-blur="onConfirmPasswordFocusOut"
                                     invalid='{{!isConfirmPasswordValid(confirmPassword, confirmPasswordInFocus)}}'
                                     on-keydown="checkForKeys"></paper-input>
+
+                            <div class="layout horizontal center" id='check-container'>
+                                <paper-checkbox noink checked="{{acceptPolicy}}"  class="self-center" on-change ='onChecked'>
+                                </paper-checkbox>
+
+                                <p>I agree to <span id='tnc' on-tap='onTnC'>Terms and Conditions</span></p>
+                            </div>
                         </template>
 
                         </form>
@@ -520,6 +539,11 @@
                     value: ""
                 },
 
+                acceptPolicyErrorMessage: {
+                    type: String,
+                    value: "",
+                },
+
                 signoutMessage: {
                     type: String,
                     value: '',
@@ -537,7 +561,8 @@
 
                 acceptPolicy: {
                     type: Boolean,
-                    value: true
+                    value: false,
+                    observer:'_change',
                 },
 
                 signinBody: {
@@ -608,6 +633,7 @@
                     passwordErrorMessage: "Minimum 8 characters",
                     confirmPasswordFieldLabel: "Verify Password",
                     confirmPasswordErrorMessage: "Passwords do not match.",
+                    acceptPolicyErrorMessage: "Please accept Terms and Conditions",
                     actionButtonLabel: "Create Account",
                     actionButtonInProgressLabel: "Creating your account...",
                     actionButtonSuccessLabel: "Account created. Welcome!"
@@ -654,6 +680,10 @@
 
                 },
 
+            },
+            
+            onChecked: function(e) {
+               this.actionFailedMessage = '';
             },
 
             attached: function () {
@@ -800,7 +830,7 @@
                 this.confirmPassword = '';
                 this.firstName = '';
                 this.lastName = '';
-                this.acceptPolicy = true;
+                this.acceptPolicy = false;
             },
 
             clearErrorMessages: function () {
@@ -815,6 +845,7 @@
                 this.userEmailInFocus = !this.userEmailInFocus;
                 this.passwordInFocus = !this.passwordInFocus;
                 this.confirmPasswordInFocus = !this.confirmPasswordInFocus;
+                this.acceptPolicyErrorMessage='';
             },
 
             isConfirmPasswordValid: function (confirmPassword, confirmPasswordInFocus) {
@@ -851,6 +882,7 @@
                 this.firstNameErrorMessage = this.aRsrc.firstNameErrorMessage;
                 this.lastNameErrorMessage = this.aRsrc.lastNameErrorMessage;
                 this.newPasswordErrorMessage = this.aRsrc.newPasswordErrorMessage;
+                this.acceptPolicyErrorMessage  = this.aRsrc.acceptPolicyErrorMessage;
 
             },
 
@@ -978,6 +1010,11 @@
                     valid &= firstNameValid;
                     valid &= lastNameValid & this.lastName != '';
                     valid &= confirmPasswordValid & this.confirmPassword == this.password;
+
+                    if(!acceptPolicy) {
+                        this.actionFailedMessage = this.acceptPolicyErrorMessage;
+                    }
+
                     valid &= acceptPolicy;
                 }
 
@@ -1143,7 +1180,11 @@
                     this.$$('.signinButton').focus();
                     this.onInvokeAction();
                 }
-            }
+            },
+
+            onTnC: function() {
+                this.fire('rt-changed', {route:'/policy/tnc'});
+            },
 
         });
     </script>
