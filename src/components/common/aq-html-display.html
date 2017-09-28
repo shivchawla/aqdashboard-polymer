@@ -1,0 +1,48 @@
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
+
+<dom-module id="aq-html-display">
+
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+        :host {
+            display: block;
+            color: #24293d;
+        }
+
+        #html-content {
+            background-color: white;
+            padding: 10px;
+        }
+
+        polymer-quill-html-render {
+            min-height: 100px;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+            color: black;
+            padding-left: 30px
+            padding-right: 30px;
+            line-height: 24px;
+        }
+    </style>
+
+    <template>
+        <div id='html-content'>      
+            <polymer-quill-html-render 
+                content="[[htmlContent]]">
+            </polymer-quill-html-render>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'aq-html-display',
+            properties: {
+                htmlContent: String,
+            },
+        });
+
+    </script>
+</dom-module>
