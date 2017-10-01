@@ -14,7 +14,8 @@
 <link rel='import' href='../common/backtest/aq-cumret-linechart.html'>
 <link rel='import' href='../common/backtest/aq-aggregatedreturns-barchart.html'>
 
-<link rel="import" href="../common/aq-code-comparison-element.html">
+<!--link rel="import" href="../common/aq-code-comparison-element.html"-->
+<link rel="import" href="../common/aq-code-comparison.html">
 <link rel="import" href="../common/backtest/aq-backtest-summary-element.html">
 
 <dom-module id='aq-analyze-backtest-comparison-dialog'>
@@ -204,11 +205,11 @@
                             </div>
                         
                             <div id='codeCompare' page="1">
-    	                        <aq-code-comparison-element 
+    	                        <aq-code-comparison
     	                        	compare-items="[[compareItems]]"
                             	 	theme="ace/theme/monokai" 
                             	 	mode="ace/mode/julia">
-                        	 	</aq-code-comparison-element>
+                        	 	</aq-code-comparison>
                             </div>
 
                             <div id='graphComparison' page="3">

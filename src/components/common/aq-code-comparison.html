@@ -1,0 +1,456 @@
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel='import' href='./backtest/aq-backtest-metric-item.html'>
+
+<script src="../../../resources/scripts/DateTime.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript"></script>
+<script src="../../../resources/scripts/ace-diff.js"></script>
+<script src="../../../resources/scripts/diff-match-patch.js"></script>
+
+<script src="../../../resources/scripts/diffview.js"></script>
+<script src="../../../resources/scripts/difflib.js"></script>
+
+<dom-module id="aq-code-comparison">
+    
+    <style include="iron-flex iron-flex-alignment iron-positioning">
+    </style>
+
+    <style>
+        #editor-right, #editor-left {
+            height: 100%;
+            min-height: 450px;
+        }
+
+        #acediff-gutter {
+            height: 45px;
+            top:-15px;
+            width: 10px;
+            background-color: transparent;
+        }
+
+        .acediff-class {
+            --position: relative !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        /*Gutter*/
+        .acediff-diff {
+            background-color: #5E35B1;
+            border-top: 1px solid #5E35B1;
+            border-bottom: 1px solid #5E35B1;
+           --position: absolute;
+            z-index: 4;
+        }
+        /*Positioning the gutter*/
+        .acediff-diff.targetOnly {
+            height: 0px !important;
+            border-top: 1px solid #a2d7f2;
+            border-bottom: 0px;
+            position: absolute;
+        }
+
+        #acediff-gutter svg{
+            display: none;
+        }
+        
+        .acediff-copy-right,
+        .acediff-copy-left {
+            display: none;
+        }
+
+        .metric-container {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            @apply(--layout-around-justified);
+            background-color: #f5f5f5;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        aq-backtest-metric-item {
+            --aq-backtest-metric-item-text-label-font-size: 12px;
+            --aq-backtest-metric-item-text-content-font-size: 12px;
+        }
+
+        .hr-bar {
+            width: 100%;
+            height: 2px;
+            display: inline-block;
+            background-color: #e6e6e6;
+            margin: 5px 0;
+        }
+
+        .red-bar {
+            width: 4px;
+            height: 20px;
+            background-color: #cc4444; 
+        }
+
+        .metric-item {
+            --background: #fff;
+            --border: 1px solid #e1e1e1;
+            --padding: 5px ;
+        }
+
+        .metric-value {
+            color: #3c3c3c;
+            font-size: 13px;
+        }
+
+        .metric-name {
+            color: #3c3c3c;
+            font-size: 12px;
+        }
+
+        .code-container {
+            width: 575px;
+        }
+
+        iron-pages {
+            width: 100%;
+        }
+
+        paper-tabs {
+            height: 25px;
+            padding: 5px;
+        }
+       
+        paper-tab {
+            --paper-tab-content-unselected: {
+                background-color: #f5f5f5;
+                color: #3c3c3c;
+            };
+        }
+
+        paper-tab {
+            --paper-tab-content: {
+                background-color: teal;
+                padding: 5px;
+                color:white;
+            }
+        }
+
+        #diffoutput {
+            margin: 0 auto;
+            height: 600px;
+            overflow-y: scroll;
+            width: 100%;
+        }
+
+        /*
+        This is part of jsdifflib v1.0. <http://github.com/cemerick/jsdifflib>
+
+        Copyright 2007 - 2011 Chas Emerick <cemerick@snowtide.com>. All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without modification, are
+        permitted provided that the following conditions are met:
+
+           1. Redistributions of source code must retain the above copyright notice, this list of
+              conditions and the following disclaimer.
+
+           2. Redistributions in binary form must reproduce the above copyright notice, this list
+              of conditions and the following disclaimer in the documentation and/or other materials
+              provided with the distribution.
+
+        THIS SOFTWARE IS PROVIDED BY Chas Emerick ``AS IS'' AND ANY EXPRESS OR IMPLIED
+        WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+        FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Chas Emerick OR
+        CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+        CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+        ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+        NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+        ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+        The views and conclusions contained in the software and documentation are those of the
+        authors and should not be interpreted as representing official policies, either expressed
+        or implied, of Chas Emerick.
+        
+
+        #diffoutput table.diff {
+            border-collapse:collapse;
+            border:1px solid darkgray;
+            white-space:pre-wrap
+        }
+        #diffoutput table.diff tbody { 
+            font-family:Courier, monospace
+        }
+        #diffoutput table.diff tbody th {
+            font-family:verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+            background:#EED;
+            font-size:11px;
+            font-weight:normal;
+            border:1px solid #BBC;
+            color:#886;
+            padding:.3em .5em .1em 2em;
+            text-align:right;
+            vertical-align:top
+        }
+        #diffoutput table.diff thead {
+            border-bottom:1px solid #BBC;
+            background:#EFEFEF;
+            font-family:Verdana
+        }
+        #diffoutput table.diff thead th.texttitle {
+            text-align:left
+        }
+        #diffoutput table.diff tbody td {
+            padding:0px .4em;
+            padding-top:.4em;
+            vertical-align:top;
+        }
+        #diffoutput table.diff .empty {
+            background-color:#DDD;
+        }
+        #diffoutput table.diff .replace {
+            background-color:#FD8
+        }
+        #diffoutput table.diff .delete {
+            background-color:#E99;
+        }
+        #diffoutput table.diff .skip {
+            background-color:#EFEFEF;
+            border:1px solid #AAA;
+            border-right:1px solid #BBC;
+        }
+        #diffoutput table.diff .insert {
+            background-color:#9E9
+        }
+        #diffoutput table.diff th.author {
+            text-align:right;
+            border-top:1px solid #BBC;
+            background:#EFEFEF
+        }
+
+    */
+    </style>
+    <link rel="import" type="css" href="diffview.css">
+
+    <template>
+        <div class="layout vertical center">
+            <div class="layout horizontal wrap">
+                <div class="layout vertical center code-container">
+                    <paper-tabs noink no-bar id="leftSelector" selected="{{selectedLeft}}" on-iron-select='onChangeBacktest'>
+                        <template is="dom-repeat" items="{{backtestIndexArray}}">
+                            <paper-tab>{{item}}</paper-tab>
+                        </template>
+                    </paper-tabs>
+                    
+                    <!--iron-pages selected="{{selectedLeft}}">
+                        <template is="dom-repeat" items="{{backtests}}">
+                            <div class="metric-container layout horizontal">
+                                <div class="metric-item">
+                                    <div class="metric-value">[[item.createdAt]]
+                                    </div>
+                                    <div class="metric-name">Created</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">[[formatDate(item.settings.startDate)]] - [[formatDate(item.settings.endDate)]]
+                                    </div>
+                                    <div class="metric-name">Time Period</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">[[item.output.summary.totalreturn]]%
+                                    </div>
+                                    <div class="metric-name">Total Return</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">{{item.output.summary.sharperatio}}%
+                                    </div>
+                                    <div class="metric-name">Sharpe Ratio</div>
+                                </div>
+                                
+                            </div>
+                        </template>
+                    </iron-pages-->
+                </div>
+
+                <div class="flex"></div>
+
+                <div class="layout vertical center code-container">
+                    <paper-tabs noink no-bar id="rightSelector" selected="{{selectedRight}}" on-iron-select='onChangeBacktest'>
+                        <template is="dom-repeat" items="{{backtestIndexArray}}">
+                            <paper-tab>{{item}}
+                            </paper-tab>
+                        </template>
+                    </paper-tabs>
+                    
+                    <!--iron-pages selected="{{selectedRight}}">
+                        <template is="dom-repeat" items="{{backtests}}">
+                            <div class="metric-container layout horizontal">
+                                <div class="metric-item">
+                                    <div class="metric-value">[[item.createdAt]]
+                                    </div>
+                                    <div class="metric-name">Created</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">[[formatDate(item.settings.startDate)]] - [[formatDate(item.settings.endDate)]]
+                                    </div>
+                                    <div class="metric-name">Time Period</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">[[item.output.summary.totalreturn]]%
+                                    </div>
+                                    <div class="metric-name">Total Return</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-value">{{item.output.summary.sharperatio}}%
+                                    </div>
+                                    <div class="metric-name">Sharpe Ratio</div>
+                                </div>
+                                
+                            </div>
+                        </template>
+                    </iron-pages-->
+                </div>
+            </div>
+
+            <div id='diffoutput' class="layout vertical center"></div>
+        </div>
+
+    </template>
+    
+    <script>
+        Polymer({
+            is: "aq-code-comparison",
+            properties: {
+                codeLeft: {
+                    type: String,
+                    //value: "var a = {\n propertyA: 12,\n propertyB: 123, \n propertyC: 321, \n}"
+                },
+                codeRight: {
+                    type: String,
+                    //value: "var a = {\n propertyA: 12,\n propertyZ: 123, \n propertyC: 321, \n}"
+                },
+                mode: {
+                    type: String,
+                    value: "ace/mode/javascript"
+                },
+                theme: {
+                    type: String,
+                    value: "ace/theme/github"
+                },
+                editable: {
+                    type: Boolean,
+                    value: true
+                },
+                editors: {
+                    type: Object
+                },
+                selectedLeft: {
+                    type: Number,
+                    value: 0
+                },
+                selectedRight: {
+                    type: Number,
+                    value: 1
+                },
+                compareItems: {
+                    type:Array,
+                    value:[],
+                    observer:'_compareItemsChanged',
+                }
+            },
+
+            onChangeBacktest: function() {
+                this.debounce('cmp', this.compareCodeNew, 300);
+            },
+
+            compareCode: function() {    
+                var element = this;
+                var aceDiffer = this.getAceDiff();
+                this.editors = aceDiffer.getEditors();
+                this.backtests = this.compareItems.map(x => {return x.backtest;}); 
+
+                this.backtestIndexArray = this.compareItems.map(x => {return x.index;});
+
+                for (var i = 0; i < this.backtests.length; i++) {
+                    this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
+                }
+                this.$$('#leftSelector').addEventListener('iron-select',function () {
+                    this.debounce('compare', this.compareCodeNew, 500);
+                });
+                this.$$('#rightSelector').addEventListener('iron-select',function () {
+                    this.debounce('compare', this.compareCodeNew, 500);
+                    //element.setCodeRight(element.backtests[element.$$('#rightSelector').selected].code);
+                });
+            },
+
+
+            compareCodeNew: function() {
+                this.backtests = this.compareItems.map(x => {return x.backtest;}); 
+
+                this.backtestIndexArray = this.compareItems.map(x => {return x.index;});
+
+                this.codeLeft = this.backtests[this.$$('#leftSelector').selected].code
+
+                this.codeRight = this.backtests[this.$$('#rightSelector').selected].code
+
+                // get the baseText and newText values from the two textboxes, and split them into lines
+                var base = difflib.stringAsLines(this.codeLeft);
+                var newtxt = difflib.stringAsLines(this.codeRight);
+
+                // create a SequenceMatcher instance that diffs the two sets of lines
+                var sm = new difflib.SequenceMatcher(base, newtxt);
+
+                // get the opcodes from the SequenceMatcher instance
+                // opcodes is a list of 3-tuples describing what changes should be made to the base text
+                // in order to yield the new text
+                var opcodes = sm.get_opcodes();
+                var diffoutputdiv = this.$$("#diffoutput");
+                while (diffoutputdiv.firstChild) diffoutputdiv.removeChild(diffoutputdiv.firstChild);
+                var contextSize = $("contextSize").value;
+                contextSize = contextSize ? contextSize : null;
+
+                //var diffoutputdiv = this.$$('#diffoutput');
+                // build the diff view and add it to the current DOM
+
+                var child = Polymer.dom(this.$$('#diffoutput')).querySelector('table');
+
+                if(child) {
+                    Polymer.dom(this.$$('#diffoutput')).removeChild(child);
+
+                    Polymer.dom.flush();
+                } 
+                
+                Polymer.dom(this.$$('#diffoutput')).appendChild(diffview.buildView({
+                    baseTextLines: base,
+                    newTextLines: newtxt,
+                    opcodes: opcodes,
+                    // set the display titles for each resource
+                    //baseTextName: "Base Text",
+                    //newTextName: "New Text",
+                    contextSize: contextSize,
+                    viewType: 0
+                    //viewType: $("inline").checked ? 1 : 0
+                }));
+
+            },
+
+            _compareItemsChanged: function() {
+                this.async(this.compareCodeNew, 500);
+            },
+            
+            formatDateTime: function (dateVar) {
+                return date.formatDateTime(dateVar);
+            },
+            
+            formatDate: function (dateVar) {
+                return date.formatDate(dateVar);
+            },
+
+        });
+
+    </script>
+    
+</dom-module>
+
