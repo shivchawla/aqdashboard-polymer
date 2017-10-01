@@ -13,10 +13,12 @@
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel='import' href='../../../bower_components/iron-signals/iron-signals.html'>
 
 <link rel="import" href="../common/aq-allpage-layout.html">
 <link rel='import' href='../common/aq-check-authentication.html'>
 <link rel='import' href='../common/aq-pagination.html'>
+<link rel='import' href='../common/aq-loading-progress.html'>
 
 <link rel="import" href="./aq-community-home-searchbar.html">
 <link rel="import" href="./aq-community-home-post-item2.html">
@@ -330,17 +332,20 @@
                 dirtyBit: {
                     type: Number,
                     value: 1,
+                    //observer:'_dirtyBitChanged',
                 },
 
                 currentPath: {
                     type: Array,
-                    value: ["Home", "Research", "Community"],
+                    value: ["Home", "Community"],
                 },
 
                 firstLoading: {
                     type: Boolean,
                     value: true,
                 },
+
+                wide: String,
 
             },
 
@@ -371,6 +376,13 @@
 
                 this.$.getAnnouncementsQuery.generateRequest();
 
+            },
+
+            _dirtyBitChanged: function() {
+                if(this.dirtyBit == 1) {
+                    this.debounce('dt_bt', this.processparams, 300);
+                    this.dirtyBit = 0;
+                }
             },
 
             isSelected: function (selected, selection) {
@@ -519,13 +531,6 @@
 
             hasThreads: function (threads) {
                 return threads.length > 0;
-            },
-
-            setDirtyBit: function () {
-                this.dirtyBit = 1;
-                this.async(function () {
-                    this.setDirtyBit
-                }, 120000);
             },
 
             onPostAdded: function () {

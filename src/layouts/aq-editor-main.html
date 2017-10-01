@@ -34,11 +34,11 @@
 
     <iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(active)}}" fallback-selection="home">
          
-        <template is='iron-lazy-page' page="home">
+        <template is='iron-lazy-page' restamp page="home">
             <aq-editor-home></aq-editor-home>
         </template>
 
-        <template is='iron-lazy-page' page="edit">
+        <template is='iron-lazy-page' restamp page="edit">
             <aq-editor-edit strategy-id="[[routeData.strategyId]]"></aq-editor-edit>
         </template>
     </iron-lazy-pages> 

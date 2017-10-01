@@ -11,8 +11,7 @@
 
 <link rel="import" href="../components/aq-toolbar.html">
 <link rel="import" href="../components/community/aq-community-home.html">
-<link rel="import" href="../components/community/aq-community-postdetail.html">
-<link rel="import" href="../components/community/aq-community-createpost.html">
+<link rel="import" href="../components/community/aq-community-more.html">
 
 <dom-module id="aq-community-main">
 
@@ -25,21 +24,25 @@
                 active="{{active}}">
       </app-route>
 
-      <iron-lazy-pages attr-for-selected = "page" selected="[[computeCommunityPage(active, routeData)]]">
-          <template is='iron-lazy-page' page="home">
+      <iron-lazy-pages attr-for-selected="page" selected="{{computeCommunityPage(active)}}">
+          <template is='iron-lazy-page' restamp page="home">
               <aq-community-home></aq-community-home>
           </template>
 
-          <template is='iron-lazy-page' page="detail">
-              <aq-community-postdetail thread-id="[[routeData.threadId]]"></aq-community-postdetail>
-          </template>
+          <template is='iron-lazy-page' restamp page="more">
+              <aq-community-more params="[[routeData]]"></aq-community-more>
+              <!--iron-lazy-pages attr-for-selected="page" selected="[[computeCommunityPageMore(routeData)]]">
+                
+                  <template is='iron-lazy-page' restamp page="detail">
+                      <aq-community-postdetail thread-id="[[routeData.threadId]]"></aq-community-postdetail>
+                  </template>
 
-          <template is='iron-lazy-page' page="create">
-              <aq-community-createpost></aq-community-createpost>
+                  <template is='iron-lazy-page' restamp page="create">
+                      <aq-community-createpost></aq-community-createpost>
+                  </template>
+              </iron-lazy-pages-->
           </template>
-          
       </iron-lazy-pages>
-
   </template>
 
   <script>
@@ -47,25 +50,23 @@
       is: 'aq-community-main',
 
       properties:{
-        routeData:{
-          type:Object,
-        },
+          routeData:{
+              type:Object,
+          },
+
+          active: Boolean,
       },
 
       listeners:{
         'postdetail-action':'onDetail',
       },
 
-      computeCommunityPage: function(active, routeData) {
-        if (active) {
-            if (routeData.threadId == "create") {
-                return "create";
-            } else {
-                return "detail"; 
-            }
-        } else {
-            return "home";
-        }
+      computeCommunityPage: function(active) {
+          if (active) {
+              return "more";
+          } else {
+              return "home";
+          }
       },
 
     });

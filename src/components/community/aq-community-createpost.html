@@ -349,7 +349,7 @@
 
                 currentPath: {
                     type: Array,
-                    value: ["Home", "Research", "Community", "Create a Post"],
+                    value: ["Home", "Community", "Create a Post"],
                 }
 
             },
@@ -385,9 +385,10 @@
 
                 this.resetView();
 
+                this.fire('iron-signal', {name: 'post-added'});
+
                 this.fire('rt-changed', {route:"/dashboard/community/"+this.newThreadId});
 
-                this.fire('iron-signal', {name: 'post-added'});
             },
 
             onPostThreadError: function (data) {

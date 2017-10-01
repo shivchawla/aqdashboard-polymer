@@ -231,7 +231,7 @@
 
         currentPath: {
             type: Array,
-            value:["Home", "Research", "Community", "Post Detail"],
+            value:["Home", "Community", "Post Detail"],
         }
 
       },
@@ -244,8 +244,10 @@
       },
 
       attached: function() {
+          if(this.threadId == "create") {
+            return;
+          }
 
-          window.addEvenlinstenr
           if(!this.$.authItem.checkHasToken()) {
               this.fire('rt-changed',{route:'/user/signin'});
               return;
