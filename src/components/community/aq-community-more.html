@@ -1,0 +1,38 @@
+
+<link rel='import' href='../../../bower_components/iron-lazy-pages/iron-lazy-pages.html'>
+
+<link rel='import' href='../../../bower_components/iron-lazy-pages/iron-lazy-page.html'>
+
+<link rel="import" href="./aq-community-postdetail.html">
+<link rel="import" href="./aq-community-createpost.html">
+
+<dom-module id="aq-community-more">
+
+    <template>
+        <iron-lazy-pages attr-for-selected="page" selected="{{_computeCommunityMorePage(params.threadId)}}" fallback-selection="create">
+            <template is='iron-lazy-page' restamp page="detail">
+                <aq-community-postdetail thread-id=[[params.threadId]]>
+                </aq-community-postdetail>
+            </template>
+            
+            <template is='iron-lazy-page' restamp page="create">
+                <aq-community-createpost></aq-community-createpost>
+            </template>
+        </iron-lazy-pages>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'aq-community-more',
+
+            properties: {
+                params: Object,
+            },
+
+            _computeCommunityMorePage: function(threadId) {
+                return threadId == "create" ? "create" : "detail";
+            }
+ 
+        });
+    </script>
+</dom-module>
