@@ -32,7 +32,7 @@
                 active="{{active}}">
     </app-route>
 
-    <iron-lazy-pages attr-for-selected="page" selected="{{computeSelectedPage(active)}}" fallback-selection="home">
+    <iron-lazy-pages restamp attr-for-selected="page" selected="{{computeSelectedPage(active)}}" fallback-selection="home">
          
         <template is='iron-lazy-page' restamp page="home">
             <aq-editor-home></aq-editor-home>

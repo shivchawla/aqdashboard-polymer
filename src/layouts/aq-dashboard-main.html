@@ -85,20 +85,20 @@
         </iron-ajax>
 
         <div id='content'>
-          <iron-lazy-pages attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
-            <template is="iron-lazy-page" page="editor">
+          <iron-lazy-pages restamp attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
+            <template is='iron-lazy-page' restamp page="editor">
                 <aq-editor-main></aq-editor-main>
             </template>
 
-            <template is="iron-lazy-page" page="analyze">
+            <template is='iron-lazy-page' restamp page="analyze">
                 <aq-analyze-main></aq-analyze-main>
             </template>
 
-            <template is="iron-lazy-page" page="community">
+            <template is='iron-lazy-page' restamp page="community">
                 <aq-community-main></aq-community-main>
             </template>
             
-            <template is="iron-lazy-page" page="help">
+            <template is='iron-lazy-page' restamp page="help">
                 <aq-help-main></aq-help-main>
             </template>
           </iron-lazy-pages>

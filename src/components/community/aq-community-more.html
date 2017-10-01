@@ -9,7 +9,7 @@
 <dom-module id="aq-community-more">
 
     <template>
-        <iron-lazy-pages attr-for-selected="page" selected="{{_computeCommunityMorePage(params.threadId)}}" fallback-selection="create">
+        <iron-lazy-pages restamp attr-for-selected="page" selected="{{_computeCommunityMorePage(params.threadId)}}" fallback-selection="create">
             <template is='iron-lazy-page' restamp page="detail">
                 <aq-community-postdetail thread-id=[[params.threadId]]>
                 </aq-community-postdetail>

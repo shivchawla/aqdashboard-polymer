@@ -70,29 +70,29 @@
               
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
    
-              <iron-lazy-pages attr-for-selected="page" selected="[[computePage(currentUrl)]]"> <!-- fallback-selection="/main"-->
+              <iron-lazy-pages restamp attr-for-selected="page" selected="[[computePage(currentUrl)]]"> <!-- fallback-selection="/main"-->
 
-                  <template is="iron-lazy-page" page="/main">
+                  <template is='iron-lazy-page' restamp page="/main">
                       <aq-homepage></aq-homepage>
                   </template>
 
-                  <template is="iron-lazy-page" page="/about">
+                  <template is='iron-lazy-page' restamp page="/about">
                       <aq-aboutpage></aq-aboutpage>
                   </template>
 
-                  <template is="iron-lazy-page" page="/policy">
+                  <template is='iron-lazy-page' restamp page="/policy">
                       <aq-policy></aq-policy>
                   </template>
 
-                  <template is="iron-lazy-page" page="/user">
+                  <template is='iron-lazy-page' restamp page="/user">
                       <aq-user-login-panel></aq-user-login-panel>
                   </template>
 
-                  <template is="iron-lazy-page" page="/user/signup">
+                  <template is='iron-lazy-page' restamp page="/user/signup">
                       <aq-user-login-panel></aq-user-login-panel>
                   </template>  
 
-                  <template is="iron-lazy-page" page="/dashboard">
+                  <template is='iron-lazy-page' restamp page="/dashboard">
                       <aq-dashboard-main></aq-dashboard-main>
                   </template>
               </iron-lazy-pages>

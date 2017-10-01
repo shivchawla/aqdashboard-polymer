@@ -24,7 +24,7 @@
                 active="{{active}}">
       </app-route>
 
-      <iron-lazy-pages attr-for-selected="page" selected="{{computeCommunityPage(active)}}">
+      <iron-lazy-pages restamp attr-for-selected="page" selected="{{computeCommunityPage(active)}}">
           <template is='iron-lazy-page' restamp page="home">
               <aq-community-home></aq-community-home>
           </template>

@@ -36,11 +36,11 @@
         <!--RESTAMPING HERE SO THAT CHILD IS FRESHLY ADDED EVERYTIME
         DONE THIS TO PREVENT UNEXPECTED BEHAVIOR DOWNSTREAM WHERE CHILD WAS GETTING ATTACHED TWICE-->
         <iron-lazy-pages restamp attr-for-selected="page" selected="[[_computeAnalyzePage(detailActive)]]">
-            <template is="iron-lazy-page" page="home">
+            <template is='iron-lazy-page' restamp page="home">
                 <aq-analyze-home strategy-id='[[homeData.strategyId]]'></aq-analyze-home>
             </template>
 
-            <template is="iron-lazy-page" page="detail">
+            <template is='iron-lazy-page' restamp page="detail">
                 <aq-analyze-detail
                     type-id='[[detailData.id]]'
                     strategy-id='[[detailData.strategyId]]' 
