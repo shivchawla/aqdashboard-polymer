@@ -430,7 +430,8 @@
                 }
             },
 
-            onGetAllThreadsError: function (data) {
+            onGetAllThreadsError: function (e) {
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             createPost: function () {
@@ -552,7 +553,7 @@
             },
 
             onGetAnnouncementsError: function(e) {
-
+                //this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             onCheck: function(e) {

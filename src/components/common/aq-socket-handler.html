@@ -363,6 +363,8 @@
 	            if(e.request.response.id) {
 	          		var backtestId = e.request.response.id; 
 	          		delete this.backtests[backtestId];    
+	            } else {
+	            	this.fire('ajax-error', {response: e.detail.request.response});
 	            }
 	        },
 

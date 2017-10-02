@@ -270,11 +270,16 @@
           this.set('replies', data.detail.response.replies);
       },
 
-      onGetThreadDetailError: function(data) {
+      onGetThreadDetailError: function(e) {
+          this.fire('ajax-error', {response: e.detail.request.response});
       },
 
       onGetThreadRepliesResponse: function(data) {
           this.replies = this.replies.concat(data.detail.response.replies);
+      },
+
+      onGetThreadRepliesError: function(e) {
+          this.fire('ajax-error', {response: e.detail.request.response});
       },
 
       computeGetThreadUrl: function(threadId){

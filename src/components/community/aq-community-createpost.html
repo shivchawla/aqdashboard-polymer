@@ -209,15 +209,6 @@
             debounce-duration="300">
         </iron-ajax>
 
-        <iron-ajax
-            url="[[computeFollowPostUrl(newThreadId)]]"
-            method="POST"
-            id='followPostQuery'
-            handle-as="json"
-            headers='{{header}}'
-            debounce-duration="300">
-        </iron-ajax>
-
         <template is='dom-if' if="[[preview]]">
             <aq-community-previewpost 
                 thread-data="[[threadData]]" disable-buttons>
@@ -365,11 +356,6 @@
               this.attachedBacktestId = this.queryParams.backtestId;
             },
 
-            computeFollowPostUrl: function (threadId) {
-                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-                return APIEndPoint + '/thread/' + threadId + '/follow';
-            },
-
             postThread: function () {
                 var x = this.processInput();
                 if (x && this.$.authItem.checkHasToken()) {
@@ -391,7 +377,8 @@
 
             },
 
-            onPostThreadError: function (data) {
+            onPostThreadError: function (e) {
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             onAttachRequest: function () {

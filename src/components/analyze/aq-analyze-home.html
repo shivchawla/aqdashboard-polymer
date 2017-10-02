@@ -343,7 +343,8 @@
 				this.dirtyBit = 0;
 			},
 
-			onGetAllBacktestsForStrategyError: function(err) {
+			onGetAllBacktestsForStrategyError: function(e) {
+				this.fire('ajax-error', {response: e.detail.request.response});
 			},
 
 			onGetStrategy: function(data) {
@@ -357,7 +358,8 @@
 				this.$.getBacktestsQuery.generateRequest();
 			},
 
-			onGetStrategyError: function(data) {
+			onGetStrategyError: function(e) {
+				this.fire('ajax-error', {response: e.detail.request.response});
 			},
 
 			onCheck: function(e) {
@@ -426,7 +428,8 @@
 	        	}
 	        },
 
-	        onDeleteBacktestForStrategyError: function(data) {
+	        onDeleteBacktestForStrategyError: function(e) {
+	        	this.fire('ajax-error', {response: e.detail.request.response});
 	        },
 
 	        toggleComparison: function() {
@@ -486,6 +489,10 @@
             onForwardStrategyExecutionResponse: function (e) {
                 this.fire('iron-signal', {name:'forwardtest-added'});
                 this.fire('rt-changed', {route:'/dashboard/editor'});
+            },
+
+            onForwardStrategyExecutionError: function(e) {
+            	this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             openComparisonDialog: function() {

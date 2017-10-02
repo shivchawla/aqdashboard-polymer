@@ -447,6 +447,7 @@
             },
 
             onGetStrategyError: function (data) {
+
             },
 
             onStrategySavedResponse: function (data) {
@@ -466,11 +467,13 @@
                 }
             },
 
-            onStrategySavedError: function (data) {
+            onStrategySavedError: function (e) {
         		if(this.runSwitch == 1) {
         			this.runSwitch =0;
         			this.isRunning = false;
         		}
+
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             runStrategyFromPanel: function () {

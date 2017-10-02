@@ -219,6 +219,7 @@
             'scroll-top':'scrollToTop',
             'rt-changed':'goToRoute',
             'update-localstorage-community':'updateCommunityState',
+            'ajax-error':'onAjaxError',
         },
 
        
@@ -240,7 +241,7 @@
             }
 
             //10 min
-            setInterval(this.setreload.bind(this), 600000);
+            //setInterval(this.setreload.bind(this), 600000);
             this.currentUrl = window.location.href;
         },
 
@@ -286,7 +287,6 @@
             this.removeToken();
             this.hasToken = this.$.authItem.checkHasToken();
             this.fire('rt-changed',{route:'/user/signout'});
-            this.dirtyBit = 1;
         },
 
         openFeedbackDialog: function() {
@@ -310,6 +310,7 @@
         },
 
         onPostFeedbackError: function(e) {
+            this.fire('ajax-error', {response: e.detail.request.response});
         },
 
         openInviteDialog: function() {
@@ -333,6 +334,7 @@
         },
 
         onSendInviteError: function(e) {
+            this.fire('ajax-error', {response: e.detail.request.response});
         },
 
         onMyAccount: function() {
@@ -475,6 +477,15 @@
             this.aimsquant.community.lastPage  = e.detail.lastPage;
             this.aimsquant.community.searchTab = e.detail.searchTab;
             this.$.localStorage.save();
+        },
+
+        onAjaxError: function(e) {
+            var response = e.detail.response;
+            if(response.statusCode == 403) {
+                this.removeToken();
+                this.hasToken = this.$.authItem.checkHasToken();
+                this.fire('rt-changed',{route:'/user/signin'});
+            }
         },
 
     });

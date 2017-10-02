@@ -570,7 +570,7 @@
             },
 
             onGetForwardTestError: function (e) {
-                console.log(e);
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             addMetricData: function (currentState) {

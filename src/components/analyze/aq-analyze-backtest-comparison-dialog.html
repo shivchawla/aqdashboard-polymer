@@ -335,6 +335,10 @@
                     this.onComparisonReady();
             },
 
+            onGetBacktestError: function(e) {
+                this.fire('ajax-error', {response: e.detail.request.response});
+            },
+
             onComparisonReady: function() {
             	var compareItems = this.compareItems;
 

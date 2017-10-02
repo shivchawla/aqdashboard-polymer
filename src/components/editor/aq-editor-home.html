@@ -546,7 +546,8 @@
                 }
             },
 
-            onGetStrategiesError: function (data) {
+            onGetStrategiesError: function (e) {
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             openStopDialog: function() {
