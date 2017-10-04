@@ -251,8 +251,8 @@
                         
                     this.fire('iron-signal', {name:'partially-completed-backtest', data: {id: this.backtest._id, pctCompleted:this.pctCompleted}});
                 }
-              
-                if(this.rtData.length < this.realtimeXLabels.length) {
+                
+                if(this.rtData.length < this.realtimeXLabels.length || this.rtData.length ==0) {
                     this.async(this.updateCumRetGraphsWithData, 3000);
                 } else {
                     this.fire('iron-signal',{name: 'backtest-completed', data:{id: this.backtest._id}});

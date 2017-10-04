@@ -59,14 +59,35 @@
 
 	          	backtestId: String,
 
+	          	reopenInterval: {
+	          		type: Number,
+	          		value:200,
+	          	},
+
 			},
-			
+
+		  	openConnection: function() {
+	          	var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
+	          	this.$.webSocketConn.url = WSEndPoint;
+
+	          	//try {
+          		//console.log(this.$.webSocketConn.isClosed());
+					//if(this.$.webSocketConn.isClosed()) {
+						this.$.webSocketConn.open();
+					//}
+				/*} catch(err) {
+					console.log(err);
+				}*/
+	        },
+
 	        _onOpen: function(e) {
 	        	var delay = 0;
+	        	this.reopenInterval = 200;
+	        	
 	        	if (this.$.webSocketConn.isOpen()) {
 	        		delay = 0;
 	        	} else if(this.$.webSocketConn.isConnecting()) {
-	        		delay = 100;
+	        		delay = 2000;
 	        	}
 
 	        	this.async(this.sendRequests, delay);
@@ -99,13 +120,19 @@
 
 	        _onClose: function(e) {
         		//On close, resend the subscription requests
-            	this.subscribeAllRequest();	
+        		this.reopenInterval *= 2;
+            	this.debounce('ss', this.subscribeAllRequest, 1000);	
 	        },
 
 	        addRequest: function(msgForWS) {
-	        	if(this.wsRequests.indexOf(msgForWS) == -1) {
+	        	var idx = this.wsRequests.findIndex(item => {
+	        			return (item.action === msgForWS.action &&
+	        			item.backtestId === msgForWS.backtestId &&
+	        			item["aimsquant-token"] === msgForWS["aimsquant-token"]);});
+
+	        	if(idx == -1) {
           			this.wsRequests.push(msgForWS);	
-          		}
+	        	}
 	        },
 
 	        subscribeAllRequest: function() {
@@ -132,9 +159,7 @@
 
          		//If the web-socket was closed,
          		// connect and send all requests
-         		if(this.$.webSocketConn.isClosed()) {
-         			this.$.webSocketConn.open();
-     			}
+         		
 	        },
 
 	        subscribeOneRequest: function(backtestId) {
@@ -148,7 +173,8 @@
 	                  		this.$.webSocketConn.send(msgForWS);
 	                  	} else {
 	                  		this.addRequest(msgForWS);
-	                  		this.$.webSocketConn.open();
+	                  		this.openConnection();
+	                  		//this.$.webSocketConn.open();
 	                  	}	
                   	}
  				}
@@ -165,16 +191,10 @@
 	              		this.$.webSocketConn.send(msgForWS);
 	              	} else {
 	              		this.addRequest(msgForWS);
-	              		this.$.webSocketConn.open();
+	              		this.openConnection();
+	              		//this.$.webSocketConn.open();
 	              	}
               	}	
-	        },
-
-	        openConnection: function() {
-	          	var WSEndPoint = new Polymer.IronMetaQuery({key: 'WSEndPoint'}).value;
-	          	this.$.webSocketConn.url = WSEndPoint;
-
-	          	this.$.webSocketConn.open();
 	        },
 
             handleExecution: function(backtestId) {
@@ -205,20 +225,24 @@
 
 	        //Now, backtest is launched without sending WS message
 	        onBacktestStarted: function(e) {
-	        	var backtestId = e.detail.id
+	        	var backtestId = e.detail.id;
 
 	            //Set subscription to true
-	            this.backtests[backtestId] = {data:[], subscription:true,bulksent:false, currentIndex:0};
+	            this.set(`backtests.${backtestId}`, {data:[], subscription:true,bulksent:false, currentIndex:0});
 
 	            this.handleSubscription(backtestId);
 	        },
 
 	        handleSubscription: function(backtestId) {
 	          	if(this.backtests[backtestId]) { 
-		            this.backtests[backtestId].subscription = true;
+		            this.set(`backtests.${backtestId}`, {data:[], subscription:true,bulksent:false, currentIndex:0});
+
+
+		            /*this.backtests[backtestId].subscription = true;
 		            this.backtests[backtestId].bulksent = false;
 		            this.backtests[backtestId].currentIndex = 0;
-		            	
+		            */
+
 		            this.subscribeOneRequest(backtestId);
 		            this.sendDataNew(backtestId);
         	  	}
@@ -226,25 +250,16 @@
 
 	        handleUnsubscription: function(backtestId) {   
 	          	if(this.backtests[backtestId]) {
-              		this.backtests[backtestId].subscription = false;
+              		
+	          		this.set(`backtests.${backtestId}`, {data:[], subscription:false,bulksent:false, currentIndex:0});
+
+              		/*this.backtests[backtestId].subscription = false;
 	              	this.backtests[backtestId].bulksent = false;
-	              	delete this.backtests[backtestId].currentIndex;
+	              	//delete this.backtests[backtestId].currentIndex;
 	              	this.backtests[backtestId].currentIndex = 0;
-	              	this.backtests[backtestId].data = {};
+	              	this.backtests[backtestId].data = {};*/
 	              	this.unsubscribeOneRequest(backtestId);
 	          	}
-	        },
-
-	        fetchRealtimeData: function(backtestId) {
-	        	
-	        	if(this.$.authItem.checkHasToken()) {
-        	      	this.header = this.$.authItem.getHeader();
-                  	
-                  	var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
-          			
-                  	this.$.getBacktestQuery.url = APIEndPoint+'/backtest/'+backtestId+'?fields=status realtimeOutput';
-                  	this.$.getBacktestQuery.generateRequest();
-              	}
 	        },
 
 	        sendDataNew: function(backtestId) {
@@ -296,8 +311,6 @@
 	                var backtestId = e.detail.id;
 
 	                if(backtestId) {
-	                    //this.sendDataSlowly(backtestId);
-	                    //this.manageSubscriptions();
 	                    delete this.backtests[backtestId];    
 	                }
 	            }
@@ -351,7 +364,7 @@
 	      	    	var status = response.status;
 	      	     	if(status == "complete") {
 	      	    		//this.fire('iron-signal',{name:'backtest-completed', id: this.backtests[backtestId]});
-      	    		} else if(status=="exception") {
+      	    		} else if(status == "exception") {
       	    			return; 
       	    			//this.fire('iron-signal',{name:'backtest-exception', id: this.backtests[id], type: 1});
   	    			}
@@ -359,7 +372,8 @@
 	          	} 
 	        },
 
-	        onGetBacktestError: function(e){
+	        onGetBacktestError: function(e) {
+	        	console.log("Backtest Eror");
 	            if(e.request.response.id) {
 	          		var backtestId = e.request.response.id; 
 	          		delete this.backtests[backtestId];    

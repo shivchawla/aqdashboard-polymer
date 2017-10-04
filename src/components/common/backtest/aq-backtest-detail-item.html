@@ -521,7 +521,9 @@
                    
                     var btHeader = this.deepCopy(this.backtestHeader);
                     btHeader[3]["metric"] = "Exception";
-                    this.$$('aq-backtest-header-item').updateHeaderItems(btHeader);
+                    this.backtestHeader = [];
+                    this.backtestHeader = btHeader;
+                    //this.$$('aq-backtest-header-item').updateHeaderItems(btHeader);
 
                     this.async(
                         function() {
