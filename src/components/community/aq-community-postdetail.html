@@ -301,7 +301,11 @@
         var reply = e.detail.reply;
         reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
 
-        this.push('replies', reply);
+        var replies = JSON.parse(JSON.stringify(this.replies));
+        replies.push(reply);
+        this.replies = [];
+        this.replies = replies;
+
         this.$$("#replyEditor").clearEditor();
       },
 
