@@ -172,7 +172,7 @@
                           </aq-community-postdetail-content>
                     </paper-card>
                       
-                    <span class="reply-no">Replies&nbsp;({{threadDetails.nreplies}})</span>
+                    <span class="reply-no">Replies&nbsp;([[numReplies(replies)]])</span>
                     
                     <template is='dom-if' if="[[hasReplies(replies)]]">
                         <paper-card id="replyContainer">
@@ -319,6 +319,10 @@
 
       hasReplies: function(replies) {
           return replies ? replies.length > 0 : false;
+      },
+
+      numReplies: function(replies) {
+          return replies ? replies.length : 0;
       },
 
       onCloneRequest: function(e) {

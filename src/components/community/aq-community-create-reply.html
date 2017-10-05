@@ -236,9 +236,11 @@
                         this.error = "";
                         return true;
                     } else {
+                        this.error = "Empty Reply. Please create a valid reply.";
+                        this.$$('paper-toast').open();
                         return false;
                     }
-                }catch(err){
+                } catch(err){
                     this.$$('paper-toast').open();
                 }
             },
