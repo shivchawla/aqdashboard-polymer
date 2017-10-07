@@ -124,13 +124,14 @@
 	 	<iron-signals on-iron-signal-dirtybit='onSetDirtyBit'>
 	 	</iron-signals>
 		
-		<template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+		<!--template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'-->
 		 
 	        <aq-allpage-layout 
 	        	loading='{{isLoading(strategyLoading, backtestLoading)}}' 
 	        	header="All Backtests"
 	    	 	current-path="[[currentPath]]">
 
+	    	 	<template is='dom-if' if='[[hasBacktests(backtests)]]'> 
 	        	<div id="backtest-container" class="internal-content">
 			        <aq-analyze-home-menu
 			        	check-all="[[checkAll]]"
@@ -139,7 +140,7 @@
 		              	can-compare=[[_allCheckedItemsValid(checkedItems)]]>
 		          	</aq-analyze-home-menu>
 
-			        <template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'>
+			        <!--template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'-->
 						
 			        	<aq-analyze-home-header 
 			        		check-all="[[checkAll]]"
@@ -161,8 +162,9 @@
 						<template is='dom-if' if='[[isBacktestCountOdd(backtests)]]'>
 							<div class="spacer"></div>
 						</template>
-					</template>
+					<!--/template-->
 				</div>
+				</template>
 			</aq-allpage-layout>
 			
 			<aq-analyze-backtest-comparison-dialog 
@@ -178,7 +180,7 @@
 			 	cancel-text="Cancel"
 			 	accept-text="Delete">
 	    	</aq-action-dialog>
-    	</template>
+    	<!--/template-->
 
 	</template>
 
@@ -307,6 +309,10 @@
         			this.dirtyBit = 0;
 
 	        	}
+			},
+
+			hasBacktests: function(backtests) {
+				return backtests ? backtests.length > 0 : false;
 			},
 
 	      	computeGetStrategyUrl: function(strategyId) {
