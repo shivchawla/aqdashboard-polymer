@@ -127,7 +127,7 @@
 		<!--template is='dom-if' if='{{!isLoading(strategyLoading, backtestLoading)}}'-->
 		 
 	        <aq-allpage-layout 
-	        	loading='{{isLoading(strategyLoading, backtestLoading)}}' 
+	        	loading="[[!isHomeReady(strategyLoading, backtestLoading, backtests)]]"
 	        	header="All Backtests"
 	    	 	current-path="[[currentPath]]">
 
@@ -199,6 +199,7 @@
 
     			backtests: {
     				type:Array,
+    				value:[],
        			},
 
        			deleteId: String,
@@ -219,9 +220,15 @@
 
 				subroute:Object,
 
-				strategyLoading:Boolean,
+				strategyLoading: {
+					type: Boolean,
+					value:false
+				},
 
-				backtestLoading:Boolean,
+				backtestLoading: {
+					type: Boolean,
+					value: false,
+				},
 
 				dirtyBit: {
 					type: Number,
@@ -285,13 +292,22 @@
 				return checkedItems.filter(item => {return item.valid;}).length == checkedItems.length;
 			},
 
+			attached: function() {
+				if (!this.$.authItem.checkHasToken()) {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                    return;
+                } else if (this.dirtyBit == 1) {
+                    this.fetchBacktests();
+                }
+			},
+
 			_strategyIdChanged: function(nId, oId) {
 				if(nId && nId!= "") {
 					this.fetchBacktests();
 	        	}
 			},
 
-			_dirtyBitChanged: function(nBit, oBit) {
+			_dirtyBitChanged: function() {
 				if(this.dirtyBit == 1 && this.strategyId) {
 					this.fetchBacktests();
 				}
@@ -302,8 +318,6 @@
          	 		this.fire('rt-changed',{route:'/user/signin'});
 	          		return;
 	          	} else {
-
-					this.set('backtests', []);
 	        		this.header = this.$.authItem.getHeader();
         			this.$.getStrategyQuery.generateRequest();
         			this.dirtyBit = 0;
@@ -463,8 +477,8 @@
 	        	this.dirtyBit = e.detail;
 	        },
 
-	        isLoading: function(strategyLoading, backtestLoading) {
-	        	return strategyLoading || backtestLoading;
+	        isHomeReady: function(strategyLoading, backtestLoading, backtests) {
+	        	return !strategyLoading && !backtestLoading && (backtests ? backtests.length > 0 : false);
 	        },
 
 			computeSelectedPage: function(showComparison) {
