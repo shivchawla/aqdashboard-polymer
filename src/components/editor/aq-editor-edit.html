@@ -216,7 +216,7 @@
                                     <aq-editor-sidebar-run id='runSidebar'>
                                     </aq-editor-sidebar-run>
 
-                                    <aq-editor-sidebar-log id='logContainer'></aq-editor-sidebar-log>
+                                    <aq-editor-sidebar-log id='logContainer' backtest-id=[[activeBacktestId]]></aq-editor-sidebar-log>
 
                                 </iron-pages>
                             </div>
@@ -287,9 +287,9 @@
                 runStrategyData: Object,
 
                 activeBacktestId: {
-		     type: String,
-		     value:""
-		},	
+                    type: String,
+	                value:""
+		        },	
 
                 loading: Boolean,
 

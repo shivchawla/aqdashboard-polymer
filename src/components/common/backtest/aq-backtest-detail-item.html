@@ -505,6 +505,15 @@
 
                 data = e.detail;
 
+                if(data.backtestId != this.backtestId) {
+                    //NOT an active backtest 
+                    //Reject the data 
+                    //AND send unsubsription request. 
+                    this.fire('unsubscribe-data',{backtestId:data.backtestId});
+
+                    return;
+                }
+
                 if ((data.outputtype == "performance" || data.outputtype == "labels") && this.active) {
                     
                     if (data.outputtype == "performance") {
@@ -523,7 +532,7 @@
                     btHeader[3]["metric"] = "Exception";
                     this.backtestHeader = [];
                     this.backtestHeader = btHeader;
-                    //this.$$('aq-backtest-header-item').updateHeaderItems(btHeader);
+                    //rea.$$('aq-backtest-header-item').updateHeaderItems(btHeader);
 
                     this.async(
                         function() {

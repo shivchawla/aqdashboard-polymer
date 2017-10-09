@@ -64,6 +64,8 @@
 					type:Array,
 					value:[],
 				},
+
+				backtestId: String,
 			},
 
 			getTodayDate: function(offset){
@@ -90,7 +92,7 @@
 				if (Array.isArray(data)) {
 					var array = [];
 					for (i in data) {
-						if (data[i].outputtype == "log") {
+						if (data[i].outputtype == "log" && data[i].backtestId == this.backtestId) {
 							
 							if(!data[i].message.match("No document")) {
 								array.push(data[i]);
@@ -100,7 +102,8 @@
 					}
 
 					this.logs = array;
-				} else if(data.outputtype == "log") {
+				} else if(data.outputtype == "log" && data.backtestId == this.backtestId) {
+
 					if(!data.message.match("No document")) {
 						this.push('logs',data);
 					}
