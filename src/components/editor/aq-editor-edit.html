@@ -334,18 +334,19 @@
                 this.isRunning = false;
             },
 	
-	    computeIsRunning: function(isRunning, activeBacktestId) {
+	        computeIsRunning: function(isRunning, activeBacktestId) {
                 return isRunning && activeBacktestId!="";
             },
 
             _isRunningChanged: function() {
+               this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}, {title:"Logs", icon:"aq-icons:graphic-eq"}];
                 if(this.isRunning) {
-                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}, {title:"Logs", icon:"aq-icons:graphic-eq"}];
+                    //this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}, {title:"Logs", icon:"aq-icons:graphic-eq"}];
                     this.selectedSidebar = 1;
                   } else {
-                    this.selectedSidebar = 0;
-                    this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}];
-			this.activeBacktestId = ""; 
+                    //this.selectedSidebar = 0;
+                    //this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}];
+			        this.activeBacktestId = ""; 
                   }
             },
 
