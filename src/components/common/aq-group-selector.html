@@ -46,7 +46,12 @@
                 items:{
                     type:Array,
                     value:[]
-                }
+                },
+
+                selected: {
+                    type:Number,
+                    value:0,
+                },
             },
 
             listeners:{
@@ -58,7 +63,7 @@
             },
 
             attached: function() {
-                this.firstItem = this.items[0].value;
+                this.firstItem = this.selected ? this.items[this.selected].value : this.items[0].value;
             },
         })
     </script>

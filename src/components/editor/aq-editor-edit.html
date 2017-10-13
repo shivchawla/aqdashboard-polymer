@@ -501,6 +501,8 @@
                 // first save the strategy
                 this.runStrategyData = this.$$('#runSidebar').getSettings();
 
+                this.fire('update-localstorage-backtest-settings', {settings: this.runStrategyData});
+          
                 this.runSwitch = 1;
 		        this.isRunning = true;
                 this.saveStrategy(e);

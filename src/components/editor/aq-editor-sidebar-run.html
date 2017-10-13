@@ -174,19 +174,22 @@
 	                    
 	                <aq-paper-button-group 
                 		label="Rebalance"
-            	       	event-name="rebalance-selected" 
+            	       	event-name="rebalance-selected"
+                        selected-value=[[rebalance]] 
                 		button-values="{{rebalanceOptions}}">
 	        		</aq-paper-button-group>
 
 	        		<aq-paper-button-group 
                 		label="Cancel Policy"
-                		event-name="cancel-policy-selected" 
+                		event-name="cancel-policy-selected"
+                        selected-value=[[cancelPolicy]] 
                 		button-values="{{cancelOptions}}">
 	        		</aq-paper-button-group>
 
 					<aq-paper-button-group 
                 		label="Resolution"
                 		event-name="resolution-selected" 
+                        selected-value=[[resolution]]
                 		button-values="{{resolutionOptions}}">
 	        		</aq-paper-button-group>
 
@@ -195,6 +198,7 @@
                 		event-name="commission-selected" 
                 		has-input
                         input-value={{commissionValue}}
+                        selected-value=[[commissionModel]]
                 		button-values="{{commissionOptions}}">
 	        		</aq-paper-button-group>
 	            	
@@ -203,12 +207,14 @@
                 		event-name="slippage-selected" 
                 		has-input
                         input-value={{slippageValue}}
+                        selected-value=[[slippageModel]]
                 		button-values="{{slippageOptions}}">
 	        		</aq-paper-button-group>
 	            	
 	            	<aq-paper-button-group 
                 		label="Investment Plan"
-                		event-name="investment-plan-selected" 
+                		event-name="investment-plan-selected"
+                        selected-value=[[investmentPlan]] 
                 		button-values="{{investmentPlanOptions}}">
 	        		</aq-paper-button-group>
 
@@ -238,7 +244,6 @@
             {index: 2, value: 'Yearly'},
             {index: 3, value: 'Weekly'}]
 
-
         Polymer({
             is: 'aq-editor-sidebar-run',
 
@@ -264,12 +269,12 @@
 
                 rebalance: {
                     type: String,
-                    value: rebalanceOptions[0].value,
+                    //value: rebalanceOptions[0].value,
                 },
 
                 cancelPolicy: {
                     type: String,
-                    value: cancelOptions[0].value,
+                    //value: cancelOptions[0].value,
                 },
 
                 slippageValue: {
@@ -279,7 +284,7 @@
 
                 slippageModel: {
                     type: String,
-                    value: slippageOptions[0].value,
+                    //value: slippageOptions[0].value,
                 },
 
                 commissionValue: {
@@ -289,7 +294,7 @@
 
                 commissionModel: {
                     type: String,
-                    value: commissionOptions[0].value,
+                    //value: commissionOptions[0].value,
                 },
 
 
@@ -325,7 +330,7 @@
                 'investment-plan-selected':'onSelectInvestmentPlan',
             },
 
-            ready: function () {
+            initializeValues: function() {
                 this.slippageOptions = slippageOptions;
                 this.cancelOptions = cancelOptions;
                 this.commissionOptions = commissionOptions;
@@ -334,6 +339,39 @@
                 this.investmentPlanOptions = investmentPlanOptions;
                 this.startDate = this.getTodayDate(365)
                 this.endDate = this.getTodayDate(7);
+
+                this.slippage = this.slippageOptions[0].value;
+                this.cancelPolicy = this.cancelOptions[0].value;
+                this.commissionModel = this.commissionOptions[0].value;
+                this.rebalance = this.rebalanceOptions[0].value;
+                this.resolution = this.resolutionOptions[0].value;
+                this.investmentPlan = this.investmentPlanOptions[0].value;
+            },
+
+            attached: function() {
+                
+                this.initializeValues();
+
+                var x = localStorage.getItem('my-app-storage');
+                if (x) {
+                    var settings = JSON.parse(x).settings;
+                    if (settings) {
+                        this.startDate = settings.startDate;
+                        this.endDate = settings.endDate;  
+                        this.universe = settings.universe;  
+                        this.initialCash = settings.initialCash;
+                        /*var advancedSettings = JSON.parse(settings.advanced);
+                        this.slippageModel = advancedSettings.slippage.model;
+                        this.slippageValue = advancedSettings.slippage.value ? advancedSettings.slippage.value : 0.05;
+                        this.cancelPolicy = advancedSettings.cancelPolicy;
+                        this.commissionModel = advancedSettings.commission.model;
+                        this.commissionValue = advancedSettings.commission.value ? advancedSettings.commission.value : 0.1;
+                        this.rebalance = advancedSettings.rebalance;
+                        this.resolution = advancedSettings.resolution;  
+                        this.investmentPlan = advancedSettings.investmentPlan;*/
+                       
+                    }
+                }
             },
 
             onSelectResolution: function(e) {
@@ -387,6 +425,9 @@
                     }),
                     universe: this.universe
                 };
+
+                console.log(settings);
+
                 return settings;
             },
 
@@ -408,6 +449,7 @@
                 today = yyyy + '-' + mm + '-' + dd;
                 return today;
             },
+
             openDatePicker: function () {
                 this.$.dialog.toggle();
             }
@@ -478,7 +520,8 @@
             </template>
 
 			<div class="button-select-container layout horizontal">
-		        <aq-group-selector event-name="[[eventName]]" 
+		        <aq-group-selector event-name="[[eventName]]"
+                        selected=[[findIndex(buttonValues,selectedValue)]]
 		        		items="{{buttonValues}}">
 	    		</aq-group-selector>
 		    </div>
@@ -491,6 +534,8 @@
 
 			properties: {
 				label: String,
+
+                selectedValue: String,
 				
 				buttonValues: Array,
 				
@@ -507,6 +552,11 @@
 					notify:true,
 				}
 			},
+
+            findIndex: function(buttonValues, selectedValue) {
+                var idx = buttonValues.findIndex(item => item.value == selectedValue);
+                return idx != -1 ? idx : 0;
+            },
 
 		});
 	</script>

@@ -88,6 +88,13 @@
 			      <template>[[item.quantity]]</template>
 			    </vaadin-grid-column>
 
+			    <vaadin-grid-column width="100px">
+			    	<template class="header">
+			      		<vaadin-grid-sorter path="lastprice">Last Price</vaadin-grid-sorter>
+		      		</template>			
+			      <template>[[item.lastprice]]</template>
+			    </vaadin-grid-column>
+
 		      	<vaadin-grid-column width="100px">
 			    	<template class="header">
 			      		<vaadin-grid-sorter path="positionValue">Market Value</vaadin-grid-sorter>
@@ -185,6 +192,7 @@
 	     				items[i++] = {date: date.formatDateForTable(position.date), 
 	     							symbol: position.securitysymbol.ticker,
 	     							quantity: position.quantity,
+	     							lastprice:position.lastprice,
 	     							price: position.averageprice,
 	     							positionValue: (position.quantity*position.lastprice).toFixed(2),
 	     							pnl: (position.quantity*(position.lastprice-position.averageprice)).toFixed(2)};
