@@ -396,6 +396,8 @@
                     checkedItems.splice(checkedItems.map(item => {return item.id;}).indexOf(checkedId),1);
 	        	}
 
+	        	checkedItems.sort((a,b) => {return a.index > b.index ? 1 : -1});
+
         		this.checkedItems = [];
         		this.checkedItems = checkedItems;
 	        	
