@@ -6,6 +6,7 @@
 <link rel='import' href='../../../../bower_components/iron-pages/iron-pages.html'>
 <link rel='import' href='../../../../bower_components/paper-progress/paper-progress.html'>
 <link rel="import" href="../../../../bower_components/juicy-ace-editor/juicy-ace-editor.html">
+<link rel="import" href="../../../../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel='import' href='../aq-check-authentication.html'>
 
@@ -108,6 +109,7 @@
             width: 100%;
             --paper-progress-indeterminate-cycle-duration: 5s;
         }
+
     </style>
 
     <template>
@@ -195,6 +197,18 @@
                         </div>
 
                         <div id="log-container">
+
+                        <template is='dom-if' if='[[!isValid(backtestLogs)]]'>
+                           <div class="layout vertical">
+                                <div class="flex"></div>
+                                <paper-spinner 
+                                    alt="Loading logs..." 
+                                    active class="self-center">
+                                </paper-spinner>
+                                <div class="flex"></div>
+                            </div>
+                        </template>
+
                             <template is='dom-if' if='[[backtestLogs]]'>
                                 <template is='dom-repeat' items="[[backtestLogs]]">
                                     <aq-log-item-new 
@@ -207,6 +221,18 @@
                         </div>    
                         
                         <div id="portfolio-container">
+
+                        <template is='dom-if' if='[[!isValid(backtestPositions)]]'>
+                            <div class="layout vertical">
+                                <div class="flex"></div>
+                                <paper-spinner 
+                                    alt="Loading Portfolio..." 
+                                    active class="self-center">
+                                </paper-spinner>
+                                <div class="flex"></div>
+                            </div>
+                            </template>
+
                             <template is='dom-if' if='[[backtestPositions]]'>
                                 <aq-portfolio-table 
                                     positions="[[backtestPositions]]">
@@ -215,6 +241,18 @@
                         </div>
 
                         <div id="transaction-container">
+                            
+                    <template is='dom-if' if='[[!isValid(backtestTransactions)]]'>
+                        <div class="layout vertical">
+                                <div class="flex"></div>
+                                <paper-spinner 
+                                    alt="Loading Transactions..." 
+                                    active class="self-center">
+                                </paper-spinner>
+                                <div class="flex"></div>
+                            </div>
+                    </template>
+
                              <template is='dom-if' if='[[backtestTransactions]]'>
                                 <aq-transaction-table 
                                     transactions="[[backtestTransactions]]"
@@ -323,11 +361,20 @@
 
                 heading: String,
 
-                backtestLogs: Array,
+                backtestLogs: {
+                    type: Array,
+                    value: [],  
+                },
 
-                backtestTransactions: Array,
+                backtestTransactions: {
+                    type: Array,
+                    value:[],
+                },
 
-                backtestPositions: Array,
+                backtestPositions: {
+                    type: Array,
+                    value:[]
+                },
 
                 pctCompleted: {
                     type: Number,
@@ -921,6 +968,10 @@
                    this.pctCompleted = e.detail.pctCompleted;
                 }
             },
+
+            isValid: function(array) {
+                return array ? array.length >0 : false;
+            }
         });
     </script>
     

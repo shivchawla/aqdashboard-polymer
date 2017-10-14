@@ -219,6 +219,7 @@
             'scroll-top':'scrollToTop',
             'rt-changed':'goToRoute',
             'update-localstorage-community':'updateCommunityState',
+            'update-localstorage-backtest-settings':'updateBacktestSettings',
             'ajax-error':'onAjaxError',
         },
 
@@ -270,7 +271,7 @@
 
         initializeDefaultValue: function() {
             if(!localStorage.getItem('my-app-storage')) {
-              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0};
+              this.aimsquant = {user:'', lastRequest:'', community:{lastPage:1, searchText:"", searchCategory:"", searchTab:0}, lastTab:0, settings:''};
               this.$.localStorage.save();
             } 
         },
@@ -476,6 +477,11 @@
             this.aimsquant.community.searchCategory = e.detail.searchCategory;
             this.aimsquant.community.lastPage  = e.detail.lastPage;
             this.aimsquant.community.searchTab = e.detail.searchTab;
+            this.$.localStorage.save();
+        },
+
+        updateBacktestSettings: function(e) {
+            this.aimsquant.settings = e.detail.settings;
             this.$.localStorage.save();
         },
 

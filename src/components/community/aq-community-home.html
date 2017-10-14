@@ -244,10 +244,10 @@
                             <div class="aq-announcement-container layout vertical">
                                 
                                 <template is='dom-repeat' items='{{announcements}}'>  
-                                    <aq-announcement-card header="[[item.header]]"
-                                                     sub-header="[[item.subHeader]]"
-                                                     >
-                                     <p>[[item.announcement]]</p>
+                                    <aq-announcement-card 
+                                        header="[[item.header]]"
+                                        sub-header="[[item.subHeader]]"
+                                        announcement=[[item.announcement]]>
                                     </aq-announcement-card>
                                 </template>
                             </div>
