@@ -463,7 +463,7 @@
                     this.fire('check', {
                         id: this.backtest._id,
                         checked: this.$$('paper-checkbox').checked,
-                        index: "Backtest "+this.formatIndex(this.btIndex),
+                        index: this.formatIndex(this.btIndex),
                         valid: this.isBacktestDetailValid(this.backtest)
                     });
                 }

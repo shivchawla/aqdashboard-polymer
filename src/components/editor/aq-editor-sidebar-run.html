@@ -186,12 +186,12 @@
                 		button-values="{{cancelOptions}}">
 	        		</aq-paper-button-group>
 
-					<aq-paper-button-group 
+					<!--aq-paper-button-group 
                 		label="Resolution"
                 		event-name="resolution-selected" 
                         selected-value=[[resolution]]
                 		button-values="{{resolutionOptions}}">
-	        		</aq-paper-button-group>
+	        		</aq-paper-button-group-->
 
 	        		<aq-paper-button-group 
                 		label="Commission"
@@ -218,6 +218,13 @@
                 		button-values="{{investmentPlanOptions}}">
 	        		</aq-paper-button-group>
 
+                    <aq-paper-button-group 
+                        label="Execution Policy"
+                        event-name="execution-policy-selected"
+                        selected-value=[[executionPolicy]] 
+                        button-values="{{executionPolicyOptions}}">
+                    </aq-paper-button-group>
+
                 </div>
             </iron-pages>
         </paper-card>
@@ -229,6 +236,10 @@
 
         var cancelOptions = [{index: 0, value: 'EOD'},
             {index: 1, value: 'GTC'}];
+
+        var executionPolicyOptions = [{index: 0, value: 'Close'},
+            {index: 1, value: 'High'}, {index: 2, value: 'Low'},
+            {index: 3, value: 'Open'}, {index: 4, value: 'AverageHighLow'}, {index: 5, value: 'AverageAll'}];
 
         var commissionOptions = [{index: 0, value: 'PerTrade'},
             {index: 1, value: 'PerShare'}];
@@ -300,7 +311,7 @@
 
                 resolution: {
                     type: String,
-                    value: resolutionOptions[0].value,
+                    //value: resolutionOptions[0].value,
                 },
 
                 universe: {
@@ -310,7 +321,11 @@
 
                 investmentPlan: {
                     type: String,
-                    value: investmentPlanOptions[0].value,
+                    //value: investmentPlanOptions[0].value,
+                },
+
+                executionPolicy: {
+                    type: String,
                 },
 
                 slippageOptions: Array,
@@ -319,6 +334,7 @@
                 rebalanceOptions: Array,
                 resolutionOptions: Array,
                 investmentPlanOptions: Array,
+                executionPolicyOptions: Array,
             },
 
             listeners:{
@@ -328,6 +344,7 @@
                 'commission-selected':'onSelectCommission',
                 'rebalance-selected':'onSelectRebalance',
                 'investment-plan-selected':'onSelectInvestmentPlan',
+                'execution-policy-selected':'onExecutionPolicySelected',
             },
 
             initializeValues: function() {
@@ -337,6 +354,7 @@
                 this.rebalanceOptions = rebalanceOptions;
                 this.resolutionOptions = resolutionOptions;
                 this.investmentPlanOptions = investmentPlanOptions;
+                this.executionPolicyOptions = executionPolicyOptions;
                 this.startDate = this.getTodayDate(365)
                 this.endDate = this.getTodayDate(7);
 
@@ -346,6 +364,7 @@
                 this.rebalance = this.rebalanceOptions[0].value;
                 this.resolution = this.resolutionOptions[0].value;
                 this.investmentPlan = this.investmentPlanOptions[0].value;
+                this.executionPolicy = this.executionPolicyOptions[0].value;
             },
 
             attached: function() {
@@ -398,6 +417,10 @@
                 this.investmentPlan = e.detail.attrSelected;
             },
 
+            onExecutionPolicySelected: function(e) {
+                this.executionPolicy = e.detail.attrSelected;
+            },
+
             toggle: function () {
                 if (this.$.adcollapse.opened) {
                     this.$.advancedSettings.style.height = '35px';
@@ -408,7 +431,6 @@
 
                 this.$.adcollapse.toggle();
             },
-
 
             getSettings: function () {
                 var settings = {
@@ -421,7 +443,8 @@
                         slippage: {model: this.slippageModel, value: this.slippageValue},
                         commission: {model: this.commissionModel, value: this.commissionValue},
                         resolution: this.resolution,
-                        investmentPlan: this.investmentPlan
+                        investmentPlan: this.investmentPlan,
+                        executionPolicy: this.executionPolicy
                     }),
                     universe: this.universe
                 };
@@ -454,9 +477,7 @@
 
         });
     </script>
-
 </dom-module>
-
 
 <dom-module id='aq-paper-button-group'>
 	<style include="iron-flex iron-flex-alignment iron-positioning"></style>	

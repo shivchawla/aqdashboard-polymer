@@ -369,13 +369,14 @@
                 var element = this;
                 var aceDiffer = this.getAceDiff();
                 this.editors = aceDiffer.getEditors();
-                this.backtests = this.compareItems.map(x => {return x.backtest;}); 
+                this.backtests = this.compareItems.map(x=>x.backtest); 
 
-                this.backtestIndexArray = this.compareItems.map(x => {return x.index;});
+                this.backtestIndexArray = this.compareItems.map(x=>"Backtest "+x.index);
 
                 for (var i = 0; i < this.backtests.length; i++) {
                     this.backtests[i].createdAt = date.formatDateTime(this.backtests[i].createdAt);
                 }
+
                 this.$$('#leftSelector').addEventListener('iron-select',function () {
                     this.debounce('compare', this.compareCodeNew, 500);
                 });
@@ -387,9 +388,9 @@
 
 
             compareCodeNew: function() {
-                this.backtests = this.compareItems.map(x => {return x.backtest;}); 
+                this.backtests = this.compareItems.map(x=>x.backtest); 
 
-                this.backtestIndexArray = this.compareItems.map(x => {return x.index;});
+                this.backtestIndexArray = this.compareItems.map(x=>"Backtest " +x.index);
 
                 this.codeLeft = this.backtests[this.$$('#leftSelector').selected].code
 

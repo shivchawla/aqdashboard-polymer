@@ -74,16 +74,19 @@
 			<template is='dom-repeat' items=[[settings]]>
 				<div class="layout horizontal item-container center">
 					<div class="item-label">[[item.label]]:&nbsp</div>
-					<div class="item-value" id='item-value-[[index]]'>
-						[[item.value]]
-					</div>
+					
+					<template is='dom-if' if=[[hasValue(item.value)]]>
+						<div class="item-value" id='item-value-[[index]]'>
+							[[item.value]]
+						</div>
+					</template>
 
-					<template is='dom-if' if=[[item.value2]]>
+					<template is='dom-if' if=[[hasValue(item.value2)]]>
 						<div class="item-value2">[[item.value2]]
 						</div>
 					</template>
 				</div>
-			</template> 
+			</template>
 		</div>
 	</template>
 
@@ -95,9 +98,9 @@
 				settings: Array,
 			},
 
-			attached: function() {
-
-			},
+			hasValue: function(val) {
+				return val !="";
+			}
 		});
 	</script>
 

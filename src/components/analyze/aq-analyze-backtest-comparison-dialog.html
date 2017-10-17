@@ -349,7 +349,7 @@
 
         		this.async(function(){
                     for(var i=0;i<this.compareItems.length; i++) {
-            			this.addBacktestToComparison(this.compareItems[i].backtest, this.compareItems[i].index);
+            			this.addBacktestToComparison(this.compareItems[i].backtest, "Backtest "+this.compareItems[i].index);
             		}
 
                     this.redrawChart();
@@ -504,7 +504,7 @@
 
             open: function() {
                 this.$$('#dialog').open();
-                this.indexArray = this.compareItems.map(function(x){return x.index;});
+                this.indexArray = this.compareItems.map(x => "Backtest " +x.index);
                 this.doComparison();
             },
 
