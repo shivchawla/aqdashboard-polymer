@@ -53,14 +53,6 @@
 			min-width: 500px;
 		}
 
-		paper-button {
-			text-transform: none;
-			font-size: 14px;
-			color:#cc6666;
-		 	margin-bottom: 10px;
-            margin-left: 5px;
-		}
-
 	</style>
 
 	<template>
@@ -263,7 +255,7 @@
 
 				currentPath: {
 					type: Array,
-					value: ["Home", "Research", "All Strategies", "All Backtests"],
+					//value: ["Home", "Research", "All Strategies", "All Backtests"],
 				},
 
 				hasForwardtest: {
@@ -345,7 +337,7 @@
 	      	},
 
 			goToEditor: function() {
-				this.fire('rt-changed', {route:'/dashboard/editor'});
+				this.fire('rt-changed', {route:'/dashboard/editor/'+this.strategyId});
 			},
 
 			isBacktestCountOdd: function(backtests) {
@@ -371,6 +363,14 @@
 				var strategy = data.detail.response;
 				this.strategyName = strategy.name;
 
+				var currentPath = JSON.parse(JSON.stringify(this.currentPath));
+				currentPath.push({text:"All Strategies", route:"/dashboard/editor"});
+				currentPath.push({text: this.strategyName, route:"/dashboard/editor/"+this.strategyId});
+				currentPath.push({text:"All Backtests"});
+				
+				this.currentPath = [];
+				this.currentPath = currentPath
+				
 				this.hasForwardtest = strategy.numForwardtests == 1;
 
 				this.searchParams = {"skip":this.perPage*(this.currentPage -1), "limit":this.perPage};
@@ -460,7 +460,7 @@
 
 	        onDetail: function(e) {
 	        	e.stopPropagation();
-	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id +'?type=backtest&heading=Backtest '+(e.detail.index + 1)});
+	        	this.fire('rt-changed', {route:'/dashboard/analyze/' + this.strategyId+'/'+ e.detail.id +'?strategyName='+this.strategyName+'&type=backtest&heading=Backtest '+(e.detail.index + 1)});
 	        },
 
 	        onBacktestAdded: function() {

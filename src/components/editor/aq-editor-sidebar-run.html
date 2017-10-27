@@ -146,7 +146,7 @@
                 		<div class="value self-center">
                 		<input class="input-box" label="Seed Capital"
                                        value="{{initialCash::change}}" type="number"
-                                       on-keydown="checkForKeys" on-blur='close'>
+                                       on-keydown="checkForKeys" on-blur='close' disabled=[[disabled]]>
                        	</div>
             		</div>
 
@@ -155,7 +155,11 @@
                 			<span>Start Date</span>
                 		</div>
 
-            			<paper-input no-label-float class="value self-center" type="date" value="{{startDate}}"></paper-input>
+            			<paper-input no-label-float 
+                            class="value self-center" 
+                            type="date" value="{{startDate}}" 
+                            disabled=[[disabled]]>
+                        </paper-input>
             		</div>
 
 					<div class="horizontalField layout horizontal">
@@ -163,7 +167,11 @@
                 			<span>End Date</span>
                 		</div>
 
-            			<paper-input no-label-float class="value self-center" type="date" value="{{endDate}}"></paper-input>
+            			<paper-input no-label-float 
+                            class="value self-center" 
+                            type="date" value="{{endDate}}" 
+                            disabled=[[disabled]]>
+                        </paper-input>
 
             		</div>
 
@@ -176,14 +184,16 @@
                 		label="Rebalance"
             	       	event-name="rebalance-selected"
                         selected-value=[[rebalance]] 
-                		button-values="{{rebalanceOptions}}">
+                		button-values="{{rebalanceOptions}}"
+                        disabled=[[disabled]]>
 	        		</aq-paper-button-group>
 
 	        		<aq-paper-button-group 
                 		label="Cancel Policy"
                 		event-name="cancel-policy-selected"
                         selected-value=[[cancelPolicy]] 
-                		button-values="{{cancelOptions}}">
+                		button-values="{{cancelOptions}}"
+                        disabled=[[disabled]]>
 	        		</aq-paper-button-group>
 
 					<!--aq-paper-button-group 
@@ -199,7 +209,8 @@
                 		has-input
                         input-value={{commissionValue}}
                         selected-value=[[commissionModel]]
-                		button-values="{{commissionOptions}}">
+                		button-values="{{commissionOptions}}"
+                        disabled=[[disabled]]>
 	        		</aq-paper-button-group>
 	            	
 	            	<aq-paper-button-group 
@@ -208,21 +219,24 @@
                 		has-input
                         input-value={{slippageValue}}
                         selected-value=[[slippageModel]]
-                		button-values="{{slippageOptions}}">
+                		button-values="{{slippageOptions}}"
+                        disabled=[[disabled]]>
 	        		</aq-paper-button-group>
 	            	
 	            	<aq-paper-button-group 
                 		label="Investment Plan"
                 		event-name="investment-plan-selected"
                         selected-value=[[investmentPlan]] 
-                		button-values="{{investmentPlanOptions}}">
+                		button-values="{{investmentPlanOptions}}"
+                        disabled=[[disabled]]>
 	        		</aq-paper-button-group>
 
                     <aq-paper-button-group 
                         label="Execution Policy"
                         event-name="execution-policy-selected"
                         selected-value=[[executionPolicy]] 
-                        button-values="{{executionPolicyOptions}}">
+                        button-values="{{executionPolicyOptions}}"
+                        disabled=[[disabled]]>
                     </aq-paper-button-group>
 
                 </div>
@@ -335,6 +349,11 @@
                 resolutionOptions: Array,
                 investmentPlanOptions: Array,
                 executionPolicyOptions: Array,
+                
+                disabled:{
+                    type: Boolean,
+                    value:false,
+                }
             },
 
             listeners:{
@@ -535,13 +554,15 @@
 					   type="number"
                 	   step="0.01" 
                        min=0
-                       value="{{inputValue::change}}">
+                       value="{{inputValue::change}}"
+                       disabled=[[disabled]]>
             </template>
 
 			<div class="button-select-container layout horizontal">
 		        <aq-group-selector event-name="[[eventName]]"
                         selected=[[findIndex(buttonValues,selectedValue)]]
-		        		items="{{buttonValues}}">
+		        		items="{{buttonValues}}"
+                        disabled=[[disabled]]>
 	    		</aq-group-selector>
 		    </div>
 	    </div>
@@ -569,7 +590,9 @@
 					type:Number,
 					value:0.1,
 					notify:true,
-				}
+				},
+
+                disabled: Boolean,
 			},
 
             findIndex: function(buttonValues, selectedValue) {

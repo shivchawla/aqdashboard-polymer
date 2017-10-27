@@ -87,19 +87,19 @@
         <div id='content'>
           <iron-lazy-pages restamp attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
             <template is='iron-lazy-page' restamp page="editor">
-                <aq-editor-main></aq-editor-main>
+                <aq-editor-main current-path=[[computeCurrentPath(routeData.page)]]></aq-editor-main>
             </template>
 
             <template is='iron-lazy-page' restamp page="analyze">
-                <aq-analyze-main></aq-analyze-main>
+                <aq-analyze-main current-path=[[computeCurrentPath(routeData.page)]]></aq-analyze-main>
             </template>
 
             <template is='iron-lazy-page' restamp page="community">
-                <aq-community-main></aq-community-main>
+                <aq-community-main current-path=[[computeCurrentPath(routeData.page)]]></aq-community-main>
             </template>
             
             <template is='iron-lazy-page' restamp page="help">
-                <aq-help-main></aq-help-main>
+                <aq-help-main current-path=[[computeCurrentPath(routeData.page)]]></aq-help-main>
             </template>
           </iron-lazy-pages>
         </div>
@@ -142,6 +142,22 @@
               'create-strategy-clicked':'openCreateStrategyDialog',
               'clone-strategy-clicked':'openStrategyCloneDialog',
               'close-action':'closeDialog',
+          },
+
+          computeCurrentPath: function(page) {
+              var basePath = [{text:"Home", route:"/main"}];
+              
+              if(page == "editor") {
+                  basePath.push({text:"Research", route:"/dashboard"}, {text:"All Strategies", route:"/dashboard/editor"})
+              } else if (page == "help"){
+                  basePath.push({text:"Help", route:"/dashboard/help"});
+              } else if (page == "community"){
+                  basePath.push({text:"Community", route:"/dashboard/community"});
+              } else {
+                  basePath.push({text:"Research", route:"/dashboard"});
+              }
+
+              return basePath;
           },
 
           openCreateStrategyDialog: function() {   

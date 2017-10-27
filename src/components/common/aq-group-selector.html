@@ -25,7 +25,7 @@
     <template>
         <iron-selector attr-for-selected="name" selected="[[firstItem]]">
             <template is="dom-repeat" items="{{items}}">
-                <paper-button noink name="{{item.value}}">{{item.value}}</paper-button>
+                <paper-button disabled=[[disabled]] noink name="{{item.value}}">{{item.value}}</paper-button>
             </template>
         </iron-selector>
     </template>
@@ -52,6 +52,8 @@
                     type:Number,
                     value:0,
                 },
+
+                disabled:Boolean,
             },
 
             listeners:{

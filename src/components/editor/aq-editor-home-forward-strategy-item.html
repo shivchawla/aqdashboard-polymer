@@ -183,7 +183,8 @@
             },
 
             goToForwardTest: function(e) {
-                this.fire('route-forwardtest-detail-action', {strategyId: this.strategyId, forwardtestId: this.forwardtestId});
+                this.fire('route-forwardtest-detail-action', {strategyId: this.strategyId, forwardtestId: this.forwardtestId,
+                    strategyName: this.strategyName});
             },
 
             computeStatusClass: function(status) {

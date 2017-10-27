@@ -3,17 +3,19 @@
 
 <dom-module id='aq-analyze-detail'>
 	<template>
-        <iron-lazy-pages attr-for-selected="page" selected="[[_computeDetailPage(params.type)]]">
-			<template is="iron-lazy-page" page="detail-backtest">
-	            <aq-analyze-backtest-detail 
+        <iron-lazy-pages restamp attr-for-selected="page" selected="[[_computeDetailPage(params.type)]]">
+			<template is='iron-lazy-page' restamp page="detail-backtest">
+	            <aq-analyze-backtest-detail
+	            	current-path=[[currentPath]] 
 	                backtest-id='[[typeId]]'
 	                strategy-id='[[strategyId]]'
 	                heading=[[params.heading]]>
 	            </aq-analyze-backtest-detail>
 	        </template>
             
-            <template is="iron-lazy-page" page="detail-forwardtest">
+            <template is='iron-lazy-page' restamp page="detail-forwardtest">
                 <aq-analyze-forwardtest-detail 
+                	current-path=[[currentPath]] 
                     forwardtest-id='[[typeId]]'
                     strategy-id='[[strategyId]]'>
                 </aq-analyze-forwardtest-detail>
@@ -30,11 +32,32 @@
 				typeId: String,
 				strategyId: String,
 				params:Object,
+				currentPath:Array
+			},
+
+			attached: function() {
+				var currentPath = JSON.parse(JSON.stringify(this.currentPath));
+
+				this.currentPath = [];
+
+				currentPath.push({text:"All Strategies", route:"/dashboard/editor"});
+				
+				currentPath.push({text:this.params.strategyName, route:"/dashboard/editor/"+this.strategyId});
+					
+				if(this.params.type == "backtest") {
+					currentPath.push({text:"All Backtests", route:"/dashboard/analyze/"+this.strategyId});
+					currentPath.push({text:this.params.heading});
+				} else {
+					//currentPath.push({text:this.params.strategyName, route:"/dashboard/editor/"+this.strategyId});
+					currentPath.push({text:"Forward Test"});
+					
+				}
+
+				this.currentPath = currentPath;
 			},
 
 			_computeDetailPage: function(type) {
 				return type == "backtest" ? "detail-backtest" : (type == "forward" ? "detail-forwardtest" : "yamma");
-				
 			},
 			
 		});

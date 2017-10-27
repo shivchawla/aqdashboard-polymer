@@ -11,12 +11,12 @@
     <template>
         <iron-lazy-pages restamp attr-for-selected="page" selected="{{_computeCommunityMorePage(params.threadId)}}" fallback-selection="create">
             <template is='iron-lazy-page' restamp page="detail">
-                <aq-community-postdetail thread-id=[[params.threadId]]>
+                <aq-community-postdetail current-path=[[currentPath]] thread-id=[[params.threadId]]>
                 </aq-community-postdetail>
             </template>
             
             <template is='iron-lazy-page' restamp page="create">
-                <aq-community-createpost></aq-community-createpost>
+                <aq-community-createpost current-path=[[currentPath]]></aq-community-createpost>
             </template>
         </iron-lazy-pages>
     </template>

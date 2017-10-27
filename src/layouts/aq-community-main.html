@@ -26,11 +26,11 @@
 
       <iron-lazy-pages restamp attr-for-selected="page" selected="{{computeCommunityPage(active)}}">
           <template is='iron-lazy-page' restamp page="home">
-              <aq-community-home></aq-community-home>
+              <aq-community-home current-path=[[currentPath]]></aq-community-home>
           </template>
 
           <template is='iron-lazy-page' restamp page="more">
-              <aq-community-more params="[[routeData]]"></aq-community-more>
+              <aq-community-more current-path=[[currentPath]] params="[[routeData]]"></aq-community-more>
               <!--iron-lazy-pages attr-for-selected="page" selected="[[computeCommunityPageMore(routeData)]]">
                 
                   <template is='iron-lazy-page' restamp page="detail">
@@ -55,6 +55,8 @@
           },
 
           active: Boolean,
+
+          currentPath: Array,
       },
 
       listeners:{

@@ -15,8 +15,10 @@
 			margin-left: 0px !important;
 		}
 
-		.crumb-item:hover {
+		.crumb-item-text-hoverable:hover {
 			cursor: pointer;
+			text-decoration: underline;
+			color: teal;
 		}
 
 	</style>
@@ -24,8 +26,9 @@
 	<template>
 		<!--template is='dom-if' if='[[pathReady]]'-->
 			<div id="crumb-container" class="layout horizontal">
-				<template is='dom-repeat' items=[[path]]>
-					<div class="crumb-item" id="crumb-item-[[index]]" on-tap='onClick'>[[item]] > </div>
+				<template is='dom-repeat' items=[[path]] restamp on-dom-change='onDomChange'>
+					<div class="crumb-item" id="crumb-item-[[index]]" on-tap='onClick'><span class$="[[hoverClass(path,index)]]"">[[item.text]]</span>
+					<template is='dom-if' if=[[indexLessThanLength(path,index)]]> <span class="self-center">></span></template></div>
 				</template>
 			</div>
 		<!--/template-->
@@ -36,31 +39,52 @@
 			is: 'aq-breadcrumb-item',
 
 			properties: {
-				path: Array,
-				//modifiedPath: Array,
-				//pathReady: Boolean,	
-			},
-
-			attached: function() {
-				if(this.path && this.path.length > 0) {
-					var nItems = this.path.length;
-					this.async(function() { 
-						this.$$('#crumb-item-'+(nItems -1)).style.color = '#cc6666';
-						
-						var content = this.$$('#crumb-item-'+(nItems -1)).textContent; 
-						var idx = content.indexOf('>'); 
-						
-						if(idx != -1) {
-							this.$$('#crumb-item-'+(nItems -1)).textContent =content.slice(0, idx-1); 
-						}
-
-						}, 50);
+				path: {
+					type: Array,
+					//observer:'_pathChanged',
 				}
 			},
 
-			onClick: function(e) {
+			onDomChange: function() {
+				if(this.path && this.path.length > 0) {
+					var nItems = this.path.length;
+					this.async(function() { 
+						for(var i=0;i<this.path.length;i++) {
+							if(this.$$('#crumb-item-'+i)) {
+								this.$$('#crumb-item-'+i).style.color = 'black';
+							}
+						}
 
-				this.fire('bread-crumb-clicked', {page:e.target.innerText});
+						if(this.$$('#crumb-item-'+(nItems-1))) {
+							this.$$('#crumb-item-'+(nItems-1)).style.color = '#cc6666';
+							this.$$('#crumb-item-'+(nItems-1)).style.cursor = 'default';
+
+						}
+						
+					}, 50);
+				}
+			},
+
+			indexLessThanLength: function(path, index) {
+				return index < path.length - 1;
+			},
+
+			onClick: function(e) {
+				var text = e.target.innerText;
+				text = text.replace(' >','');
+				var texts = this.path.map(item => item.text);
+				var idx = texts.indexOf(text);
+				
+				if(idx != -1) {
+					this.fire('rt-changed', {route: this.path[idx].route});
+				}
+				
+			},
+
+			hoverClass: function(path, index) {
+				if (this.indexLessThanLength(path, index)) {
+					return "crumb-item-text-hoverable";
+				}
 			}
 			
 		})

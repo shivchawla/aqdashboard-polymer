@@ -210,7 +210,7 @@
         </iron-ajax>
 
         <template is='dom-if' if="[[preview]]">
-            <aq-community-previewpost 
+            <aq-community-previewpost
                 thread-data="[[threadData]]" disable-buttons>
             </aq-community-previewpost>
         </template>
@@ -340,7 +340,7 @@
 
                 currentPath: {
                     type: Array,
-                    value: ["Home", "Community", "Create a Post"],
+                    //value: ["Home", "Community", "Create a Post"],
                 }
 
             },
@@ -354,6 +354,13 @@
             attached: function() {
               this.resetView();
               this.attachedBacktestId = this.queryParams.backtestId;
+
+              var currentPath = JSON.parse(JSON.stringify(this.currentPath));
+
+              this.currentPath = [];
+              currentPath.push({text:"Create a Post"});
+              this.currentPath = currentPath;
+
             },
 
             postThread: function () {

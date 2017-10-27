@@ -18,15 +18,6 @@
             margin-bottom: 10px;
         }
 
-        paper-button {
-            height: 30px;
-            font-size: 13px;
-            color: white;
-            font-weight: 700;
-            background-color: teal;
-            --border: 1px solid #cc6666;
-        }
-
         #buttons {
             margin-bottom: 30px;
             margin-top: 30px;
@@ -90,10 +81,10 @@
 
                 currentPath: {
                     type: Array,
-                    value: ["Home", "Community", "Preview Post"]
+                    value: [{text:"Home", route:"/dashboard"}, {text:"Community", route:"/dashboard/community"}, {text:"Preview Post"}],
                 },
-
             },
+
             onEdit: function () {
                 this.fire('edit-clicked');
             },

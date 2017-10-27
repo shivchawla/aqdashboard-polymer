@@ -231,7 +231,7 @@
 
         currentPath: {
             type: Array,
-            value:["Home", "Community", "Post Detail"],
+            //value:["Home", "Community", "Post Detail"],
         }
 
       },
@@ -266,6 +266,8 @@
 
       onGetThreadDetailResponse: function(data) {
           this.set('threadDetails', data.detail.response);
+
+          this.push('currentPath', {text:this.threadDetails.title})
           
           this.set('replies', data.detail.response.replies);
       },

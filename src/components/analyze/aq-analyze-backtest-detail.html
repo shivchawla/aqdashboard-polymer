@@ -52,12 +52,11 @@
 
 				currentPath: {
 					type: Array,
-					value: ["Home", "Research", "All Strategies", "All Backtests", "Backtest Detail"]
+					//value: ["Home", "Research", "All Strategies", "All Backtests", "Backtest Detail"]
 				},
 
 				loading: {
 					type:Boolean,
-					observer:'_loadingChanged',
 				},
 			},
 
@@ -66,22 +65,16 @@
 				this.fire('rt-changed',{route:'/dashboard/analyze/' + this.strategyId});
 			},
 
-			_loadingChanged: function(){
-				/*if(this.loading == false) {
-					this.async(function(){this.$$('.internal-content').style.display = 'block'; 
-					this.$$('aq-backtest-detail-item').resize();
-				}, 500);
-				}*/
-			},
-
 			attached: function() {
-				//this.$$('.internal-content').style.display = 'none';
 				if(!this.$.authItem.checkHasToken()) {
          	 		this.fire('rt-changed',{route:'/user/signin'});
 	          		return;
 	          	} 
 			},
 
+			goToEditor: function() {
+				this.fire('rt-changed',{route:'/dashboard/editor/' + this.strategyId});
+			},
 
 		});
 			

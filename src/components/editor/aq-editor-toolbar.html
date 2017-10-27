@@ -245,7 +245,8 @@
               			class= "flex toolbarIcon" 
               			icon= "vaadin-icons:line-bar-chart"
                         title="Analyze all Backtests" 
-                        on-tap='onAnalyze'>
+                        on-tap='onAnalyze'
+                        disabled=[[!nonZeroNumBacktests(numBacktests)]]>
                 </paper-icon-button>
 
                 <paper-icon-button 
@@ -324,6 +325,8 @@
                 },
 
                 backtestId: String,
+
+                numBacktests: Number,
             },
 
             closeAll: function () {
@@ -462,7 +465,11 @@
             onBacktestStarted: function(e) {
                 this.backtestId = e.detail.id
                 this.pctCompleted = 0;
-            }
+            },
+
+            nonZeroNumBacktests: function(numBacktests) {
+                return numBacktests > 0;
+            },
 
         });
     </script>

@@ -174,6 +174,7 @@
                         class="paper-header"
                         strategy-name="[[strategy.fullName]]" 
                         strategy-desc="[[strategy.description]]"
+                        num-backtests="[[strategy.numBacktests]]"
                         narrow="[[narrow]]"
                         toggle-active="[[checkToggleActive(narrow, showSidebar)]]" 
                         strategy-id="[[strategyId]]">
@@ -213,7 +214,9 @@
                             <div id="sidebar" drawer> 
                                 <iron-pages selected="{{selectedSidebar}}" >
 
-                                    <aq-editor-sidebar-run id='runSidebar'>
+                                    <aq-editor-sidebar-run 
+                                        id='runSidebar' 
+                                        disabled=[[isRunning]]>
                                     </aq-editor-sidebar-run>
 
                                     <aq-editor-sidebar-log id='logContainer' backtest-id=[[activeBacktestId]]></aq-editor-sidebar-log>
@@ -344,7 +347,7 @@
                     //this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}, {title:"Logs", icon:"aq-icons:graphic-eq"}];
                     this.selectedSidebar = 1;
                   } else {
-                    //this.selectedSidebar = 0;
+                    this.selectedSidebar = 0;
                     //this.itemsArray = [{title:"Settings", icon:"aq-icons:settings"}];
 			        this.activeBacktestId = ""; 
                   }
@@ -397,7 +400,7 @@
             },
 
             toggleDrawer: function () {
-            
+
                 if (this.showSidebar && this.narrow) {
                     this.$$('#drawerpanel').togglePanel();
                 } else if (this.showSidebar && !this.narrow) {
@@ -405,7 +408,6 @@
                 } else {
                     this.openDrawer();
                 }
-
 
             },
 
@@ -448,7 +450,6 @@
             },
 
             onGetStrategyError: function (data) {
-
             },
 
             onStrategySavedResponse: function (data) {
@@ -497,7 +498,6 @@
             },
 
             runStrategy: function (e) {
-
                 // first save the strategy
                 this.runStrategyData = this.$$('#runSidebar').getSettings();
 
@@ -511,7 +511,6 @@
                 if (this.$$('#logContainer')) {
                     this.$$('#logContainer').resetLogs();
                 }
-
             },
 
             onStrategyExecutionResponse: function (data) {

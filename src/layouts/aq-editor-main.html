@@ -35,7 +35,7 @@
     <iron-lazy-pages restamp attr-for-selected="page" selected="{{computeSelectedPage(active)}}" fallback-selection="home">
          
         <template is='iron-lazy-page' restamp page="home">
-            <aq-editor-home></aq-editor-home>
+            <aq-editor-home current-path=[[currentPath]]></aq-editor-home>
         </template>
 
         <template is='iron-lazy-page' restamp page="edit">
@@ -77,6 +77,8 @@
           type:Object,
           //observer:'_routeDataChanged',
         },
+
+        currentPath:Array,
 
       },
 

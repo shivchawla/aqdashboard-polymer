@@ -123,15 +123,6 @@
             border: 1px solid #e1e1e1;
         }
 
-        paper-button {
-            --paper-button :{
-                font-size: 12px;
-                font-weight: 700;
-                background-color: teal;
-                color: white;
-            };
-        }
-
         .search-bar {
             width: 50%;
             margin: 0 auto;
@@ -256,11 +247,10 @@
             debounce-duration="300">
         </iron-ajax>
             
-        <aq-allpage-layout loading='[[!isEditorHomeReady(loading, liveStrategies, testStrategies)]]' class="flex" header="All Strategies" 
-            current-path="[[currentPath]]">
+        <aq-allpage-layout loading='[[!isEditorHomeReady(loading, liveStrategies, testStrategies)]]' class="flex" header="All Strategies" current-path="[[currentPath]]">
 
             <div class="header-button self-center">
-                <paper-button raised noink id="createButton" on-tap="createNew">Create New
+                <paper-button class="self-center" raised noink id="createButton" on-tap="createNew">Create New
                 </paper-button>
             </div>
 
@@ -830,7 +820,8 @@
             goToForwardTest: function(e) {
                 var strategyId = e.detail.strategyId;
                 var forwardtestId = e.detail.forwardtestId;
-                this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward'});
+                var strategyName = e.detail.strategyName;
+                this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward&strategyName='+strategyName});
             },
 
             hasNonZeroStrategies: function(strategies) {

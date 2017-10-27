@@ -376,7 +376,8 @@
 
                         <div id='settings-container'>
                             <template is='dom-if' if='[[forwardtestSettings]]'>
-                                <aq-settings-display settings="[[forwardtestSettings]]"></aq-settings-display>
+                                <aq-settings-display settings="[[forwardtestSettings]]">
+                                </aq-settings-display>
                             </template>
                         </div>
 
@@ -774,6 +775,10 @@
                         if(brokerage.cancelpolicy) {
                             brokerageSettings.push({label:"Cancel Policy", value2:brokerage.cancelpolicy, value:""});
                         }
+
+                        if(brokerage.executionpolicy) {
+                            brokerageSettings.push({label:"Execution Policy", value2:brokerage.executionpolicy, value:""});
+                        }
                     }
 
                     hasValidData = this.forwardtest ? this.forwardtest.serializedData ? this.forwardtest.serializedData.tradeenv ? true : false : false : false;
@@ -803,19 +808,23 @@
                         brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value, value2:advancedSettings.commission.model});
                     }
 
-                    if(advancedSettings.cancelpolicy) {
+                    if(advancedSettings.cancelPolicy) {
                         brokerageSettings.push({label:"Cancel Policy", value2:advancedSettings.cancelPolicy, value:""});
+                    }
+
+                    if(advancedSettings.executionPolicy) {
+                        brokerageSettings.push({label:"Execution Policy",value2:advancedSettings.executionPolicy, value:""});
                     }
 
                     if(advancedSettings.rebalance) {
                         otherSettings.push({label: "Rebalance", value2: advancedSettings.rebalance, value:""});
                     }
 
-                    if(advancedSettings.rebalance) {
+                    if(advancedSettings.resolution) {
                         otherSettings.push({label: "Resolution", value2: advancedSettings.resolution, value:""});
                     }
 
-                    if(advancedSettings.rebalance) {
+                    if(advancedSettings.investmentPlan) {
                         otherSettings.push({label: "Investment Plan", value2: advancedSettings.investmentPlan, value:""});
                     }
                 }
