@@ -449,7 +449,7 @@
               return "/main";
           }
 
-          if(this.hasToken && route.indexOf('signin') != -1) {
+          if(this.hasToken && (route.indexOf('signin') != -1 || route.indexOf('signup') != -1)) {
               return "/dashboard/editor";
           }
 

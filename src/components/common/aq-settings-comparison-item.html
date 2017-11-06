@@ -1,0 +1,161 @@
+
+<link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+
+<link rel="import" href="./aq-settings-display.html">
+
+<dom-module id="aq-settings-comparison-item">
+	<style  include="iron-flex iron-flex-alignment iron-positioning">
+	</style>
+
+	<style>
+		paper-tabs {
+            height: 25px;
+            padding: 5px;
+        }
+       
+        paper-tab {
+            --paper-tab-content-unselected: {
+                background-color: #f5f5f5;
+                color: #3c3c3c;
+            };
+        }
+
+        paper-tab {
+            --paper-tab-content: {
+                background-color: teal;
+                padding: 5px;
+                color:white;
+            }
+        }
+
+	</style>
+
+	<template>
+		<div class="layout horizontal around-justified">
+			<div class="container">
+				<paper-tabs noink no-bar id="leftSelector" selected="{{selectedLeft}}" on-iron-select='onChangeBacktest'>
+                        <template is="dom-repeat" items="{{backtestIndexArray}}">
+                            <paper-tab>{{item}}</paper-tab>
+                        </template>
+                    </paper-tabs>
+                    
+	    	 	<aq-settings-display settings="[[settingsLeft]]"></aq-settings-display>
+	    	</div>
+
+	    	<div class="container">
+    		 	<paper-tabs noink no-bar id="rightSelector" selected="{{selectedRight}}" on-iron-select='onChangeBacktest'>
+                    <template is="dom-repeat" items="{{backtestIndexArray}}">
+                        <paper-tab>{{item}}
+                        </paper-tab>
+                    </template>
+                </paper-tabs>
+		    	<aq-settings-display settings="[[settingsRight]]"></aq-settings-display>
+	    	</div>
+	    </div>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'aq-settings-comparison-item',
+
+			properties: {
+				compareItems: {
+                    type:Array,
+                    value:[],
+                    observer:'_compareItemsChanged',
+                },
+
+				settingsLeft: Object,
+				settingsRight: Object,
+				backtestIndexArray: Array,
+				
+				selectedRight: {
+					type:Number,
+					value:1,
+				},
+
+				selectedLeft: {
+					type:Number,
+					value:0,
+				}
+			},
+
+			_compareItemsChanged: function() {
+                this.async(this.compareSettings, 500);
+            },
+
+           	onChangeBacktest: function() {
+                this.debounce('cmp', this.compareSettings, 300);
+            },
+
+         	compareSettings: function() {
+                var backtests = this.compareItems.map(x=>x.backtest); 
+
+                this.backtestIndexArray = this.compareItems.map(x=>"Backtest " +x.index);
+
+                this.settingsLeft = this.computeSettings(backtests[this.selectedLeft].settings);
+
+                this.settingsRight = this.computeSettings(backtests[this.selectedRight].settings);
+
+            },
+
+            computeSettings: function(allSettings) {
+                var basicSettings = [];
+                var brokerageSettings = [];
+                var otherSettings = [];
+                var settings = [];
+
+                var advancedSettings = JSON.parse(allSettings.advanced);
+
+                basicSettings.push({label:"Initial Cash", value:allSettings["initialCash"], value2:""});
+
+                //var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric' })+" to "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN', {year: 'numeric', month: 'long', day: 'numeric'});
+
+                var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-US')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
+
+                basicSettings.push({label:"Dates", value:dates, value2:""});
+
+                basicSettings.push({label:"Benchmark", value:"", value2:"NIFTY_50"});
+
+                basicSettings.push({label:"Universe", value:"", value2:allSettings.universe=="" ? "Nifty 50" : allSettings.universe});
+
+                if(advancedSettings.commission) {
+                    brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value.toString(), value2:advancedSettings.commission.model});
+                }
+
+                if(advancedSettings.slippage) {
+                    brokerageSettings.push({label:"Slippage", value:advancedSettings.slippage.value.toString(), value2:advancedSettings.slippage.model});
+                }
+
+                if(advancedSettings.cancelPolicy) {
+                    brokerageSettings.push({label:"Cancel Policy", value2:advancedSettings.cancelPolicy, value:""});
+                }
+
+                if(advancedSettings.executionPolicy) {
+                    otherSettings.push({label: "Execution Policy", value2: advancedSettings.executionPolicy, value:""});
+                }
+
+                if(advancedSettings.rebalance) {
+                    otherSettings.push({label: "Rebalance", value2: advancedSettings.rebalance, value:""});
+                }
+
+                if(advancedSettings.resolution) {
+                    otherSettings.push({label: "Resolution", value2: advancedSettings.resolution, value:""});
+                }
+
+                if(advancedSettings.investmentPlan) {
+                    otherSettings.push({label: "Investment Plan", value2: advancedSettings.investmentPlan, value:""});
+                }
+                
+                settings = settings.concat(basicSettings).concat(brokerageSettings).concat(otherSettings);
+                  
+                if(settings.length > 0){
+                    return settings;
+                }
+            },
+
+		});
+	</script>
+
+</dom-module>

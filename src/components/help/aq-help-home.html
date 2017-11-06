@@ -7,11 +7,13 @@
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
+<link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="../common/aq-loading-progress.html">
-<link rel="import" href="./aq-help-marked-item.html">
+<!--link rel="import" href="./aq-help-marked-item.html"-->
+
 <link rel="import" href="../common/aq-search-input.html">
 <link rel="import" href="../common/aq-navigation-item.html">
 <link rel="import" href="../common/aq-allpage-layout.html">
@@ -77,26 +79,30 @@
             --paper-item-focused:{
                 background-color: #f7f7f7;
             }
+        }
 
+        .Big {
+            font-size: 16px;
         }
 
         .Normal {
             font-size: 15px;
+            padding-left: 30px;
         }
 
-        .Small {
-            padding-left: 20px;
+        .Medium {
+            padding-left: 40px;
             font-size: 13px;
             color: #7f7f7f;
         }
 
-        .Mini {
+        .Small {
             padding-left: 30px;
             font-size: 12px;
             color: #7f7f7f;
         }
 
-        .SMini {
+        .Mini {
             padding-left: 40px;
             font-size: 12px;
             font-style: italic;
@@ -149,6 +155,18 @@
             height: 75vh !important;
         }
 
+        polymer-quill-html-render {
+            --margin-top: 5px;
+            margin-bottom: -15px;
+            min-height: 100px;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+            color: black;
+            padding-left: 30px
+            padding-right: 30px;
+            line-height: 24px;
+        }
+
 
     </style>
 
@@ -191,9 +209,9 @@
                             <template is="dom-repeat" items="{{itemsHelpContent}}">
                                  <div id='content' class="layout vertical">
                                         
-                                    <aq-help-marked-item help-text="[[item.text]]">
-                                    </aq-help-marked-item>
-
+                                    <polymer-quill-html-render 
+                                        content="[[item.text]]">
+                                    </polymer-quill-html-render>
                                     <template is='dom-if' if='[[item.img_src]]'>
                                         <img class="self-center" src="{{item.img_src}}">
                                     </template>
@@ -206,9 +224,7 @@
                     </paper-header-panel>
 
                     <paper-header-panel id='drawerPanel1' drawer mode="seamed">
-                        <aq-search-input>
-                            <input is="iron-input" placeholder="Search Help" on-keyup="search" id="search_input" on-blur="blur">
-                        </aq-search-input>
+                        <aq-search-input></aq-search-input>
                         <paper-listbox selected="{{scrollSelected}}">
                             <template is="dom-repeat" items="{{categoriesArray}}">
                                 <paper-item class$="selectableCategories [[item.Category.size]]">
@@ -257,11 +273,16 @@
 
             },
 
-            search: function () {
-                var search = this.$$('#search_input').value;
+            listeners: {
+                'search-input':'search',
+            },
+
+            search: function(e) {
+                var search = e.detail.searchText;
                 search = search.toLowerCase();
                 var parent = this;
                 var categoriesClass = Polymer.dom(this.root).querySelectorAll('.selectableCategories');
+
                 var text;
                 for (var i = 0; i < this.categoriesArray.length; i++) {
                     text = parent.categoriesArray[i].Category.value.toLowerCase();
@@ -287,6 +308,7 @@
                 }
 
                 this.set('categoriesArray', array);
+
 
             },
 

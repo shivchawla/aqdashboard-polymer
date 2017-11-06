@@ -18,6 +18,8 @@
 <link rel="import" href="../common/aq-code-comparison.html">
 <link rel="import" href="../common/backtest/aq-backtest-summary-element.html">
 
+<link rel='import' href='../common/aq-settings-comparison-item.html'>
+
 <dom-module id='aq-analyze-backtest-comparison-dialog'>
     <style include="iron-flex iron-flex-alignment iron-positioning">
     </style>
@@ -189,6 +191,7 @@
                         <paper-tab>SUMMARY</paper-tab>
                         <paper-tab>CODE</paper-tab>
                         <paper-tab>RETURNS</paper-tab>
+                        <paper-tab>SETTINGS</paper-tab>
                     </paper-tabs>
             
                     <div class="pages-container">
@@ -226,6 +229,13 @@
                             		<div id='cumRetLineChartDiv'></div>
                             		<div id='barChartDiv'></div>
                             	</iron-pages>
+                            </div>
+
+                            <div id='settingsComparison' page="4">
+                                <aq-settings-comparison-item 
+                                    compare-items="[[compareItems]]">
+                                </aq-settings-comparison-item>
+
                             </div>
                         </iron-pages>
                     </div>

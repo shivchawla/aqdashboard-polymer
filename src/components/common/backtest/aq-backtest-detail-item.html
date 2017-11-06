@@ -201,7 +201,7 @@
                         </div>
 
                         <div id='settings-container'>
-                            <template is='dom-if' if='[[back testSettings]]'>
+                            <template is='dom-if' if='[[backtestSettings]]'>
                                 <aq-settings-display settings="[[backtestSettings]]">
                                 </aq-settings-display>
                             </template>
@@ -848,6 +848,14 @@
 
                     basicSettings.push({label:"Initial Cash", value:allSettings["initialCash"], value2:""});
 
+                    var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-US')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
+
+                    basicSettings.push({label:"Dates", value:dates, value2:""});
+
+                    basicSettings.push({label:"Benchmark", value:"", value2:"NIFTY_50"});
+
+                    basicSettings.push({label:"Universe", value:"", value2:allSettings.universe=="" ? "Nifty 50" : allSettings.universe});
+                    
                     if(advancedSettings.slippage) {
                         brokerageSettings.push({label:"Slippage", value:advancedSettings.slippage.value, value2:advancedSettings.slippage.model});
                     }

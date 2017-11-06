@@ -51,17 +51,21 @@
                 icon:{
                     type:String,
                     value:"search"
-                }
+                },
+
             },
 
             search: function () {
                 var search = this.$$('#search_input').value;
                 search = search.toLowerCase();
                 var parent = this;
+
+                this.fire('search-input', {searchText: search});
             },
 
             blur: function() {
               this.$$('#search_input').value="";
+              this.async(function(){this.fire('search-input', {searchText: ""});}, 200);
             },
 
 

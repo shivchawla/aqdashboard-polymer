@@ -47,20 +47,7 @@
 			margin-bottom: 5px;
 		}
 
-		#item-value-3 {
-			display: none;
-			margin-right: 0px;
-		}
-
-		#item-value-4 {
-			display: none;
-			margin-right: 0px;
-		}
-
-		#item-value-5 {
-			display: none;
-			margin-right: 0px;
-		}
+		
 
 		#item-value-6 {
 			display: none;
@@ -71,17 +58,17 @@
 	<template>
 		<div id='settings-container' class="layout vertical">
 			<div id="heading">Settings</div>
-			<template is='dom-repeat' items=[[settings]]>
+			<template is='dom-repeat' items={{settings}}>
 				<div class="layout horizontal item-container center">
 					<div class="item-label">[[item.label]]:&nbsp</div>
 					
-					<template is='dom-if' if=[[hasValue(item.value)]]>
+					<template is='dom-if' if="[[hasValue(item.value)]]">
 						<div class="item-value" id='item-value-[[index]]'>
 							[[item.value]]
 						</div>
 					</template>
 
-					<template is='dom-if' if=[[hasValue(item.value2)]]>
+					<template is='dom-if' if="[[hasValue(item.value2)]]">
 						<div class="item-value2">[[item.value2]]
 						</div>
 					</template>

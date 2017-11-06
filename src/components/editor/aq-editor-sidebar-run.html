@@ -1,6 +1,7 @@
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <!--link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"-->
 
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
@@ -91,7 +92,7 @@
         	width: 200px;
         }
 
-        paper-input {
+        paper-input, paper-textarea {
         	--paper-input-container: {
         		padding-top: 0px;
         		padding-bottom: 0px;
@@ -117,14 +118,52 @@
           	};
         }
 
+        paper-textarea {
+            margin-top: 10px;
+            --paper-input-container: {
+                padding-top: 0px;
+                padding-bottom: 0px;
+                padding-left:5px;
+                border: 1px solid #e5e5e5;
+                width: 320px;
+                max-height: 300px;
+            };
+        }
+
         .horizontalField {
         	margin-bottom: 20px;
         	margin-left:30px;
         }
 
+        select {
+            font-size: 15px;
+            width: 180px;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+        }
+        
     </style>
 
     <template>
+
+        <iron-ajax auto
+            url="../../../resources/benchmark/benchmark.json"
+            handle-as="json"
+            id="getBenchmarkQuery"
+            on-response="onGetBenchmarkSuccess"
+            on-error="onGetBenchmarkError"
+            debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax 
+            url=""
+            handle-as="text"
+            id="getUniverseQuery"
+            on-response="onGetUniverseSuccess"
+            on-error="onGetUniverseError"
+            debounce-duration="300">
+        </iron-ajax>
+
         <paper-card id='run' class="layout vertical">
         
         	<div class="layout horizontal">
@@ -144,9 +183,9 @@
                 		</div>
 
                 		<div class="value self-center">
-                		<input class="input-box" label="Seed Capital"
-                                       value="{{initialCash::change}}" type="number"
-                                       on-keydown="checkForKeys" on-blur='close' disabled=[[disabled]]>
+            		    <input class="input-box" label="Seed Capital"
+                           value="{{initialCash::change}}" type="number"
+                           on-keydown="checkForKeys" on-blur='close' disabled=[[disabled]]>
                        	</div>
             		</div>
 
@@ -175,8 +214,41 @@
 
             		</div>
 
-                </div>
+                    <div class="horizontalField layout horizontal">
+                        <div class="label self-center">
+                            <span>Benchmark</span>
+                        </div>
 
+                        <select>
+                          <template is="dom-repeat" items="[[benchmarkList]]" restamp> 
+                                <option value="[[item]]">[[item]]</option>
+                          </template>
+                          <!--option value="saab">Saab</option>
+                          <option value="mercedes">Mercedes</option>
+                          <option value="audi">Audi</option-->
+                        </select>
+                    </div>
+
+                    <div class="horizontalField">
+                    <div class="layout horizontal">
+                        
+                        <div class="label self-center">
+                            <span>Universe</span>
+                        </div>
+
+                        <select on-change='onChangeUniverse'>
+                          <template is="dom-repeat" items="[[universeList]]" restamp> 
+                                <option value="[[item]]">[[item]]</option>
+                          </template>
+                          <!--option value="saab">Saab</option>
+                          <option value="mercedes">Mercedes</option>
+                          <option value="audi">Audi</option-->
+                        </select>
+                    </div>
+
+                        <!--paper-textarea rows=10></paper-textarea-->
+                    </div>
+                </div>
 
                 <div id='advancedSettings' class="layout vertical">
 	                    
@@ -353,7 +425,10 @@
                 disabled:{
                     type: Boolean,
                     value:false,
-                }
+                },
+
+                benchmarkList:Array,
+                universeList:Array,
             },
 
             listeners:{
@@ -364,6 +439,37 @@
                 'rebalance-selected':'onSelectRebalance',
                 'investment-plan-selected':'onSelectInvestmentPlan',
                 'execution-policy-selected':'onExecutionPolicySelected',
+            },
+
+            onGetBenchmarkSuccess: function(e) {
+                this.benchmarkList = e.detail.response.benchmark;
+                this.universeList = e.detail.response.universe;
+                this.universe = this.universeList[0]; 
+            },
+
+            onGetBenchmarkError: function(e) {
+                console.warn(e);
+            },
+
+            onChangeUniverse: function(e) {
+                var idx = e.srcElement ? e.srcElement.selectedIndex ? e.srcElement.selectedIndex : 0 : 0;
+
+                this.universe = this.universeList[idx] 
+                    
+            },
+
+            populateUniverse: function(file) {
+                this.$.getUniverseQuery.url="https://www.nseindia.com/content/indices/"+file;
+
+                this.$.getUniverseQuery.generateRequest();
+            },
+
+            onGetUniverseSuccess: function(e) {
+                console.warn(e.detail.response);
+            },
+
+            onGetUniverseError: function(e){
+                console.warn(e);
             },
 
             initializeValues: function() {
@@ -389,7 +495,6 @@
             attached: function() {
                 
                 this.initializeValues();
-
                 var x = localStorage.getItem('my-app-storage');
                 if (x) {
                     var settings = JSON.parse(x).settings;
@@ -410,6 +515,8 @@
                        
                     }
                 }
+                //this.$.getBenchmarkQuery.generateRequest();
+
             },
 
             onSelectResolution: function(e) {
