@@ -1,4 +1,3 @@
-
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="./aq-settings-display.html">
@@ -112,13 +111,14 @@
 
                 //var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric' })+" to "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN', {year: 'numeric', month: 'long', day: 'numeric'});
 
-                var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-US')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
+                var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-IN')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
 
                 basicSettings.push({label:"Dates", value:dates, value2:""});
 
-                basicSettings.push({label:"Benchmark", value:"", value2:"NIFTY_50"});
+                basicSettings.push({label:"Benchmark", value:"", value2:allSettings.benchmark ? allSettings.benchmark=="" ? "NIFTY_50" : allSettings.benchmark : "NIFTY_50"});
 
-                basicSettings.push({label:"Universe", value:"", value2:allSettings.universe=="" ? "Nifty 50" : allSettings.universe});
+                basicSettings.push({label:"Universe", value:"", 
+                            value2:allSettings.universe ? allSettings.settings=="" ? "Nifty 50" : allSettings.universe : "Nifty 50"});
 
                 if(advancedSettings.commission) {
                     brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value.toString(), value2:advancedSettings.commission.model});
