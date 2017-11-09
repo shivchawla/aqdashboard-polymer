@@ -20,7 +20,7 @@
 			padding-left: 2px;
 		}
 
-		.warning {
+		.warn {
 			color: orange;
 			padding-left: 2px;
 		}
@@ -44,20 +44,15 @@
 	<template>
 		<div id='item' class="layout horizontal">
 			
-			<template is='dom-if' if="[[isError(messageType)]]">
-				<p class='error'>[[toUpperCase(messageType)]]</p>
-			</template>
+			<p class$="[[computeLogClass(messageType)]]">[[toUpperCase(messageType)]]</p>
 
-			<template is='dom-if' if="[[isWarning(messageType)]]">
-				<p class='warning'>[[toUpperCase(messageType)]]</p>
-			</template>
-
-			<template is='dom-if' if="[[isInfo(messageType)]]">
-				<p class='info'>[[toUpperCase(messageType)]]</p>
-			</template>
 			<p id='message'>
+				<template is='dom-if' if='[[actualDatetime]]'>
+					<span>&nbsp[[[actualDatetime]]]</span>
+				</template>
+
 				<template is='dom-if' if='[[datetime]]'>
-					<span>&nbsp[[format(datetime)]]:&nbsp[[message]]</span>
+					<span>&nbsp[[[format(datetime)]]]:&nbsp[[message]]</span>
 				</template>
 
 				<template is='dom-if' if='[[!datetime]]'>
@@ -74,6 +69,7 @@
 			properties: {
 				message:String,
 				messageType:String,
+				actualDatetime:String,
 				datetime:String,
 			},
 
@@ -95,6 +91,7 @@
 
 			format: function(datetime) {
 				var today = new Date(datetime);
+				
 				var dd = today.getDate();
 				var mm = today.getMonth()+1; //January is 0!
 				var yyyy = today.getFullYear();
@@ -109,6 +106,18 @@
 
 				today = dd+'/'+mm+'/'+yyyy;
 				return today;
+			},
+
+			computeLogClass: function(messageType) {
+				if (messageType == "INFO") {
+					return "info";
+				} else if(messageType == "ERROR") {
+					return "error";
+				} else if(messageType == "WARN") {
+					return "warn";
+				}
+
+				return "";
 			},
 
 			

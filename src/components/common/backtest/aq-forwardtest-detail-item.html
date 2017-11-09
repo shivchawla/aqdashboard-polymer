@@ -365,7 +365,8 @@
                         <div id="log-container">
                             <template is='dom-if' if='[[forwardtestLogs]]'>
                                 <template is='dom-repeat' items="[[forwardtestLogs]]">
-                                    <aq-log-item-new 
+                                    <aq-log-item-new
+                                        actual-datetime="[[item.dt]]" 
                                         datetime="[[item.datetime]]"
                                         message="[[item.message]]"
                                         message-type="[[item.messagetype]]">

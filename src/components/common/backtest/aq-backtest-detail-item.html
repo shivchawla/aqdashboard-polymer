@@ -223,6 +223,7 @@
                             <template is='dom-if' if='[[backtestLogs]]'>
                                 <template is='dom-repeat' items="[[backtestLogs]]">
                                     <aq-log-item-new 
+                                        actual-datetime="[[item.dt]]"
                                         datetime="[[item.datetime]]"
                                         message="[[item.message]]"
                                         message-type="[[item.messagetype]]">
@@ -846,11 +847,20 @@
                     var allSettings = this.backtest.settings;
                     var advancedSettings = JSON.parse(this.backtest.settings.advanced);
 
-                    basicSettings.push({label:"Initial Cash", value:allSettings["initialCash"], value2:""});
+                    basicSettings.push({label:"Initial Cash", value: date.formatMoneyValue(allSettings["initialCash"].toFixed(0)), value2:""});
+                    //basicSettings.push({label:"Initial Cash", value:allSettings["initialCash"], value2:""});
 
-                    var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-IN')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
+                    /*var dates = new Date(allSettings["startDate"]).toLocaleDateString('en-IN')+"  to  "+ new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
 
-                    basicSettings.push({label:"Dates", value:dates, value2:""});
+                    basicSettings.push({label:"Dates", value:dates, value2:""});*/
+
+                    var startDate =  new Date(allSettings["startDate"]).toLocaleDateString('en-IN');
+
+                    var endDate = new Date(allSettings["endDate"]).toLocaleDateString('en-IN');
+                    
+                    basicSettings.push({label:"Start Date", value:"", value2:startDate});
+
+                    basicSettings.push({label:"End Date", value:"", value2:endDate});
 
                     basicSettings.push({label:"Benchmark", value:"", value2:allSettings.benchmark ? allSettings.benchmark=="" ? "NIFTY_50" : allSettings.benchmark : "NIFTY_50"});
 
@@ -858,11 +868,11 @@
                             value2:allSettings.universe ? allSettings.settings=="" ? "Nifty 50" : allSettings.universe : "Nifty 50"});
 
                     if(advancedSettings.slippage) {
-                        brokerageSettings.push({label:"Slippage", value:advancedSettings.slippage.value, value2:advancedSettings.slippage.model});
+                        brokerageSettings.push({label:"Slippage", value:advancedSettings.slippage.value.toString()+'%', value2:advancedSettings.slippage.model});
                     }
 
                     if(advancedSettings.commission) {
-                        brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value, value2:advancedSettings.commission.model});
+                        brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value.toString()+'%', value2:advancedSettings.commission.model});
                     }
 
                     if(advancedSettings.cancelPolicy) {
