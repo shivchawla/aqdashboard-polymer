@@ -155,15 +155,6 @@
             debounce-duration="300">
         </iron-ajax>
 
-        <iron-ajax 
-            url=""
-            handle-as="text"
-            id="getUniverseQuery"
-            on-response="onGetUniverseSuccess"
-            on-error="onGetUniverseError"
-            debounce-duration="300">
-        </iron-ajax>
-
         <paper-card id='run' class="layout vertical">
         
         	<div class="layout horizontal">
@@ -219,7 +210,7 @@
                             <span>Benchmark</span>
                         </div>
 
-                        <select>
+                        <select on-change='onChangeBenchmark'>
                           <template is="dom-repeat" items="[[benchmarkList]]" restamp> 
                                 <option value="[[item]]">[[item]]</option>
                           </template>
@@ -237,7 +228,7 @@
                         </div>
 
                         <select on-change='onChangeUniverse'>
-                          <template is="dom-repeat" items="[[universeList]]" restamp> 
+                          <template is="dom-repeat" items="[[universeIndexList]]" restamp> 
                                 <option value="[[item]]">[[item]]</option>
                           </template>
                           <!--option value="saab">Saab</option>
@@ -405,6 +396,16 @@
                     value: "",
                 },
 
+                universeIndex: {
+                    type: String,
+                    value: "",
+                },
+
+                benchmark :{
+                    type: String,
+                    value: "",
+                },
+
                 investmentPlan: {
                     type: String,
                     //value: investmentPlanOptions[0].value,
@@ -428,7 +429,7 @@
                 },
 
                 benchmarkList:Array,
-                universeList:Array,
+                universeIndexList:Array,
             },
 
             listeners:{
@@ -443,8 +444,10 @@
 
             onGetBenchmarkSuccess: function(e) {
                 this.benchmarkList = e.detail.response.benchmark;
-                this.universeList = e.detail.response.universe;
-                this.universe = this.universeList[0]; 
+                this.benchmark = this.benchmarkList[0];
+                this.universeIndexList = e.detail.response.universe;
+                this.universeIndex = this.universeIndexList[0];
+                //this.universe = this.universeIndexList[0]; 
             },
 
             onGetBenchmarkError: function(e) {
@@ -454,22 +457,14 @@
             onChangeUniverse: function(e) {
                 var idx = e.srcElement ? e.srcElement.selectedIndex ? e.srcElement.selectedIndex : 0 : 0;
 
-                this.universe = this.universeList[idx] 
-                    
+                this.universeIndex = this.universeIndexList[idx];
+                //this.universe = this.universe
             },
 
-            populateUniverse: function(file) {
-                this.$.getUniverseQuery.url="https://www.nseindia.com/content/indices/"+file;
+            onChangeBenchmark: function(e) {
+                var idx = e.srcElement ? e.srcElement.selectedIndex ? e.srcElement.selectedIndex : 0 : 0;
 
-                this.$.getUniverseQuery.generateRequest();
-            },
-
-            onGetUniverseSuccess: function(e) {
-                console.warn(e.detail.response);
-            },
-
-            onGetUniverseError: function(e){
-                console.warn(e);
+                this.benchmark = this.benchmarkList[idx];               
             },
 
             initializeValues: function() {
@@ -501,7 +496,7 @@
                     if (settings) {
                         this.startDate = settings.startDate;
                         this.endDate = settings.endDate;  
-                        this.universe = settings.universe;  
+                        //this.universe = settings.universe;  
                         this.initialCash = settings.initialCash;
                         /*var advancedSettings = JSON.parse(settings.advanced);
                         this.slippageModel = advancedSettings.slippage.model;
@@ -572,6 +567,9 @@
                         investmentPlan: this.investmentPlan,
                         executionPolicy: this.executionPolicy
                     }),
+
+                    universeIndex: this.universeIndex,
+                    benchmark: this.benchmark,
                     universe: this.universe
                 };
 

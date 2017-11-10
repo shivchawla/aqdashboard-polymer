@@ -162,17 +162,19 @@
                         "benchmark": benchmarkPerformance
                     };
 
-                    this.$$('aq-cumret-linechart').createCumRetLineChart(performance);
+                    var benchmark = this.forwardtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    this.$$('aq-cumret-linechart').createCumRetLineChart(performance, benchmark);
                 }
             },
 
             createMonthlyReturnBarChart: function () {
-                
                var hasValidData = this.forwardtest ? (this.forwardtest.serializedData ? true: false) : false;
 
                 if (hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
-                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly);
+
+                    var benchmark = this.forwardtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly, benchmark);
                 }
             },
 
@@ -181,6 +183,7 @@
                 var hasValidData = this.backtest ? (this.backtest.output ? (this. backtest.output ? (this.backtest.output.variables ? true : false) : false): false) : false;
 
                 if(hasValidData) { 
+
                     this.$$('aq-cumret-linechart').createTrackVarLineChart(this.backtest.output.variables);
                 }
             },

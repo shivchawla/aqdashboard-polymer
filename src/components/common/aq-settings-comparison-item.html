@@ -136,7 +136,7 @@
                 basicSettings.push({label:"Benchmark", value:"", value2:allSettings.benchmark ? allSettings.benchmark=="" ? "NIFTY_50" : allSettings.benchmark : "NIFTY_50"});
 
                 basicSettings.push({label:"Universe", value:"", 
-                            value2:allSettings.universe ? allSettings.settings=="" ? "Nifty 50" : allSettings.universe : "Nifty 50"});
+                            value2:allSettings.universeIndex ? allSettings.universeIndex=="" ? "Nifty 50" : allSettings.universeIndex : "Nifty 50"});
 
                 if(advancedSettings.commission) {
                     brokerageSettings.push({label:"Commission", value:advancedSettings.commission.value.toString()+'%', value2:advancedSettings.commission.model});

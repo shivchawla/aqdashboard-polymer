@@ -362,10 +362,10 @@
 				this.$$('#cumRetLineChart').addSeries(name, data, options, false);
 			},
 
-			createCumRetLineChart: function(totalreturn) {
+			createCumRetLineChart: function(totalreturn, benchmark) {
 				var types = ["algorithm","benchmark"];
 				var colors = ["#0375b4","#cc6666","#FFAA1D","#007849","#6e2667","#fc4a1a"];
-				var legend = ["Strategy", "Benchmark"];
+				var legend = ["Strategy", benchmark];
 				var width = [2, 1];
 
 				for (var index=0;index<types.length;index++) {

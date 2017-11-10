@@ -181,7 +181,9 @@
 
             updateCumRetGraphsWithData: function () {
                 var types = ["totalreturn", "totalreturn_benchmark"];
-                var legends = ["Strategy", "Benchmark"];
+                var legends = ["Strategy", this.backtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"];
+                
+                //var legends = ["Strategy", "Benchmark"];
                 
                 var dddd = [];
                 /*for (var k=0;k<this.rtData.length;k++) {
@@ -305,7 +307,11 @@
 
             initializeCumRetGraphData: function (data) {
 
-                var legends = ["Strategy", "Benchmark"]
+                var benchmark = this.backtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50";
+
+                var legends = ["Strategy", benchmark];
+
+                //var legends = ["Strategy", "Benchmark"];
                 var colors = ["#0375b4", "#cc6666", "#FFAA1D", "#007849", "#6e2667", "#fc4a1a"];
 
                 var dataset_str = new Array(this.realtimeXLabels.length);
@@ -335,7 +341,7 @@
 
                             }, false);
 
-                this.$$('aq-cumret-linechart').addSeries("Benchmark", [],
+                this.$$('aq-cumret-linechart').addSeries(benchmark, [],
                         {
                             color: colors[1],
                             lineWidth: 1,
@@ -370,7 +376,8 @@
                 var hasValidData = this.backtest ? (this.backtest.output ? (this.backtest.output.totalreturn ? true : false) : false) : false;
                 
                 if(hasValidData) {
-                    this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest.output.totalreturn);
+                    var benchmark = this.backtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    this.$$('aq-cumret-linechart').createCumRetLineChart(this.backtest.output.totalreturn, benchmark);
                 }
             },
 
@@ -380,7 +387,8 @@
 
                 if (!this.active && hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
-                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.performance.detail.returns.monthly);
+                    var benchmark = this.backtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.performance.detail.returns.monthly, benchmark);
                 }
             },
 
