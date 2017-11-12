@@ -449,7 +449,9 @@
                 this.strategy = data.detail.response;
             },
 
-            onGetStrategyError: function (data) {
+            onGetStrategyError: function (e) {
+                this.loading = true;
+                this.fire('ajax-error', {response: e.detail.request.response});
             },
 
             onStrategySavedResponse: function (data) {
@@ -474,7 +476,7 @@
         			this.runSwitch =0;
         			this.isRunning = false;
         		}
-
+                this.loading = true;
                 this.fire('ajax-error', {response: e.detail.request.response});
             },
 

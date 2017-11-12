@@ -356,6 +356,7 @@
 			},
 
 			onGetAllBacktestsForStrategyError: function(e) {
+				this.backtestLoading = true;
 				this.fire('ajax-error', {response: e.detail.request.response});
 			},
 
@@ -379,6 +380,7 @@
 			},
 
 			onGetStrategyError: function(e) {
+				this.strategyLoading = true;
 				this.fire('ajax-error', {response: e.detail.request.response});
 			},
 
@@ -451,6 +453,7 @@
 	        },
 
 	        onDeleteBacktestForStrategyError: function(e) {
+	        	this.loading = true;
 	        	this.fire('ajax-error', {response: e.detail.request.response});
 	        },
 
@@ -514,6 +517,7 @@
             },
 
             onForwardStrategyExecutionError: function(e) {
+            	this.loading = true;
             	this.fire('ajax-error', {response: e.detail.request.response});
             },
 

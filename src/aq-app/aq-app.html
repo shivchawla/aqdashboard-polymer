@@ -143,9 +143,22 @@
         debounce-duration="300">
       </iron-ajax>
 
+      <iron-ajax
+          url=""
+          body="{{updateTokenBody}}"
+          method='PUT'
+          id='updateTokenQuery'
+          handle-as="json"
+          on-response="onUpdateTokenResponse"
+          on-error="onUpdateTokenError"
+          headers='{"Content-Type": "application/json"}'
+          debounce-duration="300">
+      </iron-ajax>
+
   </template>
 
   <script>
+
     Polymer({
 
         is: 'aq-app',
@@ -223,7 +236,6 @@
             'ajax-error':'onAjaxError',
         },
 
-       
         attached: function() {
 
             //this.listen(window, 'hashchange', '_urlChanged');
@@ -241,9 +253,15 @@
                 lastTab = JSON.parse(x).lastTab;
             }
 
+            //this.listen("window.hashchange", 'onHashChange' , false);
+            this.listen(window, 'hashchange', 'onHashChange');
             //10 min
             //setInterval(this.setreload.bind(this), 600000);
-            this.currentUrl = window.location.href;
+            this.currentUrl = this.redirect(window.location.href);
+        },
+
+        onHashChange: function(e) {
+            this.currentUrl = this.redirect(window.location.href);
         },
 
         setreload: function() {
@@ -286,8 +304,8 @@
 
         onSignOut: function() {     
             this.removeToken();
-            this.hasToken = this.$.authItem.checkHasToken();
-            this.fire('rt-changed',{route:'/user/signout'});
+            //this.hasToken = this.$.authItem.checkHasToken();
+            //this.fire('rt-changed',{route:'/user/signout'});
         },
 
         openFeedbackDialog: function() {
@@ -375,6 +393,9 @@
         removeToken: function() {
             this.set('aimsquant.user','');
             this.$.localStorage.save(); 
+
+            this.hasToken = this.$.authItem.checkHasToken();
+            this.fire('rt-changed',{route:'/user/signin'});
         },
 
         updateToken: function(user) {
@@ -403,6 +424,7 @@
 
         goToRoute: function(e) {
             var route = this.redirect(e.detail.route);
+            
             var idx = route.indexOf('?');
             
             if(idx == 0) { //this one is when URL is refreshed and has query params
@@ -446,7 +468,7 @@
 
         redirect: function(route) {
           if(!this.hasToken && route.indexOf('dashboard') != -1) {
-              return "/main";
+              return "/user/signin";
           }
 
           if(this.hasToken && (route.indexOf('signin') != -1 || route.indexOf('signup') != -1)) {
@@ -487,11 +509,46 @@
 
         onAjaxError: function(e) {
             var response = e.detail.response;
-            if(response.statusCode == 403) {
-                this.removeToken();
-                this.hasToken = this.$.authItem.checkHasToken();
-                this.fire('rt-changed',{route:'/user/signin'});
+            if(response.statusCode == 403 && response.name == "TokenExpiredError") {
+                this.requestUpdateToken();
             }
+        },
+
+        requestUpdateToken: function() {
+            if(this.$.authItem.checkHasToken()) {
+                this.header = this.$.authItem.getHeader();
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+
+                const userDetails = this.aimsquant.user;
+                const token = userDetails.token;
+
+                if(userDetails=="" || token=="") {
+                    this.removeToken();
+                    return;
+                }
+
+                this.updateTokenBody={email: userDetails.email, token:token};
+                this.$.updateTokenQuery.url = APIEndPoint+'/user/updateToken';
+                
+                this.debounce('updateToken', function(){this.$.updateTokenQuery.generateRequest();}, 500);
+
+            } else {
+                
+                this.fire('rt-changed', {route: '/user/signin'});
+            }
+        },
+
+        onUpdateTokenResponse: function(e) {
+            this.updateToken(e.detail.response);
+            this.currentUrl = "";
+            this.currentUrl = window.location.href;
+        },  
+
+        onUpdateTokenError: function(e) {
+            this.removeToken();
+
+            //Ad logic to save the last visited URL
+            //To be called after successful login
         },
 
     });

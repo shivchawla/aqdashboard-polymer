@@ -208,6 +208,7 @@
             },
 
             onPostReplyError: function (e) {
+                this.loading = true;
                 this.fire('ajax-error', {response: e.detail.request.response});
             },
 
