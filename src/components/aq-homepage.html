@@ -258,7 +258,10 @@
             <paper-icon-button class="self-center" noink icon="aq-icons:expand-more" on-tap='onFeatures'></paper-icon-button>
     		</div>
 
-        <div class$="section [[computeLayoutClass(width)]]" id="section-features">
+        <div class="layout vertical" id='container-features'>
+            <div class="flex"></div>
+          
+            <div class$="section [[computeLayoutClass(width)]]" id="section-features">
                 <feature-detail 
                     image-src="../../resources/images/home/research-big.png" 
                     heading="RESEARCH" 
@@ -282,9 +285,9 @@
                     heading="TRADE" 
                     description="Forward simulate your investment ideas, track the peformance and portfolio and use the output to trade in real markets">
                 </feature-detail>
-
             </div>
 
+            <div class="flex"></div>
         </div>
               
         <div class="section">
@@ -332,7 +335,7 @@
     		},
 
     		onFeatures: function() {
-    			 this.$$('#section-features').scrollIntoView(true);
+    			 this.$$('#container-features').scrollIntoView(true);
     		},
 
         computeLayoutClass: function(width) {

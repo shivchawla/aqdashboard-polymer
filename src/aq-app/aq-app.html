@@ -15,6 +15,7 @@
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
 <link rel="import" href='../components/aq-policy.html'>
+<link rel="import" href='../components/aq-forbidden.html'>
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
@@ -71,6 +72,10 @@
               <aq-toolbar has-token="{{hasToken}}" current-tab="{{currentTab}}" current-url="{{currentUrl}}" class="paper-header" show-menu="true"></aq-toolbar>
    
               <iron-lazy-pages restamp attr-for-selected="page" selected="[[computePage(currentUrl)]]"> <!-- fallback-selection="/main"-->
+
+                  <template is='iron-lazy-page' restamp page="/404">
+                      <aq-forbidden></aq-forbidden>
+                  </template>
 
                   <template is='iron-lazy-page' restamp page="/main">
                       <aq-homepage></aq-homepage>
@@ -329,7 +334,7 @@
         },
 
         onPostFeedbackError: function(e) {
-            this.fire('ajax-error', {response: e.detail.request.response});
+            this.fire('ajax-error', {request: e.detail.request});
         },
 
         openInviteDialog: function() {
@@ -353,7 +358,7 @@
         },
 
         onSendInviteError: function(e) {
-            this.fire('ajax-error', {response: e.detail.request.response});
+            this.fire('ajax-error', {request: e.detail.request});
         },
 
         onMyAccount: function() {
@@ -461,6 +466,8 @@
                 return "/policy";
             } else if(currentUrl.indexOf('#') !=-1) {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);
+            } else if (currentUrl.indexOf('404') !=-1) {
+                return  "/404";
             } else {
                 return  "/main";
             }
@@ -508,9 +515,18 @@
         },
 
         onAjaxError: function(e) {
-            var response = e.detail.response;
+            var response = e.detail.request.response;
+            if(!response) {
+                response = {statusCode: 400};
+            }
+            if(!response.statusCode) {
+                response.statusCode = response.status ? response.status : 400; 
+            }
+
             if(response.statusCode == 403 && response.name == "TokenExpiredError") {
                 this.requestUpdateToken();
+            } else if(response.statusCode == 404 || response.statusCode == 401 || response.statusCode == 400) {
+                this.fire('rt-changed', {route:'/404'});
             }
         },
 

@@ -378,7 +378,7 @@
 	          		var backtestId = e.request.response.id; 
 	          		delete this.backtests[backtestId];    
 	            } else {
-	            	this.fire('ajax-error', {response: e.detail.request.response});
+	            	this.fire('ajax-error', {request: e.detail.request});
 	            }
 	        },
 

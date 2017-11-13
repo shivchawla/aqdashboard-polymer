@@ -571,9 +571,12 @@
                     }, 1000);
             },
 
-            onGetForwardtestError: function (e) {
-                this.loading = true;
-                this.fire('ajax-error', {response: e.detail.request.response});
+            onGetForwardtestError: function(e) {
+                console.warn("Shivaa");
+                this.async( function(){
+                    //this.loading = true;
+                    this.fire('ajax-error', {request: e.detail.request});
+                }, 500);
             },
 
             addMetricData: function (currentState) {

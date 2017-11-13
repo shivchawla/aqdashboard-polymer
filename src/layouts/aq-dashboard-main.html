@@ -255,7 +255,7 @@
           },
 
           onUpdateForwardtestError: function(e) {
-              this.fire('ajax-error', {response: e.detail.request.response});
+              this.fire('ajax-error', {request: e.detail.request});
           },
 
           onDeleteForwardtestSuccess: function(e) {
@@ -263,7 +263,7 @@
           },
 
           onDeleteForwardtestError: function(e) {
-              this.fire('ajax-error', {response: e.detail.request.response});
+              this.fire('ajax-error', {request: e.detail.request});
           },
 
           //Clones the unerlying strategy

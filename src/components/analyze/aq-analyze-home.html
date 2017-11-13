@@ -356,8 +356,9 @@
 			},
 
 			onGetAllBacktestsForStrategyError: function(e) {
-				this.backtestLoading = true;
-				this.fire('ajax-error', {response: e.detail.request.response});
+				this.backtests=[{}];
+				this.async(function() {
+					this.fire('ajax-error', {request: e.detail.request});}, 300);
 			},
 
 			onGetStrategy: function(data) {
@@ -380,8 +381,10 @@
 			},
 
 			onGetStrategyError: function(e) {
-				this.strategyLoading = true;
-				this.fire('ajax-error', {response: e.detail.request.response});
+				this.backtests=[{}];
+				this.async(function() {
+					this.fire('ajax-error', {request: e.detail.request});}, 300);
+
 			},
 
 			onCheck: function(e) {
@@ -453,8 +456,7 @@
 	        },
 
 	        onDeleteBacktestForStrategyError: function(e) {
-	        	this.loading = true;
-	        	this.fire('ajax-error', {response: e.detail.request.response});
+				this.fire('ajax-error', {request: e.detail.request});
 	        },
 
 	        toggleComparison: function() {
@@ -518,7 +520,7 @@
 
             onForwardStrategyExecutionError: function(e) {
             	this.loading = true;
-            	this.fire('ajax-error', {response: e.detail.request.response});
+            	this.fire('ajax-error', {request: e.detail.request});
             },
 
             openComparisonDialog: function() {

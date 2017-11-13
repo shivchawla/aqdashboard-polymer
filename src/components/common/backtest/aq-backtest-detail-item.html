@@ -698,7 +698,7 @@
             },
 
             onGetBacktestError: function(e) {
-                this.async(function(){this.loading = true; this.fire('ajax-error', {response:e.detail.request.response});}, 200);
+                this.async(function(){this.loading = true; this.fire('ajax-error', {response:e.detail.request});}, 200);
             },
 
             requestSpecializedData: function(select) {

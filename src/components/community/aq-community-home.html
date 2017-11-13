@@ -431,7 +431,7 @@
 
             onGetAllThreadsError: function (e) {
                 this.loading = true;
-                this.fire('ajax-error', {response: e.detail.request.response});
+                this.fire('ajax-error', {request: e.detail.request});
             },
 
             createPost: function () {
@@ -553,7 +553,7 @@
             },
 
             onGetAnnouncementsError: function(e) {
-                //this.fire('ajax-error', {response: e.detail.request.response});
+                //this.fire('ajax-error', {request: e.detail.request});
             },
 
             onCheck: function(e) {

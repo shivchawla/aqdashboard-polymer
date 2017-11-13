@@ -346,7 +346,7 @@
             },
 
             onGetBacktestError: function(e) {
-                this.fire('ajax-error', {response: e.detail.request.response});
+                this.fire('ajax-error', {request: e.detail.request});
             },
 
             onComparisonReady: function() {
