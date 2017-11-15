@@ -20,9 +20,7 @@
 "NIFTY_MNC",
 "NIFTY_SERV_SECTOR"], 
 
-"universe": [
-"",	
-"Nifty 50",
+"universe": ["Nifty 50",
 "Nifty Next 50",
 "Nifty 100",
 "Nifty 200",

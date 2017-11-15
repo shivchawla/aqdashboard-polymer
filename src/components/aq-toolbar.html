@@ -74,23 +74,27 @@
 
             --paper-tabs-container: {
                 height: 70%;
+                padding-bottom: 5px;
             }
         }
 
+       
         paper-tab.iron-selected {
             color: #07889B;
             font-weight: 700;
         }
 
         #signUpTab {
-            background-color: #07889B;
-            color: white;
-            font-weight: 700;
+            --background-color: #07889B;
+            --color: teal;
+            border: 1px solid teal;
+            --font-weight: 700;
         }
 
         #signUpTab.iron-selected {
-            background-color: #fafafa;
-            color: #07889B;
+            --background-color: #fafafa;
+            --color: #07889B;
+            color: teal;
         }
 
     </style>

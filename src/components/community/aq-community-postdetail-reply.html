@@ -13,13 +13,12 @@
         }
 
         #author {
-            --margin-top: 40px;
-            --margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 15px;
             font-family: 'Lato', sans-serif;
-            --border-bottom: 1px solid #efefef;
-            padding-bottom: 5px;
+            --padding-bottom: 5px;
             border-bottom: 1px solid #e1e1e1;
+            padding: 20px;
+            --padding-right: 10px;
         }
 
         #img {
@@ -31,7 +30,7 @@
             border-bottom: 1px solid #e1e1e1;
             margin-bottom: 20px;
         }
-  
+
     </style>
 
     <template>
@@ -53,9 +52,9 @@
             </div>
         </div>
 
-        <aq-community-postdetail-content class="postContent" post-content="{{replyData}}"></aq-community-postdetail-content>
+        <aq-community-postdetail-content post-content="{{replyData}}">
+        </aq-community-postdetail-content>
 
-        <!--div class="bar"></div-->
     </template>
 
     <script>

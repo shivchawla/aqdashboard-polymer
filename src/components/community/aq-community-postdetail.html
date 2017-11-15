@@ -176,13 +176,11 @@
                     
                     <template is='dom-if' if="[[hasReplies(replies)]]">
                         <paper-card id="replyContainer">
-                            <div class="card-content">
-                              <template is="dom-repeat"
-                                        items="{{replies}}"
-                                        initial-count=5>
-                                  <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
-                              </template>
-                            </div>
+                            <template is="dom-repeat"
+                                      items="{{replies}}"
+                                      initial-count=5>
+                                <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
+                            </template>
                         </paper-card>
                     </template>
 

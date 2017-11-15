@@ -1,4 +1,6 @@
 <!--link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet"-->
+<link rel='import' href='../common/aq-html-display.html'>
+
 <dom-module id="aq-announcement-card">
     <style>
         :host{
@@ -6,24 +8,15 @@
         }
         .container{
             width: var(--aq-announcement-card-width , 100%);
-            --display: flex;
-            --justify-content: flex-start;
-            --padding: 10px 10px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
             border-radius: 2px;
-            --flex-direction: column;
             background-color: #fff;
         }
-        polymer-quill-html-render {
-            --margin-top: 5px;
-            --margin-bottom: 15px;
-            min-height: 100px;
-            font-size: 14px;
-            font-family: 'Lato', sans-serif;
-            color: black;
-            --padding-left: 10px;
-            --padding-right: 10px;
-            line-height: 20px;
+        aq-html-display {
+            --font-size: 14px;
+            --line-height: 20px;
+            --padding-left: 0px;
+            --padding-right: 0px;
         }
 
         .header {
@@ -37,9 +30,9 @@
     <template>
         <div class="container">
             <div class="header">Announcement</div>
-            <polymer-quill-html-render 
-                content="[[announcement]]">
-            </polymer-quill-html-render>
+            <aq-html-display
+                html-content="[[announcement]]">
+            </aq-html-display>
         </div>
     </template>
     

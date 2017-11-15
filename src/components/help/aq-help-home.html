@@ -6,12 +6,16 @@
 <link rel='import' href='../../../bower_components/app-route/app-route.html'>
 <link rel='import' href='../../../bower_components/app-route/app-location.html'>
 
+<link rel='import' href='../../../bower_components/iron-lazy-pages/iron-lazy-pages.html'>
+<link rel='import' href='../../../bower_components/iron-lazy-pages/iron-lazy-page.html'>
+
 <link rel='import' href="../../../bower_components/iron-scroll-spy/iron-auto-scroll-spy.html">
 <link rel='import' href='../../../bower_components/polymer-quill/polymer-quill-html-render.html'>
 
 <link rel='import' href='../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
 
 <link rel="import" href="../common/aq-loading-progress.html">
+<link rel="import" href="../common/aq-html-display.html">
 <!--link rel="import" href="./aq-help-marked-item.html"-->
 
 <link rel="import" href="../common/aq-search-input.html">
@@ -31,6 +35,7 @@
             background-color: #fff;
             color: #24293d;
             height: 100%;
+            width: 100%;
         }
 
         .selectableCategories {
@@ -79,6 +84,11 @@
             --paper-item-focused:{
                 background-color: #f7f7f7;
             }
+        }
+
+        paper-tabs {
+            --paper-tabs-selection-bar-color: teal;
+            width: 70%;
         }
 
         .Big {
@@ -167,6 +177,24 @@
             line-height: 24px;
         }
 
+        .tutorial-header {
+            font-size: 26px;
+            color: teal; --#0052cc;
+            font-weight: lighter;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .tutorial-header:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .tutorial-container {
+            margin-left: 40px;
+            width: 95%;
+        }
+
 
     </style>
 
@@ -180,64 +208,113 @@
                 active="{{active}}">
         </app-route>
 
-        <iron-ajax url="../../../resources/help/data_help.json"
-                   handle-as="json"
-                   id="getHelpContentQuery"
-                   on-response="onGetHelpContentSuccess"
-                   debounce-duration="300"
-                   loading='{{loading}}'>
+        <iron-ajax auto
+            url="../../../resources/help/data_help.json"
+            handle-as="json"
+            id="getHelpContentQuery"
+            on-response="onGetHelpContentSuccess"
+            debounce-duration="300"
+            loading='{{loading}}'>
+        </iron-ajax>
+
+        <iron-ajax auto
+            url="../../../resources/help/data_tutorial.json"
+            handle-as="json"
+            id="getTutorialQuery"
+            on-response="onGetTutorialSuccess"
+            debounce-duration="300"
+            loading='{{loading}}'>
         </iron-ajax>
 
         <template is='dom-if' if='{{active}}'>
 
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
-            <template is='dom-if' if='[[!loading]]'>
+            <!--template is='dom-if' if='[[!loading]]'-->
                 <!--aq-allpage-layout header="Help" current-path="[[currentPath]]">
                  
                  <div class="internal-content flex" id="help-container" style="height: 100%;"-->
-                 <paper-drawer-panel  id="drawerPanel" right-drawer >
-
-                    <paper-header-panel id='mainPanel' mode="scroll" main>
+                 <paper-drawer-panel  id="drawerPanel" right-drawer drawer-width="[[drawerWidth(helpType)]]">
+                    <paper-header-panel id='mainPanel' mode="scroll" main >
                         <div id='navigation' class="paper-header"> 
                             <aq-navigation-item header="Help" path="[[currentPath]]">
                             </aq-navigation-item>
                         </div>
 
-                        <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
+                        <div class="layout horizontal">
+                            <div class="flex"></div>
+                            <paper-tabs noink 
+                                selected={{helpType}} 
+                                attr-for-selected="page" 
+                                fallback-selection="basic"
+                                on-iron-select="onTabChange">
+                                <paper-tab page="basic">BASIC</paper-tab>
+                                <paper-tab page="tutorial">TUTORIALS</paper-tab>
+                            </paper-tabs>
+                            <div class="flex"></div>
+                        </div>
 
-                            <template is="dom-repeat" items="{{itemsHelpContent}}">
-                                 <div id='content' class="layout vertical">
-                                        
-                                    <polymer-quill-html-render 
-                                        content="[[item.text]]">
-                                    </polymer-quill-html-render>
-                                    <template is='dom-if' if='[[item.img_src]]'>
-                                        <img class="self-center" src="{{item.img_src}}">
-                                    </template>
-                                </div>
-                            </template>
+                        <iron-pages attr-for-selected="page" selected="[[helpType]]">
+                        
+                        <div page="basic">
                             
-                        </iron-auto-scroll-spy>
+                            <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
 
-                        <div id='bottom'></div>
-                    </paper-header-panel>
+                                <template is="dom-repeat" items="{{itemsHelpContent}}">
+                                     <div id='content' class="layout vertical">
+                                            
+                                        <aq-html-display
+                                            html-content="[[item.text]]">
+                                        </aq-html-display>
+                                        <template is='dom-if' if='[[item.img_src]]'>
+                                            <img class="self-center" src="{{item.img_src}}">
+                                        </template>
+                                    </div>
+                                </template>
+                                
+                            </iron-auto-scroll-spy>
 
-                    <paper-header-panel id='drawerPanel1' drawer mode="seamed">
-                        <aq-search-input></aq-search-input>
-                        <paper-listbox selected="{{scrollSelected}}">
-                            <template is="dom-repeat" items="{{categoriesArray}}">
-                                <paper-item class$="selectableCategories [[item.Category.size]]">
-                                    [[item.Category.value]]
-                                </paper-item>
+                            <!--div id='bottom'></div-->
+
+                        </div>
+
+                        <div page="tutorial">
+                            <div class="tutorial-container">
+                            <template is='dom-repeat' items=[[tutorials]]>
+                                <div class="tutorial-header" on-tap="toggle" id$="header-[[index]]">[[item.header]]</div>    
+                                <iron-collapse 
+                                    id$="collapse-[[index]]" no-animation>
+                                    <div class="collapse-content">
+                                        <aq-html-display
+                                            html-content="[[item.content]]">
+                                        </aq-html-display>
+                                    </div>
+                                </iron-collapse>
                             </template>
-                        </paper-listbox>
+                            </div>
+                        </div>     
+
+                        </iron-pages>   
+        
                     </paper-header-panel>
 
-                </paper-drawer-panel><!--/div>
+                    <template is='dom-if' if=[[isBasic(helpType)]]>
+                        <paper-header-panel id='drawerPanel1' drawer mode="seamed">
+                            <aq-search-input></aq-search-input>
+                            <paper-listbox selected="{{scrollSelected}}">
+                                <template is="dom-repeat" items="{{categoriesArray}}">
+                                    <paper-item class$="selectableCategories [[item.Category.size]]">
+                                        [[item.Category.value]]
+                                    </paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-header-panel>
+                    </template>
+
+                    <!--/div>
                 </aq-allpage-layout-->
             
-            </template>
+            <!--/template-->
         </template>
 
     </template>
@@ -258,12 +335,10 @@
 
                 active: {
                     type: Boolean,
-                    observer: '_activeChanged',
                 },
 
                 loading: {
                     type: Boolean,
-                    observer: '_loadingChanged',
                 },
 
                 currentPath: {
@@ -271,10 +346,16 @@
                     //value: ["Home", "Help"],
                 },
 
+                tutorials: Array,
+
             },
 
             listeners: {
                 'search-input':'search',
+            },
+
+            isBasic: function(helpType) {
+                return helpType == "basic";
             },
 
             search: function(e) {
@@ -309,22 +390,54 @@
 
                 this.set('categoriesArray', array);
 
-
+              
             },
 
-            _loadingChanged: function (nLoading, oLoading) {
-                if (!nLoading) {
+            onGetTutorialSuccess: function(e) {
+                console.warn(e.detail.response);
+                this.tutorials = e.detail.response.tutorials;
+            },
+
+            toggle: function(e) {
+                if(e.detail.sourceEvent ? e.detail.sourceEvent.srcElement : false) {
+                    var index = e.detail.sourceEvent.srcElement.id.replace("header-","");
+
+                    var collapseElement = this.$$(`#collapse-${index}`);
+                    if(collapseElement) {
+
+                        for(var i=0;i<this.tutorials.length;i++) {
+                            if(`${i}` != index) {
+                                this.$$(`#collapse-${i}`).hide();
+                            }   
+                        }
+
+                        collapseElement.toggle();
+
+                        e.detail.sourceEvent.srcElement.scrollIntoView(true);
+                    }
+                }
+            },
+
+            onTabChange: function() {
+                if(this.helpType == "basic") {
                     this.async(function () {
                         this.$$('#autoScrollSpy').scrollTarget = this.$$('#mainPanel').scroller;
+                    }, 200);
+                } else {
+                      this.async(function () {
+                        this.$$('#autoScrollSpy').scrollTarget = null;
                     }, 200);
                 }
             },
 
-            _activeChanged: function (nAct, oAct) {
-                if (nAct) {
-                    this.$.getHelpContentQuery.generateRequest();
+            drawerWidth: function(helpType) {
+                if (helpType == "basic") {
+                    return "256px";
+                } else {
+                    return "0px";
                 }
-            },
+            }
+
 
         });
     </script>
