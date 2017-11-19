@@ -48,11 +48,11 @@
 
 			<p id='message'>
 				<template is='dom-if' if='[[actualDatetime]]'>
-					<span>&nbsp[[[actualDatetime]]]</span>
+					&nbsp[<span>[[actualDatetime]]</span>]
 				</template>
 
 				<template is='dom-if' if='[[datetime]]'>
-					<span>&nbsp[[[format(datetime)]]]:&nbsp[[message]]</span>
+					&nbsp[<span>[[format(datetime)]]</span>]:&nbsp<span>[[message]]</span>
 				</template>
 
 				<template is='dom-if' if='[[!datetime]]'>

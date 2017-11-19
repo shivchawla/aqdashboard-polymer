@@ -162,7 +162,7 @@
                         "benchmark": benchmarkPerformance
                     };
 
-                    var benchmark = this.forwardtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    var benchmark = this.forwardtest.settings.benchmark ? this.forwardtest.settings.benchmark : "NIFTY_50"; 
                     this.$$('aq-cumret-linechart').createCumRetLineChart(performance, benchmark);
                 }
             },
@@ -173,7 +173,7 @@
                 if (hasValidData) {
                     this.$$('aq-aggregatedreturns-barchart').updateProperties();
 
-                    var benchmark = this.forwardtest.settings.benchmark ? this.backtest.settings.benchmark : "NIFTY_50"; 
+                    var benchmark = this.forwardtest.settings.benchmark ? this.forwardtest.settings.benchmark : "NIFTY_50"; 
                     this.$$('aq-aggregatedreturns-barchart').createMonthlyReturnBarChart(this.backtest.output.returns.monthly, benchmark);
                 }
             },
