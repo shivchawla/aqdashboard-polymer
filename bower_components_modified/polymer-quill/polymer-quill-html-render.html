@@ -103,14 +103,14 @@ Custom property | Description | Default
 
       .markdown-html pre.ql-syntax {
         --color: #23241f;
-        background-color: white; --#f9f9f9;--#f8f8f2;
         --background-color: #f9f9f9;--#f8f8f2;
+        --background-color: white;
         font-size: 14px;
       }
     </style>
     
     <div class="viewCard">
-      <marked-element  id="markedView" markdown="[[content]]">
+      <marked-element on-marked-render-complete='highlight' id="markedView" markdown="[[content]]">
         <div class="markdown-html"></div>
       </marked-element>
     </div>
@@ -142,6 +142,20 @@ Custom property | Description | Default
           value: '',
           notify: true,
         },
+      },
+
+      highlight: function() {
+          var codeblocks = this.$$('.markdown-html').querySelectorAll('pre code');
+  
+          for (i=0;i<codeblocks.length;i++) {
+              hljs.highlightBlock(codeblocks[i]);
+          }
+
+          codeblocks = this.$$('.markdown-html').querySelectorAll('pre');
+  
+          for (i=0;i<codeblocks.length;i++) {
+              hljs.highlightBlock(codeblocks[i]);
+          }
       },
 
     });
