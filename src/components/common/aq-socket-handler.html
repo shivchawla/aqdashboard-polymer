@@ -162,11 +162,11 @@
          		
 	        },
 
-	        subscribeOneRequest: function(backtestId) {
+	        subscribeOneRequest: function(backtestId, fresh) {
 	        	if(this.backtests[backtestId].subscription) {
 	        		if(this.$.authItem.checkHasToken()) {
  						var msgForWS = {'aimsquant-token': this.$.authItem.getToken(),
-                  		action: 'subscribe-backtest',
+                  		action: fresh ? 'subscribe-fresh-backtest' : 'subscribe-backtest',
                   		backtestId: backtestId};
 
 	                  	if(this.$.webSocketConn.isOpen()) {
@@ -235,15 +235,19 @@
 
 	        handleSubscription: function(backtestId) {
 	          	if(this.backtests[backtestId]) { 
-		            this.set(`backtests.${backtestId}`, {data:[], subscription:true,bulksent:false, currentIndex:0});
-
+	          		
+	          		var _hasData = this.backtests[backtestId].data ? true : false;
+	          		var _data = _hasData ? this.backtests[backtestId].data : [];
+	          		var freshSubscription = _data.length == 0; 
+	          		
+		            this.set(`backtests.${backtestId}`, {data:_data, subscription:true,bulksent:false, currentIndex:0});
 
 		            /*this.backtests[backtestId].subscription = true;
 		            this.backtests[backtestId].bulksent = false;
 		            this.backtests[backtestId].currentIndex = 0;
 		            */
 
-		            this.subscribeOneRequest(backtestId);
+		            this.subscribeOneRequest(backtestId, freshSubscription);
 		            this.sendDataNew(backtestId);
         	  	}
 	        },
@@ -272,7 +276,7 @@
                   		var currentIndex = this.backtests[backtestId].currentIndex;
 
 	            		var stitchedData = this._stitchData(backtestId);
-
+	            		
 	                  	var currentLength = stitchedData.length;
                 	  	if(currentIndex <  currentLength && currentLength > 0) {  
                       		var j = 0;
