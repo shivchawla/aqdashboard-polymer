@@ -291,6 +291,8 @@
                 } else if (this.dirtyBit == 1) {
                     this.fetchBacktests();
                 }
+
+                this.fire('unsubscribe-all');
 			},
 
 			_strategyIdChanged: function(nId, oId) {

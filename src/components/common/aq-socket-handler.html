@@ -234,6 +234,7 @@
 	        },
 
 	        handleSubscription: function(backtestId) {
+	          	//console.warn("Subscribing");
 	          	if(this.backtests[backtestId]) { 
 	          		
 	          		var _hasData = this.backtests[backtestId].data ? true : false;
@@ -241,6 +242,7 @@
 	          		var freshSubscription = _data.length == 0; 
 	          		
 		            this.set(`backtests.${backtestId}`, {data:_data, subscription:true,bulksent:false, currentIndex:0});
+
 
 		            /*this.backtests[backtestId].subscription = true;
 		            this.backtests[backtestId].bulksent = false;
@@ -252,7 +254,8 @@
         	  	}
 	        },
 
-	        handleUnsubscription: function(backtestId) {   
+	        handleUnsubscription: function(backtestId) { 
+	        	//console.warn("Un-subscribing");  
 	          	if(this.backtests[backtestId]) {
               		
 	          		this.set(`backtests.${backtestId}`, {data:[], subscription:false,bulksent:false, currentIndex:0});
@@ -264,6 +267,21 @@
 	              	this.backtests[backtestId].data = {};*/
 	              	this.unsubscribeOneRequest(backtestId);
 	          	}
+	        },
+
+	        handleUnsubscribeAll: function() {
+	        	//console.warn("Un-subscribing-all");  
+	          	for (var backtestId in this.backtests) {
+              		
+	          		this.set(`backtests.${backtestId}`, {data:[], subscription:false,bulksent:false, currentIndex:0});
+
+              		/*this.backtests[backtestId].subscription = false;
+	              	this.backtests[backtestId].bulksent = false;
+	              	//delete this.backtests[backtestId].currentIndex;
+	              	this.backtests[backtestId].currentIndex = 0;
+	              	this.backtests[backtestId].data = {};*/
+	              	this.unsubscribeOneRequest(backtestId);
+	          	}	
 	        },
 
 	        sendDataNew: function(backtestId) {
@@ -377,7 +395,7 @@
 	        },
 
 	        onGetBacktestError: function(e) {
-	        	console.log("Backtest Eror");
+	        	//console.log("Backtest Error");
 	            if(e.request.response.id) {
 	          		var backtestId = e.request.response.id; 
 	          		delete this.backtests[backtestId];    

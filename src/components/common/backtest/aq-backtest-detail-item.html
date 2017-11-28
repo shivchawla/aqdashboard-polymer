@@ -582,7 +582,11 @@
                     }
 
                     //Send flag whether to send signals after data update
-                    this.$$('aq-backtest-performance-detail-item').addRealTimeData(data);
+                    
+                    var element = this.$$('aq-backtest-performance-detail-item');
+                    if(element) {
+                        element.addRealTimeData(data);
+                    }
 
                 } else if (data.outputtype == "log" && data.messagetype == "ERROR") {
                         

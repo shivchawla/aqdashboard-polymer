@@ -232,6 +232,7 @@
             'execute-backtest':'requestExecution',
             'subscribe-data':'onSubscription',
             'unsubscribe-data':'onUnsubscription',
+            'unsubscribe-all':'onUnsubscribeAll',
             
             'update-token':'onTokenUpdate',
             'scroll-top':'scrollToTop',
@@ -384,6 +385,14 @@
         onUnsubscription: function(e) {   
             if(this.$.authItem.checkHasToken()) {
                 this.$$('#socketHandler').handleUnsubscription(e.detail.backtestId);
+            } else {
+                this.gotoSignin();
+            }
+        },
+
+         onUnsubscribeAll: function(e) {   
+            if(this.$.authItem.checkHasToken()) {
+                this.$$('#socketHandler').handleUnsubscribeAll();
             } else {
                 this.gotoSignin();
             }
