@@ -17,7 +17,8 @@
 
 <link rel='import' href='./aq-analyze-backtest-comparison-dialog.html'>
 
-<link rel='import' href='../../dialog/aq-delete-dialog.html'>
+<link rel='import' href='../../dialog/aq-action-dialog.html'>
+<link rel='import' href='../../dialog/aq-ongoing-action-dialog.html'>
 <dom-module id="aq-analyze-home">
 
 	<style  include="iron-flex iron-flex-alignment iron-positioning">
@@ -172,6 +173,10 @@
 			 	cancel-text="Cancel"
 			 	accept-text="Delete">
 	    	</aq-action-dialog>
+
+	    	<aq-ongoing-action-dialog id ="ongoignDeletionDialog" 
+	    		heading="Deleting Backtests">
+	    	</aq-ongoing-action-dialog>
     	<!--/template-->
 
 	</template>
@@ -315,7 +320,6 @@
 	        		this.header = this.$.authItem.getHeader();
         			this.$.getStrategyQuery.generateRequest();
         			this.dirtyBit = 0;
-
 	        	}
 			},
 
@@ -425,6 +429,7 @@
 	        },
 
 	        onDeletion: function(e) {
+
 	        	e.stopPropagation();
 	        	//Send DELETE request to backend
 	        	for (var i=0; i<this.checkedItems.length;i++) {
@@ -432,6 +437,7 @@
 	        		var idx = this.backtests.map(function(x) {return x._id;}).indexOf(item.id);
 	        		if(idx != -1) {
 	        			this.deleteId = item.id;
+	        			this.$$('#ongoignDeletionDialog').open();
         				this.$.deleteBacktestQuery.generateRequest();
 	        		}
         		}
@@ -450,6 +456,10 @@
     				this.splice('checkedItems', this.checkedItems.map(function(x){return x.id;}).indexOf(deleteId), 1);
 
     				this.fire('iron-signal', {name:'backtest-deleted'});
+	        	}
+
+	        	if(this.checkedItems.length == 0) {
+	        		this.$$('#ongoignDeletionDialog').close();
 	        	}
 
 	        	if(this.backtests.length == 0) {
