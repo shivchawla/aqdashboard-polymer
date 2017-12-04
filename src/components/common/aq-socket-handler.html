@@ -111,6 +111,11 @@
 	            }
 	            
 	            var response = e.detail;
+	            if(response.status && response.backtestId && response.strategyId) {
+	            	this.fire('rt-changed', {route: `/dashboard/analyze/{response.strategyId}/{response.backtestId}`, reload:true});
+	            	return;
+	            }
+
 	            this.backtests[backtestId].data[response.index] = response.data; 
 	        },
 
@@ -300,7 +305,8 @@
                       		var j = 0;
                 		  	for(var i=currentIndex; i<currentLength && j<=maxLimit ; i++) { 
 	                          	var dataPoint = stitchedData[i];
-                        	  	this.fire('iron-signal',{name:'point-data', data:dataPoint});
+	                          	
+	                          	this.fire('iron-signal',{name:'point-data', data:JSON.parse(dataPoint)});
 	                          	this.backtests[backtestId].currentIndex = i+1;
 	                          	j++;
 	                      	}

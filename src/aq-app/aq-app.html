@@ -437,6 +437,8 @@
         },
 
         goToRoute: function(e) {
+
+            this.reload = e.detail.reload;
             var route = this.redirect(e.detail.route);
             
             var idx = route.indexOf('?');
