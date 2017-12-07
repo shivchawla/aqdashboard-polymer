@@ -290,6 +290,8 @@
 			},
 
 			attached: function() {
+				this.resetData();
+
 				if (!this.$.authItem.checkHasToken()) {
                     this.fire('rt-changed', {route: '/user/signin'});
                     return;
@@ -298,6 +300,14 @@
                 }
 
                 this.fire('unsubscribe-all');
+
+			},
+
+			resetData: function() {
+				this.checkedItems = [];
+				this.hasForwardtest = false;
+				this.checkAll = false;
+				this.checkedCount = 0;
 			},
 
 			_strategyIdChanged: function(nId, oId) {
