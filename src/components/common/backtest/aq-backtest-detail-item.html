@@ -221,7 +221,7 @@
                             </template>
 
                             <template is='dom-if' if='[[backtestLogs]]'>
-                                <template is='dom-repeat' items="[[backtestLogs]]">
+                                <template is='dom-repeat' items="[[backtestLogs]]" initial-count=100>
                                     <aq-log-item-new 
                                         actual-datetime="[[item.dt]]"
                                         datetime="[[item.datetime]]"
@@ -642,6 +642,19 @@
             onGetBacktestSuccess: function (e) {                
                 var response = e.detail.response;
                 
+                this.async(function() {
+                    this.requestSpecializedData('logs');
+                }, 100);
+
+                this.async(function() {
+                    this.requestSpecializedData('transactionHistory');
+                }, 200);
+
+                this.async(function() {
+                    this.requestSpecializedData('portfolioHistory');
+                }, 200);
+
+
                 //var refresh = !this.backtest ? true : ((response._id != this.backtest._id) ? true : false);
                 this.set('backtest', e.detail.response); 
 
@@ -751,6 +764,7 @@
                                         logArray.push(JSON.parse(log));
                                     });        
                                 });
+
                             });
 
                             this.backtestLogs = logArray;
@@ -759,6 +773,7 @@
                 } else {
                     this.requestSpecializedData('logs');
                 }
+
             },
 
             computeTransactions:function() {
