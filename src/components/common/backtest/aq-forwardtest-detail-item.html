@@ -20,6 +20,8 @@
 <link rel='import' href='./aq-backtest-metric-item-list.html'>
 <link rel='import' href='./aq-backtest-performance-detail-item.html'>
 <link rel='import' href='./aq-forwardtest-performance-detail-item.html'>
+<link rel='import' href='../../../dialog/aq-ongoing-action-dialog.html'>
+
 
 <script src="../../../../resources/scripts/DateTime.js"></script>
 
@@ -257,9 +259,17 @@
             --margin-left: -20px;
             color: #555555;
         }
+
+        aq-ongoing-action-dialog {
+            --dialog-width: 0px;
+            --dialog-height: 0px;
+        }
     </style>
 
     <template>
+        <aq-ongoing-action-dialog id ="onGoingDialog" heading="">
+        </aq-ongoing-action-dialog>
+
         <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
@@ -424,7 +434,8 @@
                     type: Boolean,
                     readOnly: true,
                     notify: true,
-                    value: false
+                    value: false,
+                    observer:'_loadingChanged',
                 },
 
                 forcedSemiWide: {
@@ -438,6 +449,14 @@
                 forwardtestPositions: Object,
                 forwardtestLogs: Object,
                 forwardtestSettings:Array,
+            },
+
+            _loadingChanged: function() {
+                if(this.loading) {
+                    this.$$('#onGoingDialog').open();
+                } else {
+                    this.$$('#onGoingDialog').close();
+                }
             },
 
             onCodeChange: function(e) {

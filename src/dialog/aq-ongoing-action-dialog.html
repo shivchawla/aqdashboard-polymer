@@ -8,8 +8,8 @@
 	<style  include="iron-flex iron-flex-alignment iron-positioning"></style>
 	<style>
 		paper-dialog {
-    		width: 400px;
-    		height: 175px;
+    		width: var(--dialog-width, 400px);
+    		height: var(--dialog-height, 175px);
     		margin-right:0px;
     		margin-left:0px;
     		padding-right: 0px;
@@ -54,9 +54,10 @@
 	
 	<template>
 	  	<paper-dialog id='modal' with-backdrop always-on-top
-	  		on-iron-overlay-opened="patchOverlay">
+	  		on-iron-overlay-opened="patchOverlay" modal>
 	    	<div class="header layout vertical">
-          		<h2>[[heading]]</h2>
+      			
+      			<h2>[[heading]]</h2>
           		<paper-spinner aalt="Loading logs..." 
 	                active class="self-center">
 	            </paper-spinner>
@@ -70,6 +71,10 @@
 
 			properties: {
 				heading: String,
+			},
+
+			hasHeading: function(heading) {
+				return heading && heading !="";
 			},
 
 			open: function() {
