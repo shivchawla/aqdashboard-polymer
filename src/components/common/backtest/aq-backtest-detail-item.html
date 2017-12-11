@@ -642,17 +642,22 @@
             onGetBacktestSuccess: function (e) {                
                 var response = e.detail.response;
                 
-                this.async(function() {
-                    this.requestSpecializedData('logs');
-                }, 100);
+                if(!this.community) {
 
-                this.async(function() {
-                    this.requestSpecializedData('transactionHistory');
-                }, 200);
+                    this.requestInFlight = true;
 
-                this.async(function() {
-                    this.requestSpecializedData('portfolioHistory');
-                }, 200);
+                    this.async(function() {
+                        this.requestSpecializedData('logs');
+                    }, 100);
+
+                    this.async(function() {
+                        this.requestSpecializedData('transactionHistory');
+                    }, 100);
+
+                    this.async(function() {
+                        this.requestSpecializedData('portfolioHistory');
+                    }, 100);
+                }
 
 
                 //var refresh = !this.backtest ? true : ((response._id != this.backtest._id) ? true : false);
@@ -771,7 +776,9 @@
                         } 
                     } 
                 } else {
-                    this.requestSpecializedData('logs');
+                    if(!this.requestInFlight) {
+                        this.requestSpecializedData('logs');
+                    }
                 }
 
             },
@@ -805,7 +812,9 @@
                         } 
                     }
                 } else {
-                    this.requestSpecializedData('transactionHistory');
+                    if(!this.requestInFlight) {
+                        this.requestSpecializedData('transactionHistory');
+                    }
                 }
             },
 
@@ -851,7 +860,9 @@
                         } 
                     }
                 } else {
-                    this.requestSpecializedData('portfolioHistory');
+                    if(!this.requestInFlight) {
+                        this.requestSpecializedData('portfolioHistory');
+                    }
                 }
             },
 

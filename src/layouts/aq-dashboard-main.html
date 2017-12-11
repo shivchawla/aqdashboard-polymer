@@ -145,7 +145,8 @@
           },
 
           computeCurrentPath: function(page) {
-              var basePath = [{text:"Home", route:"/main"}];
+              //var basePath = [{text:"Home", route:"/main"}];
+              var basePath = [];
               
               if(page == "editor") {
                   basePath.push({text:"Research", route:"/dashboard"}, {text:"All Strategies", route:"/dashboard/editor"})
