@@ -245,6 +245,10 @@
 
             attached: function() {
                 this.computeFollowTitle(this.followers);
+                
+                if(this.unfollow) {
+                    this.unFollow();
+                }
             },
 
             computeIcon: function(category) {
@@ -280,6 +284,20 @@
                     this.header = this.$.authItem.getHeader();
                     this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
                     this.$.follows.generateRequest();
+                } else {
+                    this.fire('rt-changed', {route: '/user/signin'});
+                }
+            },
+
+            unFollow: function () {
+                if (this.$.authItem.checkHasToken()) {
+                    var user = this.$.authItem.getUser();
+                    var userId = user._id;
+                    if(this.followers.indexOf(userId) > -1){ 
+                        this.header = this.$.authItem.getHeader();
+                        this.$.follows.url = this.computeFollowPostUrl(this.postHeader);
+                        this.$.follows.generateRequest();
+                    }
                 } else {
                     this.fire('rt-changed', {route: '/user/signin'});
                 }

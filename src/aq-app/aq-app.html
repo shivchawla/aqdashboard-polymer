@@ -237,6 +237,7 @@
             'update-token':'onTokenUpdate',
             'scroll-top':'scrollToTop',
             'rt-changed':'goToRoute',
+            'rt-reload':'reloadRoute',
             'update-localstorage-community':'updateCommunityState',
             'update-localstorage-backtest-settings':'updateBacktestSettings',
             'ajax-error':'onAjaxError',
@@ -462,6 +463,10 @@
             //find a way to update currentUrl ...should listen to window
             // haschange event
             this.currentUrl = route;
+        },
+
+        reloadRoute: function() {
+            window.location.reload(true);
         },
 
         computePage: function(currentUrl) {

@@ -162,7 +162,8 @@
                 <div class="internal-content" id="post-container">
                     <paper-card id="header" clas="flex">
                           <aq-community-postdetail-header
-                                  post-header='{{threadDetails}}'>
+                                  post-header='{{threadDetails}}'
+                                  unfollow=[[unfollow]]>
                           </aq-community-postdetail-header>
 
                           <div id="bar"></div>
@@ -301,10 +302,8 @@
       addReply: function(e) {
         
         var reply = e.detail.reply;
-        reply.user = {"firstName":this.user.firstName, "lastName":this.user.lastName};
-
-        var replies = JSON.parse(JSON.stringify(this.replies));
-        replies.push(reply);
+        this.push('replies', reply);
+        var replies = this.replies;
         this.replies = [];
         this.replies = replies;
 
@@ -343,10 +342,6 @@
                   this.$.getThreadRepliesQuery.generateRequest();
               }
           }
-      },
-
-      showMeLove: function() {
-          //console.log("HOla Hola");
       },
 
     });

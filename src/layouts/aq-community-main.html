@@ -21,6 +21,7 @@
       <app-route route="{{route}}"
                 pattern="/dashboard/community/:threadId"
                 data="{{routeData}}"
+                query-params="{{queryParams}}"
                 active="{{active}}">
       </app-route>
 
@@ -30,7 +31,7 @@
           </template>
 
           <template is='iron-lazy-page' restamp page="more">
-              <aq-community-more current-path=[[currentPath]] params="[[routeData]]"></aq-community-more>
+              <aq-community-more current-path=[[currentPath]] params="[[routeData]]" query-params="[[queryParams]]"></aq-community-more>
               <!--iron-lazy-pages attr-for-selected="page" selected="[[computeCommunityPageMore(routeData)]]">
                 
                   <template is='iron-lazy-page' restamp page="detail">

@@ -11,7 +11,10 @@
     <template>
         <iron-lazy-pages restamp attr-for-selected="page" selected="{{_computeCommunityMorePage(params.threadId)}}" fallback-selection="create">
             <template is='iron-lazy-page' restamp page="detail">
-                <aq-community-postdetail current-path=[[currentPath]] thread-id=[[params.threadId]]>
+                <aq-community-postdetail 
+                    current-path=[[currentPath]] 
+                    thread-id=[[params.threadId]]
+                    unfollow=[[hasUnfollowFlag(queryParams)]]>
                 </aq-community-postdetail>
             </template>
             
@@ -31,6 +34,10 @@
 
             _computeCommunityMorePage: function(threadId) {
                 return threadId == "create" ? "create" : "detail";
+            },
+
+            hasUnfollowFlag: function(queryParams) {
+                return queryParams.unfollow ? true : false;
             }
  
         });

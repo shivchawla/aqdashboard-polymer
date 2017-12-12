@@ -119,6 +119,10 @@
         	<div id="bt-name" class="self-center">[[heading]]</div>
         	<div class="flex"></div>
 
+        	<template is='dom-if' if='[[fullDetail]]'>
+        		<paper-button noink raised class="self-center" on-tap='onFullDetail'>Full Detail</paper-button>
+    		</template>
+        	
         	<template is='dom-if' if='[[canShare]]'>
         		<paper-button noink raised class="self-center" on-tap='onShare'>Share Backtest</paper-button>
     		</template>
@@ -163,7 +167,12 @@
 
 				forcedSemiWide: {
 					type:Boolean,
-				}
+				},
+
+				fullDetail: {
+					type:Boolean,
+					value:false,
+				},
 
 			},
 
@@ -218,7 +227,11 @@
 
 			isExceptionClass: function(item) {
 				return item.label == "Status" && item.metric == "Exception" ? "exception" : "";
-			}	
+			},
+
+			onFullDetail: function() {
+                this.fire('rt-reload');
+            },
 		});
 	</script>
 </dom-module>

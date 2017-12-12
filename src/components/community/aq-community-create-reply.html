@@ -201,14 +201,18 @@
             },
 
             onPostReplyResponse: function (e) {
-                var replies = e.detail.response.replies;
-                if (replies.length > 0) {
-                    this.fire('reply-added', {reply: replies[replies.length - 1]});
+                var success = e.detail.response.success;
+                
+                if (success) {
+                    this.fire('reply-added', {reply: this.threadData});
                 }
+
+                this.threadData = {};
             },
 
             onPostReplyError: function (e) {
                 this.loading = true;
+                this.threadData = {};
                 this.fire('ajax-error', {request: e.detail.request});
             },
 
@@ -272,7 +276,7 @@
             onRemoveAttached: function () {
                 this.attachedBacktestId = "";
                 this.attachedMessage = "";
-                this.threadData = {};
+                //this.threadData = {};
                 this.$$('#attachedMessageDiv').style.display = 'none';
                 this.messageAttached = true;
             },

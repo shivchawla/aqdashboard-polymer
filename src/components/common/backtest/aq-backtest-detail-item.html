@@ -138,7 +138,8 @@
             		<aq-backtest-header-item
                         heading="[[heading]]"
             			forced-semi-wide = "[[forcedSemiWide]]"
-            			header-items="{{backtestHeader}}" 
+            			header-items="{{backtestHeader}}"
+                        full-detail="[[fullDetail]]"
                         can-share="[[isSharingAllowed(canShare, active)]]"
                         can-clone="[[isCloningAllowed(canClone, active)]]">
             		</aq-backtest-header-item>
@@ -625,8 +626,9 @@
 
                 if(this.showFull) {
                     this.active = false;
-                    this.reset();
-                    this.requestStaticData();
+                    this.fullDetail = true;
+                    //this.reset();
+                    //this.requestStaticData();
                 }
             },
 
@@ -699,6 +701,7 @@
         
                 if (this.backtest.status == "active") {
                     this.active = true;
+
                     return;
                 }
 
