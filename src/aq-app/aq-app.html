@@ -15,7 +15,7 @@
 <link rel="import" href='../components/aq-homepage.html'>
 <link rel="import" href='../components/aq-aboutpage.html'>
 <link rel="import" href='../components/aq-policy.html'>
-<link rel="import" href='../components/aq-forbidden.html'>
+<link rel="import" href='../components/aq-error-page.html'>
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
@@ -73,8 +73,8 @@
    
               <iron-lazy-pages restamp attr-for-selected="page" selected="[[computePage(currentUrl)]]"> <!-- fallback-selection="/main"-->
 
-                  <template is='iron-lazy-page' restamp page="/404">
-                      <aq-forbidden></aq-forbidden>
+                  <template is='iron-lazy-page' restamp page="/errorPage">
+                      <aq-error-page></aq-error-page>
                   </template>
 
                   <template is='iron-lazy-page' restamp page="/main">
@@ -482,8 +482,8 @@
                 return "/policy";
             } else if(currentUrl.indexOf('#') !=-1) {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);
-            } else if (currentUrl.indexOf('404') !=-1) {
-                return  "/404";
+            } else if (currentUrl.indexOf('errorPage') !=-1) {
+                return  "/errorPage";
             } else {
                 return  "/main";
             }
@@ -541,8 +541,8 @@
 
             if(response.statusCode == 403 && response.name == "TokenExpiredError") {
                 this.requestUpdateToken();
-            } else if(response.statusCode == 404 || response.statusCode == 401 || response.statusCode == 400) {
-                this.fire('rt-changed', {route:'/404'});
+            } else /*if(response.statusCode == 404 || response.statusCode == 401 || response.statusCode == 400)*/ {
+                this.fire('rt-changed', {route:`/errorPage?code=${response.statusCode}`});
             }
         },
 
