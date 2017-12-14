@@ -19,6 +19,7 @@
 
 <link rel="import" href='../components/aq-sidebar.html'>
 <link rel="import" href='../components/aq-toolbar.html'>
+<link rel="import" href='../components/aq-google-analytics.html'>
 <link rel="import" href='../dialog/aq-sendfeedback-dialog.html'>
 <link rel="import" href='../dialog/aq-invitefriend-dialog.html'>
 
@@ -63,7 +64,8 @@
     <template>
 
       <aq-check-authentication id='authItem'></aq-check-authentication>
-     
+      <aq-google-analytics key="UA-111254422-1"></aq-google-analytics>
+
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
