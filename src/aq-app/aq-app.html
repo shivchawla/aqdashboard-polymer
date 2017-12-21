@@ -64,7 +64,7 @@
     <template>
 
       <aq-check-authentication id='authItem'></aq-check-authentication>
-      <aq-google-analytics key="UA-111254422-1"></aq-google-analytics>
+      <aq-google-analytics></aq-google-analytics>
 
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
@@ -267,6 +267,7 @@
             //10 min
             //setInterval(this.setreload.bind(this), 600000);
             this.currentUrl = this.redirect(window.location.href);
+
         },
 
         onHashChange: function(e) {
