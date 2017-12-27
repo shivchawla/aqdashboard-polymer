@@ -185,6 +185,10 @@
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
+        aq-tag-element {
+            margin-right: 3px;
+        }
+
     </style>
 
     <template>
@@ -360,6 +364,7 @@
               this.currentPath = [];
               currentPath.push({text:"Create a Post"});
               this.currentPath = currentPath;
+              this.tags = [];
 
             },
 
