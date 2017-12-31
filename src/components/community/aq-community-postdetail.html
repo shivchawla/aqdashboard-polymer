@@ -55,6 +55,10 @@
           top:20px;
       }
 
+      aq-community-postdetail-reply {
+        margin-bottom: 7px;
+      }
+
       aq-community-postdetail-content{
           --aq-community-postdetail-content-box-shadow:0 3px 8px rgba(0,0,0,0.2);
           --aq-community-postdetail-content-padding:10px 20px 10px 10px;
@@ -176,13 +180,13 @@
                     <span class="reply-no">Replies&nbsp;([[numReplies(replies)]])</span>
                     
                     <template is='dom-if' if="[[hasReplies(replies)]]">
-                        <paper-card id="replyContainer">
+                        <div id="replyContainer" class="layout vertical">
                             <template is="dom-repeat"
                                       items="{{replies}}"
                                       initial-count=5>
                                 <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
                             </template>
-                        </paper-card>
+                        </div>>
                     </template>
 
                     <div id='reply-div'>
@@ -303,9 +307,9 @@
         
         var reply = e.detail.reply;
         this.push('replies', reply);
-        //var replies = this.replies;
-        //this.replies = [];
-        //this.replies = replies;
+        var replies = this.replies;
+        this.replies = [];
+        this.replies = replies;
 
         this.$$("#replyEditor").clearEditor();
       },

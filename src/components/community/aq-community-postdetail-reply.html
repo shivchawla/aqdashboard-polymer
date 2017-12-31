@@ -31,9 +31,14 @@
             margin-bottom: 20px;
         }
 
+        paper-card {
+            width: 100%;
+        }
+
     </style>
 
     <template>
+        <paper-card>
         <div id='author' class="layout horizontal center">
             <aq-profile-img class="self-center" id='img' first-name="[[replyData.user.firstName]]" last-name="[[replyData.user.lastName]]" class="self-end"></aq-profile-img>
         
@@ -54,6 +59,7 @@
 
         <aq-community-postdetail-content post-content="{{replyData}}">
         </aq-community-postdetail-content>
+        </paper-card>
 
     </template>
 
