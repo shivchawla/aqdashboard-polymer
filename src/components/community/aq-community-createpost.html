@@ -197,7 +197,7 @@
 
         <app-route
             route="{{route}}"
-            pattern="/dashboard/community/create"
+            pattern="/research/community/create"
             query-params="{{queryParams}}">
         </app-route>
 
@@ -385,7 +385,7 @@
 
                 this.fire('iron-signal', {name: 'post-added'});
 
-                this.fire('rt-changed', {route:"/dashboard/community/"+this.newThreadId});
+                this.fire('rt-changed', {route:"/research/community/"+this.newThreadId});
 
             },
 
@@ -422,7 +422,7 @@
             },
 
             goBack: function () {
-                this.fire('rt-changed', {route: '/dashboard/community'});
+                this.fire('rt-changed', {route: '/research/community'});
             },
 
             processInput: function () {

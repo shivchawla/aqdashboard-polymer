@@ -27,7 +27,7 @@
     
     <app-location route="{{route}}" use-hash-as-path></app-location>
     <app-route route="{{route}}"
-                pattern="/dashboard/editor/:strategyId"
+                pattern="/research/editor/:strategyId"
                 data="{{routeData}}"
                 active="{{active}}">
     </app-route>
@@ -88,7 +88,7 @@
 
       goToAnalyze: function(e) {
         var strategyId = e.detail.id;
-        this.fire('rt-changed',{route:'/dashboard/analyze/' + strategyId});
+        this.fire('rt-changed',{route:'/research/analyze/' + strategyId});
       },
 
       hasTail: function(tail) {

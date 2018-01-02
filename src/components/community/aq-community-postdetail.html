@@ -151,56 +151,59 @@
 
        <iron-ajax
           url="[[computePostViewUrl(threadId)]]"
+          on-response="onPostViewResponse"
+          on-error="onPostViewError"
           method="POST"
           id='views'
           handle-as="json"
           headers='{{header}}'
           debounce-duration="300">
       </iron-ajax>
+      
+      <aq-allpage-layout id='layout' loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
+         
+          <div class="internal-content" id="post-container">
+              <paper-card id="header" clas="flex">
+                    <aq-community-postdetail-header
+                            post-header='{{threadDetails}}'
+                            unfollow=[[unfollow]]>
+                    </aq-community-postdetail-header>
 
-        <!--template is='dom-if' if='{{!loading}}'-->
-        <!--template is='dom-if' if='[[hasThreadDetail(threadDetails)]]'-->
-          
-            <aq-allpage-layout id='layout' loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
-               
-                <div class="internal-content" id="post-container">
-                    <paper-card id="header" clas="flex">
-                          <aq-community-postdetail-header
-                                  post-header='{{threadDetails}}'
-                                  unfollow=[[unfollow]]>
-                          </aq-community-postdetail-header>
+                    <div id="bar"></div>
 
-                          <div id="bar"></div>
+                    <aq-community-postdetail-content
+                            post-content='{{threadDetails}}'>
+                    </aq-community-postdetail-content>
+              </paper-card>
+                
+              <span class="reply-no">Replies&nbsp;([[numReplies(replies)]])</span>
+              
+              <template is='dom-if' if="[[hasReplies(replies)]]">
+                  <div id="replyContainer" class="layout vertical">
+                      <template is="dom-repeat"
+                                items="{{replies}}"
+                                initial-count=5>
+                          <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
+                      </template>
+                  </div>>
+              </template>
 
-                          <aq-community-postdetail-content
-                                  post-content='{{threadDetails}}'>
-                          </aq-community-postdetail-content>
-                    </paper-card>
-                      
-                    <span class="reply-no">Replies&nbsp;([[numReplies(replies)]])</span>
-                    
-                    <template is='dom-if' if="[[hasReplies(replies)]]">
-                        <div id="replyContainer" class="layout vertical">
-                            <template is="dom-repeat"
-                                      items="{{replies}}"
-                                      initial-count=5>
-                                <aq-community-postdetail-reply reply-data="[[item]]"></aq-community-postdetail-reply>
-                            </template>
-                        </div>>
-                    </template>
-
-                    <div id='reply-div'>
+              <div id='reply-div'>
+                  <template is='dom-if' if=[[hasToken]]>
                       <aq-community-create-reply 
                           id="replyEditor"
                           thread-id="[[threadDetails._id]]">
                       </aq-community-create-reply>
-                    </div>
+                  </template>
 
-                </div>
-            </aq-allpage-layout>  
+                  <template is='dom-if' if=[[!hasToken]]>
+                      <paper-button raised style="color: teal; border:1px solid teal;" on-tap='goToLogin'>Log In to Comment</paper-button>
+                  </template>
 
-        <!--/template-->
-        <!--/template-->
+              </div>
+
+          </div>
+      </aq-allpage-layout>  
 
   </template>
 
@@ -235,7 +238,9 @@
         currentPath: {
             type: Array,
             //value:["Home", "Community", "Post Detail"],
-        }
+        },
+
+        hasToken: Boolean,     
 
       },
 
@@ -250,20 +255,22 @@
           if(this.threadId == "create") {
             return;
           }
+          
+          this.hasToken = this.$.authItem.checkHasToken();
 
-          if(!this.$.authItem.checkHasToken()) {
+          /*if(!this.$.authItem.checkHasToken()) {
               this.fire('rt-changed',{route:'/user/signin'});
               return;
-          } else {
+          } else {*/
               this.user = this.$.authItem.getUser();
               this.header = this.$.authItem.getHeader();
               this.$.views.generateRequest();
 
-              this.skip = 0;
-              this.limit = 10;
+              //this.skip = 0;
+              //this.limit = 10;
               this.$.getThreadQuery.url = this.computeGetThreadUrl(this.threadId);
               this.$.getThreadQuery.generateRequest();
-          }
+          //}
 
       },
 
@@ -300,7 +307,7 @@
       },
 
       goBack: function() {
-          this.fire('rt-changed',{route:'/dashboard/community'});
+          this.fire('rt-changed',{route:'/research/community'});
       },
 
       addReply: function(e) {
@@ -347,6 +354,16 @@
               }
           }
       },
+
+      onPostViewError: function(e) {
+      },
+
+      onPostViewResponse: function(e) {
+      },
+
+      goToLogin: function() {
+          this.fire('rt-changed',{route:'/user/signin'});
+      }
 
     });
 

@@ -30,7 +30,7 @@
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route route="{{route}}"
-                    pattern="/dashboard/:page"
+                    pattern="/research/:page"
                     data="{{routeData}}"
                     tail="{{tail}}">
         </app-route>
@@ -149,13 +149,13 @@
               var basePath = [];
               
               if(page == "editor") {
-                  basePath.push({text:"Research", route:"/dashboard"}, {text:"All Strategies", route:"/dashboard/editor"})
+                  basePath.push({text:"Research", route:"/research"}, {text:"All Strategies", route:"/research/editor"})
               } else if (page == "help"){
-                  basePath.push({text:"Help", route:"/dashboard/help"});
+                  basePath.push({text:"Help", route:"/research/help"});
               } else if (page == "community"){
-                  basePath.push({text:"Community", route:"/dashboard/community"});
+                  basePath.push({text:"Community", route:"/research/community"});
               } else {
-                  basePath.push({text:"Research", route:"/dashboard"});
+                  basePath.push({text:"Research", route:"/research"});
               }
 
               return basePath;
@@ -315,7 +315,7 @@
               //check for error
               var strategyId = data.detail.response._id
               this.fire('iron-signal',{name:'strategy-added'});
-              this.fire('rt-changed', {route:'/dashboard/editor/'+ strategyId});
+              this.fire('rt-changed', {route:'/research/editor/'+ strategyId});
           },
 
           onStrategyCreationError: function(data) {

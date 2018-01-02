@@ -219,7 +219,7 @@
 
         <app-route
             route="{{route}}"
-            pattern="/dashboard/editor"
+            pattern="/research/editor"
             query-params="{{queryParams}}">
         </app-route>
 
@@ -335,7 +335,7 @@
             </div>
 
             <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
-                <p class="self-center"> No Strategies Yet!! <a href='/dashboard/editor?create=1'>Click Here</a></p>
+                <p class="self-center"> No Strategies Yet!! <a href='/research/editor?create=1'>Click Here</a></p>
             </template>
         </aq-allpage-layout>
           
@@ -558,7 +558,7 @@
             },
 
             click: function () {
-                this.fire('rt-changed', {route: '/dashboard'});
+                this.fire('rt-changed', {route: '/research'});
             },
 
             goToAnalyze: function (e) {
@@ -583,12 +583,12 @@
 
             goToShare: function () {
                 strategyId = this._currentRow.id;
-                this.fire('rt-changed', {route: '/dashboard/community/create/' + strategyId + "?share=strategy"});
+                this.fire('rt-changed', {route: '/research/community/create/' + strategyId + "?share=strategy"});
             },
 
             goToEditor: function (e) {
                 var strategyId = e.detail.id;
-                this.fire('rt-changed', {route: '/dashboard/editor/' + strategyId});
+                this.fire('rt-changed', {route: '/research/editor/' + strategyId});
             },
 
             checkStrategyLive: function(e) {
@@ -822,7 +822,7 @@
                 var strategyId = e.detail.strategyId;
                 var forwardtestId = e.detail.forwardtestId;
                 var strategyName = e.detail.strategyName;
-                this.fire('rt-changed', {route:'/dashboard/analyze/'+strategyId +"/" + forwardtestId +'?type=forward&strategyName='+strategyName});
+                this.fire('rt-changed', {route:'/research/analyze/'+strategyId +"/" + forwardtestId +'?type=forward&strategyName='+strategyName});
             },
 
             hasNonZeroStrategies: function(strategies) {

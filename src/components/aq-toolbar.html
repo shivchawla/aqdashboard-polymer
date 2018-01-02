@@ -194,9 +194,9 @@
                         case 1: routes = ["/about"];break;
                         case 2: routes = ["/user/signin","/user/signout","/user/authMessage"];break;
                         case 3: routes = ["/user/signup"];break;
-                        case 4: routes = ["/dashboard/editor", "/dashboard/analyze"];break;
-                        case 5: routes = ["/dashboard/community"];break;
-                        case 6: routes = ["/dashboard/help"];break;
+                        case 4: routes = ["/research/editor", "/research/analyze"];break;
+                        case 5: routes = ["/research/community"];break;
+                        case 6: routes = ["/research/help"];break;
                     }
 
                     var found = false;
@@ -209,6 +209,8 @@
 
                     var rt = routes[0];
                     if(!found) {
+                        console.warn(rt);
+                        console.warn("In toolbar");
                         this.fire('rt-changed', {route:rt});
                     } else {
                         rt = window.location.href;
@@ -250,7 +252,7 @@
             },
 
             _currentURLChanged: function() {
-                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout","/user/authMessage"], "3":["/user/signup"], "4":["/dashboard/editor", "/dashboard/analyze"], "5":["/dashboard/community"], "6":["/dashboard/help"]};
+                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout","/user/authMessage"], "3":["/user/signup"], "4":["/research/editor", "/research/analyze"], "5":["/research/community"], "6":["/research/help"]};
                 
                 var i = 0;
                 var keys = Object.keys(routeList);

@@ -25,8 +25,9 @@
 <dom-module id="aq-help-home">
     <style include="iron-flex iron-flex-alignment iron-positioning"></style>
     <style>
-        #panel {
+        #drawerPanel {
             height: 100%;
+            display: 'none';
         }
 
         #mainPanel {
@@ -36,6 +37,7 @@
             color: #24293d;
             height: 100%;
             width: 100%;
+            display: 'none';
         }
 
         .selectableCategories {
@@ -62,6 +64,7 @@
             border: none;
             padding: 10px 10px 0 10px;
             height: 100%;
+
         }
 
         paper-listbox {
@@ -204,7 +207,7 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/dashboard/help"
+                pattern="/research/help"
                 active="{{active}}">
         </app-route>
 
@@ -213,8 +216,7 @@
             handle-as="json"
             id="getHelpContentQuery"
             on-response="onGetHelpContentSuccess"
-            debounce-duration="300"
-            loading='{{loading}}'>
+            debounce-duration="300">
         </iron-ajax>
 
         <iron-ajax auto
@@ -222,8 +224,7 @@
             handle-as="json"
             id="getTutorialQuery"
             on-response="onGetTutorialSuccess"
-            debounce-duration="300"
-            loading='{{loading}}'>
+            debounce-duration="300">
         </iron-ajax>
 
         <template is='dom-if' if='{{active}}'>
@@ -260,7 +261,7 @@
                             
                             <iron-auto-scroll-spy scroll-duration=0 selected="{{scrollSelected}}" id="autoScrollSpy">
 
-                                <template is="dom-repeat" items="{{itemsHelpContent}}">
+                                <template is="dom-repeat" items="{{itemsHelpContent}}" initial-count=5>
                                      <div id='content' class="layout vertical">
                                             
                                         <aq-html-display
@@ -280,7 +281,7 @@
 
                         <div page="tutorial">
                             <div class="tutorial-container">
-                            <template is='dom-repeat' items=[[tutorials]]>
+                            <template is='dom-repeat' items=[[tutorials]] initial-count=5>
                                 <div class="tutorial-header" on-tap="toggle" id$="header-[[index]]">[[item.header]]</div>    
                                 <iron-collapse 
                                     id$="collapse-[[index]]" no-animation>
@@ -354,6 +355,11 @@
                 'search-input':'search',
             },
 
+            attached: function() {
+                this.loading = true; 
+                this.$$('#drawerPanel').style.display = 'none'; 
+            },
+
             isBasic: function(helpType) {
                 return helpType == "basic";
             },
@@ -389,8 +395,9 @@
                 }
 
                 this.set('categoriesArray', array);
-
-              
+                
+                this.loading = false;
+                this.$$('#mainPanel').style.display = 'block';
             },
 
             onGetTutorialSuccess: function(e) {

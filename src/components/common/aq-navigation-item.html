@@ -73,23 +73,23 @@
 						route = '/main'; 
 						break;
 					case "Research": 
-						route = '/dashboard'; 
+						route = '/research'; 
 						break;
 					case "All Strategies": 
-						route = '/dashboard/editor'; 
+						route = '/research/editor'; 
 						break;
 					case "Community": 
-						route = '/dashboard/community'; 
+						route = '/research/community'; 
 						break;
 					case "Help": 
-						route = '/dashboard/help'; 
+						route = '/research/help'; 
 						break;
 					case "All Backtests":
 						var path = window.location.hash;
 						path = path.slice(2, path.length - 1).split("/");
 						
 						if (path.length >= 3) {
-							route = '/dashboard/analyze/'.concat(path[2]);
+							route = '/research/analyze/'.concat(path[2]);
 						} 
 
 						break;

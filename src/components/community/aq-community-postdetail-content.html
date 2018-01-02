@@ -58,21 +58,30 @@
     </style>
 
     <template>
+        <aq-check-authentication id='authItem'></aq-check-authentication>
+
         <div id='post-content'>      
             <aq-html-display
                 html-content="[[postContent.markdownText]]">
             </aq-html-display>
 
             <template is='dom-if' if="[[isValidBacktestId(postContent)]]">
-                <div id='bt-container'>
-                    <aq-backtest-detail-item 
-                        heading="Attached Backtest Details"     
-                        backtest-id="[[getBacktestId(postContent)]]"
-                        can-clone=[[!preview]]
-                        forced-semi-wide
-                        community>
-                    </aq-backtest-detail-item>
-                </div>
+                
+                <template is='dom-if' if=[[!hasToken]]>
+                    <paper-button style="color: teal; font-size:14px; text-transform: none; font-style: italic; font-weight: 700;" on-tap='goToLogin'>Log In to view attached backtest</paper-button>
+                </template>
+
+                <template is='dom-if' if="[[hasToken]]">
+                    <div id='bt-container'>
+                        <aq-backtest-detail-item 
+                            heading="Attached Backtest Details"     
+                            backtest-id="[[getBacktestId(postContent)]]"
+                            can-clone=[[!preview]]
+                            forced-semi-wide
+                            community>
+                        </aq-backtest-detail-item>
+                    </div>
+                </template>
             </template>
 
         </div>
@@ -89,6 +98,12 @@
                     type: Boolean,
                     value: false,
                 },
+
+                hasToken: Boolean,
+            },
+
+            attached: function() {
+                this.hasToken = this.$.authItem.checkHasToken();
             },
 
             hasContent: function (item) {
@@ -100,7 +115,7 @@
             },
 
             isValidBacktestId: function (postContent) {
-                return this.getBacktestId(postContent) ? true : false;
+                return this.getBacktestId(postContent) ? true : false
             },
 
             getBacktestId: function (postContent) {
@@ -109,8 +124,12 @@
                 } else {
                     return postContent.backtestId;
                 }
+                
             },
 
+            goToLogin: function() {
+                this.fire('rt-changed',{route:'/user/signin'});
+            },  
 
         });
 

@@ -40,15 +40,15 @@
 
 				this.currentPath = [];
 
-				currentPath.push({text:"All Strategies", route:"/dashboard/editor"});
+				currentPath.push({text:"All Strategies", route:"/research/editor"});
 				
-				currentPath.push({text:this.params.strategyName, route:"/dashboard/editor/"+this.strategyId});
+				currentPath.push({text:this.params.strategyName, route:"/research/editor/"+this.strategyId});
 					
 				if(this.params.type == "backtest") {
-					currentPath.push({text:"All Backtests", route:"/dashboard/analyze/"+this.strategyId});
+					currentPath.push({text:"All Backtests", route:"/research/analyze/"+this.strategyId});
 					currentPath.push({text:this.params.heading});
 				} else {
-					//currentPath.push({text:this.params.strategyName, route:"/dashboard/editor/"+this.strategyId});
+					//currentPath.push({text:this.params.strategyName, route:"/research/editor/"+this.strategyId});
 					currentPath.push({text:"Forward Test"});
 					
 				}

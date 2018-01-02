@@ -693,7 +693,7 @@
                 if (active && routeData && routeData.displayMode) {
                     this.displayMode = this.routeData.displayMode;
                     if (this.$.authItem.checkHasToken() && this.displayMode != displayModes.resetpassword) {
-                        this.fire('rt-changed', {route: '/dashboard'});
+                        this.fire('rt-changed', {route: '/research'});
                         return;
                     }
 

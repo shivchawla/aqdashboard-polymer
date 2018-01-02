@@ -149,7 +149,7 @@
 
             goBackAllBacktests: function() {
                 this.fire('unsubscribe-data',{backtestId:this.backtestId});
-                this.fire('rt-changed',{route:'/dashboard/analyze/' + this.strategyId});
+                this.fire('rt-changed',{route:'/research/analyze/' + this.strategyId});
             },
 
             attached: function() {
@@ -160,14 +160,14 @@
             },
 
             onForwardtestDeleted: function(e) {
-                this.fire('rt-changed', {route:'/dashboard/editor'});
+                this.fire('rt-changed', {route:'/research/editor'});
             },
 
             //Handle Stop
             onForwardtestUpdated: function(e) {
                 var response = e.detail;
                 if(!response.active) {
-                    this.fire('rt-changed', {route: '/dashboard/editor'});
+                    this.fire('rt-changed', {route: '/research/editor'});
                 }
             }
 

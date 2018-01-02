@@ -99,7 +99,7 @@
                       <aq-user-login-panel></aq-user-login-panel>
                   </template>  
 
-                  <template is='iron-lazy-page' restamp page="/dashboard">
+                  <template is='iron-lazy-page' restamp page="/research">
                       <aq-dashboard-main></aq-dashboard-main>
                   </template>
               </iron-lazy-pages>
@@ -266,6 +266,8 @@
             this.listen(window, 'hashchange', 'onHashChange');
             //10 min
             //setInterval(this.setreload.bind(this), 600000);
+            
+
             this.currentUrl = this.redirect(window.location.href);
 
         },
@@ -287,7 +289,7 @@
         },
 
         isURLResetPassword: function() {
-            if(this.URLcontains('/dashboard/user/resetpassword')) {
+            if(this.URLcontains('/research/user/resetpassword')) {
                 this.removeToken();
             }
         },
@@ -436,7 +438,7 @@
               var url = this.redirect(lastRequest);
               this.fire('rt-changed', {route: url});
             } else {
-              this.async(function(){this.fire('rt-changed',{route:'/dashboard'})}, 1000);
+              this.async(function(){this.fire('rt-changed',{route:'/research'})}, 1000);
             }
         },
 
@@ -479,8 +481,8 @@
         },
 
         computePage: function(currentUrl) {
-            if(currentUrl.indexOf('#/dashboard') != -1) {
-                return "/dashboard";
+            if(currentUrl.indexOf('#/research') != -1) {
+                return "/research";
             } else if(currentUrl.indexOf('#/user/signup') != -1) {
                 return "/user/signup";
             } else if(currentUrl.indexOf('#/user') != -1) {
@@ -506,25 +508,29 @@
                 this.$.localStorage.save();
               }
 
+              if(route.indexOf('/research/community') != -1) {
+                  return route;
+              }
+              
               return "/user/signin";
           }
 
           if(this.hasToken && (route.indexOf('signin') != -1 || route.indexOf('signup') != -1)) {
-              return "/dashboard/editor";
+              return "/research/editor";
           }
 
           switch(route) {
-            case "/dashboard/createstrategy":
-              return '/dashboard/editor?create=1';
+            case "/research/createstrategy":
+              return '/research/editor?create=1';
               break;
-            case "/dashboard/createpost":
-              return "/dashboard/community/create"
+            case "/research/createpost":
+              return "/research/community/create"
               break;
-            case "/dashboard": 
-              return "/dashboard/editor"; 
+            case "/research": 
+              return "/research/editor"; 
               break;
-            case "/dashboard/home": 
-              return "/dashboard/editor"; 
+            case "/research/home": 
+              return "/research/editor"; 
               break;
             default:
               return route;
@@ -546,6 +552,7 @@
         },
 
         onAjaxError: function(e) {
+
             var response = e.detail.request.response;
             if(!response) {
                 response = {statusCode: 400};
@@ -580,7 +587,6 @@
                 this.debounce('updateToken', function(){this.$.updateTokenQuery.generateRequest();}, 500);
 
             } else {
-                
                 this.fire('rt-changed', {route: '/user/signin'});
             }
         },
