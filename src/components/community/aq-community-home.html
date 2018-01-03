@@ -363,19 +363,20 @@
             },
 
             attached: function () {
+                this.hasToken = this.$.authItem.checkHasToken();
+
                 var x = localStorage.getItem('my-app-storage');
                 if (x) {
                     var community = JSON.parse(x).community;
                     if (community) {
-                        this.searchText = community.searchText;
-                        this.searchCategory = community.searchCategory;
-                        this.oldselected = community.searchTab;
-                        this.selected = community.searchTab;
-                        this.currentPage = community.lastPage;
+                        this.searchText = this.hasToken ? community.searchText : "";
+                        this.searchCategory = this.hasToken ? community.searchCategory : "All";
+                        this.oldselected = this.hasToken ? community.searchTab : 0;
+                        this.selected = this.hasToken ? community.searchTab : 0;
+                        this.currentPage = this.hasToken ? community.lastPage : 1;
                     }
                 }
-
-                this.hasToken = this.$.authItem.checkHasToken();
+                
                 if(this.hasToken) {
                     this.$$('#following').style.display = 'block';
                     this.$$('#personal').style.display = 'block';
@@ -511,7 +512,7 @@
                     "skip": this.perPage * (currentPage - 1),
                     "limit": this.perPage,
                     "order": "-1",
-                    "q": this.searchText,
+                    "q": this.hasToken ? this.searchText: "",
                     "order_param": this.orderby,
                     "personal": this.isPersonal(),
                     "following": this.isFollowing(),
