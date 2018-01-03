@@ -258,19 +258,12 @@
           
           this.hasToken = this.$.authItem.checkHasToken();
 
-          /*if(!this.$.authItem.checkHasToken()) {
-              this.fire('rt-changed',{route:'/user/signin'});
-              return;
-          } else {*/
-              this.user = this.$.authItem.getUser();
-              this.header = this.$.authItem.getHeader();
-              this.$.views.generateRequest();
+          this.user = this.$.authItem.getUser();
+          this.header = this.$.authItem.getHeader();
+          this.$.views.generateRequest();
 
-              //this.skip = 0;
-              //this.limit = 10;
-              this.$.getThreadQuery.url = this.computeGetThreadUrl(this.threadId);
-              this.$.getThreadQuery.generateRequest();
-          //}
+          this.$.getThreadQuery.url = this.computeGetThreadUrl(this.threadId);
+          this.$.getThreadQuery.generateRequest();
 
       },
 

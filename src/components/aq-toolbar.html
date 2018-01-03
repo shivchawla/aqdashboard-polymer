@@ -124,10 +124,11 @@
                 <paper-tabs id='papertabs' selected="{{currentTab}}" noink no-bar>
                     <paper-tab class="withoutTokenTab">HOME</paper-tab>
                     <paper-tab class="withoutTokenTab">ABOUT US</paper-tab>
+                    <paper-tab class="withTokenTab">RESEARCH</paper-tab>
+                    <paper-tab>COMMUNITY</paper-tab>
                     <paper-tab class="withoutTokenTab">LOG IN</paper-tab>
                     <paper-tab id='signUpTab' class="withoutTokenTab">SIGN UP</paper-tab>
-                    <paper-tab class="withTokenTab">RESEARCH</paper-tab>
-                    <paper-tab class="withTokenTab">COMMUNITY</paper-tab>
+                    
                     <paper-tab class="withTokenTab">HELP</paper-tab>
                 </paper-tabs>
 
@@ -192,10 +193,11 @@
                     switch(this.currentTab) {
                         case 0: routes = ["/main"];break;
                         case 1: routes = ["/about"];break;
-                        case 2: routes = ["/user/signin","/user/signout","/user/authMessage"];break;
-                        case 3: routes = ["/user/signup"];break;
-                        case 4: routes = ["/research/editor", "/research/analyze"];break;
-                        case 5: routes = ["/research/community"];break;
+                        case 2: routes = ["/research/editor", "/research/analyze"];break;
+                        case 3: routes = ["/research/community"];break;
+                        case 4: routes = ["/user/signin","/user/signout","/user/authMessage"];break;
+                        case 5: routes = ["/user/signup"];break;
+                        
                         case 6: routes = ["/research/help"];break;
                     }
 
@@ -209,8 +211,6 @@
 
                     var rt = routes[0];
                     if(!found) {
-                        console.warn(rt);
-                        console.warn("In toolbar");
                         this.fire('rt-changed', {route:rt});
                     } else {
                         rt = window.location.href;
@@ -252,7 +252,7 @@
             },
 
             _currentURLChanged: function() {
-                var routeList = {"0":["/main"], "1":["/about"], "2":["/user/signin","/user/signout","/user/authMessage"], "3":["/user/signup"], "4":["/research/editor", "/research/analyze"], "5":["/research/community"], "6":["/research/help"]};
+                var routeList = {"0":["/main"], "1":["/about"], "2":["/research/editor", "/research/analyze"], "3":["/research/community"], "4":["/user/signin","/user/signout","/user/authMessage"], "5":["/user/signup"], "6":["/research/help"]};
                 
                 var i = 0;
                 var keys = Object.keys(routeList);

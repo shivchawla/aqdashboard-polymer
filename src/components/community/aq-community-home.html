@@ -143,6 +143,10 @@
             transform: scale(0.8, 0.8);
         }
 
+        .withTokenTabs {
+            display: none;
+        }
+
     </style>
 
     <template>
@@ -205,26 +209,30 @@
                             <paper-tabs class="self-start" on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
                                 <paper-tab id="popular">Popular</paper-tab>
                                 <paper-tab id="newest">Newest</paper-tab>
-                                <paper-tab id="following">Following</paper-tab>
-                                <paper-tab id="personal">Personal</paper-tab>
+                                
+                                <paper-tab class="withTokenTabs" id="following">Following</paper-tab>
+                                <paper-tab class="withTokenTabs" id="personal">Personal</paper-tab>
                             </paper-tabs>
 
                             <div class="filter-container self-end">
-                                <paper-checkbox id="checkbox-all"
-                                    on-change="onCheck" noink>All
-                                </paper-checkbox>
-                                
-                                <paper-checkbox id="checkbox-ideas"
-                                    on-change="onCheck" noink>Ideas
-                                </paper-checkbox>
-                                
-                                <paper-checkbox id="checkbox-questions"
-                                    on-change="onCheck" noink>Questions
-                                </paper-checkbox>
-                                
-                                <paper-checkbox id="checkbox-news"
-                                    on-change="onCheck" noink>News</paper-checkbox>
+                                <template is='dom-if' if=[[hasToken]]>
+                                    <paper-checkbox id="checkbox-all"
+                                        on-change="onCheck" noink>All
+                                    </paper-checkbox>
+                                    
+                                    <paper-checkbox id="checkbox-ideas"
+                                        on-change="onCheck" noink>Ideas
+                                    </paper-checkbox>
+                                    
+                                    <paper-checkbox id="checkbox-questions"
+                                        on-change="onCheck" noink>Questions
+                                    </paper-checkbox>
+                                    
+                                    <paper-checkbox id="checkbox-news"
+                                        on-change="onCheck" noink>News</paper-checkbox>
+                                </template>
                             </div> 
+                            
                         </div>
 
                         <aq-loading-progress loading="{{loading}}"></aq-loading-progress>
@@ -345,6 +353,7 @@
                 },
 
                 wide: String,
+                hasToken:Boolean,
 
             },
 
@@ -366,7 +375,12 @@
                     }
                 }
 
-                this.setupSearchCategoryFilters(this.searchCategory);
+                this.hasToken = this.$.authItem.checkHasToken();
+                if(this.hasToken) {
+                    this.$$('#following').style.display = 'block';
+                    this.$$('#personal').style.display = 'block';
+                    this.async(function(){this.setupSearchCategoryFilters(this.searchCategory);}, 200);
+                }
 
                 if (!this.isSearchActive(this.searchText) || this.dirtyBit == 1) {
                     this.processparams();
@@ -374,6 +388,7 @@
                 }
 
                 this.$.getAnnouncementsQuery.generateRequest();
+                
 
             },
 
@@ -480,6 +495,8 @@
                     this.orderby = 'createdAt';
                 }
 
+                this.selected = this.$.authItem.checkHasToken() || this.selected < 2 ? this.selected : 0;
+
                 this.updateCommunityState();
 
                 var currentPage = (this.currentPage) ? this.currentPage : 1;
@@ -500,17 +517,26 @@
 
             },
 
-            fetchResults: function () {
-                if (this.$.authItem.checkHasToken()) {
+            fetchResults: function () {    
+                var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
+                if(this.$.authItem.checkHasToken()) {
                     this.header = this.$.authItem.getHeader();
-                    var APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
                     this.$.getAllThreadsQuery.url = APIEndPoint + '/thread';
-                    this.$.getAllThreadsQuery.generateRequest();
+                } else {
+                    this.$.getAllThreadsQuery.url = APIEndPoint + '/thread_default';
                 }
+
+                this.$.getAllThreadsQuery.generateRequest();
             },
 
             _currentPageChanged: function (newPage, oldPage) {
                 if (this.isAttached) {
+                    
+                    if(newPage!=1 && !this.$.authItem.checkHasToken()) {
+                        this.fire('rt-changed', {route:'/user/signin'});
+                        return;
+                    }
+
                     this.processparams();
                     this.$$('#community-tabs').scrollIntoView(true);
                 }
@@ -561,6 +587,7 @@
             },
 
             computeSearchCategory: function() {
+                
                 var all = this.$$('#checkbox-all').checked;
                 var news = this.$$('#checkbox-news').checked;
                 var ideas = this.$$('#checkbox-ideas').checked;

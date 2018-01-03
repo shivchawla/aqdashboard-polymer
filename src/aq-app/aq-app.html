@@ -501,7 +501,7 @@
         },
 
         redirect: function(route) {
-          if(!this.hasToken && route.indexOf('dashboard') != -1) {
+          if(!this.hasToken && route.indexOf('/research') != -1) {
               
               if(this.aimsquant) {
                 this.aimsquant.lastRequest  = route;
@@ -542,7 +542,9 @@
             this.aimsquant.community.searchText = e.detail.searchText;
             this.aimsquant.community.searchCategory = e.detail.searchCategory;
             this.aimsquant.community.lastPage  = e.detail.lastPage;
+            
             this.aimsquant.community.searchTab = e.detail.searchTab;
+            
             this.$.localStorage.save();
         },
 
