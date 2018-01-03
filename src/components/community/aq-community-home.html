@@ -209,7 +209,6 @@
                             <paper-tabs class="self-start" on-iron-select="onActivateTab" id="community-tabs" selected="{{selected}}" noink>
                                 <paper-tab id="popular">Popular</paper-tab>
                                 <paper-tab id="newest">Newest</paper-tab>
-                                
                                 <paper-tab class="withTokenTabs" id="following">Following</paper-tab>
                                 <paper-tab class="withTokenTabs" id="personal">Personal</paper-tab>
                             </paper-tabs>
@@ -235,7 +234,8 @@
                             
                         </div>
 
-                        <aq-loading-progress loading="{{loading}}"></aq-loading-progress>
+                        <aq-loading-progress loading="{{loading}}">
+                        </aq-loading-progress>
 
                         <template is='dom-if' if='[[!loading]]'>
                             <div class="list-container layout vertical">
@@ -463,18 +463,22 @@
 
             onSearch: function (e) {
 
-                this.searchText = e.detail.text;
-                this.searchCategory = e.detail.category;
+                if(this.hasToken) {
+                    this.searchText = e.detail.text;
+                    this.searchCategory = e.detail.category;
 
-                if (this.searchText == "") {
-                    this.currentPage = 1;
-                    this.dirtyBit = 0;
+                    if (this.searchText == "") {
+                        this.currentPage = 1;
+                        this.dirtyBit = 0;
+                    } else {
+                        this.dirtyBit = 1;
+                    }
+
+                    if (this.isAttached) {
+                        this.processparams();
+                    }
                 } else {
-                    this.dirtyBit = 1;
-                }
-
-                if (this.isAttached) {
-                    this.processparams();
+                    this.fire('rt-changed', {route:'/user/signin'});
                 }
             },
 
