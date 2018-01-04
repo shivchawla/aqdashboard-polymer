@@ -262,7 +262,8 @@
             }
 
             //this.listen("window.hashchange", 'onHashChange' , false);
-            this.listen(window, 'hashchange', 'onHashChange');
+            //this.listen(window, 'hashchange', 'onHashChange');
+            this.listen(window, 'popstate', 'onUrlChange');
             //10 min
             //setInterval(this.setreload.bind(this), 600000);
             
@@ -273,6 +274,15 @@
 
         onHashChange: function(e) {
             this.currentUrl = this.redirect(window.location.href);
+        },
+
+        onUrlChange: function(e) {
+            //console.warn(e);
+            this.currentUrl = window.location.href;
+
+            //window.history.pushState({}, null, route);
+            window.dispatchEvent(new CustomEvent('location-changed'));
+
         },
 
         setreload: function() {
@@ -513,9 +523,7 @@
                 return "/about";
             } else if(currentUrl.indexOf('/policy') != -1) {
                 return "/policy";
-            } else if(currentUrl.indexOf('#') !=-1) {
-                return currentUrl.slice(currentUrl.indexOf('#') + 1);
-            } else if (currentUrl.indexOf('errorPage') !=-1) {
+            } else if (currentUrl.indexOf('/errorPage') !=-1) {
                 return  "/errorPage";
             } else {
                 return  "/main";
