@@ -209,9 +209,6 @@
                         }
                     }
 
-                    console.warn(window.location.href);
-                    console.warn(found);
-
                     var rt = routes[0];
                     if(!found) {
                         this.fire('rt-changed', {route:rt});
@@ -255,7 +252,6 @@
             },
 
             _currentURLChanged: function() {
-                console.warn(this.currentUrl);
                 var routeList = {"0":["/main"], "1":["/about"], "2":["/research/editor", "/research/analyze"], "3":["/research/community"], "4":["/user/signin","/user/signout","/user/authMessage"], "5":["/user/signup"], "6":["/research/help"]};
                 
                 var i = 0;
