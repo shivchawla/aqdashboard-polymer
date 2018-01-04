@@ -6,7 +6,9 @@
 
 <dom-module id="aq-policy">
 	<template>
-		<app-location route="{{route}}" use-hash-as-path></app-location>
+		<!--app-location route="{{route}}" use-hash-as-path></app-location-->
+
+		<app-location route="{{route}}"></app-location>
         
         <app-route
             route="{{route}}"
@@ -44,7 +46,7 @@
 			properties: {
 				currentPath: {
 					type:Array, 
-					value:["Home", "Policy"],
+					//value:["Home", "Policy"],
 				},
 				
 				policyLoading:{

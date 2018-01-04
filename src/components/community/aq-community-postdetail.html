@@ -159,7 +159,11 @@
           headers='{{header}}'
           debounce-duration="300">
       </iron-ajax>
-      
+
+      <template is='dom-if' if=[[threadDetails]]>
+          <meta name="description" content="[[getThreadMetaContent(threadDetails)]]">
+      </template>
+         
       <aq-allpage-layout id='layout' loading='{{loading}}' header="Post Detail" current-path="[[currentPath]]">  
          
           <div class="internal-content" id="post-container">
@@ -270,6 +274,8 @@
       onGetThreadDetailResponse: function(data) {
           this.set('threadDetails', data.detail.response);
 
+          document.title = 'Community: '+this.threadDetails.title + ' - AimsQuant';
+
           this.push('currentPath', {text:this.threadDetails.title})
           
           this.set('replies', data.detail.response.replies);
@@ -356,7 +362,11 @@
 
       goToLogin: function() {
           this.fire('rt-changed',{route:'/user/signin'});
-      }
+      },
+
+      getThreadMetaContent: function(threadDetails) {
+          return threadDetails.title + ". | Share your investment insights with the community, learn from the feedback and continuously improve your investment strategies."; 
+      },
 
     });
 

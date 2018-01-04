@@ -203,8 +203,9 @@
 
     <template>
 
-        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <!--app-location route="{{route}}" use-hash-as-path></app-location-->
 
+        <app-location route="{{route}}"></app-location>
         <app-route
                 route="{{route}}"
                 pattern="/research/help"
@@ -349,6 +350,10 @@
 
                 tutorials: Array,
 
+                helpType: {
+                    observer:'_helpTypeChanged',
+                }
+
             },
 
             listeners: {
@@ -357,7 +362,7 @@
 
             attached: function() {
                 this.loading = true; 
-                this.$$('#drawerPanel').style.display = 'none'; 
+                document.title = "Help - AimsQuant";
             },
 
             isBasic: function(helpType) {
@@ -418,8 +423,9 @@
                         }
 
                         collapseElement.toggle();
-
                         e.detail.sourceEvent.srcElement.scrollIntoView(true);
+                        
+                        document.title = collapseElement.opened ? this.tutorials[index].header + " - AimsQuant" : "Tutorials - AimsQuant";
                     }
                 }
             },
@@ -442,7 +448,15 @@
                 } else {
                     return "0px";
                 }
-            }
+            },
+
+            _helpTypeChanged: function() {
+                if (this.helpType == "basic") {
+                    document.title = "Help - AimsQuant";
+                } else {
+                    document.title = "Tutorials - AimsQuant";
+                }
+            },
 
 
         });

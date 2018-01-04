@@ -187,8 +187,9 @@
 
     <template>
 
-        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <!--app-location route="{{route}}" use-hash-as-path></app-location-->
 
+        <app-location route="{{route}}"></app-location>
         <app-route
             route="{{route}}"
             pattern="/about/:section"
@@ -307,6 +308,10 @@
           }
       },
 
+      attached: function() {
+          document.title = 'About Us - AimsQuant';
+      },
+
       computeLayoutClass: function(width) {
           if(width) {
             if (width.narrow) {
@@ -329,12 +334,16 @@
           var element = '';
           if(this.routeData.section == "contact")  {
               element = this.$$('#connect-container');
+              document.title = 'Connect With us - AimsQuant';
           } else if (this.routeData.section == "careers") {
               element = this.$$('#career-container');
+              document.title = 'Careers - AimsQuant';
           } else if (this.routeData.section == "people") {
               element = this.$$('#whoweare-container');
+              document.title = 'Who We Are - AimsQuant';
           } else {
               element = this.$$('#first-category-container');
+              document.title = 'About Us - AimsQuant';
           } 
 
           this.debounce('scroll', function(){element.scrollIntoView(true);}, 200);

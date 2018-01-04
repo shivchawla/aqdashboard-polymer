@@ -229,8 +229,10 @@
     </style>
 
     <template>
-        <app-location route="{{route}}"  use-hash-as-path></app-location>
+        <!--app-location route="{{route}}"  use-hash-as-path></app-location-->
+        <app-location route="{{route}}"></app-location>
         
+
         <app-route
             route="{{route}}"
             pattern="/main"
@@ -321,6 +323,11 @@
             width: {
               type: Object,
             }
+
+        },
+
+        attached: function() {
+            document.title = 'Backtest investment stategies for Indian Equity Markets';
 
         },
 

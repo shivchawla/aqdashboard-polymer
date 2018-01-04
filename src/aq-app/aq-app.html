@@ -65,7 +65,6 @@
 
       <aq-check-authentication id='authItem'></aq-check-authentication>
       <aq-google-analytics></aq-google-analytics>
-
       <div id="main">
         <paper-drawer-panel id="drawerpanel" force-narrow=1 responsive-width='900px' drawer-width="[[drawerWidth]]" narrow="{{narrow}}">
             
@@ -454,14 +453,17 @@
             
             //THIS PIECE OF CODE IS TRICKY
             //ALSO, ROUTING LOGIC NEEDS A REVAMP..TOOO Complicated
-            if(idx == 0) { //this one is when URL is refreshed and has query params
+            /*if(idx == 0) { //this one is when URL is refreshed and has query params
                 route = '/' + route;
             } else if(idx > 0) {
-                route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
+                //route = '/' + route.slice(idx) + (idx > 0 ? '#' + route.slice(0, idx) : '');
+
+                route = '/' + route.slice(idx) + (idx > 0 ? route.slice(0, idx) : '');
             } else {
                 var idx = route.indexOf('#');
-                route = idx != -1 ? route.slice(idx) : '/#' + route;
-            }
+                //route = idx != -1 ? route.slice(idx) : '/#' + route;
+                route = idx != -1 ? route.slice(idx) : route;
+            }*/
             
             if(this.reload) {
                 window.location.reload(true);
@@ -480,7 +482,7 @@
             window.location.reload(true);
         },
 
-        computePage: function(currentUrl) {
+        /*computePage: function(currentUrl) {
             if(currentUrl.indexOf('#/research') != -1) {
                 return "/research";
             } else if(currentUrl.indexOf('#/user/signup') != -1) {
@@ -490,6 +492,26 @@
             } else if(currentUrl.indexOf('#/about') != -1) {
                 return "/about";
             } else if(currentUrl.indexOf('#/policy') != -1) {
+                return "/policy";
+            } else if(currentUrl.indexOf('#') !=-1) {
+                return currentUrl.slice(currentUrl.indexOf('#') + 1);
+            } else if (currentUrl.indexOf('errorPage') !=-1) {
+                return  "/errorPage";
+            } else {
+                return  "/main";
+            }
+        },*/
+
+        computePage: function(currentUrl) {
+            if(currentUrl.indexOf('/research') != -1) {
+                return "/research";
+            } else if(currentUrl.indexOf('/user/signup') != -1) {
+                return "/user/signup";
+            } else if(currentUrl.indexOf('/user') != -1) {
+                return "/user";
+            } else if(currentUrl.indexOf('/about') != -1) {
+                return "/about";
+            } else if(currentUrl.indexOf('/policy') != -1) {
                 return "/policy";
             } else if(currentUrl.indexOf('#') !=-1) {
                 return currentUrl.slice(currentUrl.indexOf('#') + 1);

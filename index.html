@@ -2,7 +2,8 @@
 
 <html>
   <head>
-    <title>AimsQuant</title>
+    <title>Backtest investment stategies for Indian Equity Markets</title>
+    <meta name="description" content="Build, test and research investment stategies with in-built code editor and data from Indian Equity markets. Run unlimited backtests and visualize performance of investment strategies with variety of metrics">
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +11,12 @@
     <link rel="stylesheet" href="/resources/scripts/highlight/styles/docco.css">
     <script src="/resources/scripts/highlight/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <link rel="import" href="src/aq-app/aq-app.html">
     
+    <!--link rel="import" href="/bower_components_v2.0/webcomponentsjs/webcomponents-lite.js">
+    <link rel="import" href="/bower_components/polymer/polymer.js"-->
+    
+    <link rel="import" href="/src/aq-app/aq-app.html">
+     
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
 
     <style>
@@ -23,51 +28,82 @@
       #no-browser-support {
          padding: 10px;
          color: teal;
+         display: none;
       }
+
+      #app {
+        display: none;
+      }
+
     </style>
     <link rel="shortcut icon" type="image/png" href="/resources/images/favicon.png">
 
     <script>
       function createElement(e) {
-        if(isChrome()){
-            var element = document.createElement('aq-app');
+
+        if(isChrome()) {
+            var element = document.getElementById("app");
+            element.style.display = 'block';
         } else {
+            var element = document.getElementById("no-browser-support");
+            element.style.display = 'block';
+        }
+
+        return;
+        //if(isChrome()){
+            var element = document.createElement('aq-app');
+        /*} else {
             var element = document.createElement('div');
             element.innerHTML = "Your browser is not supported currently. Please use the latest Google Chrome for the best experience.";
             element.setAttribute('id', 'no-browser-support');
             document.body.appendChild(element);
-        }
+        }*/
 
         document.body.appendChild(element);
       }
 
-      function isChrome() {
-        var isChromium = window.chrome,
-          winNav = window.navigator,
-          vendorName = winNav.vendor,
-          isOpera = winNav.userAgent.indexOf("OPR") > -1,
-          isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-          isIOSChrome = winNav.userAgent.match("CriOS");
-
-        if (isIOSChrome) {
-          return true;
-        } else if (
-          isChromium !== null &&
-          typeof isChromium !== "undefined" &&
-          vendorName === "Google Inc." &&
-          isOpera === false &&
-          isIEedge === false
-        ) {
-          return true;
-        } else { 
-          return false;
+      /*function createElement(e) {
+        if ('registerElement' in document
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template')) {
+          // platform is good!
+        } else {
+          // polyfill the platform!
+          var e = document.createElement('script');
+          e.src = '/bower_components/webcomponentsjs/webcomponents.min.js';
+          document.body.appendChild(e);
         }
-      }
+      }*/
 
+      function isChrome() {
+          var isChromium = window.chrome,
+              winNav = window.navigator,
+              vendorName = winNav.vendor,
+              isOpera = winNav.userAgent.indexOf("OPR") > -1,
+              isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+              isIOSChrome = winNav.userAgent.match("CriOS");
+
+          if (isIOSChrome) {
+              return true;
+          } else if (
+              isChromium !== null &&
+              typeof isChromium !== "undefined" &&
+              vendorName === "Google Inc." &&
+              isOpera === false &&
+              isIEedge === false
+          ) {
+              return true;
+          } else { 
+              return false;
+          }
+      }
     </script>
   </head>
 
   <body class="fullbleed layout vertical" onload="createElement()">
-    <span id="browser-sync-binding"></span>
+  <!--body class="fullbleed layout vertical"--> 
+    <div id='no-browser-support'>Your browser is not supported currently. Please use the latest Google Chrome for the best experience.</div>
+    <aq-app id='app'></aq-app>   
+    <!--script>!function() {if(window.Polymer)return void console.error("Polymer already initialized!");if(window.performance&&performance.mark&&performance.mark("index.html"),Polymer={lazyRegister:!0,useNativeCSSProperties:!0},"registerElement"in document&&"import"in document.createElement("link")&&"content"in document.createElement("template"));else{for(var e,n=document.querySelectorAll("link[rel=prefetch]"),r=0;r<n.length;r++)e=new XMLHttpRequest,e.open("GET",n[r].href),e.send();var t=document.createElement("script");t.src="/bower_components_v2.0/webcomponentsjs/webcomponents-lite.js",document.body.appendChild(t)}}();</script-->
   </body>
 </html>

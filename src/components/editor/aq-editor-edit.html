@@ -447,6 +447,7 @@
 
             onGetStrategyResponse: function (data) {
                 this.strategy = data.detail.response;
+                document.title = this.strategy.fullName + " - AimsQuant";
             },
 
             onGetStrategyError: function (e) {

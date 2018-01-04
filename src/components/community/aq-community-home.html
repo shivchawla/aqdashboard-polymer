@@ -152,6 +152,8 @@
     <template>
 
         <iron-media-query query="(min-width: 850px)" query-matches="{{wide}}"></iron-media-query>
+
+        <meta name="description" content="Share your investment insights with the community, learn from the feedback and continuously improve your investment strategies. Build, test and research investment stategies with in-built code editor and data from Indian Equity markets.">
        
         <aq-check-authentication id='authItem'></aq-check-authentication>
 
@@ -363,6 +365,8 @@
             },
 
             attached: function () {
+                document.title = "Community - AimsQuant";
+
                 this.hasToken = this.$.authItem.checkHasToken();
 
                 var x = localStorage.getItem('my-app-storage');
