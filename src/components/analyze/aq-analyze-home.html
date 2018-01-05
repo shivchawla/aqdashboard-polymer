@@ -191,7 +191,7 @@
 
     			strategyId: {
 					type:String,
-					observer:'_strategyIdChanged',
+					//observer:'_strategyIdChanged',
 				},
 
     			backtests: {
@@ -311,8 +311,11 @@
 			},
 
 			_strategyIdChanged: function(nId, oId) {
+				//console.warn("Strategy Id Changed");
+				//console.warn(nId);
+				//console.warn(oId);
 				if(nId && nId!= "") {
-					this.fetchBacktests();
+					//this.fetchBacktests();
 	        	}
 			},
 
@@ -369,6 +372,7 @@
 				}
 
 				this.dirtyBit = 0;
+
 				document.title = "All backtests for " + this.strategyName + " - AimsQuant";
 			},
 
