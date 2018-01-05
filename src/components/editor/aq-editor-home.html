@@ -219,7 +219,7 @@
 
         <app-route
             route="{{route}}"
-            pattern="/research/editor"
+            pattern="/research/strategy"
             query-params="{{queryParams}}">
         </app-route>
 
@@ -335,7 +335,7 @@
             </div>
 
             <template is='dom-if' if="[[!hasStrategies(strategies, searchParam)]]">
-                <p class="self-center"> No Strategies Yet!! <a href='/research/editor?create=1'>Click Here</a></p>
+                <p class="self-center"> No Strategies Yet!! <a href='/research/strategy?create=1'>Click Here</a></p>
             </template>
         </aq-allpage-layout>
           
@@ -590,7 +590,7 @@
 
             goToEditor: function (e) {
                 var strategyId = e.detail.id;
-                this.fire('rt-changed', {route: '/research/editor/' + strategyId});
+                this.fire('rt-changed', {route: '/research/strategy/' + strategyId});
             },
 
             checkStrategyLive: function(e) {
@@ -824,7 +824,7 @@
                 var strategyId = e.detail.strategyId;
                 var forwardtestId = e.detail.forwardtestId;
                 var strategyName = e.detail.strategyName;
-                this.fire('rt-changed', {route:'/research/analyze/'+strategyId +"/" + forwardtestId +'?type=forward&strategyName='+strategyName});
+                this.fire('rt-changed', {route:'/research/backtests/'+strategyId +"/" + forwardtestId +'?type=forward&strategyName='+strategyName});
             },
 
             hasNonZeroStrategies: function(strategies) {

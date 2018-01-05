@@ -112,7 +112,7 @@
 	            
 	            var response = e.detail;
 	            if(response.status && response.backtestId && response.strategyId) {
-	            	this.fire('rt-changed', {route: `/research/analyze/${response.strategyId}/${response.backtestId}`, reload:true});
+	            	this.fire('rt-changed', {route: `/research/backtests/${response.strategyId}/${response.backtestId}`, reload:true});
 	            	return;
 	            }
 

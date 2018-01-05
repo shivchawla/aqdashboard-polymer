@@ -193,12 +193,12 @@
                     switch(this.currentTab) {
                         case 0: routes = ["/main"];break;
                         case 1: routes = ["/about"];break;
-                        case 2: routes = ["/research/editor", "/research/analyze"];break;
+                        case 2: routes = ["/research/strategy", "/research/backtests"];break;
                         case 3: routes = ["/research/community"];break;
                         case 4: routes = ["/user/signin","/user/signout","/user/authMessage"];break;
                         case 5: routes = ["/user/signup"];break;
                         
-                        case 6: routes = ["/research/help"];break;
+                        case 6: routes = ["/research/help", "/research/tutorial"];break;
                     }
 
                     var found = false;
@@ -252,7 +252,7 @@
             },
 
             _currentURLChanged: function() {
-                var routeList = {"0":["/main"], "1":["/about"], "2":["/research/editor", "/research/analyze"], "3":["/research/community"], "4":["/user/signin","/user/signout","/user/authMessage"], "5":["/user/signup"], "6":["/research/help"]};
+                var routeList = {"0":["/main"], "1":["/about"], "2":["/research/strategy", "/research/backtests"], "3":["/research/community"], "4":["/user/signin","/user/signout","/user/authMessage"], "5":["/user/signup"], "6":["/research/help", "/research/tutorial"]};
                 
                 var i = 0;
                 var keys = Object.keys(routeList);

@@ -62,7 +62,7 @@
 
 			goBackAllBacktests: function() {
 				this.fire('unsubscribe-data',{backtestId:this.backtestId});
-				this.fire('rt-changed',{route:'/research/analyze/' + this.strategyId});
+				this.fire('rt-changed',{route:'/research/backtests/' + this.strategyId});
 			},
 
 			attached: function() {
@@ -73,7 +73,7 @@
 			},
 
 			goToEditor: function() {
-				this.fire('rt-changed',{route:'/research/editor/' + this.strategyId});
+				this.fire('rt-changed',{route:'/research/strategy/' + this.strategyId});
 			},
 
 		});

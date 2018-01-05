@@ -546,21 +546,21 @@
           }
 
           if(this.hasToken && (route.indexOf('signin') != -1 || route.indexOf('signup') != -1)) {
-              return "/research/editor";
+              return "/research/strategy";
           }
 
           switch(route) {
             case "/research/createstrategy":
-              return '/research/editor?create=1';
+              return '/research/strategy?create=1';
               break;
             case "/research/createpost":
               return "/research/community/create"
               break;
             case "/research": 
-              return "/research/editor"; 
+              return "/research/strategy"; 
               break;
             case "/research/home": 
-              return "/research/editor"; 
+              return "/research/strategy"; 
               break;
             default:
               return route;

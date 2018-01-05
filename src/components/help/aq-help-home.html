@@ -228,7 +228,7 @@
             debounce-duration="300">
         </iron-ajax>
 
-        <template is='dom-if' if='{{active}}'>
+        <!--template is='dom-if' if='{{active}}'-->
 
             <aq-loading-progress loading='{{loading}}'></aq-loading-progress>
 
@@ -317,7 +317,7 @@
                 </aq-allpage-layout-->
             
             <!--/template-->
-        </template>
+        <!--/template-->
 
     </template>
 
@@ -362,7 +362,11 @@
 
             attached: function() {
                 this.loading = true; 
-                document.title = "Help - AimsQuant";
+                if (this.helpType == "basic") {
+                    document.title = "Help - AimsQuant";
+                } else {
+                    document.title = "Tutorials - AimsQuant";
+                }
             },
 
             isBasic: function(helpType) {
@@ -389,7 +393,7 @@
             },
 
             blur: function() {
-              this.$$('#search_input').value="";
+                this.$$('#search_input').value="";
             },
 
             onGetHelpContentSuccess: function (e) {
@@ -401,12 +405,19 @@
 
                 this.set('categoriesArray', array);
                 
-                this.loading = false;
-                this.$$('#mainPanel').style.display = 'block';
+                if(this.helpType == "basic") {
+                    this.loading = false;
+                    this.$$('#mainPanel').style.display = 'block';
+                }
             },
 
             onGetTutorialSuccess: function(e) {
                 this.tutorials = e.detail.response.tutorials;
+                
+                if(this.helpType == "tutorial") {
+                    this.loading = false;
+                    this.$$('#mainPanel').style.display = 'block';
+                }
             },
 
             toggle: function(e) {

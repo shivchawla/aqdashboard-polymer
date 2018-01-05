@@ -76,7 +76,7 @@
 						route = '/research'; 
 						break;
 					case "All Strategies": 
-						route = '/research/editor'; 
+						route = '/research/strategy'; 
 						break;
 					case "Community": 
 						route = '/research/community'; 
@@ -89,7 +89,7 @@
 						path = path.slice(2, path.length - 1).split("/");
 						
 						if (path.length >= 3) {
-							route = '/research/analyze/'.concat(path[2]);
+							route = '/research/backtests/'.concat(path[2]);
 						} 
 
 						break;

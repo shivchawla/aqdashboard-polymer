@@ -356,7 +356,7 @@
 	      	},
 
 			goToEditor: function() {
-				this.fire('rt-changed', {route:'/research/editor/'+this.strategyId});
+				this.fire('rt-changed', {route:'/research/strategy/'+this.strategyId});
 			},
 
 			isBacktestCountOdd: function(backtests) {
@@ -387,8 +387,8 @@
 				this.strategyName = strategy.name;
 
 				var currentPath = JSON.parse(JSON.stringify(this.currentPath));
-				currentPath.push({text:"All Strategies", route:"/research/editor"});
-				currentPath.push({text: this.strategyName, route:"/research/editor/"+this.strategyId});
+				currentPath.push({text:"All Strategies", route:"/research/strategy"});
+				currentPath.push({text: this.strategyName, route:"/research/strategy/"+this.strategyId});
 				currentPath.push({text:"All Backtests"});
 				
 				this.currentPath = [];
@@ -478,7 +478,7 @@
 	        	}
 
 	        	if(this.backtests.length == 0) {
-	        		this.fire('rt-changed', {route:'/research/editor'});
+	        		this.fire('rt-changed', {route:'/research/strategy'});
 	        	}
 	        },
 
@@ -492,7 +492,7 @@
 
 	        onDetail: function(e) {
 	        	e.stopPropagation();
-	        	this.fire('rt-changed', {route:'/research/analyze/' + this.strategyId+'/'+ e.detail.id +'?strategyName='+this.strategyName+'&type=backtest&heading=Backtest '+(e.detail.index + 1)});
+	        	this.fire('rt-changed', {route:'/research/backtests/' + this.strategyId+'/'+ e.detail.id +'?strategyName='+this.strategyName+'&type=backtest&heading=Backtest '+(e.detail.index + 1)});
 	        },
 
 	        onBacktestAdded: function() {
@@ -542,7 +542,7 @@
 
             onForwardStrategyExecutionResponse: function (e) {
                 this.fire('iron-signal', {name:'forwardtest-added'});
-                this.fire('rt-changed', {route:'/research/editor'});
+                this.fire('rt-changed', {route:'/research/strategy'});
             },
 
             onForwardStrategyExecutionError: function(e) {

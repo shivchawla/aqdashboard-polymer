@@ -87,11 +87,11 @@
 
         <div id='content'>
           <iron-lazy-pages restamp attr-for-selected="page" selected="{{routeData.page}}" fallback-selection="editor">
-            <template is='iron-lazy-page' restamp page="editor">
+            <template is='iron-lazy-page' restamp page="strategy">
                 <aq-editor-main current-path=[[computeCurrentPath(routeData.page)]]></aq-editor-main>
             </template>
 
-            <template is='iron-lazy-page' restamp page="analyze">
+            <template is='iron-lazy-page' restamp page="backtests">
                 <aq-analyze-main current-path=[[computeCurrentPath(routeData.page)]]></aq-analyze-main>
             </template>
 
@@ -102,6 +102,11 @@
             <template is='iron-lazy-page' restamp page="help">
                 <aq-help-main current-path=[[computeCurrentPath(routeData.page)]]></aq-help-main>
             </template>
+
+            <template is='iron-lazy-page' restamp page="tutorial">
+                <aq-help-main current-path=[[computeCurrentPath(routeData.page)]]></aq-help-main>
+            </template>
+
           </iron-lazy-pages>
         </div>
 
@@ -149,9 +154,9 @@
               //var basePath = [{text:"Home", route:"/main"}];
               var basePath = [];
               
-              if(page == "editor") {
-                  basePath.push({text:"Research", route:"/research"}, {text:"All Strategies", route:"/research/editor"})
-              } else if (page == "help"){
+              if(page == "strategy") {
+                  basePath.push({text:"Research", route:"/research"}, {text:"All Strategies", route:"/research/strategy"})
+              } else if (page == "help" || page == "tutorial"){
                   basePath.push({text:"Help", route:"/research/help"});
               } else if (page == "community"){
                   basePath.push({text:"Community", route:"/research/community"});
@@ -316,7 +321,7 @@
               //check for error
               var strategyId = data.detail.response._id
               this.fire('iron-signal',{name:'strategy-added'});
-              this.fire('rt-changed', {route:'/research/editor/'+ strategyId});
+              this.fire('rt-changed', {route:'/research/strategy/'+ strategyId});
           },
 
           onStrategyCreationError: function(data) {
