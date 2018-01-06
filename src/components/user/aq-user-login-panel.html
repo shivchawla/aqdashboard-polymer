@@ -561,6 +561,7 @@
                 displayMode: {
                     type: String,
                     value: "signin",
+                    observer: '_displayModeChanged',
                 },
 
                 acceptPolicy: {
@@ -692,6 +693,33 @@
             attached: function () {
                 this.APIEndPoint = new Polymer.IronMetaQuery({key: 'APIEndPoint'}).value;
             },
+
+            _displayModeChanged: function() {
+                var title = '';
+                switch(this.displayMode) {
+                    case "signin": 
+                        title = "Sign In - AimsQuant";
+                        break;
+                    case "signup": 
+                        title = "Sign Up - AimsQuant";
+                        break;
+                    case "forgotPassword": 
+                        title = "Forgot Password - AimsQuant";
+                        break;
+                    case "signout": 
+                        title = "Sign Out - AimsQuant";
+                        break;
+                    case "resetpassword": 
+                        title = "Reset Password - AimsQuant";
+                        break;
+                }
+
+                if(title != '') {
+                    document.title = title;
+                }
+                    
+            },
+
             _activeChanged: function (active, routeData, queryParams) {
 
                 if (active && routeData && routeData.displayMode) {

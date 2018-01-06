@@ -109,7 +109,10 @@
 
 			properties:{
 				emailId:String,
-				mode:String,
+				mode:{
+					type: String,
+					observer: '_modeChanged',
+				},
 				name:String,
 				active: Boolean,
 				queryParams: Object,
@@ -133,16 +136,38 @@
 				}
 			},
 
+			_modeChanged: function() {
+				var title = '';
+				switch(this.mode) {
+					case "forgotpassword": 
+						title = 'Forgot Password Message - AimsQuant';
+						break;
+					case "activationPending": 
+						title = 'Activation Pending Message - AimsQuant';
+						break;
+					case "activationComplete": 
+						title = 'Activation Complete Message - AimsQuant';
+						break;
+					case "reset": 
+						title = 'Reset Password Message - AimsQuant';
+						break;
+				}
+
+				if(title != '') {
+					document.title = title;
+				}
+			},
+
 			isModeForgotPassword: function(mode) {
 				return mode=="forgotpassword";
 			},
 
 			isModeActivationPending: function(mode) {
-				return mode=="activationPending";
+				return mode == "activationPending";
 			},
 
 			isModeActivationComplete: function(mode) {
-				return mode == "activationComplete";
+				return mode == "activationComplete"
 			},
 
 			isModeReset: function(mode) {

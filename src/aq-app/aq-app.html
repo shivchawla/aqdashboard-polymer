@@ -326,7 +326,7 @@
         onSignOut: function() {     
             this.removeToken();
             //this.hasToken = this.$.authItem.checkHasToken();
-            //this.fire('rt-changed',{route:'/user/signout'});
+            this.fire('rt-changed',{route:'/user/signout'});
         },
 
         openFeedbackDialog: function() {
