@@ -267,135 +267,138 @@
     </style>
 
     <template>
-        <aq-ongoing-action-dialog id ="onGoingDialog" heading="">
-        </aq-ongoing-action-dialog>
+        <!--aq-ongoing-action-dialog id ="onGoingDialog" heading="">
+        </aq-ongoing-action-dialog-->
 
         <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-    	<div id='container' class="layout vertical">
-            <template is='dom-if' if='[[forwardtestHeader]]'>
-                <div class="top-container layout horizontal">
-                    <div class="layout vertical">
-                        <div class="layout horizontal">
-                            <div id="ft-name" class="self-start"> LIVE TEST for [[forwardtest.strategy.name]]&nbsp</div>
-                            <div class$="strategy-status self-end [[computeStatusClass(forwardtest.active, forwardtest.error)]]" id="label-text-running">[[forwardtestHeader.status]]</div>
-                        </div>
-     
-                        <div class="label-text">Created At:&nbsp[[forwardtestHeader.createdAt]]</div>
-                        <div class="label-text">Last updated:&nbsp[[forwardtestHeader.updatedAt]]</div>
+        
+        <template is='dom-if' if=[[!loading]]>
+            <div id='container' class="layout vertical">
+                <template is='dom-if' if='[[forwardtestHeader]]'>
+                    <div class="top-container layout horizontal">
+                        <div class="layout vertical">
+                            <div class="layout horizontal">
+                                <div id="ft-name" class="self-start"> LIVE TEST for [[forwardtest.strategy.name]]&nbsp</div>
+                                <div class$="strategy-status self-end [[computeStatusClass(forwardtest.active, forwardtest.error)]]" id="label-text-running">[[forwardtestHeader.status]]</div>
+                            </div>
+         
+                            <div class="label-text">Created At:&nbsp[[forwardtestHeader.createdAt]]</div>
+                            <div class="label-text">Last updated:&nbsp[[forwardtestHeader.updatedAt]]</div>
 
-                        <!--div id='status-container' class="layout horizontal"> 
+                            <!--div id='status-container' class="layout horizontal"> 
+                                
+                            </div-->
                             
-                        </div-->
-                        
+                        </div>
+                        <div class="flex"></div>
+                        <div class="layout horizontal start">
+                            
+                            <template is='dom-if' if='[[hasActionButton(forwardtest.error)]]'>
+                                <paper-button raised on-tap='onActionButton' noink 
+                                class$="[[computeActionButtonClass(forwardtest.active)]]">
+                                [[computeActionButtonText(forwardtest.active)]]
+                                </paper-button>
+                            </template>
+
+                            <template is='dom-if' if='[[hasDeleteButton(forwardtest.active, forwardtest.error)]]'>
+                                <paper-button raised on-tap='onDeleteButton' noink 
+                                class="delete">
+                                Delete Test
+                                </paper-button>
+                            </template>
+                        </div>
                     </div>
-                    <div class="flex"></div>
-                    <div class="layout horizontal start">
-                        
-                        <template is='dom-if' if='[[hasActionButton(forwardtest.error)]]'>
-                            <paper-button raised on-tap='onActionButton' noink 
-                            class$="[[computeActionButtonClass(forwardtest.active)]]">
-                            [[computeActionButtonText(forwardtest.active)]]
-                            </paper-button>
-                        </template>
-
-                        <template is='dom-if' if='[[hasDeleteButton(forwardtest.active, forwardtest.error)]]'>
-                            <paper-button raised on-tap='onDeleteButton' noink 
-                            class="delete">
-                            Delete Test
-                            </paper-button>
-                        </template>
-                    </div>
-                </div>
-    		</template>
-            
-            <div class="middle-container flex">
-        		<aq-backtest-metric-item-list 
-                    heading="Metrics"
-        			forced-semi-wide="[[forcedSemiWide]]"
-        			metric-items="{{metrics}}"
-                    justified="justified">
-    			</aq-backtest-metric-item-list> 
-            </div>
-
-            <div class="layout horizontal" id='forwardtest-detail'>
-                <div class="layout" id="vertical-tab-container">
-	                <iron-selector selected="{{detailType}}" 
-                        fallback-selection="0">
-	                    <v-tab selected=[[isSelected(detailType,0)]] icon="vaadin-icons:line-bar-chart" add">Performance
-                        </v-tab>
-                        
-                        <v-tab selected=[[isSelected(detailType,1)]] icon="vaadin-icons:code">Code
-                        </v-tab>
-                        
-                        <v-tab selected=[[isSelected(detailType,2)]] icon="vaadin-icons:suitcase">Portfolio
-                        </v-tab>
-                        
-                        <v-tab selected=[[isSelected(detailType,3)]] icon="aq-icons:queue">Transactions</v-tab>
-                        
-                        <v-tab selected=[[isSelected(detailType,4)]] icon="aq-icons:view-list">Logs</v-tab>
-
-                        <v-tab selected=[[isSelected(detailType,5)]] icon="settings">Settings</v-tab>
-                    </iron-selector>
-                </div>
+        		</template>
                 
-                <div id='iron-page-container'>
-                    <iron-pages selected="{{detailType}}">
-                        <div id="performance-container">
-                            <!--template is='dom-if' if='[[forwardtest.serializedData]]'-->
-                                <aq-forwardtest-performance-detail-item 
-                                    forwardtest="[[forwardtest]]">
-                                </aq-forwardtest-performance-detail-item>
-                            <!--/template-->
-                        </div>
-
-                        <div id="code-container">
-                            <!--div class="heading">CODE</div-->
-                            <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4" on-change='onCodeChange'>[[forwardtest.code]]
-                            </juicy-ace-editor>
-                        </div>
-
-                        <div id='portfolio-container'>
-                            <template is='dom-if' if='[[forwardtestPositions]]'>
-                                <aq-portfolio-table positions="[[forwardtestPositions]]">
-                                </aq-portfolio-table>
-                            </template>
-                        </div>
-
-                        <div id='transaction-container'>
-                            <template is='dom-if' if='[[hasOrdersAndTransactions(forwardtestTransactions, forwardtestOrders)]]'>
-                                <aq-transaction-table 
-                                    transactions="[[forwardtestTransactions]]"
-                                    orders="[[forwardtestOrders]]">
-                                </aq-transaction-table>
-                            </template>
-                        </div>
-
-                        <div id="log-container">
-                            <template is='dom-if' if='[[forwardtestLogs]]'>
-                                <template is='dom-repeat' items="[[forwardtestLogs]]">
-                                    <aq-log-item-new
-                                        actual-datetime="[[item.dt]]" 
-                                        datetime="[[item.datetime]]"
-                                        message="[[item.message]]"
-                                        message-type="[[item.messagetype]]">
-                                    </aq-log-item-new>
-                                </template>
-                            </template>
-                        </div> 
-
-                        <div id='settings-container'>
-                            <template is='dom-if' if='[[forwardtestSettings]]'>
-                                <aq-settings-display settings="[[forwardtestSettings]]">
-                                </aq-settings-display>
-                            </template>
-                        </div>
-
-                    </iron-pages>
+                <div class="middle-container flex">
+            		<aq-backtest-metric-item-list 
+                        heading="Metrics"
+            			forced-semi-wide="[[forcedSemiWide]]"
+            			metric-items="{{metrics}}"
+                        justified="justified">
+        			</aq-backtest-metric-item-list> 
                 </div>
-            </div>
-      	</div>
+
+                <div class="layout horizontal" id='forwardtest-detail'>
+                    <div class="layout" id="vertical-tab-container">
+    	                <iron-selector selected="{{detailType}}" 
+                            fallback-selection="0">
+    	                    <v-tab selected=[[isSelected(detailType,0)]] icon="vaadin-icons:line-bar-chart" add">Performance
+                            </v-tab>
+                            
+                            <v-tab selected=[[isSelected(detailType,1)]] icon="vaadin-icons:code">Code
+                            </v-tab>
+                            
+                            <v-tab selected=[[isSelected(detailType,2)]] icon="vaadin-icons:suitcase">Portfolio
+                            </v-tab>
+                            
+                            <v-tab selected=[[isSelected(detailType,3)]] icon="aq-icons:queue">Transactions</v-tab>
+                            
+                            <v-tab selected=[[isSelected(detailType,4)]] icon="aq-icons:view-list">Logs</v-tab>
+
+                            <v-tab selected=[[isSelected(detailType,5)]] icon="settings">Settings</v-tab>
+                        </iron-selector>
+                    </div>
+                    
+                    <div id='iron-page-container'>
+                        <iron-pages selected="{{detailType}}">
+                            <div id="performance-container">
+                                <!--template is='dom-if' if='[[forwardtest.serializedData]]'-->
+                                    <aq-forwardtest-performance-detail-item 
+                                        forwardtest="[[forwardtest]]">
+                                    </aq-forwardtest-performance-detail-item>
+                                <!--/template-->
+                            </div>
+
+                            <div id="code-container">
+                                <!--div class="heading">CODE</div-->
+                                <juicy-ace-editor readonly style="height:100%; min-height: 400px;" theme="ace/theme/xcode" mode="ace/mode/julia" fontsize="14px" id="codeEditor" tabsize="4" on-change='onCodeChange'>[[forwardtest.code]]
+                                </juicy-ace-editor>
+                            </div>
+
+                            <div id='portfolio-container'>
+                                <template is='dom-if' if='[[forwardtestPositions]]'>
+                                    <aq-portfolio-table positions="[[forwardtestPositions]]">
+                                    </aq-portfolio-table>
+                                </template>
+                            </div>
+
+                            <div id='transaction-container'>
+                                <template is='dom-if' if='[[hasOrdersAndTransactions(forwardtestTransactions, forwardtestOrders)]]'>
+                                    <aq-transaction-table 
+                                        transactions="[[forwardtestTransactions]]"
+                                        orders="[[forwardtestOrders]]">
+                                    </aq-transaction-table>
+                                </template>
+                            </div>
+
+                            <div id="log-container">
+                                <template is='dom-if' if='[[forwardtestLogs]]'>
+                                    <template is='dom-repeat' items="[[forwardtestLogs]]">
+                                        <aq-log-item-new
+                                            actual-datetime="[[item.dt]]" 
+                                            datetime="[[item.datetime]]"
+                                            message="[[item.message]]"
+                                            message-type="[[item.messagetype]]">
+                                        </aq-log-item-new>
+                                    </template>
+                                </template>
+                            </div> 
+
+                            <div id='settings-container'>
+                                <template is='dom-if' if='[[forwardtestSettings]]'>
+                                    <aq-settings-display settings="[[forwardtestSettings]]">
+                                    </aq-settings-display>
+                                </template>
+                            </div>
+
+                        </iron-pages>
+                    </div>
+                </div>
+          	</div>
+        </template>
 
         <iron-ajax
             url="[[computeGetForwardtestUrl(forwardtestId)]]"
@@ -406,7 +409,7 @@
             on-error="onGetForwardtestError"
             headers='{{header}}'
             debounce-duration="300"
-            loading='{{loading}}'>
+            loading={{loading}}>
         </iron-ajax>
 
     </template>
@@ -432,10 +435,8 @@
 
                 loading: {
                     type: Boolean,
-                    readOnly: true,
                     notify: true,
                     value: false,
-                    observer:'_loadingChanged',
                 },
 
                 forcedSemiWide: {
@@ -451,14 +452,6 @@
                 forwardtestSettings:Array,
             },
 
-            _loadingChanged: function() {
-                if(this.loading) {
-                    this.$$('#onGoingDialog').open();
-                } else {
-                    this.$$('#onGoingDialog').close();
-                }
-            },
-
             onCodeChange: function(e) {
                 this.async(function(){this.$$('juicy-ace-editor').editor.gotoLine(1);}, 20);
             },
@@ -468,6 +461,7 @@
             },
 
             attached: function() {
+                this.loading = true;
                 this.reset();
                 this.requestStaticData();
             }, 
@@ -478,17 +472,11 @@
             },
 
             reset: function () {
-                //this.backtest = null;
                 this.resetMetrics();
 
                 if(this.$$('aq-forwardtest-performance-detail-item')) {
                     this.$$('aq-forwardtest-performance-detail-item').reset();
                 }
-                /*if(this.$$('aq-forwardtest-performance-detail-item')) {
-                    this.$$('aq-forwardtest-performance-detail-item').reset(); 
-                } else {
-                    this.async(function() {this.$$('aq-forwardtest-performance-detail-item').reset();}, 200); 
-                }*/
             },
 
             resetMetrics: function () {
@@ -561,7 +549,7 @@
                 }
             },
 
-            onGetForwardtestSuccess: function (e) {
+            onGetForwardtestSuccess: function(e) {
 
                 this.set('forwardtest', e.detail.response);
 
@@ -588,12 +576,11 @@
                     if(this.$$('aq-forwardtest-performance-detail-item')) {
                         this.$$('aq-forwardtest-performance-detail-item').plotGraphs();}
                     }, 1000);
+
             },
 
             onGetForwardtestError: function(e) {
-                console.warn("Shivaa");
                 this.async( function(){
-                    //this.loading = true;
                     this.fire('ajax-error', {request: e.detail.request});
                 }, 500);
             },

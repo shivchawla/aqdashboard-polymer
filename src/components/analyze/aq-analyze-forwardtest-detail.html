@@ -33,19 +33,21 @@
         <iron-signals on-iron-signal-forwardtest-updated='onForwardtestUpdated'></iron-signals>
 
         <aq-check-authentication id='authItem'></aq-check-authentication>
-        
-        <aq-allpage-layout loading='{{loading}}' no-nav>
+        <!--aq-loading-progress loading={{loading}}></aq-loading-progress-->
+        <aq-allpage-layout loading='[[loading]]' no-nav>
             <div class="internal-content" id="forwardtest-container">
-                
-                <div id='navigation-panel'>
-                    <aq-navigation-item id="navigation-item" 
-                        header="" 
-                        path="[[currentPath]]">
-                    </aq-navigation-item>
-                </div>
+                <template is='dom-if' if=[[!loading]]>
+                    <div id='navigation-panel'>
+                        <aq-navigation-item id="navigation-item" 
+                            header="" 
+                            path="[[currentPath]]">
+                        </aq-navigation-item>
+                    </div>
+                </template>
                     
                 <aq-forwardtest-detail-item 
-                    forwardtest-id="[[forwardtestId]]">
+                    forwardtest-id="[[forwardtestId]]"
+                    loading={{loading}}>
                 </aq-forwardtest-detail-item>
             </div>
         </aq-allpage-layout>
@@ -71,7 +73,7 @@
 
                 loading:{
                     type:Boolean,
-                    value:false,
+                    //value:false,
                 },
 
                 currentPath: {
