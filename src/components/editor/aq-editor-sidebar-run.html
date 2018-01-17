@@ -210,7 +210,7 @@
                             <span>Benchmark</span>
                         </div>
 
-                        <select on-change='onChangeBenchmark'>
+                        <select on-change='onChangeBenchmark' disabled=[[disabled]]>
                           <template is="dom-repeat" items="[[benchmarkList]]" restamp> 
                                 <option value="[[item]]">[[item]]</option>
                           </template>
@@ -227,7 +227,7 @@
                             <span>Universe</span>
                         </div>
 
-                        <select on-change='onChangeUniverse'>
+                        <select on-change='onChangeUniverse' disabled=[[disabled]]>
                           <template is="dom-repeat" items="[[universeIndexList]]" restamp> 
                                 <option value="[[item]]">[[item]]</option>
                           </template>
